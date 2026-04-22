@@ -21,7 +21,6 @@
   --border-hover: rgba(255,255,255,0.15);
   --gold: #D4AF37;
   --gold-bright: #E8C97A;
-  --gold-dim: #8A6E2F;
   --cream: #F5EFE6;
   --text: #EBE5DA;
   --muted: rgba(235,229,218,0.5);
@@ -215,6 +214,7 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .page.active { display: block; animation: pageIn 0.5s cubic-bezier(0.22,1,0.36,1); }
 @keyframes pageIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
+/* HERO */
 .hero {
   position: relative;
   min-height: 100vh;
@@ -416,6 +416,7 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .link-all::after { content: '→'; transition: transform 0.2s; }
 .link-all:hover::after { transform: translateX(4px); }
 
+/* PRODUCT GRID */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -514,6 +515,107 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   font-size: 1.3rem;
   font-weight: 300;
   color: var(--gold);
+}
+
+/* PRODUCT DETAIL MODAL */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.95);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+}
+.modal.active {
+  display: flex;
+}
+.modal-content {
+  max-width: 1200px;
+  width: 90%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: var(--gold); }
+.modal-image {
+  background: var(--elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  cursor: zoom-in;
+}
+.modal-image img {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+.modal-image.zoomed img {
+  transform: scale(1.5);
+  cursor: zoom-out;
+}
+.modal-info { padding: 1rem; }
+.modal-info h2 {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+.modal-info .modal-cat {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.modal-info .modal-price {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--gold);
+  margin: 1rem 0;
+}
+.modal-info .modal-desc {
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+@media (max-width: 768px) {
+  .modal-content {
+    grid-template-columns: 1fr;
+    width: 95%;
+    padding: 1rem;
+  }
 }
 
 .filters-row {
@@ -649,7 +751,7 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 }
 .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
 .cart-item-info { flex: 1; }
-.cart-item-name { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 300; color: var(--cream); }
+.cart-item-name { font-family: var(--font-serif); font-size: 1rem; font-weight: 300; color: var(--cream); }
 .cart-item-price { font-size: 0.8rem; color: var(--gold); margin-top: 4px; }
 .qty-row { display: flex; align-items: center; gap: 0.8rem; margin-top: 0.7rem; }
 .qty-btn {
@@ -802,105 +904,164 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .checkbox-row input { width: auto; }
 .checkbox-row label { font-size: 0.75rem; color: var(--muted); letter-spacing: normal; text-transform: none; }
 
-.admin-wrap { padding: 3rem; max-width: 1400px; margin: 0 auto; }
+/* ADMIN - Formulier onder elkaar zoals op de foto */
+.admin-wrap { padding: 3rem; max-width: 800px; margin: 0 auto; }
 .admin-title {
   font-family: var(--font-serif);
   font-size: 2.5rem;
   font-weight: 300;
   color: var(--cream);
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
+  text-align: center;
 }
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1px;
   background: var(--border);
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 .stat-card {
   background: var(--surface);
-  padding: 1.8rem;
-  transition: background 0.2s;
+  padding: 1.5rem;
+  text-align: center;
 }
-.stat-card:hover { background: var(--elevated); }
-.stat-label { font-size: 0.6rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.8rem; }
-.stat-val { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 300; color: var(--cream); }
-.stat-val span { color: var(--gold); }
+.stat-card .label {
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.stat-card .value {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--gold);
+}
 
-.add-form {
+/* Admin form - onder elkaar zoals op de foto */
+.admin-form {
   background: var(--surface);
   border: 1px solid var(--border);
   padding: 2rem;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1.5fr 1.5fr auto;
-  gap: 1rem;
-  margin-bottom: 2.5rem;
-  align-items: end;
+  margin-bottom: 2rem;
 }
-.add-form > div { display: flex; flex-direction: column; gap: 0.4rem; }
-.add-form label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); }
-.add-form input, .add-form select {
+.admin-form h3 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.form-group {
+  margin-bottom: 1.2rem;
+}
+.form-group label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.form-group input,
+.form-group select {
   width: 100%;
   background: var(--elevated);
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 0.85rem;
-  padding: 0.6rem 0.8rem;
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
   outline: none;
 }
-.add-form input:focus, .add-form select:focus { border-color: var(--gold); }
-.add-form input[type="file"] { padding: 0.3rem 0; background: none; }
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--gold);
+}
+.form-group input[type="file"] {
+  padding: 0.5rem 0;
+  background: none;
+}
 .btn-add-product {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
   background: var(--gold);
   border: none;
   color: var(--void);
-  padding: 0.7rem 1.2rem;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.8rem 2rem;
   cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.2s;
-  margin-top: 0.2rem;
+  transition: all 0.2s;
+  width: 100%;
+  margin-top: 0.5rem;
 }
 .btn-add-product:hover { background: var(--gold-bright); }
 
-.admin-table { width: 100%; border-collapse: collapse; }
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
 .admin-table th {
+  text-align: left;
+  padding: 0.8rem;
   font-size: 0.6rem;
-  font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
   color: var(--muted);
-  padding: 0.8rem 1rem;
-  text-align: left;
   border-bottom: 1px solid var(--border);
 }
 .admin-table td {
-  padding: 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  font-size: 0.85rem;
-  color: var(--text);
+  padding: 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.8rem;
   vertical-align: middle;
 }
-.admin-table tr:hover td { background: var(--elevated); }
-.admin-thumb { width: 48px; height: 48px; object-fit: cover; background: var(--elevated); border-radius: 4px; cursor: pointer; }
-.status-live { font-size: 0.6rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #5a9e6f; background: rgba(90,158,111,0.12); padding: 4px 10px; display: inline-block; }
-.status-draft { font-size: 0.6rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); background: var(--elevated); padding: 4px 10px; display: inline-block; }
+.admin-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.status-live {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #5a9e6f;
+  background: rgba(90,158,111,0.12);
+  padding: 4px 8px;
+  display: inline-block;
+}
+.status-draft {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--elevated);
+  padding: 4px 8px;
+  display: inline-block;
+}
 .tbl-btn {
   font-size: 0.6rem;
   font-weight: 600;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   text-transform: uppercase;
   background: none;
   border: 1px solid var(--border);
   color: var(--muted);
-  padding: 5px 12px;
+  padding: 4px 10px;
   cursor: pointer;
   transition: all 0.2s;
-  margin-right: 6px;
+  margin-right: 5px;
 }
 .tbl-btn:hover { border-color: var(--gold); color: var(--gold); }
 .tbl-btn.danger:hover { border-color: var(--rust); color: var(--rust); }
@@ -964,8 +1125,7 @@ footer li:hover { color: var(--cream); }
   footer { grid-template-columns: 1fr; padding: 3rem 2rem; }
   .cart-drawer { width: 100%; }
   .editorial { grid-template-columns: 1fr; }
-  .add-form { grid-template-columns: 1fr; }
-  .nav-links { display: none; }
+  .admin-wrap { padding: 1rem; }
 }
 </style>
 </head>
@@ -995,6 +1155,26 @@ footer li:hover { color: var(--cream); }
     </div>
     <div class="cart-totals" id="cartTotals"></div>
     <button class="btn-checkout" onclick="checkout()">Afrekenen</button>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div id="productModal" class="modal" onclick="closeModalOnBackground(event)">
+  <div class="modal-content">
+    <button class="modal-close" onclick="closeModal()">&times;</button>
+    <div class="modal-image" id="modalImage" onclick="toggleZoom()">
+      <img id="modalImg" src="" alt="">
+    </div>
+    <div class="modal-info">
+      <h2 id="modalTitle"></h2>
+      <div class="modal-cat" id="modalCat"></div>
+      <div class="modal-price" id="modalPrice"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-actions">
+        <button class="btn-primary" id="modalAddToCartBtn" onclick="addToCartFromModal()">In winkelwagen</button>
+        <button class="wishlist-btn" id="modalWishlistBtn" style="position:relative; width:50px; height:50px;" onclick="toggleWishFromModal()">🤍</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1089,16 +1269,47 @@ footer li:hover { color: var(--cream); }
   <div class="admin-wrap">
     <h2 class="admin-title">Administratiepaneel</h2>
     <div class="stats-grid" id="adminStats"></div>
-    <div class="add-form">
-      <div><label>Productnaam</label><input id="aTitle" placeholder="Naam"></div>
-      <div><label>Categorie</label><select id="aCat"><option value="Kleding">Kleding</option><option value="Accessoires">Accessoires</option><option value="Wonen">Wonen</option><option value="Drinken">Drinken</option></select></div>
-      <div><label>Prijs (€)</label><input id="aPrice" type="number" step="0.01" placeholder="Prijs"></div>
-      <div><label>Foto upload</label><input type="file" id="aImageFile" accept="image/*"></div>
-      <div><label>Omschrijving</label><input id="aDesc" placeholder="Korte beschrijving"></div>
-      <div><button class="btn-add-product" onclick="adminAddProduct()">+ Product toevoegen</button></div>
+    
+    <!-- Product toevoegen formulier - ONDER ELKAAR zoals op de foto -->
+    <div class="admin-form">
+      <h3>Product toevoegen</h3>
+      <div class="form-group">
+        <label>PRODUCTNAAM</label>
+        <input type="text" id="aTitle" placeholder="Naam">
+      </div>
+      <div class="form-group">
+        <label>CATEGORIE</label>
+        <select id="aCat">
+          <option value="Kleding">Kleding</option>
+          <option value="Accessoires">Accessoires</option>
+          <option value="Wonen">Wonen</option>
+          <option value="Drinken">Drinken</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>PRIJS (€)</label>
+        <input type="number" step="0.01" id="aPrice" placeholder="Prijs">
+      </div>
+      <div class="form-group">
+        <label>FOTO UPLOAD</label>
+        <input type="file" id="aImageFile" accept="image/*">
+      </div>
+      <div class="form-group">
+        <label>OMSCHRIJVING</label>
+        <input type="text" id="aDesc" placeholder="Korte beschrijving">
+      </div>
+      <button class="btn-add-product" onclick="adminAddProduct()">+ PRODUCT TOEVOEGEN</button>
     </div>
-    <table class="admin-table"><thead><tr><th>Foto</th><th>Product</th><th>Categorie</th><th>Prijs</th><th>Status</th><th>Acties</th></tr></thead><tbody id="adminTableBody"></tbody></table>
-    <p style="margin-top:1.5rem; font-size:0.7rem; color:var(--muted);">Klik op een foto om deze te vervangen. Producten zijn pas zichtbaar na publicatie.</p>
+    
+    <div class="admin-form">
+      <h3>Producten beheren</h3>
+      <div style="overflow-x: auto;">
+        <table class="admin-table">
+          <thead><tr><th>Foto</th><th>Product</th><th>Categorie</th><th>Prijs</th><th>Status</th><th>Acties</th></tr></thead>
+          <tbody id="adminTableBody"></tbody>
+        </table>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1120,11 +1331,10 @@ footer li:hover { color: var(--cream); }
 
 <script>
 // ============================================================
-// ADMIN E-MAIL: elmouchania@gmail.com krijgt automatisch admin rechten bij registratie
+// ADMIN E-MAIL: elmouchania@gmail.com krijgt automatisch admin rechten
 // ============================================================
 const ADMIN_EMAIL = "elmouchania@gmail.com";
 
-// Data
 let products = JSON.parse(localStorage.getItem('ms_products')) || [];
 let cart = JSON.parse(localStorage.getItem('ms_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('ms_wish')) || [];
@@ -1132,6 +1342,8 @@ let user = JSON.parse(localStorage.getItem('ms_user')) || null;
 let coupon = 0;
 let users = JSON.parse(localStorage.getItem('ms_users')) || {};
 let resetTokens = {};
+let currentModalProduct = null;
+let modalZoomed = false;
 
 function save() {
   localStorage.setItem('ms_products', JSON.stringify(products));
@@ -1179,10 +1391,61 @@ function updateNav() {
   document.getElementById('heroStatCount').textContent = products.filter(p => p.published).length;
 }
 
+function openProductDetail(productId) {
+  const product = products.find(p => p.id === productId);
+  if (!product) return;
+  currentModalProduct = product;
+  document.getElementById('modalTitle').textContent = product.title;
+  document.getElementById('modalCat').textContent = product.category;
+  document.getElementById('modalPrice').textContent = '€' + product.price.toFixed(2);
+  document.getElementById('modalDesc').textContent = product.desc || 'Geen beschrijving beschikbaar.';
+  document.getElementById('modalImg').src = product.imageUrl || 'https://placehold.co/600x600/111/888?text=Geen+foto';
+  const inWish = wishlist.includes(product.id);
+  document.getElementById('modalWishlistBtn').textContent = inWish ? '❤️' : '🤍';
+  document.getElementById('productModal').classList.add('active');
+  modalZoomed = false;
+  document.getElementById('modalImage').classList.remove('zoomed');
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.remove('active');
+  currentModalProduct = null;
+  modalZoomed = false;
+}
+
+function closeModalOnBackground(e) {
+  if (e.target === document.getElementById('productModal')) {
+    closeModal();
+  }
+}
+
+function toggleZoom() {
+  modalZoomed = !modalZoomed;
+  if (modalZoomed) {
+    document.getElementById('modalImage').classList.add('zoomed');
+  } else {
+    document.getElementById('modalImage').classList.remove('zoomed');
+  }
+}
+
+function addToCartFromModal() {
+  if (currentModalProduct) {
+    addToCart(currentModalProduct.id);
+  }
+}
+
+function toggleWishFromModal() {
+  if (currentModalProduct) {
+    toggleWish(currentModalProduct.id);
+    const inWish = wishlist.includes(currentModalProduct.id);
+    document.getElementById('modalWishlistBtn').textContent = inWish ? '❤️' : '🤍';
+  }
+}
+
 function makeCard(p) {
   const inWish = wishlist.includes(p.id);
   return `
-    <div class="product-card">
+    <div class="product-card" onclick="openProductDetail(${p.id})">
       <div class="product-img-wrap">
         <img src="${p.imageUrl || 'https://placehold.co/400x530/111/888?text=Geen+foto'}" alt="${p.title}" loading="lazy">
         ${!p.published ? '<div class="badge-pill">Concept</div>' : ''}
@@ -1215,7 +1478,7 @@ function renderHeroMosaic() {
     return;
   }
   mosaic.innerHTML = items.map((p, i) => `
-    <div class="hero-tile${i === 0 ? ' big' : ''}">
+    <div class="hero-tile${i === 0 ? ' big' : ''}" onclick="openProductDetail(${p.id})">
       <img src="${p.imageUrl || 'https://placehold.co/800/111/888?text=MAISON'}" alt="${p.title}">
       <div class="hero-tile-label">${p.title}<div class="hero-tile-price">€${p.price.toFixed(2)}</div></div>
     </div>
@@ -1306,18 +1569,18 @@ function renderAdmin() {
   const dft = products.filter(p => !p.published).length;
   const userCount = Object.keys(users).length;
   document.getElementById('adminStats').innerHTML = `
-    <div class="stat-card"><div class="stat-label">Totaal producten</div><div class="stat-val">${products.length}</div></div>
-    <div class="stat-card"><div class="stat-label">Gepubliceerd</div><div class="stat-val"><span>${pub}</span></div></div>
-    <div class="stat-card"><div class="stat-label">Concept</div><div class="stat-val">${dft}</div></div>
-    <div class="stat-card"><div class="stat-label">Gebruikers</div><div class="stat-val">${userCount}</div></div>`;
+    <div class="stat-card"><div class="label">Totaal producten</div><div class="value">${products.length}</div></div>
+    <div class="stat-card"><div class="label">Gepubliceerd</div><div class="value">${pub}</div></div>
+    <div class="stat-card"><div class="label">Concept</div><div class="value">${dft}</div></div>
+    <div class="stat-card"><div class="label">Gebruikers</div><div class="value">${userCount}</div></div>`;
   document.getElementById('adminTableBody').innerHTML = products.map(p => `
     <tr>
       <td><img class="admin-thumb" src="${p.imageUrl || 'https://placehold.co/48/111/888?text=No+Img'}" alt="" onclick="uploadNewImage(${p.id})"></td>
       <td><strong>${escapeHtml(p.title)}</strong><br><span style="font-size:0.7rem;color:#888;">${escapeHtml(p.desc || '')}</span></td>
       <td>${p.category}</td>
       <td style="color:var(--gold);">€${p.price.toFixed(2)}</td>
-      <td><span class="status-badge ${p.published ? 'status-live' : 'status-draft'}">${p.published ? 'Live' : 'Concept'}</span></td>
-      <td class="action-btns">
+      <td><span class="${p.published ? 'status-live' : 'status-draft'}">${p.published ? 'Live' : 'Concept'}</span></td>
+      <td>
         <button class="tbl-btn" onclick="togglePublish(${p.id})">${p.published ? 'Verberg' : 'Publiceer'}</button>
         <button class="tbl-btn danger" onclick="deleteProduct(${p.id})">Verwijder</button>
       </td>
@@ -1501,24 +1764,20 @@ function deleteProduct(id) {
 function requestPasswordReset() {
   const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
   const msg = document.getElementById('forgotMsg');
-  
   if (!email) {
     msg.textContent = 'Vul uw e-mailadres in';
     msg.className = 'auth-msg error';
     return;
   }
-  
   if (!users[email]) {
     msg.textContent = 'Geen account gevonden met dit e-mailadres';
     msg.className = 'auth-msg error';
     return;
   }
-  
   const token = Math.random().toString(36).substring(2, 20) + Date.now().toString(36);
   resetTokens[token] = email;
   localStorage.setItem('ms_reset_token_' + token, email);
-  
-  msg.innerHTML = `Een reset-link is verzonden naar ${email}.<br><small style="display:block;margin-top:8px;">(Demo: <a href="#" onclick="simulateReset('${token}');return false;" style="color:var(--gold);">Klik hier om reset te simuleren</a>)</small>`;
+  msg.innerHTML = `Een reset-link is verzonden naar ${email}.<br><small>(Demo: <a href="#" onclick="simulateReset('${token}');return false;" style="color:var(--gold);">Klik hier om reset te simuleren</a>)</small>`;
   msg.className = 'auth-msg success';
 }
 
@@ -1540,29 +1799,25 @@ function confirmPasswordReset() {
   const confirmPass = document.getElementById('resetConfirmPass').value;
   const email = window.resetEmail;
   const token = window.resetToken;
-  
   if (!email || !token) {
-    document.getElementById('resetMsg').textContent = 'Geen actieve reset aanvraag. Vraag een nieuwe reset aan.';
+    document.getElementById('resetMsg').textContent = 'Geen actieve reset aanvraag.';
     document.getElementById('resetMsg').className = 'auth-msg error';
     return;
   }
-  
   if (!newPass || newPass.length < 6) {
     document.getElementById('resetMsg').textContent = 'Wachtwoord moet minimaal 6 tekens bevatten';
     document.getElementById('resetMsg').className = 'auth-msg error';
     return;
   }
-  
   if (newPass !== confirmPass) {
     document.getElementById('resetMsg').textContent = 'Wachtwoorden komen niet overeen';
     document.getElementById('resetMsg').className = 'auth-msg error';
     return;
   }
-  
   if (users[email]) {
     users[email].password = newPass;
     save();
-    toast('Wachtwoord succesvol gewijzigd! U kunt nu inloggen.');
+    toast('Wachtwoord succesvol gewijzigd!');
     delete resetTokens[token];
     localStorage.removeItem('ms_reset_token_' + token);
     delete window.resetEmail;
@@ -1575,24 +1830,20 @@ function doLogin() {
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const pass = document.getElementById('loginPass').value;
   const msg = document.getElementById('loginMsg');
-  
   if (!users[email]) {
     msg.textContent = 'Ongeldig e-mailadres of wachtwoord';
     msg.className = 'auth-msg error';
     return;
   }
-  
   if (users[email].password !== pass) {
     msg.textContent = 'Ongeldig e-mailadres of wachtwoord';
     msg.className = 'auth-msg error';
     return;
   }
-  
   user = { email: email, name: users[email].name };
   save();
   updateNav();
   toast(`Welkom, ${users[email].name}`);
-  
   if (email === ADMIN_EMAIL) {
     showPage('admin');
     renderAdmin();
@@ -1607,26 +1858,18 @@ function doRegister() {
   const pass = document.getElementById('regPass').value;
   const terms = document.getElementById('termsBox').checked;
   const msg = document.getElementById('regMsg');
-  
   if (!name || !email || pass.length < 6 || !terms) {
     msg.textContent = 'Vul alle velden correct in (wachtwoord minimaal 6 tekens)';
     msg.className = 'auth-msg error';
     return;
   }
-  
   if (users[email]) {
     msg.textContent = 'Dit e-mailadres is al geregistreerd';
     msg.className = 'auth-msg error';
     return;
   }
-  
-  users[email] = {
-    name: name,
-    password: pass,
-    registeredAt: new Date().toISOString()
-  };
+  users[email] = { name: name, password: pass, registeredAt: new Date().toISOString() };
   save();
-  
   if (email === ADMIN_EMAIL) {
     toast('Admin account succesvol aangemaakt! U heeft nu administrator rechten.');
   } else {
@@ -1665,6 +1908,7 @@ function showPage(name) {
     document.getElementById('profileSince').textContent = users[user.email]?.registeredAt ? new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL') : 'Nieuw';
   }
   closeUserMenu();
+  closeModal();
 }
 
 function escapeHtml(str) {
@@ -1708,6 +1952,12 @@ window.uploadNewImage = uploadNewImage;
 window.requestPasswordReset = requestPasswordReset;
 window.confirmPasswordReset = confirmPasswordReset;
 window.simulateReset = simulateReset;
+window.openProductDetail = openProductDetail;
+window.closeModal = closeModal;
+window.closeModalOnBackground = closeModalOnBackground;
+window.toggleZoom = toggleZoom;
+window.addToCartFromModal = addToCartFromModal;
+window.toggleWishFromModal = toggleWishFromModal;
 
 updateNav();
 renderHome();
