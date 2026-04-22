@@ -6,7 +6,11 @@
 <title>MAISON — Premium Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
 :root {
   --void: #050505;
@@ -21,7 +25,6 @@
   --cream: #F5EFE6;
   --text: #EBE5DA;
   --muted: rgba(235,229,218,0.5);
-  --white: #ffffff;
   --rust: #9B4B3C;
   --sage: #4A6B5D;
   --font-serif: 'Cormorant Garamond', Georgia, serif;
@@ -79,7 +82,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   text-transform: uppercase;
   color: var(--cream);
   cursor: pointer;
-  position: relative;
 }
 .logo span { color: var(--gold); }
 .nav-links { display: flex; gap: 0.25rem; }
@@ -220,13 +222,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   grid-template-columns: 1fr 1fr;
   overflow: hidden;
 }
-.hero::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse 80% 60% at 30% 50%, rgba(212,175,55,0.06) 0%, transparent 60%);
-  pointer-events: none;
-}
 .hero-left {
   padding: 8rem 4rem 6rem 5rem;
   display: flex;
@@ -280,9 +275,7 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   position: relative;
   overflow: hidden;
 }
-.btn-primary::after { content: ''; position: absolute; inset: 0; background: rgba(255,255,255,0.12); transform: translateX(-100%); transition: 0.3s; }
-.btn-primary:hover::after { transform: translateX(0); }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,175,55,0.3); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,175,55,0.3); background: var(--gold-bright); }
 .btn-link {
   background: none;
   border: none;
@@ -361,7 +354,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   color: var(--void);
   padding: 12px 0;
   overflow: hidden;
-  position: relative;
 }
 .marquee-track {
   display: flex;
@@ -558,7 +550,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   padding: 0.55rem 1rem 0.55rem 2.5rem;
   width: 220px;
   outline: none;
-  transition: border-color 0.2s;
 }
 .shop-search:focus { border-color: var(--gold); }
 .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--muted); }
@@ -573,7 +564,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   cursor: pointer;
   outline: none;
 }
-.sort-sel:focus { border-color: var(--gold); }
 
 .editorial {
   display: grid;
@@ -690,7 +680,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   font-size: 0.75rem;
   padding: 0.6rem 1rem;
   outline: none;
-  transition: border-color 0.2s;
 }
 .coupon-input:focus { border-color: var(--gold); }
 .btn-apply {
@@ -802,7 +791,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   font-size: 0.9rem;
   padding: 0.8rem 1rem;
   outline: none;
-  transition: border-color 0.2s;
 }
 .field input:focus { border-color: var(--gold); }
 .auth-msg { font-size: 0.75rem; margin-top: 0.8rem; min-height: 1.2rem; }
@@ -860,7 +848,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   font-size: 0.85rem;
   padding: 0.6rem 0.8rem;
   outline: none;
-  transition: border-color 0.2s;
 }
 .add-form input:focus, .add-form select:focus { border-color: var(--gold); }
 .add-form input[type="file"] { padding: 0.3rem 0; background: none; }
@@ -936,9 +923,8 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   font-size: 0.8rem;
   font-weight: 400;
   white-space: nowrap;
-  animation: toastIn 0.3s cubic-bezier(0.22,1,0.36,1), toastOut 0.3s 2.5s forwards;
+  animation: toastIn 0.3s ease, toastOut 0.3s 2.5s forwards;
   pointer-events: none;
-  backdrop-filter: blur(12px);
 }
 @keyframes toastIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes toastOut { to { opacity: 0; transform: translateY(-8px); } }
@@ -1112,7 +1098,7 @@ footer li:hover { color: var(--cream); }
       <div><button class="btn-add-product" onclick="adminAddProduct()">+ Product toevoegen</button></div>
     </div>
     <table class="admin-table"><thead><tr><th>Foto</th><th>Product</th><th>Categorie</th><th>Prijs</th><th>Status</th><th>Acties</th></tr></thead><tbody id="adminTableBody"></tbody></table>
-    <p style="margin-top:1.5rem; font-size:0.7rem; color:var(--muted);">Klik op een foto om deze te vervangen. Producten zijn pas zichtbaar in de winkel na publicatie.</p>
+    <p style="margin-top:1.5rem; font-size:0.7rem; color:var(--muted);">Klik op een foto om deze te vervangen. Producten zijn pas zichtbaar na publicatie.</p>
   </div>
 </div>
 
@@ -1133,21 +1119,19 @@ footer li:hover { color: var(--cream); }
 <div class="footer-bottom"><span>© 2025 MAISON — Alle rechten voorbehouden</span><span>Veilig betalen · SSL · iDEAL · Visa · Mastercard</span></div>
 
 <script>
-// ADMIN GEGEVENS
-const ADMIN_EMAIL = "admin@maison.com";
-const ADMIN_PASS = "Admin123!";
+// ============================================================
+// ADMIN E-MAIL: elmouchania@gmail.com krijgt automatisch admin rechten
+// ============================================================
+const ADMIN_EMAIL = "elmouchania@gmail.com";
 
-// Wachtwoord reset token opslag
-let passwordResetTokens = {};
-
-// GEEN NEP PRODUCTEN - beginnen met lege array
+// Data
 let products = JSON.parse(localStorage.getItem('ms_products')) || [];
-
 let cart = JSON.parse(localStorage.getItem('ms_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('ms_wish')) || [];
 let user = JSON.parse(localStorage.getItem('ms_user')) || null;
 let coupon = 0;
 let users = JSON.parse(localStorage.getItem('ms_users')) || {};
+let resetTokens = {};
 
 function save() {
   localStorage.setItem('ms_products', JSON.stringify(products));
@@ -1192,8 +1176,7 @@ function updateNav() {
   }
   document.getElementById('cartBadge').textContent = cart.reduce((a, b) => a + b.qty, 0);
   document.getElementById('wishlistBadge').textContent = wishlist.length ? `(${wishlist.length})` : '';
-  const publishedCount = products.filter(p => p.published).length;
-  document.getElementById('heroStatCount').textContent = publishedCount;
+  document.getElementById('heroStatCount').textContent = products.filter(p => p.published).length;
 }
 
 function makeCard(p) {
@@ -1219,7 +1202,7 @@ function makeCard(p) {
 
 function renderHome() {
   const featured = products.filter(p => p.published).slice(0, 6);
-  document.getElementById('homeFeaturedGrid').innerHTML = featured.length ? featured.map(makeCard).join('') : '<div style="text-align:center;padding:4rem;color:var(--muted);">Nog geen producten. <a onclick="showPage(\'admin\')" style="color:var(--gold);cursor:pointer;">Log in als admin</a> om producten toe te voegen.</div>';
+  document.getElementById('homeFeaturedGrid').innerHTML = featured.length ? featured.map(makeCard).join('') : '<div style="text-align:center;padding:4rem;color:var(--muted);">Nog geen producten. Admin kan producten toevoegen.</div>';
   renderHeroMosaic();
   renderMarquee();
 }
@@ -1254,7 +1237,7 @@ function renderShop() {
   if (sort === 'desc') list.sort((a, b) => b.price - a.price);
   if (sort === 'name') list.sort((a, b) => a.title.localeCompare(b.title));
   if (!list.length && products.filter(p => p.published).length === 0) {
-    document.getElementById('shopGrid').innerHTML = '<div style="text-align:center;padding:4rem;color:var(--muted);">De winkel is nog leeg. <a onclick="showPage(\'admin\')" style="color:var(--gold);cursor:pointer;">Log in als admin</a> om producten toe te voegen.</div>';
+    document.getElementById('shopGrid').innerHTML = '<div style="text-align:center;padding:4rem;color:var(--muted);">De winkel is nog leeg. Admin kan producten toevoegen.</div>';
   } else {
     document.getElementById('shopGrid').innerHTML = list.length ? list.map(makeCard).join('') : '<p style="color:var(--muted);padding:3rem 0;">Geen producten gevonden.</p>';
   }
@@ -1326,19 +1309,22 @@ function renderAdmin() {
     <div class="stat-card"><div class="stat-label">Totaal producten</div><div class="stat-val">${products.length}</div></div>
     <div class="stat-card"><div class="stat-label">Gepubliceerd</div><div class="stat-val"><span>${pub}</span></div></div>
     <div class="stat-card"><div class="stat-label">Concept</div><div class="stat-val">${dft}</div></div>
-    <div class="stat-card"><div class="stat-label">Geregistreerd</div><div class="stat-val">${userCount}</div></div>`;
+    <div class="stat-card"><div class="stat-label">Gebruikers</div><div class="stat-val">${userCount}</div></div>`;
   document.getElementById('adminTableBody').innerHTML = products.map(p => `
     <tr>
       <td><img class="admin-thumb" src="${p.imageUrl || 'https://placehold.co/48/111/888?text=No+Img'}" alt="" onclick="uploadNewImage(${p.id})"></td>
-      <td><strong>${p.title}</strong><br><span style="font-size:0.7rem;color:var(--muted);">${p.desc || ''}</span></td>
+      <td><strong>${escapeHtml(p.title)}</strong><br><span style="font-size:0.7rem;color:#888;">${escapeHtml(p.desc || '')}</span></td>
       <td>${p.category}</td>
       <td style="color:var(--gold);">€${p.price.toFixed(2)}</td>
-      <td><span class="${p.published ? 'status-live' : 'status-draft'}">${p.published ? 'Live' : 'Concept'}</span></td>
-      <td><button class="tbl-btn" onclick="togglePublish(${p.id})">${p.published ? 'Verberg' : 'Publiceer'}</button><button class="tbl-btn danger" onclick="deleteProduct(${p.id})">Verwijder</button></td>
+      <td><span class="status-badge ${p.published ? 'status-live' : 'status-draft'}">${p.published ? 'Live' : 'Concept'}</span></td>
+      <td class="action-btns">
+        <button class="tbl-btn" onclick="togglePublish(${p.id})">${p.published ? 'Verberg' : 'Publiceer'}</button>
+        <button class="tbl-btn danger" onclick="deleteProduct(${p.id})">Verwijder</button>
+      </td>
     </tr>
   `).join('');
   if (products.length === 0) {
-    document.getElementById('adminTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--muted);">Geen producten. Voeg uw eerste product hierboven toe.</td></tr>';
+    document.getElementById('adminTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;">Geen producten. Voeg uw eerste product toe.</td></tr>';
   }
 }
 
@@ -1380,18 +1366,21 @@ function adminAddProduct() {
     return;
   }
   
+  const newProduct = {
+    id: Date.now(),
+    title: title,
+    category: cat,
+    price: price,
+    desc: desc || 'Nieuw product',
+    published: false,
+    imageUrl: ''
+  };
+  
   if (file) {
     const reader = new FileReader();
     reader.onload = (ev) => {
-      products.push({
-        id: Date.now(),
-        title: title,
-        category: cat,
-        price: price,
-        imageUrl: ev.target.result,
-        published: false,
-        desc: desc || 'Nieuw product'
-      });
+      newProduct.imageUrl = ev.target.result;
+      products.push(newProduct);
       save();
       renderAdmin();
       renderHome();
@@ -1401,15 +1390,7 @@ function adminAddProduct() {
     };
     reader.readAsDataURL(file);
   } else {
-    products.push({
-      id: Date.now(),
-      title: title,
-      category: cat,
-      price: price,
-      imageUrl: '',
-      published: false,
-      desc: desc || 'Nieuw product'
-    });
+    products.push(newProduct);
     save();
     renderAdmin();
     renderHome();
@@ -1495,27 +1476,29 @@ function openCart() { renderCart(); document.getElementById('cartOverlay').class
 function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartDrawer').classList.remove('open'); }
 function togglePublish(id) {
   const p = products.find(x => x.id === id);
-  if (!p) return;
-  p.published = !p.published;
-  save();
-  renderAdmin();
-  renderHome();
-  renderShop();
-  toast(`${p.title} ${p.published ? 'gepubliceerd' : 'verborgen'}`);
+  if (p) {
+    p.published = !p.published;
+    save();
+    renderAdmin();
+    renderHome();
+    renderShop();
+    toast(`${p.title} ${p.published ? 'gepubliceerd' : 'verborgen'}`);
+  }
 }
 function deleteProduct(id) {
-  if (!confirm('Weet u zeker dat u dit product permanent wilt verwijderen?')) return;
-  products = products.filter(p => p.id !== id);
-  cart = cart.filter(i => i.id !== id);
-  wishlist = wishlist.filter(w => w !== id);
-  save();
-  renderAdmin();
-  renderHome();
-  renderShop();
-  toast('Product verwijderd');
+  if (confirm('Weet u zeker dat u dit product wilt verwijderen?')) {
+    products = products.filter(p => p.id !== id);
+    cart = cart.filter(i => i.id !== id);
+    wishlist = wishlist.filter(w => w !== id);
+    save();
+    renderAdmin();
+    renderHome();
+    renderShop();
+    toast('Product verwijderd');
+  }
 }
 
-// WACHTWOORD VERGETEN FUNCTIES
+// Wachtwoord vergeten functies
 function requestPasswordReset() {
   const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
   const msg = document.getElementById('forgotMsg');
@@ -1526,37 +1509,22 @@ function requestPasswordReset() {
     return;
   }
   
-  if (email === ADMIN_EMAIL) {
-    msg.textContent = 'Admin wachtwoord kan alleen worden gereset via de beheerder. Neem contact op met support.';
-    msg.className = 'auth-msg error';
-    return;
-  }
-  
   if (!users[email]) {
     msg.textContent = 'Geen account gevonden met dit e-mailadres';
     msg.className = 'auth-msg error';
     return;
   }
   
-  // Genereer reset token
-  const token = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
-  passwordResetTokens[token] = email;
-  
-  // Verstuur reset link (simulatie - in realiteit zou dit een e-mail zijn)
-  const resetLink = window.location.origin + window.location.pathname + '#reset-token=' + token;
+  const token = Math.random().toString(36).substring(2, 20) + Date.now().toString(36);
+  resetTokens[token] = email;
+  localStorage.setItem('ms_reset_token_' + token, email);
   
   msg.innerHTML = `Een reset-link is verzonden naar ${email}.<br><small style="display:block;margin-top:8px;">(Demo: <a href="#" onclick="simulateReset('${token}');return false;" style="color:var(--gold);">Klik hier om reset te simuleren</a>)</small>`;
   msg.className = 'auth-msg success';
-  
-  // Sla token op in localStorage voor demo
-  localStorage.setItem('ms_reset_token_' + token, email);
-  
-  console.log('Reset link (voor test):', resetLink);
 }
 
 function simulateReset(token) {
-  // Simuleer het openen van de reset link
-  const email = passwordResetTokens[token] || localStorage.getItem('ms_reset_token_' + token);
+  const email = resetTokens[token] || localStorage.getItem('ms_reset_token_' + token);
   if (email) {
     showPage('reset-password');
     document.getElementById('resetMsg').innerHTML = `<span style="color:var(--sage);">Reset voor: ${email}</span>`;
@@ -1571,25 +1539,21 @@ function simulateReset(token) {
 function confirmPasswordReset() {
   const newPass = document.getElementById('resetNewPass').value;
   const confirmPass = document.getElementById('resetConfirmPass').value;
-  const msg = document.getElementById('resetMsg');
   const email = window.resetEmail;
   const token = window.resetToken;
   
   if (!email || !token) {
-    msg.textContent = 'Geen actieve reset aanvraag. Vraag een nieuwe reset aan.';
-    msg.className = 'auth-msg error';
+    showMessage('resetMsg', 'Geen actieve reset aanvraag. Vraag een nieuwe reset aan.', 'error');
     return;
   }
   
   if (!newPass || newPass.length < 6) {
-    msg.textContent = 'Wachtwoord moet minimaal 6 tekens bevatten';
-    msg.className = 'auth-msg error';
+    showMessage('resetMsg', 'Wachtwoord moet minimaal 6 tekens bevatten', 'error');
     return;
   }
   
   if (newPass !== confirmPass) {
-    msg.textContent = 'Wachtwoorden komen niet overeen';
-    msg.className = 'auth-msg error';
+    showMessage('resetMsg', 'Wachtwoorden komen niet overeen', 'error');
     return;
   }
   
@@ -1597,33 +1561,23 @@ function confirmPasswordReset() {
     users[email].password = newPass;
     save();
     toast('Wachtwoord succesvol gewijzigd! U kunt nu inloggen.');
-    showPage('login');
-    
-    // Cleanup
-    delete passwordResetTokens[token];
+    delete resetTokens[token];
     localStorage.removeItem('ms_reset_token_' + token);
     delete window.resetEmail;
     delete window.resetToken;
+    showPage('login');
   } else {
-    msg.textContent = 'Er is iets misgegaan. Probeer opnieuw.';
-    msg.className = 'auth-msg error';
+    showMessage('resetMsg', 'Er is iets misgegaan. Probeer opnieuw.', 'error');
   }
 }
 
-// Check of er een reset token in de URL hash staat bij het laden
-function checkForResetToken() {
-  if (window.location.hash && window.location.hash.includes('reset-token=')) {
-    const token = window.location.hash.split('reset-token=')[1];
-    const email = passwordResetTokens[token] || localStorage.getItem('ms_reset_token_' + token);
-    if (email) {
-      showPage('reset-password');
-      document.getElementById('resetMsg').innerHTML = `<span style="color:var(--sage);">Reset voor: ${email}</span>`;
-      document.getElementById('resetMsg').className = 'auth-msg success';
-      window.resetEmail = email;
-      window.resetToken = token;
-      window.location.hash = '';
-    }
-  }
+function showMessage(elementId, message, type) {
+  const el = document.getElementById(elementId);
+  el.textContent = message;
+  el.className = `auth-msg ${type}`;
+  setTimeout(() => {
+    if (el) el.innerHTML = '';
+  }, 4000);
 }
 
 function doLogin() {
@@ -1631,25 +1585,27 @@ function doLogin() {
   const pass = document.getElementById('loginPass').value;
   const msg = document.getElementById('loginMsg');
   
-  if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
-    user = { email: ADMIN_EMAIL, name: 'Hoofd Administrator', isAdmin: true };
-    save();
-    updateNav();
-    toast('Welkom terug, Administrator');
-    showPage('admin');
-    renderAdmin();
+  if (!users[email]) {
+    msg.textContent = 'Ongeldig e-mailadres of wachtwoord';
+    msg.className = 'auth-msg error';
     return;
   }
   
-  if (users[email] && users[email].password === pass) {
-    user = { email: email, name: users[email].name, isAdmin: false };
-    save();
-    updateNav();
-    toast(`Welkom, ${users[email].name}`);
-    showPage('shop');
-  } else {
+  if (users[email].password !== pass) {
     msg.textContent = 'Ongeldig e-mailadres of wachtwoord';
     msg.className = 'auth-msg error';
+    return;
+  }
+  
+  user = { email: email, name: users[email].name, isAdmin: email === ADMIN_EMAIL };
+  save();
+  updateNav();
+  toast(`Welkom, ${users[email].name}`);
+  if (email === ADMIN_EMAIL) {
+    showPage('admin');
+    renderAdmin();
+  } else {
+    showPage('shop');
   }
 }
 
@@ -1666,21 +1622,28 @@ function doRegister() {
     return;
   }
   
-  if (email === ADMIN_EMAIL) {
-    msg.textContent = 'Dit e-mailadres is gereserveerd';
-    msg.className = 'auth-msg error';
-    return;
-  }
-  
   if (users[email]) {
     msg.textContent = 'Dit e-mailadres is al geregistreerd';
     msg.className = 'auth-msg error';
     return;
   }
   
-  users[email] = { name: name, password: pass, registeredAt: new Date().toISOString() };
+  // Als dit de admin email is, krijgt deze automatisch admin rechten
+  const isAdmin = (email === ADMIN_EMAIL);
+  
+  users[email] = {
+    name: name,
+    password: pass,
+    isAdmin: isAdmin,
+    registeredAt: new Date().toISOString()
+  };
   save();
-  toast('Account succesvol aangemaakt! U kunt nu inloggen.');
+  
+  if (isAdmin) {
+    toast('Admin account aangemaakt! U heeft nu administrator rechten.');
+  } else {
+    toast('Account succesvol aangemaakt! U kunt nu inloggen.');
+  }
   showPage('login');
 }
 
@@ -1713,15 +1676,17 @@ function showPage(name) {
     document.getElementById('profileEmail').textContent = user.email;
     document.getElementById('profileSince').textContent = users[user.email]?.registeredAt ? new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL') : 'Nieuw';
   }
-  if (name === 'forgot-password') {
-    document.getElementById('forgotEmail').value = '';
-    document.getElementById('forgotMsg').innerHTML = '';
-  }
-  if (name === 'reset-password') {
-    document.getElementById('resetNewPass').value = '';
-    document.getElementById('resetConfirmPass').value = '';
-  }
   closeUserMenu();
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
 }
 
 document.querySelectorAll('.nav-link').forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
@@ -1756,7 +1721,6 @@ window.requestPasswordReset = requestPasswordReset;
 window.confirmPasswordReset = confirmPasswordReset;
 window.simulateReset = simulateReset;
 
-checkForResetToken();
 updateNav();
 renderHome();
 renderShop();
