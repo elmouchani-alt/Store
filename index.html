@@ -1120,7 +1120,7 @@ footer li:hover { color: var(--cream); }
 
 <script>
 // ============================================================
-// ADMIN E-MAIL: elmouchania@gmail.com krijgt automatisch admin rechten
+// ADMIN E-MAIL: elmouchania@gmail.com krijgt automatisch admin rechten bij registratie
 // ============================================================
 const ADMIN_EMAIL = "elmouchania@gmail.com";
 
@@ -1498,7 +1498,6 @@ function deleteProduct(id) {
   }
 }
 
-// Wachtwoord vergeten functies
 function requestPasswordReset() {
   const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
   const msg = document.getElementById('forgotMsg');
@@ -1543,17 +1542,20 @@ function confirmPasswordReset() {
   const token = window.resetToken;
   
   if (!email || !token) {
-    showMessage('resetMsg', 'Geen actieve reset aanvraag. Vraag een nieuwe reset aan.', 'error');
+    document.getElementById('resetMsg').textContent = 'Geen actieve reset aanvraag. Vraag een nieuwe reset aan.';
+    document.getElementById('resetMsg').className = 'auth-msg error';
     return;
   }
   
   if (!newPass || newPass.length < 6) {
-    showMessage('resetMsg', 'Wachtwoord moet minimaal 6 tekens bevatten', 'error');
+    document.getElementById('resetMsg').textContent = 'Wachtwoord moet minimaal 6 tekens bevatten';
+    document.getElementById('resetMsg').className = 'auth-msg error';
     return;
   }
   
   if (newPass !== confirmPass) {
-    showMessage('resetMsg', 'Wachtwoorden komen niet overeen', 'error');
+    document.getElementById('resetMsg').textContent = 'Wachtwoorden komen niet overeen';
+    document.getElementById('resetMsg').className = 'auth-msg error';
     return;
   }
   
@@ -1566,18 +1568,7 @@ function confirmPasswordReset() {
     delete window.resetEmail;
     delete window.resetToken;
     showPage('login');
-  } else {
-    showMessage('resetMsg', 'Er is iets misgegaan. Probeer opnieuw.', 'error');
   }
-}
-
-function showMessage(elementId, message, type) {
-  const el = document.getElementById(elementId);
-  el.textContent = message;
-  el.className = `auth-msg ${type}`;
-  setTimeout(() => {
-    if (el) el.innerHTML = '';
-  }, 4000);
 }
 
 function doLogin() {
@@ -1597,10 +1588,11 @@ function doLogin() {
     return;
   }
   
-  user = { email: email, name: users[email].name, isAdmin: email === ADMIN_EMAIL };
+  user = { email: email, name: users[email].name };
   save();
   updateNav();
   toast(`Welkom, ${users[email].name}`);
+  
   if (email === ADMIN_EMAIL) {
     showPage('admin');
     renderAdmin();
@@ -1628,19 +1620,15 @@ function doRegister() {
     return;
   }
   
-  // Als dit de admin email is, krijgt deze automatisch admin rechten
-  const isAdmin = (email === ADMIN_EMAIL);
-  
   users[email] = {
     name: name,
     password: pass,
-    isAdmin: isAdmin,
     registeredAt: new Date().toISOString()
   };
   save();
   
-  if (isAdmin) {
-    toast('Admin account aangemaakt! U heeft nu administrator rechten.');
+  if (email === ADMIN_EMAIL) {
+    toast('Admin account succesvol aangemaakt! U heeft nu administrator rechten.');
   } else {
     toast('Account succesvol aangemaakt! U kunt nu inloggen.');
   }
