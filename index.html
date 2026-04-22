@@ -214,7 +214,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .page.active { display: block; animation: pageIn 0.5s cubic-bezier(0.22,1,0.36,1); }
 @keyframes pageIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-/* HERO */
 .hero {
   position: relative;
   min-height: 100vh;
@@ -272,8 +271,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   padding: 1rem 2.5rem;
   cursor: pointer;
   transition: all 0.25s;
-  position: relative;
-  overflow: hidden;
 }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,175,55,0.3); background: var(--gold-bright); }
 .btn-link {
@@ -416,7 +413,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .link-all::after { content: '→'; transition: transform 0.2s; }
 .link-all:hover::after { transform: translateX(4px); }
 
-/* PRODUCT GRID */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
@@ -517,7 +513,7 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   color: var(--gold);
 }
 
-/* PRODUCT DETAIL MODAL */
+/* PRODUCT DETAIL MODAL MET MEERDERE FOTO'S */
 .modal {
   display: none;
   position: fixed;
@@ -560,23 +556,45 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   transition: color 0.2s;
 }
 .modal-close:hover { color: var(--gold); }
-.modal-image {
+.modal-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.modal-main-image {
   background: var(--elevated);
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  cursor: zoom-in;
+  cursor: pointer;
+  overflow: hidden;
 }
-.modal-image img {
+.modal-main-image img {
   max-width: 100%;
-  max-height: 500px;
+  max-height: 450px;
   object-fit: contain;
   transition: transform 0.3s ease;
 }
-.modal-image.zoomed img {
+.modal-main-image.zoomed img {
   transform: scale(1.5);
   cursor: zoom-out;
+}
+.modal-thumbnails {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.modal-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+.modal-thumb:hover, .modal-thumb.active {
+  border-color: var(--gold);
 }
 .modal-info { padding: 1rem; }
 .modal-info h2 {
@@ -610,12 +628,19 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   gap: 1rem;
   margin-top: 1rem;
 }
+.add-image-btn {
+  background: var(--elevated);
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  padding: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.7rem;
+  transition: all 0.2s;
+}
+.add-image-btn:hover { border-color: var(--gold); color: var(--gold); }
 @media (max-width: 768px) {
-  .modal-content {
-    grid-template-columns: 1fr;
-    width: 95%;
-    padding: 1rem;
-  }
+  .modal-content { grid-template-columns: 1fr; width: 95%; padding: 1rem; }
 }
 
 .filters-row {
@@ -816,6 +841,50 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 }
 .btn-checkout:hover { background: var(--gold-bright); }
 
+/* CHECKOUT FORM */
+.checkout-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  margin-bottom: 1rem;
+}
+.checkout-form h3 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.form-group input, .form-group select {
+  width: 100%;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+  outline: none;
+}
+.form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+@media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
 .cookie-bar {
   position: fixed;
   bottom: 0;
@@ -904,8 +973,7 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .checkbox-row input { width: auto; }
 .checkbox-row label { font-size: 0.75rem; color: var(--muted); letter-spacing: normal; text-transform: none; }
 
-/* ADMIN - Formulier onder elkaar zoals op de foto */
-.admin-wrap { padding: 3rem; max-width: 800px; margin: 0 auto; }
+.admin-wrap { padding: 3rem; max-width: 1400px; margin: 0 auto; }
 .admin-title {
   font-family: var(--font-serif);
   font-size: 2.5rem;
@@ -940,7 +1008,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   color: var(--gold);
 }
 
-/* Admin form - onder elkaar zoals op de foto */
 .admin-form {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -967,8 +1034,7 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   color: var(--muted);
   margin-bottom: 0.4rem;
 }
-.form-group input,
-.form-group select {
+.form-group input, .form-group select {
   width: 100%;
   background: var(--elevated);
   border: 1px solid var(--border);
@@ -978,14 +1044,8 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   padding: 0.8rem 1rem;
   outline: none;
 }
-.form-group input:focus,
-.form-group select:focus {
-  border-color: var(--gold);
-}
-.form-group input[type="file"] {
-  padding: 0.5rem 0;
-  background: none;
-}
+.form-group input:focus, .form-group select:focus { border-color: var(--gold); }
+.form-group input[type="file"] { padding: 0.5rem 0; background: none; }
 .btn-add-product {
   background: var(--gold);
   border: none;
@@ -999,7 +1059,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   cursor: pointer;
   transition: all 0.2s;
   width: 100%;
-  margin-top: 0.5rem;
 }
 .btn-add-product:hover { background: var(--gold-bright); }
 
@@ -1073,6 +1132,26 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 }
 .wishlist-empty-icon { font-size: 3rem; display: block; margin-bottom: 1.5rem; opacity: 0.4; }
 .wishlist-empty h3 { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--cream); margin-bottom: 0.5rem; }
+
+.order-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.order-card h4 {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
+.order-items { margin-top: 1rem; }
+.order-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
 
 .toast-container { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 99998; display: flex; flex-direction: column; gap: 0.6rem; align-items: center; pointer-events: none; }
 .toast {
@@ -1154,16 +1233,42 @@ footer li:hover { color: var(--cream); }
       <button class="btn-apply" onclick="applyCoupon()">Toepassen</button>
     </div>
     <div class="cart-totals" id="cartTotals"></div>
-    <button class="btn-checkout" onclick="checkout()">Afrekenen</button>
+    <button class="btn-checkout" onclick="showCheckout()">Afrekenen</button>
   </div>
 </div>
 
-<!-- PRODUCT DETAIL MODAL -->
+<!-- CHECKOUT MODAL -->
+<div id="checkoutModal" class="modal" onclick="closeCheckoutModalOnBackground(event)">
+  <div class="modal-content" style="max-width: 600px;">
+    <button class="modal-close" onclick="closeCheckoutModal()">&times;</button>
+    <div class="checkout-form">
+      <h3>Afrekenen</h3>
+      <div class="form-row">
+        <div class="form-group"><label>Voornaam</label><input type="text" id="checkoutFirstname" placeholder="Voornaam"></div>
+        <div class="form-group"><label>Achternaam</label><input type="text" id="checkoutLastname" placeholder="Achternaam"></div>
+      </div>
+      <div class="form-group"><label>Straat + huisnummer</label><input type="text" id="checkoutAddress" placeholder="Straat en huisnummer"></div>
+      <div class="form-row">
+        <div class="form-group"><label>Postcode</label><input type="text" id="checkoutZipcode" placeholder="1234AB"></div>
+        <div class="form-group"><label>Plaats</label><input type="text" id="checkoutCity" placeholder="Plaats"></div>
+      </div>
+      <div class="form-group"><label>Land</label><select id="checkoutCountry"><option value="Nederland">Nederland</option><option value="België">België</option><option value="Duitsland">Duitsland</option></select></div>
+      <div class="form-group"><label>Telefoonnummer</label><input type="tel" id="checkoutPhone" placeholder="06 12345678"></div>
+      <button class="btn-primary" style="width:100%; margin-top:1rem;" onclick="placeOrder()">Bestelling plaatsen</button>
+    </div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL MODAL MET MEERDERE FOTO'S -->
 <div id="productModal" class="modal" onclick="closeModalOnBackground(event)">
   <div class="modal-content">
     <button class="modal-close" onclick="closeModal()">&times;</button>
-    <div class="modal-image" id="modalImage" onclick="toggleZoom()">
-      <img id="modalImg" src="" alt="">
+    <div class="modal-gallery">
+      <div class="modal-main-image" id="modalMainImage" onclick="toggleZoom()">
+        <img id="modalMainImg" src="" alt="">
+      </div>
+      <div class="modal-thumbnails" id="modalThumbnails"></div>
+      <div class="add-image-btn" id="addImageBtn" style="display:none;" onclick="addProductImage()">+ Extra foto toevoegen</div>
     </div>
     <div class="modal-info">
       <h2 id="modalTitle"></h2>
@@ -1186,6 +1291,7 @@ footer li:hover { color: var(--cream); }
     <button class="nav-link" data-page="home">Home</button>
     <button class="nav-link" data-page="shop">Collectie</button>
     <button class="nav-link" data-page="wishlist">Verlanglijst <span id="wishlistBadge"></span></button>
+    <button class="nav-link" data-page="orders">Bestellingen</button>
     <button class="nav-link" data-page="admin" id="adminNavLink" style="display:none;">Admin</button>
   </div>
   <div class="nav-right">
@@ -1213,7 +1319,7 @@ footer li:hover { color: var(--cream); }
     <div class="hero-left">
       <div class="hero-eyebrow">Nieuwe collectie 2025</div>
       <h1>Tijdloze<br><em>elegantie</em><br>voor elke dag</h1>
-      <p class="hero-sub">Handgeselecteerde essentials voor de moderne levensstijl. Elk product gekozen met oog voor detail, duurzaamheid en schoonheid.</p>
+      <p class="hero-sub">Handgeselecteerde essentials voor de moderne levensstijl.</p>
       <div class="hero-ctas">
         <button class="btn-primary" onclick="showPage('shop')">Ontdek collectie</button>
         <button class="btn-link" onclick="showPage('register')">Word lid</button>
@@ -1233,7 +1339,7 @@ footer li:hover { color: var(--cream); }
   </div>
   <div class="editorial" style="margin: 0 5rem 6rem;">
     <div class="editorial-img"><img src="https://picsum.photos/id/63/800/600" alt="Editorial"></div>
-    <div class="editorial-content"><div class="section-eyebrow">Filosofie</div><h2>Gemaakt om te <em style="font-style:italic; color:var(--gold);">duren</em></h2><p>Wij geloven dat echte kwaliteit niet uit de mode raakt. Elk product in onze collectie is zorgvuldig geselecteerd op materiaal, vakmanschap en tijdloze esthetiek.</p><button class="btn-primary" onclick="showPage('shop')">Shop de collectie</button></div>
+    <div class="editorial-content"><div class="section-eyebrow">Filosofie</div><h2>Gemaakt om te <em style="font-style:italic; color:var(--gold);">duren</em></h2><p>Wij geloven dat echte kwaliteit niet uit de mode raakt.</p><button class="btn-primary" onclick="showPage('shop')">Shop de collectie</button></div>
   </div>
 </div>
 
@@ -1249,66 +1355,43 @@ footer li:hover { color: var(--cream); }
   <div class="section"><div class="section-head"><div><div class="section-eyebrow">Favorieten</div><h2 class="section-title">Verlanglijst</h2></div></div><div id="wishlistContent"></div></div>
 </div>
 
+<div id="ordersPage" class="page">
+  <div class="section"><div class="section-head"><div><div class="section-eyebrow">Historie</div><h2 class="section-title">Mijn bestellingen</h2></div></div><div id="ordersList"></div></div>
+</div>
+
 <div id="loginPage" class="page">
   <div class="auth-page"><div class="auth-card"><h2>Welkom terug</h2><p>Log in op uw MAISON account</p><div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord"></div><button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button><div class="auth-msg" id="loginMsg"></div><p class="auth-link"><a onclick="showPage('forgot-password')">Wachtwoord vergeten?</a></p><p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p></div></div>
 </div>
 
 <div id="forgotPasswordPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Wachtwoord vergeten</h2><p>Vul uw e-mailadres in en wij sturen een reset-link</p><div class="field"><label>E-mailadres</label><input type="email" id="forgotEmail" placeholder="naam@email.com"></div><button class="btn-primary" style="width:100%;" onclick="requestPasswordReset()">Reset aanvragen</button><div class="auth-msg" id="forgotMsg"></div><p class="auth-link"><a onclick="showPage('login')">Terug naar inloggen</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Wachtwoord vergeten</h2><p>Vul uw e-mailadres in</p><div class="field"><label>E-mailadres</label><input type="email" id="forgotEmail" placeholder="naam@email.com"></div><button class="btn-primary" style="width:100%;" onclick="requestPasswordReset()">Reset aanvragen</button><div class="auth-msg" id="forgotMsg"></div><p class="auth-link"><a onclick="showPage('login')">Terug</a></p></div></div>
 </div>
 
 <div id="resetPasswordPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Nieuw wachtwoord</h2><p>Stel een nieuw wachtwoord in voor uw account</p><div class="field"><label>Nieuw wachtwoord</label><input type="password" id="resetNewPass" placeholder="Minimaal 6 tekens"></div><div class="field"><label>Bevestig wachtwoord</label><input type="password" id="resetConfirmPass" placeholder="Bevestig"></div><button class="btn-primary" style="width:100%;" onclick="confirmPasswordReset()">Wachtwoord bijwerken</button><div class="auth-msg" id="resetMsg"></div><p class="auth-link"><a onclick="showPage('login')">Terug naar inloggen</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Nieuw wachtwoord</h2><div class="field"><label>Nieuw wachtwoord</label><input type="password" id="resetNewPass" placeholder="Minimaal 6 tekens"></div><div class="field"><label>Bevestig</label><input type="password" id="resetConfirmPass" placeholder="Bevestig"></div><button class="btn-primary" style="width:100%;" onclick="confirmPasswordReset()">Wachtwoord bijwerken</button><div class="auth-msg" id="resetMsg"></div><p class="auth-link"><a onclick="showPage('login')">Terug</a></p></div></div>
 </div>
 
 <div id="registerPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><p>Maak een gratis MAISON account aan</p><div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div><div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div><div class="checkbox-row"><input type="checkbox" id="termsBox"><label for="termsBox">Ik ga akkoord met de algemene voorwaarden</label></div><button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button><div class="auth-msg" id="regMsg"></div><p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div><div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div><div class="checkbox-row"><input type="checkbox" id="termsBox"><label>Ik ga akkoord met de voorwaarden</label></div><button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button><div class="auth-msg" id="regMsg"></div><p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p></div></div>
 </div>
 
 <div id="adminPage" class="page">
   <div class="admin-wrap">
     <h2 class="admin-title">Administratiepaneel</h2>
     <div class="stats-grid" id="adminStats"></div>
-    
-    <!-- Product toevoegen formulier - ONDER ELKAAR zoals op de foto -->
-    <div class="admin-form">
-      <h3>Product toevoegen</h3>
-      <div class="form-group">
-        <label>PRODUCTNAAM</label>
-        <input type="text" id="aTitle" placeholder="Naam">
-      </div>
-      <div class="form-group">
-        <label>CATEGORIE</label>
-        <select id="aCat">
-          <option value="Kleding">Kleding</option>
-          <option value="Accessoires">Accessoires</option>
-          <option value="Wonen">Wonen</option>
-          <option value="Drinken">Drinken</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>PRIJS (€)</label>
-        <input type="number" step="0.01" id="aPrice" placeholder="Prijs">
-      </div>
-      <div class="form-group">
-        <label>FOTO UPLOAD</label>
-        <input type="file" id="aImageFile" accept="image/*">
-      </div>
-      <div class="form-group">
-        <label>OMSCHRIJVING</label>
-        <input type="text" id="aDesc" placeholder="Korte beschrijving">
-      </div>
+    <div class="admin-form"><h3>Product toevoegen</h3>
+      <div class="form-group"><label>PRODUCTNAAM</label><input type="text" id="aTitle" placeholder="Naam"></div>
+      <div class="form-group"><label>CATEGORIE</label><select id="aCat"><option value="Kleding">Kleding</option><option value="Accessoires">Accessoires</option><option value="Wonen">Wonen</option><option value="Drinken">Drinken</option></select></div>
+      <div class="form-group"><label>PRIJS (€)</label><input type="number" step="0.01" id="aPrice" placeholder="Prijs"></div>
+      <div class="form-group"><label>FOTO UPLOAD</label><input type="file" id="aImageFile" accept="image/*"></div>
+      <div class="form-group"><label>OMSCHRIJVING</label><input type="text" id="aDesc" placeholder="Korte beschrijving"></div>
       <button class="btn-add-product" onclick="adminAddProduct()">+ PRODUCT TOEVOEGEN</button>
     </div>
-    
-    <div class="admin-form">
-      <h3>Producten beheren</h3>
-      <div style="overflow-x: auto;">
-        <table class="admin-table">
-          <thead><tr><th>Foto</th><th>Product</th><th>Categorie</th><th>Prijs</th><th>Status</th><th>Acties</th></tr></thead>
-          <tbody id="adminTableBody"></tbody>
-        </table>
-      </div>
+    <div class="admin-form"><h3>Producten beheren</h3>
+      <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>Foto</th><th>Product</th><th>Categorie</th><th>Prijs</th><th>Status</th><th>Acties</th></tr></thead><tbody id="adminTableBody"></tbody></table></div>
+    </div>
+    <div class="admin-form"><h3>Gebruikers beheren (Admin rechten geven)</h3>
+      <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>E-mail</th><th>Naam</th><th>Admin</th><th>Acties</th></tr></thead><tbody id="adminUsersTable"></tbody></table></div>
     </div>
   </div>
 </div>
@@ -1317,30 +1400,18 @@ footer li:hover { color: var(--cream); }
   <div class="section"><div class="section-head"><div><div class="section-eyebrow">Account</div><h2 class="section-title">Mijn profiel</h2></div></div><div class="auth-card" style="max-width:500px; margin:0 auto;"><p><strong>Naam:</strong> <span id="profileName"></span></p><p><strong>E-mail:</strong> <span id="profileEmail"></span></p><p><strong>Lid sinds:</strong> <span id="profileSince"></span></p><button class="btn-primary" style="margin-top:1rem;" onclick="showPage('shop')">Verder winkelen</button></div></div>
 </div>
 
-<div id="ordersPage" class="page">
-  <div class="section"><div class="section-head"><div><div class="section-eyebrow">Historie</div><h2 class="section-title">Mijn bestellingen</h2></div></div><div class="auth-card" style="max-width:500px; margin:0 auto;"><p style="color:var(--muted);">U heeft nog geen bestellingen geplaatst.</p><button class="btn-primary" style="margin-top:1rem;" onclick="showPage('shop')">Nu winkelen</button></div></div>
-</div>
-
-<footer>
-  <div class="footer-brand"><div class="logo" style="cursor:default;">MAISON<span>.</span></div><p class="footer-desc">Premium essentials voor de moderne levensstijl. Handgepickt, duurzaam, tijdloos.</p></div>
-  <div><h4>Service</h4><ul><li>Verzending & Retour</li><li>Klantenservice</li><li>Veelgestelde vragen</li><li>Bestelling volgen</li></ul></div>
-  <div><h4>Over ons</h4><ul><li>Ons verhaal</li><li>Duurzaamheid</li><li>Carrières</li><li>Pers</li></ul></div>
-  <div><h4>Volg ons</h4><ul><li>Instagram</li><li>Pinterest</li><li>Newsletter</li></ul></div>
-</footer>
-<div class="footer-bottom"><span>© 2025 MAISON — Alle rechten voorbehouden</span><span>Veilig betalen · SSL · iDEAL · Visa · Mastercard</span></div>
+<footer>...</footer>
+<div class="footer-bottom"><span>© 2025 MAISON</span><span>Veilig betalen</span></div>
 
 <script>
-// ============================================================
-// ADMIN E-MAIL: elmouchania@gmail.com krijgt automatisch admin rechten
-// ============================================================
 const ADMIN_EMAIL = "elmouchania@gmail.com";
-
 let products = JSON.parse(localStorage.getItem('ms_products')) || [];
 let cart = JSON.parse(localStorage.getItem('ms_cart')) || [];
 let wishlist = JSON.parse(localStorage.getItem('ms_wish')) || [];
 let user = JSON.parse(localStorage.getItem('ms_user')) || null;
 let coupon = 0;
 let users = JSON.parse(localStorage.getItem('ms_users')) || {};
+let orders = JSON.parse(localStorage.getItem('ms_orders')) || {};
 let resetTokens = {};
 let currentModalProduct = null;
 let modalZoomed = false;
@@ -1350,6 +1421,7 @@ function save() {
   localStorage.setItem('ms_cart', JSON.stringify(cart));
   localStorage.setItem('ms_wish', JSON.stringify(wishlist));
   localStorage.setItem('ms_users', JSON.stringify(users));
+  localStorage.setItem('ms_orders', JSON.stringify(orders));
   if (user) localStorage.setItem('ms_user', JSON.stringify(user));
   else localStorage.removeItem('ms_user');
 }
@@ -1380,7 +1452,7 @@ function updateNav() {
   const logged = !!user;
   document.getElementById('guestBtns').style.display = logged ? 'none' : 'flex';
   document.getElementById('userChip').style.display = logged ? 'flex' : 'none';
-  const isAdmin = logged && user.email === ADMIN_EMAIL;
+  const isAdmin = logged && (user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true);
   document.getElementById('adminNavLink').style.display = isAdmin ? 'block' : 'none';
   if (logged) {
     document.getElementById('userLabel').textContent = user.name || user.email.split('@')[0];
@@ -1399,41 +1471,68 @@ function openProductDetail(productId) {
   document.getElementById('modalCat').textContent = product.category;
   document.getElementById('modalPrice').textContent = '€' + product.price.toFixed(2);
   document.getElementById('modalDesc').textContent = product.desc || 'Geen beschrijving beschikbaar.';
-  document.getElementById('modalImg').src = product.imageUrl || 'https://placehold.co/600x600/111/888?text=Geen+foto';
+  const mainImg = document.getElementById('modalMainImg');
+  mainImg.src = (product.images && product.images.length > 0) ? product.images[0] : (product.imageUrl || 'https://placehold.co/600x600/111/888?text=Geen+foto');
+  const thumbContainer = document.getElementById('modalThumbnails');
+  thumbContainer.innerHTML = '';
+  const allImages = product.images && product.images.length > 0 ? product.images : (product.imageUrl ? [product.imageUrl] : []);
+  allImages.forEach((img, idx) => {
+    const thumb = document.createElement('img');
+    thumb.src = img;
+    thumb.className = 'modal-thumb' + (idx === 0 ? ' active' : '');
+    thumb.onclick = () => { mainImg.src = img; document.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('active')); thumb.classList.add('active'); };
+    thumbContainer.appendChild(thumb);
+  });
+  const addBtn = document.getElementById('addImageBtn');
+  if (user && (user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true)) {
+    addBtn.style.display = 'block';
+  } else {
+    addBtn.style.display = 'none';
+  }
   const inWish = wishlist.includes(product.id);
   document.getElementById('modalWishlistBtn').textContent = inWish ? '❤️' : '🤍';
   document.getElementById('productModal').classList.add('active');
   modalZoomed = false;
-  document.getElementById('modalImage').classList.remove('zoomed');
+  document.getElementById('modalMainImage').classList.remove('zoomed');
+}
+
+function addProductImage() {
+  if (!currentModalProduct) return;
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        if (!currentModalProduct.images) currentModalProduct.images = [];
+        if (currentModalProduct.imageUrl && !currentModalProduct.images.includes(currentModalProduct.imageUrl)) {
+          currentModalProduct.images.unshift(currentModalProduct.imageUrl);
+        }
+        currentModalProduct.images.push(ev.target.result);
+        currentModalProduct.imageUrl = currentModalProduct.images[0];
+        save();
+        openProductDetail(currentModalProduct.id);
+        renderHome(); renderShop(); renderAdmin();
+        toast('Extra foto toegevoegd');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  input.click();
 }
 
 function closeModal() {
   document.getElementById('productModal').classList.remove('active');
   currentModalProduct = null;
-  modalZoomed = false;
 }
-
-function closeModalOnBackground(e) {
-  if (e.target === document.getElementById('productModal')) {
-    closeModal();
-  }
-}
-
+function closeModalOnBackground(e) { if (e.target === document.getElementById('productModal')) closeModal(); }
 function toggleZoom() {
   modalZoomed = !modalZoomed;
-  if (modalZoomed) {
-    document.getElementById('modalImage').classList.add('zoomed');
-  } else {
-    document.getElementById('modalImage').classList.remove('zoomed');
-  }
+  document.getElementById('modalMainImage').classList.toggle('zoomed', modalZoomed);
 }
-
-function addToCartFromModal() {
-  if (currentModalProduct) {
-    addToCart(currentModalProduct.id);
-  }
-}
-
+function addToCartFromModal() { if (currentModalProduct) addToCart(currentModalProduct.id); }
 function toggleWishFromModal() {
   if (currentModalProduct) {
     toggleWish(currentModalProduct.id);
@@ -1444,524 +1543,118 @@ function toggleWishFromModal() {
 
 function makeCard(p) {
   const inWish = wishlist.includes(p.id);
-  return `
-    <div class="product-card" onclick="openProductDetail(${p.id})">
-      <div class="product-img-wrap">
-        <img src="${p.imageUrl || 'https://placehold.co/400x530/111/888?text=Geen+foto'}" alt="${p.title}" loading="lazy">
-        ${!p.published ? '<div class="badge-pill">Concept</div>' : ''}
-        <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(${p.id})">${inWish ? '❤️' : '🤍'}</button>
-        <button class="quick-add" onclick="event.stopPropagation();addToCart(${p.id})">+ In winkelwagen</button>
-      </div>
-      <div class="product-info">
-        <div class="product-cat">${p.category}</div>
-        <div class="product-name">${p.title}</div>
-        <div class="product-sub">${p.desc || ''}</div>
-        <div class="product-footer">
-          <div class="product-price">€${p.price.toFixed(2)}</div>
-        </div>
-      </div>
-    </div>`;
+  const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.imageUrl || 'https://placehold.co/400x530/111/888?text=Geen+foto');
+  return `<div class="product-card" onclick="openProductDetail(${p.id})"><div class="product-img-wrap"><img src="${imgUrl}" alt="${p.title}" loading="lazy">${!p.published ? '<div class="badge-pill">Concept</div>' : ''}<button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(${p.id})">${inWish ? '❤️' : '🤍'}</button><button class="quick-add" onclick="event.stopPropagation();addToCart(${p.id})">+ In winkelwagen</button></div><div class="product-info"><div class="product-cat">${p.category}</div><div class="product-name">${p.title}</div><div class="product-sub">${p.desc || ''}</div><div class="product-footer"><div class="product-price">€${p.price.toFixed(2)}</div></div></div></div>`;
 }
 
 function renderHome() {
   const featured = products.filter(p => p.published).slice(0, 6);
-  document.getElementById('homeFeaturedGrid').innerHTML = featured.length ? featured.map(makeCard).join('') : '<div style="text-align:center;padding:4rem;color:var(--muted);">Nog geen producten. Admin kan producten toevoegen.</div>';
-  renderHeroMosaic();
-  renderMarquee();
+  document.getElementById('homeFeaturedGrid').innerHTML = featured.length ? featured.map(makeCard).join('') : '<div style="text-align:center;padding:4rem;">Nog geen producten. Admin kan producten toevoegen.</div>';
+  renderHeroMosaic(); renderMarquee();
 }
-
 function renderHeroMosaic() {
   const items = products.filter(p => p.published).slice(0, 4);
   const mosaic = document.getElementById('heroMosaic');
-  if (!items.length) {
-    mosaic.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;color:var(--muted);">Geen producten</div>';
-    return;
-  }
-  mosaic.innerHTML = items.map((p, i) => `
-    <div class="hero-tile${i === 0 ? ' big' : ''}" onclick="openProductDetail(${p.id})">
-      <img src="${p.imageUrl || 'https://placehold.co/800/111/888?text=MAISON'}" alt="${p.title}">
-      <div class="hero-tile-label">${p.title}<div class="hero-tile-price">€${p.price.toFixed(2)}</div></div>
-    </div>
-  `).join('');
+  if (!items.length) { mosaic.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;">Geen producten</div>'; return; }
+  mosaic.innerHTML = items.map((p, i) => `<div class="hero-tile${i === 0 ? ' big' : ''}" onclick="openProductDetail(${p.id})"><img src="${(p.images && p.images[0]) || p.imageUrl || 'https://placehold.co/800/111/888'}" alt="${p.title}"><div class="hero-tile-label">${p.title}<div class="hero-tile-price">€${p.price.toFixed(2)}</div></div></div>`).join('');
 }
-
 function renderMarquee() {
-  const phrases = ['Gratis verzending', '30 dagen retour', 'Handgeselecteerd', 'Premium kwaliteit', 'Duurzaam gemaakt', 'Veilig betalen'];
-  const doubled = [...phrases, ...phrases, ...phrases];
-  document.getElementById('marqueeTrack').innerHTML = doubled.map(s => `<span>${s}</span><span class="marquee-dot">✦</span>`).join('');
+  const phrases = ['Gratis verzending', '30 dagen retour', 'Handgeselecteerd', 'Premium kwaliteit'];
+  document.getElementById('marqueeTrack').innerHTML = [...phrases, ...phrases, ...phrases].map(s => `<span>${s}</span><span class="marquee-dot">✦</span>`).join('');
 }
-
 function renderShop() {
   const cat = document.querySelector('.filter-pill.active')?.dataset.cat || 'all';
   const q = (document.getElementById('shopSearch')?.value || '').toLowerCase();
   const sort = document.getElementById('shopSort')?.value || '';
   let list = products.filter(p => p.published && (cat === 'all' || p.category === cat) && (p.title.toLowerCase().includes(q) || p.desc?.toLowerCase().includes(q)));
-  if (sort === 'asc') list.sort((a, b) => a.price - b.price);
-  if (sort === 'desc') list.sort((a, b) => b.price - a.price);
-  if (sort === 'name') list.sort((a, b) => a.title.localeCompare(b.title));
-  if (!list.length && products.filter(p => p.published).length === 0) {
-    document.getElementById('shopGrid').innerHTML = '<div style="text-align:center;padding:4rem;color:var(--muted);">De winkel is nog leeg. Admin kan producten toevoegen.</div>';
-  } else {
-    document.getElementById('shopGrid').innerHTML = list.length ? list.map(makeCard).join('') : '<p style="color:var(--muted);padding:3rem 0;">Geen producten gevonden.</p>';
-  }
+  if (sort === 'asc') list.sort((a,b)=>a.price-b.price);
+  if (sort === 'desc') list.sort((a,b)=>b.price-a.price);
+  if (sort === 'name') list.sort((a,b)=>a.title.localeCompare(b.title));
+  document.getElementById('shopGrid').innerHTML = list.length ? list.map(makeCard).join('') : '<p style="padding:3rem 0;">Geen producten gevonden.</p>';
   document.getElementById('shopCount').innerHTML = list.length ? `(${list.length})` : '';
-  const cats = [...new Set(products.filter(p => p.published).map(p => p.category))];
-  document.getElementById('catFilters').innerHTML = cats.map(c => `<button class="filter-pill${cat === c ? ' active' : ''}" data-cat="${c}" onclick="setFilter('${c}',this)">${c}</button>`).join('');
+  const cats = [...new Set(products.filter(p=>p.published).map(p=>p.category))];
+  document.getElementById('catFilters').innerHTML = cats.map(c => `<button class="filter-pill${cat===c?' active':''}" data-cat="${c}" onclick="setFilter('${c}',this)">${c}</button>`).join('');
 }
-
-window.setFilter = (cat, el) => {
-  document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
-  el.classList.add('active');
-  renderShop();
-};
-
+window.setFilter = (cat, el) => { document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderShop(); };
 function renderWishlist() {
   const items = products.filter(p => wishlist.includes(p.id));
-  const el = document.getElementById('wishlistContent');
-  if (!items.length) {
-    el.innerHTML = `<div class="wishlist-empty"><span class="wishlist-empty-icon">♡</span><h3>Uw verlanglijst is leeg</h3><p style="color:var(--muted);margin-top:0.5rem;">Klik op het hartje bij producten om ze toe te voegen</p></div>`;
-  } else {
-    el.innerHTML = `<div class="products-grid">${items.map(makeCard).join('')}</div>`;
-  }
+  document.getElementById('wishlistContent').innerHTML = items.length ? `<div class="products-grid">${items.map(makeCard).join('')}</div>` : '<div class="wishlist-empty"><span class="wishlist-empty-icon">♡</span><h3>Uw verlanglijst is leeg</h3></div>';
 }
-
 function renderCart() {
-  const listDiv = document.getElementById('cartList');
-  const totsDiv = document.getElementById('cartTotals');
-  if (!cart.length) {
-    listDiv.innerHTML = '<div class="cart-empty">Uw winkelmand is leeg</div>';
-    totsDiv.innerHTML = '';
-    return;
-  }
+  const listDiv = document.getElementById('cartList'), totsDiv = document.getElementById('cartTotals');
+  if (!cart.length) { listDiv.innerHTML = '<div class="cart-empty">Uw winkelmand is leeg</div>'; totsDiv.innerHTML = ''; return; }
   let sub = 0;
-  listDiv.innerHTML = cart.map(item => {
-    const p = products.find(pr => pr.id === item.id);
-    if (!p) return '';
-    sub += p.price * item.qty;
-    return `
-      <div class="cart-item">
-        <div class="cart-item-img"><img src="${p.imageUrl || 'https://placehold.co/70/111/888?text=Product'}" alt="${p.title}"></div>
-        <div class="cart-item-info">
-          <div class="cart-item-name">${p.title}</div>
-          <div class="cart-item-price">€${p.price.toFixed(2)}</div>
-          <div class="qty-row">
-            <button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button>
-            <span class="qty-val">${item.qty}</span>
-            <button class="qty-btn" onclick="changeQty(${p.id},1)">+</button>
-          </div>
-        </div>
-        <button class="cart-rm" onclick="removeFromCart(${p.id})">🗑</button>
-      </div>`;
-  }).join('');
-  const ship = sub >= 50 ? 0 : 4.95;
-  const disc = sub * (coupon / 100);
-  const tot = sub - disc + ship;
-  totsDiv.innerHTML = `
-    <div class="cart-line"><span>Subtotaal</span><span>€${sub.toFixed(2)}</span></div>
-    ${coupon ? `<div class="cart-line"><span>Korting (${coupon}%)</span><span>−€${disc.toFixed(2)}</span></div>` : ''}
-    <div class="cart-line"><span>Verzending</span><span>${ship ? '€' + ship.toFixed(2) : 'Gratis'}</span></div>
-    <div class="cart-line total"><span>Totaal</span><span>€${tot.toFixed(2)}</span></div>`;
+  listDiv.innerHTML = cart.map(item => { const p = products.find(pr => pr.id === item.id); if (!p) return ''; sub += p.price * item.qty; return `<div class="cart-item"><div class="cart-item-img"><img src="${(p.images && p.images[0]) || p.imageUrl || 'https://placehold.co/70/111/888'}" alt="${p.title}"></div><div class="cart-item-info"><div class="cart-item-name">${p.title}</div><div class="cart-item-price">€${p.price.toFixed(2)}</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty(${p.id},1)">+</button></div></div><button class="cart-rm" onclick="removeFromCart(${p.id})">🗑</button></div>`; }).join('');
+  const ship = sub >= 50 ? 0 : 4.95, disc = sub * (coupon / 100), tot = sub - disc + ship;
+  totsDiv.innerHTML = `<div class="cart-line"><span>Subtotaal</span><span>€${sub.toFixed(2)}</span></div>${coupon ? `<div class="cart-line"><span>Korting (${coupon}%)</span><span>−€${disc.toFixed(2)}</span></div>` : ''}<div class="cart-line"><span>Verzending</span><span>${ship ? '€'+ship.toFixed(2) : 'Gratis'}</span></div><div class="cart-line total"><span>Totaal</span><span>€${tot.toFixed(2)}</span></div>`;
 }
-
+function renderOrders() {
+  const userOrders = orders[user?.email] || [];
+  const container = document.getElementById('ordersList');
+  if (!userOrders.length) { container.innerHTML = '<div class="auth-card" style="max-width:600px; margin:0 auto;"><p>U heeft nog geen bestellingen geplaatst.</p><button class="btn-primary" onclick="showPage(\'shop\')">Nu winkelen</button></div>'; return; }
+  container.innerHTML = userOrders.map(order => `<div class="order-card"><h4>Bestelling #${order.id}</h4><p>Datum: ${new Date(order.date).toLocaleDateString('nl-NL')}</p><p>Adres: ${order.address.street}, ${order.address.zipcode} ${order.address.city}</p><p>Totaal: €${order.total.toFixed(2)}</p><div class="order-items">${order.items.map(i => `<div class="order-item"><span>${i.title} x ${i.qty}</span><span>€${(i.price * i.qty).toFixed(2)}</span></div>`).join('')}</div></div>`).join('');
+}
 function renderAdmin() {
-  if (!user || user.email !== ADMIN_EMAIL) return;
-  const pub = products.filter(p => p.published).length;
-  const dft = products.filter(p => !p.published).length;
-  const userCount = Object.keys(users).length;
-  document.getElementById('adminStats').innerHTML = `
-    <div class="stat-card"><div class="label">Totaal producten</div><div class="value">${products.length}</div></div>
-    <div class="stat-card"><div class="label">Gepubliceerd</div><div class="value">${pub}</div></div>
-    <div class="stat-card"><div class="label">Concept</div><div class="value">${dft}</div></div>
-    <div class="stat-card"><div class="label">Gebruikers</div><div class="value">${userCount}</div></div>`;
-  document.getElementById('adminTableBody').innerHTML = products.map(p => `
-    <tr>
-      <td><img class="admin-thumb" src="${p.imageUrl || 'https://placehold.co/48/111/888?text=No+Img'}" alt="" onclick="uploadNewImage(${p.id})"></td>
-      <td><strong>${escapeHtml(p.title)}</strong><br><span style="font-size:0.7rem;color:#888;">${escapeHtml(p.desc || '')}</span></td>
-      <td>${p.category}</td>
-      <td style="color:var(--gold);">€${p.price.toFixed(2)}</td>
-      <td><span class="${p.published ? 'status-live' : 'status-draft'}">${p.published ? 'Live' : 'Concept'}</span></td>
-      <td>
-        <button class="tbl-btn" onclick="togglePublish(${p.id})">${p.published ? 'Verberg' : 'Publiceer'}</button>
-        <button class="tbl-btn danger" onclick="deleteProduct(${p.id})">Verwijder</button>
-      </td>
-    </tr>
-  `).join('');
-  if (products.length === 0) {
-    document.getElementById('adminTableBody').innerHTML = '<tr><td colspan="6" style="text-align:center;padding:2rem;">Geen producten. Voeg uw eerste product toe.</td></tr>';
-  }
+  if (!user || !(user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true)) return;
+  const pub = products.filter(p=>p.published).length, dft = products.filter(p=>!p.published).length;
+  document.getElementById('adminStats').innerHTML = `<div class="stat-card"><div class="label">Producten</div><div class="value">${products.length}</div></div><div class="stat-card"><div class="label">Gepubliceerd</div><div class="value">${pub}</div></div><div class="stat-card"><div class="label">Concept</div><div class="value">${dft}</div></div><div class="stat-card"><div class="label">Gebruikers</div><div class="value">${Object.keys(users).length}</div></div>`;
+  document.getElementById('adminTableBody').innerHTML = products.map(p => `<tr><td><img class="admin-thumb" src="${(p.images && p.images[0]) || p.imageUrl || 'https://placehold.co/48/111/888'}" onclick="uploadNewImage(${p.id})"></td><td><strong>${escapeHtml(p.title)}</strong><br><span style="font-size:0.7rem;">${escapeHtml(p.desc||'')}</span></td><td>${p.category}</td><td>€${p.price.toFixed(2)}</td><td><span class="${p.published?'status-live':'status-draft'}">${p.published?'Live':'Concept'}</span></td><td><button class="tbl-btn" onclick="togglePublish(${p.id})">${p.published?'Verberg':'Publiceer'}</button><button class="tbl-btn danger" onclick="deleteProduct(${p.id})">Verwijder</button></td></tr>`).join('');
+  document.getElementById('adminUsersTable').innerHTML = Object.entries(users).map(([email, u]) => `<tr><td>${escapeHtml(email)}</td><td>${escapeHtml(u.name)}</td><td>${u.isAdmin ? '✅ Ja' : '❌ Nee'}</td><td>${email !== user.email && email !== ADMIN_EMAIL ? `<button class="tbl-btn" onclick="toggleAdmin('${email}')">${u.isAdmin ? 'Admin ontnemen' : 'Admin maken'}</button><button class="tbl-btn danger" onclick="deleteUser('${email}')">Verwijder</button>` : email === ADMIN_EMAIL ? 'Hoofdadmin' : 'Jijzelf'}</td></tr>`).join('');
 }
-
-function uploadNewImage(productId) {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const p = products.find(x => x.id === productId);
-        if (p) {
-          p.imageUrl = ev.target.result;
-          save();
-          renderAdmin();
-          renderHome();
-          renderShop();
-          toast(`Foto bijgewerkt voor ${p.title}`);
-        }
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-  input.click();
-}
-
+function toggleAdmin(email) { if (users[email]) { users[email].isAdmin = !users[email].isAdmin; save(); renderAdmin(); toast(`${email} is nu ${users[email].isAdmin ? 'admin' : 'gewone gebruiker'}`); } }
+function deleteUser(email) { if (confirm(`Verwijder ${email}?`)) { delete users[email]; save(); renderAdmin(); toast('Gebruiker verwijderd'); } }
+function uploadNewImage(productId) { const input = document.createElement('input'); input.type='file'; input.accept='image/*'; input.onchange=e=>{const file=e.target.files[0]; if(file){const reader=new FileReader(); reader.onload=ev=>{const p=products.find(x=>x.id===productId); if(p){p.imageUrl=ev.target.result; if(!p.images)p.images=[]; p.images.unshift(ev.target.result); save(); renderAdmin(); renderHome(); renderShop(); toast(`Foto bijgewerkt`);}}; reader.readAsDataURL(file);}}; input.click(); }
 function adminAddProduct() {
-  const title = document.getElementById('aTitle').value.trim();
-  const cat = document.getElementById('aCat').value;
-  const price = parseFloat(document.getElementById('aPrice').value);
-  const desc = document.getElementById('aDesc').value.trim();
-  const fileInput = document.getElementById('aImageFile');
-  const file = fileInput.files[0];
-  
-  if (!title || isNaN(price) || price <= 0) {
-    toast('Vul een geldige naam en prijs in');
-    return;
-  }
-  
-  const newProduct = {
-    id: Date.now(),
-    title: title,
-    category: cat,
-    price: price,
-    desc: desc || 'Nieuw product',
-    published: false,
-    imageUrl: ''
-  };
-  
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = (ev) => {
-      newProduct.imageUrl = ev.target.result;
-      products.push(newProduct);
-      save();
-      renderAdmin();
-      renderHome();
-      renderShop();
-      toast(`"${title}" toegevoegd als concept`);
-      clearAdminForm();
-    };
-    reader.readAsDataURL(file);
-  } else {
-    products.push(newProduct);
-    save();
-    renderAdmin();
-    renderHome();
-    renderShop();
-    toast(`"${title}" toegevoegd (zonder foto)`);
-    clearAdminForm();
-  }
+  const title = document.getElementById('aTitle').value.trim(), cat = document.getElementById('aCat').value, price = parseFloat(document.getElementById('aPrice').value), desc = document.getElementById('aDesc').value.trim(), file = document.getElementById('aImageFile').files[0];
+  if (!title || isNaN(price) || price <= 0) { toast('Vul geldige naam en prijs in'); return; }
+  const newProduct = { id: Date.now(), title, category: cat, price, desc: desc || 'Nieuw product', published: false, images: [] };
+  if (file) { const reader = new FileReader(); reader.onload = ev => { newProduct.images = [ev.target.result]; newProduct.imageUrl = ev.target.result; products.push(newProduct); save(); renderAdmin(); renderHome(); renderShop(); toast(`"${title}" toegevoegd`); clearAdminForm(); }; reader.readAsDataURL(file); } 
+  else { products.push(newProduct); save(); renderAdmin(); renderHome(); renderShop(); toast(`"${title}" toegevoegd`); clearAdminForm(); }
 }
-
-function clearAdminForm() {
-  document.getElementById('aTitle').value = '';
-  document.getElementById('aPrice').value = '';
-  document.getElementById('aImageFile').value = '';
-  document.getElementById('aDesc').value = '';
+function clearAdminForm() { document.getElementById('aTitle').value = ''; document.getElementById('aPrice').value = ''; document.getElementById('aImageFile').value = ''; document.getElementById('aDesc').value = ''; }
+function addToCart(id) { if (!user) { toast('Log in om te winkelen'); showPage('login'); return; } const ex = cart.find(i => i.id === id); if (ex) ex.qty++; else cart.push({ id, qty: 1 }); save(); updateNav(); renderCart(); toast('Toegevoegd aan winkelmand'); }
+function changeQty(id, delta) { const idx = cart.findIndex(x => x.id === id); if (idx === -1) return; cart[idx].qty += delta; if (cart[idx].qty <= 0) cart.splice(idx, 1); save(); updateNav(); renderCart(); }
+function removeFromCart(id) { cart = cart.filter(i => i.id !== id); save(); updateNav(); renderCart(); }
+function toggleWish(id) { if (!user) { toast('Log in'); showPage('login'); return; } const idx = wishlist.indexOf(id); if (idx === -1) { wishlist.push(id); toast('Toegevoegd aan verlanglijst'); } else { wishlist.splice(idx, 1); toast('Verwijderd'); } save(); updateNav(); if(document.getElementById('shopPage').classList.contains('active')) renderShop(); if(document.getElementById('wishlistPage').classList.contains('active')) renderWishlist(); renderHome(); }
+function applyCoupon() { const code = document.getElementById('couponInput').value.trim().toUpperCase(); if (code === 'WELKOM10') { coupon = 10; toast('10% korting!'); } else if (code === 'MAISON20') { coupon = 20; toast('20% korting!'); } else { toast('Ongeldige code'); return; } renderCart(); }
+function showCheckout() { if (!user) { toast('Log in om af te rekenen'); showPage('login'); return; } if (!cart.length) { toast('Winkelmand is leeg'); return; } document.getElementById('checkoutModal').classList.add('active'); }
+function closeCheckoutModal() { document.getElementById('checkoutModal').classList.remove('active'); }
+function closeCheckoutModalOnBackground(e) { if (e.target === document.getElementById('checkoutModal')) closeCheckoutModal(); }
+function placeOrder() {
+  const firstname = document.getElementById('checkoutFirstname').value.trim(), lastname = document.getElementById('checkoutLastname').value.trim(), address = document.getElementById('checkoutAddress').value.trim(), zipcode = document.getElementById('checkoutZipcode').value.trim(), city = document.getElementById('checkoutCity').value.trim(), country = document.getElementById('checkoutCountry').value, phone = document.getElementById('checkoutPhone').value.trim();
+  if (!firstname || !lastname || !address || !zipcode || !city || !phone) { toast('Vul alle adresgegevens in'); return; }
+  let sub = cart.reduce((s,item) => { const p = products.find(pr => pr.id === item.id); return s + (p ? p.price * item.qty : 0); }, 0);
+  const ship = sub >= 50 ? 0 : 4.95, disc = sub * (coupon / 100), total = sub - disc + ship;
+  const orderItems = cart.map(item => { const p = products.find(pr => pr.id === item.id); return { id: item.id, title: p?.title, price: p?.price, qty: item.qty, image: (p?.images && p?.images[0]) || p?.imageUrl }; });
+  const newOrder = { id: Date.now(), date: new Date().toISOString(), items: orderItems, subtotal: sub, shipping: ship, discount: disc, total: total, address: { firstname, lastname, street: address, zipcode, city, country, phone } };
+  if (!orders[user.email]) orders[user.email] = [];
+  orders[user.email].unshift(newOrder);
+  cart = []; coupon = 0;
+  save(); updateNav(); renderCart(); closeCheckoutModal(); toast('Bestelling geplaatst! Bedankt voor uw aankoop');
+  showPage('orders'); renderOrders();
 }
-
-function addToCart(id) {
-  if (!user) { toast('Log in om te winkelen'); showPage('login'); return; }
-  const ex = cart.find(i => i.id === id);
-  if (ex) ex.qty++;
-  else cart.push({ id, qty: 1 });
-  save();
-  updateNav();
-  renderCart();
-  toast('Toegevoegd aan winkelmand');
-}
-
-function changeQty(id, delta) {
-  const idx = cart.findIndex(x => x.id === id);
-  if (idx === -1) return;
-  cart[idx].qty += delta;
-  if (cart[idx].qty <= 0) cart.splice(idx, 1);
-  save();
-  updateNav();
-  renderCart();
-}
-
-function removeFromCart(id) {
-  cart = cart.filter(i => i.id !== id);
-  save();
-  updateNav();
-  renderCart();
-}
-
-function toggleWish(id) {
-  if (!user) { toast('Log in om favorieten op te slaan'); showPage('login'); return; }
-  const idx = wishlist.indexOf(id);
-  if (idx === -1) {
-    wishlist.push(id);
-    toast('Toegevoegd aan verlanglijst');
-  } else {
-    wishlist.splice(idx, 1);
-    toast('Verwijderd van verlanglijst');
-  }
-  save();
-  updateNav();
-  if (document.getElementById('shopPage').classList.contains('active')) renderShop();
-  if (document.getElementById('wishlistPage').classList.contains('active')) renderWishlist();
-  renderHome();
-}
-
-function applyCoupon() {
-  const code = document.getElementById('couponInput').value.trim().toUpperCase();
-  if (code === 'WELKOM10') { coupon = 10; toast('10% korting toegepast!'); }
-  else if (code === 'MAISON20') { coupon = 20; toast('20% korting toegepast!'); }
-  else { toast('Ongeldige kortingscode'); return; }
-  renderCart();
-}
-
-function checkout() {
-  if (!user) { toast('Log in om af te rekenen'); return; }
-  if (!cart.length) { toast('Uw winkelmand is leeg'); return; }
-  toast('Bestelling geplaatst! Bedankt voor uw aankoop');
-  cart = [];
-  coupon = 0;
-  save();
-  updateNav();
-  renderCart();
-  closeCart();
-}
-
-function openCart() { renderCart(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartDrawer').classList.add('open'); }
-function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartDrawer').classList.remove('open'); }
-function togglePublish(id) {
-  const p = products.find(x => x.id === id);
-  if (p) {
-    p.published = !p.published;
-    save();
-    renderAdmin();
-    renderHome();
-    renderShop();
-    toast(`${p.title} ${p.published ? 'gepubliceerd' : 'verborgen'}`);
-  }
-}
-function deleteProduct(id) {
-  if (confirm('Weet u zeker dat u dit product wilt verwijderen?')) {
-    products = products.filter(p => p.id !== id);
-    cart = cart.filter(i => i.id !== id);
-    wishlist = wishlist.filter(w => w !== id);
-    save();
-    renderAdmin();
-    renderHome();
-    renderShop();
-    toast('Product verwijderd');
-  }
-}
-
-function requestPasswordReset() {
-  const email = document.getElementById('forgotEmail').value.trim().toLowerCase();
-  const msg = document.getElementById('forgotMsg');
-  if (!email) {
-    msg.textContent = 'Vul uw e-mailadres in';
-    msg.className = 'auth-msg error';
-    return;
-  }
-  if (!users[email]) {
-    msg.textContent = 'Geen account gevonden met dit e-mailadres';
-    msg.className = 'auth-msg error';
-    return;
-  }
-  const token = Math.random().toString(36).substring(2, 20) + Date.now().toString(36);
-  resetTokens[token] = email;
-  localStorage.setItem('ms_reset_token_' + token, email);
-  msg.innerHTML = `Een reset-link is verzonden naar ${email}.<br><small>(Demo: <a href="#" onclick="simulateReset('${token}');return false;" style="color:var(--gold);">Klik hier om reset te simuleren</a>)</small>`;
-  msg.className = 'auth-msg success';
-}
-
-function simulateReset(token) {
-  const email = resetTokens[token] || localStorage.getItem('ms_reset_token_' + token);
-  if (email) {
-    showPage('reset-password');
-    document.getElementById('resetMsg').innerHTML = `<span style="color:var(--sage);">Reset voor: ${email}</span>`;
-    document.getElementById('resetMsg').className = 'auth-msg success';
-    window.resetEmail = email;
-    window.resetToken = token;
-  } else {
-    toast('Ongeldige reset link');
-  }
-}
-
-function confirmPasswordReset() {
-  const newPass = document.getElementById('resetNewPass').value;
-  const confirmPass = document.getElementById('resetConfirmPass').value;
-  const email = window.resetEmail;
-  const token = window.resetToken;
-  if (!email || !token) {
-    document.getElementById('resetMsg').textContent = 'Geen actieve reset aanvraag.';
-    document.getElementById('resetMsg').className = 'auth-msg error';
-    return;
-  }
-  if (!newPass || newPass.length < 6) {
-    document.getElementById('resetMsg').textContent = 'Wachtwoord moet minimaal 6 tekens bevatten';
-    document.getElementById('resetMsg').className = 'auth-msg error';
-    return;
-  }
-  if (newPass !== confirmPass) {
-    document.getElementById('resetMsg').textContent = 'Wachtwoorden komen niet overeen';
-    document.getElementById('resetMsg').className = 'auth-msg error';
-    return;
-  }
-  if (users[email]) {
-    users[email].password = newPass;
-    save();
-    toast('Wachtwoord succesvol gewijzigd!');
-    delete resetTokens[token];
-    localStorage.removeItem('ms_reset_token_' + token);
-    delete window.resetEmail;
-    delete window.resetToken;
-    showPage('login');
-  }
-}
-
-function doLogin() {
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('loginPass').value;
-  const msg = document.getElementById('loginMsg');
-  if (!users[email]) {
-    msg.textContent = 'Ongeldig e-mailadres of wachtwoord';
-    msg.className = 'auth-msg error';
-    return;
-  }
-  if (users[email].password !== pass) {
-    msg.textContent = 'Ongeldig e-mailadres of wachtwoord';
-    msg.className = 'auth-msg error';
-    return;
-  }
-  user = { email: email, name: users[email].name };
-  save();
-  updateNav();
-  toast(`Welkom, ${users[email].name}`);
-  if (email === ADMIN_EMAIL) {
-    showPage('admin');
-    renderAdmin();
-  } else {
-    showPage('shop');
-  }
-}
-
-function doRegister() {
-  const name = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim().toLowerCase();
-  const pass = document.getElementById('regPass').value;
-  const terms = document.getElementById('termsBox').checked;
-  const msg = document.getElementById('regMsg');
-  if (!name || !email || pass.length < 6 || !terms) {
-    msg.textContent = 'Vul alle velden correct in (wachtwoord minimaal 6 tekens)';
-    msg.className = 'auth-msg error';
-    return;
-  }
-  if (users[email]) {
-    msg.textContent = 'Dit e-mailadres is al geregistreerd';
-    msg.className = 'auth-msg error';
-    return;
-  }
-  users[email] = { name: name, password: pass, registeredAt: new Date().toISOString() };
-  save();
-  if (email === ADMIN_EMAIL) {
-    toast('Admin account succesvol aangemaakt! U heeft nu administrator rechten.');
-  } else {
-    toast('Account succesvol aangemaakt! U kunt nu inloggen.');
-  }
-  showPage('login');
-}
-
-function logout() {
-  user = null;
-  cart = [];
-  wishlist = [];
-  coupon = 0;
-  save();
-  updateNav();
-  closeCart();
-  showPage('home');
-  toast('U bent uitgelogd');
-}
-
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(name + 'Page').classList.add('active');
-  document.querySelectorAll('.nav-link').forEach(b => b.classList.toggle('active', b.dataset.page === name));
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-  if (name === 'home') renderHome();
-  if (name === 'shop') renderShop();
-  if (name === 'wishlist') renderWishlist();
-  if (name === 'admin') {
-    if (user?.email === ADMIN_EMAIL) renderAdmin();
-    else showPage('home');
-  }
-  if (name === 'profile' && user) {
-    document.getElementById('profileName').textContent = user.name || '-';
-    document.getElementById('profileEmail').textContent = user.email;
-    document.getElementById('profileSince').textContent = users[user.email]?.registeredAt ? new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL') : 'Nieuw';
-  }
-  closeUserMenu();
-  closeModal();
-}
-
-function escapeHtml(str) {
-  if (!str) return '';
-  return str.replace(/[&<>]/g, function(m) {
-    if (m === '&') return '&amp;';
-    if (m === '<') return '&lt;';
-    if (m === '>') return '&gt;';
-    return m;
-  });
-}
-
-document.querySelectorAll('.nav-link').forEach(btn => btn.addEventListener('click', () => showPage(btn.dataset.page)));
-document.getElementById('shopSearch')?.addEventListener('input', renderShop);
-document.getElementById('shopSort')?.addEventListener('change', renderShop);
-window.addEventListener('scroll', () => document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60));
-
-if (!localStorage.getItem('ms_cookie')) document.getElementById('cookieBar').style.display = 'flex';
-document.getElementById('acceptCookie')?.addEventListener('click', () => { localStorage.setItem('ms_cookie', '1'); document.getElementById('cookieBar').style.display = 'none'; });
-document.getElementById('declineCookie')?.addEventListener('click', () => document.getElementById('cookieBar').style.display = 'none');
-
-window.addToCart = addToCart;
-window.toggleWish = toggleWish;
-window.changeQty = changeQty;
-window.removeFromCart = removeFromCart;
-window.applyCoupon = applyCoupon;
-window.checkout = checkout;
-window.openCart = openCart;
-window.closeCart = closeCart;
-window.togglePublish = togglePublish;
-window.deleteProduct = deleteProduct;
-window.adminAddProduct = adminAddProduct;
-window.doLogin = doLogin;
-window.doRegister = doRegister;
-window.logout = logout;
-window.showPage = showPage;
-window.setFilter = window.setFilter;
-window.toggleUserMenu = toggleUserMenu;
-window.closeUserMenu = closeUserMenu;
-window.uploadNewImage = uploadNewImage;
-window.requestPasswordReset = requestPasswordReset;
-window.confirmPasswordReset = confirmPasswordReset;
-window.simulateReset = simulateReset;
-window.openProductDetail = openProductDetail;
-window.closeModal = closeModal;
-window.closeModalOnBackground = closeModalOnBackground;
-window.toggleZoom = toggleZoom;
-window.addToCartFromModal = addToCartFromModal;
-window.toggleWishFromModal = toggleWishFromModal;
-
-updateNav();
-renderHome();
-renderShop();
+function togglePublish(id) { const p = products.find(x => x.id === id); if (p) { p.published = !p.published; save(); renderAdmin(); renderHome(); renderShop(); toast(`${p.title} ${p.published ? 'gepubliceerd' : 'verborgen'}`); } }
+function deleteProduct(id) { if (confirm('Verwijderen?')) { products = products.filter(p => p.id !== id); cart = cart.filter(i => i.id !== id); wishlist = wishlist.filter(w => w !== id); save(); renderAdmin(); renderHome(); renderShop(); toast('Product verwijderd'); } }
+function requestPasswordReset() { const email = document.getElementById('forgotEmail').value.trim().toLowerCase(), msg = document.getElementById('forgotMsg'); if (!email) { msg.textContent = 'Vul e-mailadres in'; msg.className='auth-msg error'; return; } if (!users[email]) { msg.textContent = 'Geen account gevonden'; msg.className='auth-msg error'; return; } const token = Math.random().toString(36).substring(2,20)+Date.now().toString(36); resetTokens[token]=email; localStorage.setItem('ms_reset_token_'+token, email); msg.innerHTML = `Reset-link verzonden. <a href="#" onclick="simulateReset('${token}');return false;" style="color:var(--gold);">Klik hier om te simuleren</a>`; msg.className='auth-msg success'; }
+function simulateReset(token) { const email = resetTokens[token] || localStorage.getItem('ms_reset_token_'+token); if(email) { showPage('reset-password'); document.getElementById('resetMsg').innerHTML = `<span style="color:var(--sage);">Reset voor: ${email}</span>`; document.getElementById('resetMsg').className='auth-msg success'; window.resetEmail=email; window.resetToken=token; } else { toast('Ongeldige link'); } }
+function confirmPasswordReset() { const newPass = document.getElementById('resetNewPass').value, confirmPass = document.getElementById('resetConfirmPass').value, email = window.resetEmail, token = window.resetToken; if(!email||!token) { document.getElementById('resetMsg').textContent='Geen actieve reset'; document.getElementById('resetMsg').className='auth-msg error'; return; } if(!newPass||newPass.length<6) { document.getElementById('resetMsg').textContent='Minimaal 6 tekens'; document.getElementById('resetMsg').className='auth-msg error'; return; } if(newPass!==confirmPass) { document.getElementById('resetMsg').textContent='Komen niet overeen'; document.getElementById('resetMsg').className='auth-msg error'; return; } if(users[email]) { users[email].password=newPass; save(); toast('Wachtwoord gewijzigd!'); delete resetTokens[token]; localStorage.removeItem('ms_reset_token_'+token); delete window.resetEmail; delete window.resetToken; showPage('login'); } }
+function doLogin() { const email = document.getElementById('loginEmail').value.trim().toLowerCase(), pass = document.getElementById('loginPass').value, msg = document.getElementById('loginMsg'); if(!users[email] || users[email].password !== pass) { msg.textContent='Ongeldig'; msg.className='auth-msg error'; return; } user = { email: email, name: users[email].name }; save(); updateNav(); toast(`Welkom, ${users[email].name}`); if(email === ADMIN_EMAIL || users[email].isAdmin === true) showPage('admin'); else showPage('shop'); renderAdmin(); }
+function doRegister() { const name = document.getElementById('regName').value.trim(), email = document.getElementById('regEmail').value.trim().toLowerCase(), pass = document.getElementById('regPass').value, terms = document.getElementById('termsBox').checked, msg = document.getElementById('regMsg'); if(!name||!email||pass.length<6||!terms) { msg.textContent='Vul alle velden in'; msg.className='auth-msg error'; return; } if(users[email]) { msg.textContent='Bestaat al'; msg.className='auth-msg error'; return; } users[email] = { name, password: pass, isAdmin: email === ADMIN_EMAIL, registeredAt: new Date().toISOString() }; save(); toast(email === ADMIN_EMAIL ? 'Admin account aangemaakt!' : 'Account aangemaakt!'); showPage('login'); }
+function logout() { user = null; cart = []; wishlist = []; coupon = 0; save(); updateNav(); closeCart(); showPage('home'); toast('Uitgelogd'); }
+function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(name+'Page').classList.add('active'); document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.page===name)); window.scrollTo({top:0}); if(name==='home') renderHome(); if(name==='shop') renderShop(); if(name==='wishlist') renderWishlist(); if(name==='orders') renderOrders(); if(name==='admin' && user && (user.email===ADMIN_EMAIL || users[user.email]?.isAdmin===true)) renderAdmin(); if(name==='profile' && user) { document.getElementById('profileName').textContent=user.name||'-'; document.getElementById('profileEmail').textContent=user.email; document.getElementById('profileSince').textContent=users[user.email]?.registeredAt?new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL'):'Nieuw'; } closeUserMenu(); closeModal(); closeCheckoutModal(); }
+function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+document.querySelectorAll('.nav-link').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
+document.getElementById('shopSearch')?.addEventListener('input',renderShop);
+document.getElementById('shopSort')?.addEventListener('change',renderShop);
+window.addEventListener('scroll',()=>document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60));
+if(!localStorage.getItem('ms_cookie')) document.getElementById('cookieBar').style.display='flex';
+document.getElementById('acceptCookie')?.addEventListener('click',()=>{localStorage.setItem('ms_cookie','1'); document.getElementById('cookieBar').style.display='none';});
+document.getElementById('declineCookie')?.addEventListener('click',()=>document.getElementById('cookieBar').style.display='none');
+window.addToCart=addToCart; window.toggleWish=toggleWish; window.changeQty=changeQty; window.removeFromCart=removeFromCart; window.applyCoupon=applyCoupon; window.showCheckout=showCheckout; window.closeCheckoutModal=closeCheckoutModal; window.closeCheckoutModalOnBackground=closeCheckoutModalOnBackground; window.placeOrder=placeOrder;
+window.togglePublish=togglePublish; window.deleteProduct=deleteProduct; window.adminAddProduct=adminAddProduct; window.doLogin=doLogin; window.doRegister=doRegister; window.logout=logout; window.showPage=showPage; window.setFilter=window.setFilter;
+window.toggleUserMenu=toggleUserMenu; window.closeUserMenu=closeUserMenu; window.uploadNewImage=uploadNewImage; window.requestPasswordReset=requestPasswordReset; window.confirmPasswordReset=confirmPasswordReset; window.simulateReset=simulateReset;
+window.openProductDetail=openProductDetail; window.closeModal=closeModal; window.closeModalOnBackground=closeModalOnBackground; window.toggleZoom=toggleZoom; window.addToCartFromModal=addToCartFromModal; window.toggleWishFromModal=toggleWishFromModal; window.addProductImage=addProductImage; window.toggleAdmin=toggleAdmin; window.deleteUser=deleteUser;
+updateNav(); renderHome(); renderShop();
 </script>
 </body>
 </html>
