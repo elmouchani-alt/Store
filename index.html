@@ -4,977 +4,203 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MAISON — Premium Store</title>
+<!-- Firebase SDK -->
+<script type="importmap">
+  {
+    "imports": {
+      "firebase/app": "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js",
+      "firebase/auth": "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js",
+      "firebase/firestore": "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js"
+    }
+  }
+</script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-:root {
-  --void: #050505;
-  --deep: #0c0c0c;
-  --surface: #111111;
-  --elevated: #181818;
-  --border: rgba(255,255,255,0.07);
-  --border-hover: rgba(255,255,255,0.15);
-  --gold: #D4AF37;
-  --gold-bright: #E8C97A;
-  --cream: #F5EFE6;
-  --text: #EBE5DA;
-  --muted: rgba(235,229,218,0.5);
-  --rust: #9B4B3C;
-  --sage: #4A6B5D;
-  --font-serif: 'Cormorant Garamond', Georgia, serif;
-  --font-sans: 'Outfit', sans-serif;
-}
-
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --void: #050505; --deep: #0c0c0c; --surface: #111111; --elevated: #181818; --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.15); --gold: #D4AF37; --gold-bright: #E8C97A; --cream: #F5EFE6; --text: #EBE5DA; --muted: rgba(235,229,218,0.5); --rust: #9B4B3C; --sage: #4A6B5D; --font-serif: 'Cormorant Garamond', Georgia, serif; --font-sans: 'Outfit', sans-serif; }
 html { scroll-behavior: smooth; }
 body { font-family: var(--font-sans); background: var(--void); color: var(--text); overflow-x: hidden; }
-
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--void); }
-::-webkit-scrollbar-thumb { background: var(--gold-dim); }
-
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.4;
-}
-
-.topbar {
-  background: var(--gold);
-  color: var(--void);
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 3px;
-  text-align: center;
-  padding: 10px;
-  text-transform: uppercase;
-}
-
-nav {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 3rem;
-  background: rgba(5,5,5,0.85);
-  backdrop-filter: blur(24px) saturate(180%);
-  border-bottom: 1px solid var(--border);
-  transition: all 0.3s;
-}
+::-webkit-scrollbar-thumb { background: var(--gold); }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.4; }
+.topbar { background: var(--gold); color: var(--void); font-size: 0.65rem; font-weight: 600; letter-spacing: 3px; text-align: center; padding: 10px; text-transform: uppercase; }
+nav { position: sticky; top: 0; z-index: 1000; height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 3rem; background: rgba(5,5,5,0.85); backdrop-filter: blur(24px) saturate(180%); border-bottom: 1px solid var(--border); transition: all 0.3s; }
 nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
-.logo {
-  font-family: var(--font-serif);
-  font-size: 1.9rem;
-  font-weight: 300;
-  letter-spacing: 8px;
-  text-transform: uppercase;
-  color: var(--cream);
-  cursor: pointer;
-}
+.logo { font-family: var(--font-serif); font-size: 1.9rem; font-weight: 300; letter-spacing: 8px; text-transform: uppercase; color: var(--cream); cursor: pointer; }
 .logo span { color: var(--gold); }
-.nav-links { display: flex; gap: 0.25rem; }
-.nav-link {
-  background: none;
-  border: none;
-  font-family: var(--font-sans);
-  font-size: 0.7rem;
-  font-weight: 400;
-  letter-spacing: 2.5px;
-  text-transform: uppercase;
-  color: var(--muted);
-  padding: 0.5rem 1.2rem;
-  cursor: pointer;
-  transition: color 0.2s;
-  position: relative;
-}
+.nav-links { display: flex; gap: 0.25rem; flex-wrap: wrap; }
+.nav-link { background: none; border: none; font-family: var(--font-sans); font-size: 0.7rem; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); padding: 0.5rem 1.2rem; cursor: pointer; transition: color 0.2s; position: relative; }
 .nav-link::after { content: ''; position: absolute; bottom: 2px; left: 50%; right: 50%; height: 1px; background: var(--gold); transition: 0.3s; }
 .nav-link:hover, .nav-link.active { color: var(--cream); }
 .nav-link:hover::after, .nav-link.active::after { left: 20%; right: 20%; }
 .nav-right { display: flex; align-items: center; gap: 1.5rem; position: relative; }
-.cart-btn {
-  background: none;
-  border: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  position: relative;
-  color: var(--text);
-  transition: color 0.2s;
-}
+.cart-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; position: relative; color: var(--text); transition: color 0.2s; }
 .cart-btn:hover { color: var(--gold); }
-.cart-count {
-  position: absolute;
-  top: -8px;
-  right: -10px;
-  background: var(--gold);
-  color: var(--void);
-  font-size: 0.6rem;
-  font-weight: 700;
-  border-radius: 50%;
-  width: 16px;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.btn-nav {
-  font-family: var(--font-sans);
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 0.5rem 1.4rem;
-  border-radius: 40px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+.cart-count { position: absolute; top: -8px; right: -10px; background: var(--gold); color: var(--void); font-size: 0.6rem; font-weight: 700; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
+.btn-nav { font-family: var(--font-sans); font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 0.5rem 1.4rem; border-radius: 40px; cursor: pointer; transition: all 0.2s; }
 .btn-ghost { background: none; border: 1px solid var(--border-hover); color: var(--muted); }
 .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
 .btn-gold { background: var(--gold); border: 1px solid var(--gold); color: var(--void); font-weight: 700; }
 .btn-gold:hover { background: var(--gold-bright); }
-.user-chip {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  padding: 0.3rem 1rem 0.3rem 0.4rem;
-  border-radius: 40px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
+.btn-google { background: #4285F4; border: none; color: white; display: flex; align-items: center; justify-content: center; gap: 10px; }
+.btn-google:hover { background: #357ae8; }
+.user-chip { display: flex; align-items: center; gap: 10px; background: var(--elevated); border: 1px solid var(--border); padding: 0.3rem 1rem 0.3rem 0.4rem; border-radius: 40px; cursor: pointer; transition: background 0.2s; }
 .user-chip:hover { background: #222; }
-.avatar {
-  width: 28px;
-  height: 28px;
-  background: var(--gold);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font-serif);
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--void);
-}
-.user-menu-dropdown {
-  position: absolute;
-  top: 55px;
-  right: 0;
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 0.5rem 0;
-  min-width: 180px;
-  z-index: 1100;
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(-10px);
-  transition: all 0.2s;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-}
-.user-menu-dropdown.show {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-.user-menu-dropdown button {
-  display: block;
-  width: 100%;
-  text-align: left;
-  padding: 0.75rem 1.2rem;
-  font-size: 0.75rem;
-  color: var(--muted);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: all 0.2s;
-  font-family: var(--font-sans);
-}
-.user-menu-dropdown button:hover {
-  background: rgba(212,175,55,0.1);
-  color: var(--gold);
-}
-.user-menu-dropdown hr {
-  margin: 0.3rem 0;
-  border-color: var(--border);
-}
-
+.avatar { width: 28px; height: 28px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 0.9rem; font-weight: 600; color: var(--void); }
+.user-menu-dropdown { position: absolute; top: 55px; right: 0; background: var(--elevated); border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem 0; min-width: 180px; z-index: 1100; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+.user-menu-dropdown.show { opacity: 1; visibility: visible; transform: translateY(0); }
+.user-menu-dropdown button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.2rem; font-size: 0.75rem; color: var(--muted); background: none; border: none; cursor: pointer; transition: all 0.2s; font-family: var(--font-sans); }
+.user-menu-dropdown button:hover { background: rgba(212,175,55,0.1); color: var(--gold); }
+.user-menu-dropdown hr { margin: 0.3rem 0; border-color: var(--border); }
 .page { display: none; }
 .page.active { display: block; animation: pageIn 0.5s cubic-bezier(0.22,1,0.36,1); }
 @keyframes pageIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
-
-.hero {
-  position: relative;
-  min-height: 100vh;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  overflow: hidden;
-}
-.hero-left {
-  padding: 8rem 4rem 6rem 5rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  z-index: 2;
-}
-.hero-eyebrow {
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+.hero { position: relative; min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; }
+.hero-left { padding: 8rem 4rem 6rem 5rem; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; }
+.hero-eyebrow { font-size: 0.6rem; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; display: flex; align-items: center; gap: 12px; }
 .hero-eyebrow::before { content: ''; display: block; width: 40px; height: 1px; background: var(--gold); }
-.hero h1 {
-  font-family: var(--font-serif);
-  font-size: clamp(3rem, 5.5vw, 6rem);
-  font-weight: 300;
-  line-height: 1.05;
-  color: var(--cream);
-  letter-spacing: -1px;
-}
+.hero h1 { font-family: var(--font-serif); font-size: clamp(3rem, 5.5vw, 6rem); font-weight: 300; line-height: 1.05; color: var(--cream); letter-spacing: -1px; }
 .hero h1 em { font-style: italic; color: var(--gold); }
-.hero-sub {
-  margin: 2rem 0 3rem;
-  color: var(--muted);
-  font-size: 0.95rem;
-  font-weight: 300;
-  line-height: 1.8;
-  max-width: 420px;
-}
+.hero-sub { margin: 2rem 0 3rem; color: var(--muted); font-size: 0.95rem; font-weight: 300; line-height: 1.8; max-width: 420px; }
 .hero-ctas { display: flex; gap: 1rem; align-items: center; }
-.btn-primary {
-  font-family: var(--font-sans);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  background: var(--gold);
-  color: var(--void);
-  border: none;
-  padding: 1rem 2.5rem;
-  cursor: pointer;
-  transition: all 0.25s;
-}
+.btn-primary { font-family: var(--font-sans); font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; background: var(--gold); color: var(--void); border: none; padding: 1rem 2.5rem; cursor: pointer; transition: all 0.25s; }
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,175,55,0.3); background: var(--gold-bright); }
-.btn-link {
-  background: none;
-  border: none;
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: color 0.2s;
-}
+.btn-link { background: none; border: none; font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
 .btn-link:hover { color: var(--gold); }
-.hero-stats {
-  margin-top: 5rem;
-  display: flex;
-  gap: 3rem;
-  border-top: 1px solid var(--border);
-  padding-top: 2rem;
-}
-.hero-stat-num {
-  font-family: var(--font-serif);
-  font-size: 2rem;
-  font-weight: 300;
-  color: var(--cream);
-}
+.hero-stats { margin-top: 5rem; display: flex; gap: 3rem; border-top: 1px solid var(--border); padding-top: 2rem; }
+.hero-stat-num { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--cream); }
 .hero-stat-num span { color: var(--gold); }
 .hero-stat-label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
-
-.hero-right {
-  position: relative;
-  background: var(--deep);
-  overflow: hidden;
-}
-.hero-mosaic {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  gap: 3px;
-  padding: 3px;
-}
-.hero-tile {
-  position: relative;
-  overflow: hidden;
-  background: var(--elevated);
-}
-.hero-tile img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.8s cubic-bezier(0.22,1,0.36,1);
-  filter: brightness(0.7) saturate(0.8);
-}
+.hero-right { position: relative; background: var(--deep); overflow: hidden; }
+.hero-mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3px; padding: 3px; }
+.hero-tile { position: relative; overflow: hidden; background: var(--elevated); }
+.hero-tile img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.22,1,0.36,1); filter: brightness(0.7) saturate(0.8); }
 .hero-tile:hover img { transform: scale(1.06); filter: brightness(0.85) saturate(1); }
-.hero-tile-label {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 1.5rem 1rem 1rem;
-  background: linear-gradient(transparent, rgba(5,5,5,0.85));
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-}
+.hero-tile-label { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem 1rem 1rem; background: linear-gradient(transparent, rgba(5,5,5,0.85)); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
 .hero-tile-price { font-size: 0.85rem; color: var(--gold); font-weight: 300; }
 .hero-tile.big { grid-row: span 2; }
-
-.marquee-wrap {
-  background: var(--gold);
-  color: var(--void);
-  padding: 12px 0;
-  overflow: hidden;
-}
-.marquee-track {
-  display: flex;
-  gap: 3rem;
-  white-space: nowrap;
-  animation: marquee 20s linear infinite;
-}
-.marquee-track span {
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
+.marquee-wrap { background: var(--gold); color: var(--void); padding: 12px 0; overflow: hidden; }
+.marquee-track { display: flex; gap: 3rem; white-space: nowrap; animation: marquee 20s linear infinite; }
+.marquee-track span { font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; flex-shrink: 0; }
 .marquee-dot { color: rgba(5,5,5,0.4); }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
 .section { padding: 6rem 5rem; max-width: 1440px; margin: 0 auto; }
-.section-eyebrow {
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 5px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
+.section-eyebrow { font-size: 0.6rem; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: 12px; }
 .section-eyebrow::before { content: ''; display: block; width: 30px; height: 1px; background: var(--gold); }
-.section-title {
-  font-family: var(--font-serif);
-  font-size: clamp(2rem, 3.5vw, 3.5rem);
-  font-weight: 300;
-  color: var(--cream);
-  line-height: 1.1;
-}
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  margin-bottom: 3.5rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-.link-all {
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  background: none;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: color 0.2s;
-}
+.section-title { font-family: var(--font-serif); font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 300; color: var(--cream); line-height: 1.1; }
+.section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1rem; }
+.link-all { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
 .link-all:hover { color: var(--gold); }
 .link-all::after { content: '→'; transition: transform 0.2s; }
 .link-all:hover::after { transform: translateX(4px); }
-
-.products-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-  gap: 1.5px;
-  background: var(--border);
-}
-.product-card {
-  background: var(--surface);
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  transition: background 0.3s;
-}
+.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.5px; background: var(--border); }
+.product-card { background: var(--surface); cursor: pointer; position: relative; overflow: hidden; transition: background 0.3s; }
 .product-card:hover { background: var(--elevated); }
-.product-img-wrap {
-  aspect-ratio: 3/4;
-  overflow: hidden;
-  position: relative;
-  background: var(--elevated);
-}
-.product-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.7s cubic-bezier(0.22,1,0.36,1), filter 0.4s;
-  filter: brightness(0.8) saturate(0.7);
-}
-.product-card:hover .product-img-wrap img {
-  transform: scale(1.04);
-  filter: brightness(0.95) saturate(1);
-}
-.badge-pill {
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  font-size: 0.55rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  background: var(--gold);
-  color: var(--void);
-  z-index: 2;
-}
-.wishlist-btn {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
-  background: rgba(5,5,5,0.6);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1rem;
-  z-index: 2;
-  transition: all 0.2s;
-}
+.product-img-wrap { aspect-ratio: 3/4; overflow: hidden; position: relative; background: var(--elevated); }
+.product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.22,1,0.36,1), filter 0.4s; filter: brightness(0.8) saturate(0.7); }
+.product-card:hover .product-img-wrap img { transform: scale(1.04); filter: brightness(0.95) saturate(1); }
+.badge-pill { position: absolute; top: 16px; left: 16px; font-size: 0.55rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; background: var(--gold); color: var(--void); z-index: 2; }
+.wishlist-btn { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; background: rgba(5,5,5,0.6); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; z-index: 2; transition: all 0.2s; }
 .wishlist-btn:hover { border-color: var(--gold); background: rgba(212,175,55,0.15); }
-.quick-add {
-  position: absolute;
-  bottom: -48px;
-  left: 0;
-  right: 0;
-  background: rgba(212,175,55,0.95);
-  color: var(--void);
-  text-align: center;
-  padding: 14px;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  cursor: pointer;
-  border: none;
-  transition: bottom 0.3s cubic-bezier(0.22,1,0.36,1);
-}
+.quick-add { position: absolute; bottom: -48px; left: 0; right: 0; background: rgba(212,175,55,0.95); color: var(--void); text-align: center; padding: 14px; font-size: 0.6rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; border: none; transition: bottom 0.3s cubic-bezier(0.22,1,0.36,1); }
 .product-img-wrap:hover .quick-add { bottom: 0; }
 .product-info { padding: 1.5rem 1.5rem 2rem; }
 .product-cat { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
-.product-name {
-  font-family: var(--font-serif);
-  font-size: 1.4rem;
-  font-weight: 300;
-  color: var(--cream);
-  margin: 6px 0 4px;
-  line-height: 1.2;
-}
+.product-name { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 300; color: var(--cream); margin: 6px 0 4px; line-height: 1.2; }
 .product-sub { font-size: 0.75rem; color: var(--muted); }
 .product-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.2rem; }
-.product-price {
-  font-family: var(--font-serif);
-  font-size: 1.3rem;
-  font-weight: 300;
-  color: var(--gold);
-}
-
-/* PRODUCT DETAIL MODAL MET MEERDERE FOTO'S */
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 10000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.95);
-  backdrop-filter: blur(8px);
-  align-items: center;
-  justify-content: center;
-}
-.modal.active {
-  display: flex;
-}
-.modal-content {
-  max-width: 1200px;
-  width: 90%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 2rem;
-  position: relative;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-.modal-close {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-size: 2rem;
-  cursor: pointer;
-  z-index: 10;
-  transition: color 0.2s;
-}
+.product-price { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 300; color: var(--gold); }
+.modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
+.modal.active { display: flex; }
+.modal-content { max-width: 1200px; width: 90%; background: var(--surface); border: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
+.modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--muted); font-size: 2rem; cursor: pointer; z-index: 10; transition: color 0.2s; }
 .modal-close:hover { color: var(--gold); }
-.modal-gallery {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-.modal-main-image {
-  background: var(--elevated);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  cursor: pointer;
-  overflow: hidden;
-}
-.modal-main-image img {
-  max-width: 100%;
-  max-height: 450px;
-  object-fit: contain;
-  transition: transform 0.3s ease;
-}
-.modal-main-image.zoomed img {
-  transform: scale(1.5);
-  cursor: zoom-out;
-}
-.modal-thumbnails {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-.modal-thumb {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  cursor: pointer;
-  border: 2px solid transparent;
-  transition: all 0.2s;
-}
-.modal-thumb:hover, .modal-thumb.active {
-  border-color: var(--gold);
-}
+.modal-gallery { display: flex; flex-direction: column; gap: 1rem; }
+.modal-main-image { background: var(--elevated); display: flex; align-items: center; justify-content: center; min-height: 400px; cursor: pointer; overflow: hidden; }
+.modal-main-image img { max-width: 100%; max-height: 450px; object-fit: contain; transition: transform 0.3s ease; }
+.modal-main-image.zoomed img { transform: scale(1.5); cursor: zoom-out; }
+.modal-thumbnails { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.modal-thumb { width: 60px; height: 60px; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
+.modal-thumb:hover, .modal-thumb.active { border-color: var(--gold); }
 .modal-info { padding: 1rem; }
-.modal-info h2 {
-  font-family: var(--font-serif);
-  font-size: 2rem;
-  font-weight: 300;
-  color: var(--cream);
-  margin-bottom: 0.5rem;
-}
-.modal-info .modal-cat {
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 1rem;
-}
-.modal-info .modal-price {
-  font-family: var(--font-serif);
-  font-size: 2rem;
-  font-weight: 300;
-  color: var(--gold);
-  margin: 1rem 0;
-}
-.modal-info .modal-desc {
-  color: var(--muted);
-  line-height: 1.6;
-  margin-bottom: 2rem;
-}
-.modal-actions {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-.add-image-btn {
-  background: var(--elevated);
-  border: 1px dashed var(--border);
-  color: var(--muted);
-  padding: 0.5rem;
-  cursor: pointer;
-  text-align: center;
-  font-size: 0.7rem;
-  transition: all 0.2s;
-}
+.modal-info h2 { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--cream); margin-bottom: 0.5rem; }
+.modal-info .modal-cat { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+.modal-info .modal-price { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--gold); margin: 1rem 0; }
+.modal-info .modal-desc { color: var(--muted); line-height: 1.6; margin-bottom: 2rem; }
+.modal-actions { display: flex; gap: 1rem; margin-top: 1rem; }
+.add-image-btn { background: var(--elevated); border: 1px dashed var(--border); color: var(--muted); padding: 0.5rem; cursor: pointer; text-align: center; font-size: 0.7rem; transition: all 0.2s; }
 .add-image-btn:hover { border-color: var(--gold); color: var(--gold); }
-@media (max-width: 768px) {
-  .modal-content { grid-template-columns: 1fr; width: 95%; padding: 1rem; }
-}
-
-.filters-row {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.filter-pill {
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 0.55rem 1.4rem;
-  border: 1px solid var(--border);
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.filter-pill:hover, .filter-pill.active {
-  background: var(--gold);
-  border-color: var(--gold);
-  color: var(--void);
-}
+@media (max-width: 768px) { .modal-content { grid-template-columns: 1fr; width: 95%; padding: 1rem; } }
+.filters-row { display: flex; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap; align-items: center; }
+.filter-pill { font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 0.55rem 1.4rem; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+.filter-pill:hover, .filter-pill.active { background: var(--gold); border-color: var(--gold); color: var(--void); }
 .search-wrap { margin-left: auto; position: relative; }
-.shop-search {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 0.8rem;
-  padding: 0.55rem 1rem 0.55rem 2.5rem;
-  width: 220px;
-  outline: none;
-}
+.shop-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.8rem; padding: 0.55rem 1rem 0.55rem 2.5rem; width: 220px; outline: none; }
 .shop-search:focus { border-color: var(--gold); }
 .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--muted); }
-.sort-sel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font-family: var(--font-sans);
-  font-size: 0.7rem;
-  letter-spacing: 1px;
-  padding: 0.55rem 1rem;
-  cursor: pointer;
-  outline: none;
-}
-
-.editorial {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  min-height: 500px;
-  overflow: hidden;
-}
+.sort-sel { background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 1px; padding: 0.55rem 1rem; cursor: pointer; outline: none; }
+.editorial { display: grid; grid-template-columns: 1fr 1fr; min-height: 500px; overflow: hidden; }
 .editorial-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) saturate(0.6); transition: 0.8s; }
 .editorial:hover .editorial-img img { transform: scale(1.03); filter: brightness(0.7) saturate(0.8); }
-.editorial-content {
-  background: var(--deep);
-  padding: 5rem 4rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  border: 1px solid var(--border);
-}
-
-.cart-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.7);
-  backdrop-filter: blur(6px);
-  z-index: 5000;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-}
+.editorial-content { background: var(--deep); padding: 5rem 4rem; display: flex; flex-direction: column; justify-content: center; border: 1px solid var(--border); }
+.cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
 .cart-overlay.open { opacity: 1; pointer-events: all; }
-.cart-drawer {
-  position: fixed;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  width: 460px;
-  background: var(--deep);
-  border-left: 1px solid var(--border);
-  z-index: 5001;
-  transform: translateX(100%);
-  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
-  display: flex;
-  flex-direction: column;
-}
+.cart-drawer { position: fixed; right: 0; top: 0; bottom: 0; width: 460px; background: var(--deep); border-left: 1px solid var(--border); z-index: 5001; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); display: flex; flex-direction: column; }
 .cart-drawer.open { transform: translateX(0); }
-.cart-header {
-  padding: 2rem;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.cart-header h3 {
-  font-family: var(--font-serif);
-  font-size: 1.5rem;
-  font-weight: 300;
-  color: var(--cream);
-}
-.cart-close {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  width: 36px;
-  height: 36px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: all 0.2s;
-}
+.cart-header { padding: 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.cart-header h3 { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 300; color: var(--cream); }
+.cart-close { background: none; border: 1px solid var(--border); color: var(--muted); width: 36px; height: 36px; cursor: pointer; font-size: 1rem; transition: all 0.2s; }
 .cart-close:hover { border-color: var(--gold); color: var(--gold); }
 .cart-items { flex: 1; overflow-y: auto; padding: 1.5rem; }
 .cart-empty { text-align: center; padding: 4rem 2rem; color: var(--muted); font-family: var(--font-serif); font-size: 1.2rem; font-weight: 300; }
-.cart-item {
-  display: flex;
-  gap: 1rem;
-  padding: 1.2rem 0;
-  border-bottom: 1px solid var(--border);
-}
-.cart-item-img {
-  width: 70px;
-  height: 70px;
-  background: var(--elevated);
-  overflow: hidden;
-  flex-shrink: 0;
-}
+.cart-item { display: flex; gap: 1rem; padding: 1.2rem 0; border-bottom: 1px solid var(--border); }
+.cart-item-img { width: 70px; height: 70px; background: var(--elevated); overflow: hidden; flex-shrink: 0; }
 .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
 .cart-item-info { flex: 1; }
 .cart-item-name { font-family: var(--font-serif); font-size: 1rem; font-weight: 300; color: var(--cream); }
 .cart-item-price { font-size: 0.8rem; color: var(--gold); margin-top: 4px; }
 .qty-row { display: flex; align-items: center; gap: 0.8rem; margin-top: 0.7rem; }
-.qty-btn {
-  width: 26px;
-  height: 26px;
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  color: var(--text);
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.qty-btn { width: 26px; height: 26px; background: var(--elevated); border: 1px solid var(--border); color: var(--text); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
 .qty-btn:hover { border-color: var(--gold); color: var(--gold); }
 .qty-val { font-size: 0.8rem; min-width: 20px; text-align: center; }
 .cart-rm { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; margin-left: auto; transition: color 0.2s; }
 .cart-rm:hover { color: var(--rust); }
 .cart-footer { padding: 1.5rem; border-top: 1px solid var(--border); }
 .coupon-row { display: flex; gap: 8px; margin-bottom: 1.2rem; }
-.coupon-input {
-  flex: 1;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  padding: 0.6rem 1rem;
-  outline: none;
-}
+.coupon-input { flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.75rem; padding: 0.6rem 1rem; outline: none; }
 .coupon-input:focus { border-color: var(--gold); }
-.btn-apply {
-  background: none;
-  border: 1px solid var(--border-hover);
-  color: var(--muted);
-  padding: 0.6rem 1.2rem;
-  font-size: 0.65rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+.btn-apply { background: none; border: 1px solid var(--border-hover); color: var(--muted); padding: 0.6rem 1.2rem; font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
 .btn-apply:hover { border-color: var(--gold); color: var(--gold); }
 .cart-totals { margin-bottom: 1.2rem; }
 .cart-line { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
 .cart-line.total { color: var(--cream); font-size: 1rem; font-family: var(--font-serif); font-weight: 300; padding-top: 8px; border-top: 1px solid var(--border); }
-.btn-checkout {
-  width: 100%;
-  background: var(--gold);
-  border: none;
-  color: var(--void);
-  font-family: var(--font-sans);
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  padding: 1rem;
-  cursor: pointer;
-  transition: all 0.2s;
-}
+.btn-checkout { width: 100%; background: var(--gold); border: none; color: var(--void); font-family: var(--font-sans); font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; padding: 1rem; cursor: pointer; transition: all 0.2s; }
 .btn-checkout:hover { background: var(--gold-bright); }
-
-/* CHECKOUT FORM */
-.checkout-form {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 2rem;
-  margin-bottom: 1rem;
-}
-.checkout-form h3 {
-  font-family: var(--font-serif);
-  font-size: 1.3rem;
-  font-weight: 300;
-  color: var(--gold);
-  margin-bottom: 1.5rem;
-}
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
-.form-group {
-  margin-bottom: 1rem;
-}
-.form-group label {
-  display: block;
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.4rem;
-}
-.form-group input, .form-group select {
-  width: 100%;
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  padding: 0.8rem 1rem;
-  outline: none;
-}
+.checkout-form { background: var(--surface); border: 1px solid var(--border); padding: 2rem; margin-bottom: 1rem; }
+.checkout-form h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 300; color: var(--gold); margin-bottom: 1.5rem; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.form-group { margin-bottom: 1rem; }
+.form-group label { display: block; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+.form-group input, .form-group select { width: 100%; background: var(--elevated); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.9rem; padding: 0.8rem 1rem; outline: none; }
 .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
 @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
-
-.cookie-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: var(--deep);
-  border-top: 1px solid var(--border);
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-  z-index: 9000;
-}
+.cookie-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--deep); border-top: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; z-index: 9000; }
 .cookie-bar p { font-size: 0.75rem; color: var(--muted); }
 .cookie-bar a { color: var(--gold); }
 .cookie-btns { display: flex; gap: 0.8rem; }
-.btn-cookie-sm {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 0.5rem 1.2rem;
-  border: 1px solid var(--border);
-  background: none;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all 0.2s;
-}
+.btn-cookie-sm { font-size: 0.6rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.5rem 1.2rem; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; transition: all 0.2s; }
 .btn-cookie-sm:hover { border-color: var(--muted); color: var(--text); }
 .btn-cookie-sm.accept { background: var(--gold); border-color: var(--gold); color: var(--void); }
-
-.auth-page {
-  min-height: 80vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 3rem;
-  position: relative;
-}
-.auth-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 3rem;
-  width: 100%;
-  max-width: 460px;
-  position: relative;
-  z-index: 2;
-}
-.auth-card h2 {
-  font-family: var(--font-serif);
-  font-size: 2.5rem;
-  font-weight: 300;
-  color: var(--cream);
-  margin-bottom: 0.5rem;
-}
+.auth-page { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 3rem; position: relative; }
+.auth-card { background: var(--surface); border: 1px solid var(--border); padding: 3rem; width: 100%; max-width: 460px; position: relative; z-index: 2; }
+.auth-card h2 { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 300; color: var(--cream); margin-bottom: 0.5rem; }
 .auth-card p { font-size: 0.8rem; color: var(--muted); margin-bottom: 2rem; }
 .field { margin-bottom: 1.2rem; }
-.field label {
-  display: block;
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 6px;
-}
-.field input {
-  width: 100%;
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  padding: 0.8rem 1rem;
-  outline: none;
-}
+.field label { display: block; font-size: 0.6rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.field input { width: 100%; background: var(--elevated); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.9rem; padding: 0.8rem 1rem; outline: none; }
 .field input:focus { border-color: var(--gold); }
-.field textarea {
-  width: 100%;
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  padding: 0.8rem 1rem;
-  outline: none;
-  resize: vertical;
-}
+.field textarea { width: 100%; background: var(--elevated); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.9rem; padding: 0.8rem 1rem; outline: none; resize: vertical; }
 .field textarea:focus { border-color: var(--gold); }
 .auth-msg { font-size: 0.75rem; margin-top: 0.8rem; min-height: 1.2rem; }
 .auth-msg.error { color: var(--rust); }
@@ -984,271 +210,56 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .checkbox-row { display: flex; align-items: center; gap: 10px; margin-bottom: 1.5rem; }
 .checkbox-row input { width: auto; }
 .checkbox-row label { font-size: 0.75rem; color: var(--muted); letter-spacing: normal; text-transform: none; }
-
+.verification-code-row { display: flex; gap: 10px; align-items: center; }
+.verification-code-row input { flex: 1; text-align: center; font-size: 1.5rem; letter-spacing: 5px; }
+.code-display { font-family: monospace; font-size: 1.2rem; background: var(--elevated); padding: 0.5rem; text-align: center; border-radius: 8px; }
 .admin-wrap { padding: 3rem; max-width: 1400px; margin: 0 auto; }
-.admin-title {
-  font-family: var(--font-serif);
-  font-size: 2.5rem;
-  font-weight: 300;
-  color: var(--cream);
-  margin-bottom: 2rem;
-  text-align: center;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 1px;
-  background: var(--border);
-  margin-bottom: 2rem;
-}
-.stat-card {
-  background: var(--surface);
-  padding: 1.5rem;
-  text-align: center;
-}
-.stat-card .label {
-  font-size: 0.6rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.5rem;
-}
-.stat-card .value {
-  font-family: var(--font-serif);
-  font-size: 2rem;
-  font-weight: 300;
-  color: var(--gold);
-}
-
-.admin-form {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 2rem;
-  margin-bottom: 2rem;
-}
-.admin-form h3 {
-  font-family: var(--font-serif);
-  font-size: 1.3rem;
-  font-weight: 300;
-  color: var(--gold);
-  margin-bottom: 1.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border);
-}
-.form-group {
-  margin-bottom: 1.2rem;
-}
-.form-group label {
-  display: block;
-  font-size: 0.7rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 0.4rem;
-}
-.form-group input, .form-group select {
-  width: 100%;
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font-sans);
-  font-size: 0.9rem;
-  padding: 0.8rem 1rem;
-  outline: none;
-}
+.admin-title { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 300; color: var(--cream); margin-bottom: 2rem; text-align: center; }
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-bottom: 2rem; }
+.stat-card { background: var(--surface); padding: 1.5rem; text-align: center; }
+.stat-card .label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+.stat-card .value { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--gold); }
+.admin-form { background: var(--surface); border: 1px solid var(--border); padding: 2rem; margin-bottom: 2rem; }
+.admin-form h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 300; color: var(--gold); margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+.form-group { margin-bottom: 1.2rem; }
+.form-group label { display: block; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+.form-group input, .form-group select { width: 100%; background: var(--elevated); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.9rem; padding: 0.8rem 1rem; outline: none; }
 .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
 .form-group input[type="file"] { padding: 0.5rem 0; background: none; }
-.btn-add-product {
-  background: var(--gold);
-  border: none;
-  color: var(--void);
-  font-family: var(--font-sans);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  padding: 0.8rem 2rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  width: 100%;
-}
+.btn-add-product { background: var(--gold); border: none; color: var(--void); font-family: var(--font-sans); font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.8rem 2rem; cursor: pointer; transition: all 0.2s; width: 100%; }
 .btn-add-product:hover { background: var(--gold-bright); }
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 1rem;
-}
-.admin-table th {
-  text-align: left;
-  padding: 0.8rem;
-  font-size: 0.6rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border);
-}
-.admin-table td {
-  padding: 0.8rem;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-  font-size: 0.8rem;
-  vertical-align: middle;
-}
-.admin-thumb {
-  width: 48px;
-  height: 48px;
-  object-fit: cover;
-  border-radius: 4px;
-  cursor: pointer;
-}
-.status-live {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: #5a9e6f;
-  background: rgba(90,158,111,0.12);
-  padding: 4px 8px;
-  display: inline-block;
-}
-.status-draft {
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--muted);
-  background: var(--elevated);
-  padding: 4px 8px;
-  display: inline-block;
-}
-.tbl-btn {
-  font-size: 0.6rem;
-  font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--muted);
-  padding: 4px 10px;
-  cursor: pointer;
-  transition: all 0.2s;
-  margin-right: 5px;
-}
+.admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+.admin-table th { text-align: left; padding: 0.8rem; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+.admin-table td { padding: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; vertical-align: middle; }
+.admin-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; cursor: pointer; }
+.status-live { font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #5a9e6f; background: rgba(90,158,111,0.12); padding: 4px 8px; display: inline-block; }
+.status-draft { font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); background: var(--elevated); padding: 4px 8px; display: inline-block; }
+.tbl-btn { font-size: 0.6rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: none; border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; cursor: pointer; transition: all 0.2s; margin-right: 5px; }
 .tbl-btn:hover { border-color: var(--gold); color: var(--gold); }
 .tbl-btn.danger:hover { border-color: var(--rust); color: var(--rust); }
-
-.wishlist-empty {
-  text-align: center;
-  padding: 8rem 2rem;
-  color: var(--muted);
-}
+.wishlist-empty { text-align: center; padding: 8rem 2rem; color: var(--muted); }
 .wishlist-empty-icon { font-size: 3rem; display: block; margin-bottom: 1.5rem; opacity: 0.4; }
 .wishlist-empty h3 { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--cream); margin-bottom: 0.5rem; }
-
-.order-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-}
-.order-card h4 {
-  font-family: var(--font-serif);
-  font-size: 1.2rem;
-  color: var(--gold);
-  margin-bottom: 0.5rem;
-}
+.order-card { background: var(--surface); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
+.order-card h4 { font-family: var(--font-serif); font-size: 1.2rem; color: var(--gold); margin-bottom: 0.5rem; }
 .order-items { margin-top: 1rem; }
-.order-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.5rem 0;
-  border-bottom: 1px solid var(--border);
-}
-.order-item img {
-  width: 64px;
-  height: 64px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin-right: 1rem;
-}
-.order-item-meta {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
+.order-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
+.order-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; margin-right: 1rem; }
+.order-item-meta { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; }
 .toast-container { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 99998; display: flex; flex-direction: column; gap: 0.6rem; align-items: center; pointer-events: none; }
-.toast {
-  background: var(--elevated);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--gold);
-  color: var(--cream);
-  padding: 0.8rem 1.5rem;
-  font-size: 0.8rem;
-  font-weight: 400;
-  white-space: nowrap;
-  animation: toastIn 0.3s ease, toastOut 0.3s 2.5s forwards;
-  pointer-events: none;
-}
+.toast { background: var(--elevated); border: 1px solid var(--border); border-left: 3px solid var(--gold); color: var(--cream); padding: 0.8rem 1.5rem; font-size: 0.8rem; font-weight: 400; white-space: nowrap; animation: toastIn 0.3s ease, toastOut 0.3s 2.5s forwards; pointer-events: none; }
 @keyframes toastIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes toastOut { to { opacity: 0; transform: translateY(-8px); } }
-
-footer {
-  background: var(--deep);
-  border-top: 1px solid var(--border);
-  padding: 5rem;
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr;
-  gap: 4rem;
-}
+footer { background: var(--deep); border-top: 1px solid var(--border); padding: 5rem; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; }
 .footer-brand .logo { font-size: 2rem; display: block; margin-bottom: 1rem; }
 .footer-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.8; max-width: 260px; }
 footer h4 { font-size: 0.6rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
 footer ul { list-style: none; }
 footer li { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.8rem; cursor: pointer; transition: color 0.2s; }
 footer li:hover { color: var(--cream); }
-.footer-bottom {
-  background: var(--void);
-  border-top: 1px solid var(--border);
-  padding: 1.2rem 5rem;
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.65rem;
-  color: var(--muted);
-  letter-spacing: 1px;
-}
-
-@media (max-width: 900px) {
-  nav { padding: 0 1.5rem; }
-  .hero { grid-template-columns: 1fr; }
-  .hero-right { height: 50vh; }
-  .hero-left { padding: 4rem 2rem; }
-  .section { padding: 4rem 2rem; }
-  .stats-grid { grid-template-columns: 1fr 1fr; }
-  footer { grid-template-columns: 1fr; padding: 3rem 2rem; }
-  .cart-drawer { width: 100%; }
-  .editorial { grid-template-columns: 1fr; }
-  .admin-wrap { padding: 1rem; }
-}
-
-@media (max-width: 480px) {
-  nav { padding: 0 1rem; height: 56px; }
-  .logo { font-size: 1.4rem; letter-spacing: 6px; }
-  .nav-links { gap: 0.1rem; }
-  .nav-link { font-size: 0.55rem; padding: 0.3rem 0.8rem; }
-  .hero-left { padding: 2rem 1rem; }
-  .hero h1 { font-size: clamp(2rem, 6vw, 4rem); }
-  .section { padding: 3rem 1rem; }
-  .products-grid { grid-template-columns: 1fr; }
-  .editorial-content { padding: 3rem 2rem; }
-  .auth-page { padding: 2rem 1rem; }
-  .auth-card { padding: 2rem; }
-  .cookie-bar { padding: 1rem; flex-direction: column; align-items: flex-start; }
-  footer { padding: 2rem 1rem; }
-  .footer-bottom { padding: 1rem; }
-}
+.footer-bottom { background: var(--void); border-top: 1px solid var(--border); padding: 1.2rem 5rem; display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; }
+@media (max-width: 900px) { nav { padding: 0 1.5rem; } .hero { grid-template-columns: 1fr; } .hero-right { height: 50vh; } .hero-left { padding: 4rem 2rem; } .section { padding: 4rem 2rem; } .stats-grid { grid-template-columns: 1fr 1fr; } footer { grid-template-columns: 1fr; padding: 3rem 2rem; } .cart-drawer { width: 100%; } .editorial { grid-template-columns: 1fr; } .admin-wrap { padding: 1rem; } }
+@media (max-width: 480px) { nav { padding: 0 1rem; height: 56px; } .logo { font-size: 1.4rem; letter-spacing: 6px; } .nav-links { gap: 0.1rem; } .nav-link { font-size: 0.55rem; padding: 0.3rem 0.8rem; } .hero-left { padding: 2rem 1rem; } .hero h1 { font-size: clamp(2rem, 6vw, 4rem); } .section { padding: 3rem 1rem; } .products-grid { grid-template-columns: 1fr; } .editorial-content { padding: 3rem 2rem; } .auth-page { padding: 2rem 1rem; } .auth-card { padding: 2rem; } .cookie-bar { padding: 1rem; flex-direction: column; align-items: flex-start; } footer { padding: 2rem 1rem; } .footer-bottom { padding: 1rem; } }
 </style>
 </head>
 <body>
@@ -1318,6 +329,27 @@ footer li:hover { color: var(--cream); }
   </div>
 </div>
 
+<!-- VERIFICATIE CODE MODAL -->
+<div id="verifyModal" class="modal" onclick="closeVerifyModalOnBackground(event)">
+  <div class="modal-content" style="max-width: 500px; text-align: center;">
+    <button class="modal-close" onclick="closeVerifyModal()">&times;</button>
+    <div style="padding: 2rem;">
+      <h3>Verifieer je e-mailadres</h3>
+      <p>We hebben een verificatiecode gestuurd naar:</p>
+      <p><strong id="verifyEmailDisplay"></strong></p>
+      <div class="field" style="margin: 1.5rem 0;">
+        <label>Voer de 6-cijferige code in</label>
+        <div class="verification-code-row">
+          <input type="text" id="verifyCode" maxlength="6" placeholder="123456" style="text-align: center; font-size: 1.5rem; letter-spacing: 5px;">
+        </div>
+      </div>
+      <button class="btn-primary" onclick="verifyEmailCode()" style="width:100%; margin-bottom: 1rem;">Verifieer</button>
+      <button class="btn-link" onclick="resendVerificationCode()" style="margin-top: 0.5rem;">Code opnieuw verzenden</button>
+      <div class="auth-msg" id="verifyMsg"></div>
+    </div>
+  </div>
+</div>
+
 <!-- PRODUCT DETAIL MODAL MET MEERDERE FOTO'S -->
 <div id="productModal" class="modal" onclick="closeModalOnBackground(event)">
   <div class="modal-content">
@@ -1368,6 +400,7 @@ footer li:hover { color: var(--cream); }
     <div id="userMenuDropdown" class="user-menu-dropdown">
       <button onclick="showPage('profile'); closeUserMenu()">Mijn profiel</button>
       <button onclick="showPage('orders'); closeUserMenu()">Mijn bestellingen</button>
+      <button onclick="resendVerificationCode(); closeUserMenu()">Verificatiecode opnieuw verzenden</button>
       <hr>
       <button onclick="logout(); closeUserMenu()">Uitloggen</button>
     </div>
@@ -1375,9 +408,37 @@ footer li:hover { color: var(--cream); }
 </nav>
 
 <div id="homePage" class="page active">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow">Seizoenscollectie</div>
+      <h1>Tijdloze <em>Elegantie</em><br>Voor de Moderne Mens</h1>
+      <p class="hero-sub">Ontdek de nieuwe MAISON collectie. Handgeselecteerde materialen, eindeloze stijl.</p>
+      <div class="hero-ctas">
+        <button class="btn-primary" onclick="showPage('shop')">Shop nu</button>
+        <button class="btn-link" onclick="showPage('contact')">Advies nodig?</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-num"><span>+</span>2000</div><div class="hero-stat-label">Tevreden Klanten</div></div>
+        <div><div class="hero-stat-num">4.9<span>/5</span></div><div class="hero-stat-label">Klantbeoordeling</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-mosaic">
+        <div class="hero-tile"><img src="https://placehold.co/600x800/1a1a1a/888?text=MAISON" alt=""><div class="hero-tile-label">Limited Editie</div></div>
+        <div class="hero-tile"><img src="https://placehold.co/600x400/1a1a1a/888?text=Luxury" alt=""><div class="hero-tile-label">44° Collectie</div></div>
+        <div class="hero-tile"><img src="https://placehold.co/600x400/1a1a1a/888?text=Exclusive" alt=""><div class="hero-tile-label">Members Only</div></div>
+        <div class="hero-tile big"><img src="https://placehold.co/600x800/1a1a1a/888?text=MAISON+Premium" alt=""><div class="hero-tile-label">New Arrivals</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="marquee-wrap"><div class="marquee-track"><span>GRATIS VERZENDING</span><span class="marquee-dot">●</span><span>24/7 SERVICE</span><span class="marquee-dot">●</span><span>PREMIUM KWALITEIT</span><span class="marquee-dot">●</span><span>30 DAGEN RETOUR</span><span class="marquee-dot">●</span><span>EXCLUSIEF LIDMAATSCHAP</span><span class="marquee-dot">●</span><span>GRATIS VERZENDING</span><span class="marquee-dot">●</span><span>24/7 SERVICE</span><span class="marquee-dot">●</span><span>PREMIUM KWALITEIT</span></div></div>
   <div class="section">
     <div class="section-head"><div><div class="section-eyebrow">Uitgelicht</div><h2 class="section-title">Premium selectie</h2></div><button class="link-all" onclick="showPage('shop')">Alles bekijken</button></div>
     <div class="products-grid" id="homeFeaturedGrid"></div>
+  </div>
+  <div class="editorial">
+    <div class="editorial-img"><img src="https://placehold.co/800x600/1a1a1a/888?text=MAISON+Editorial" alt=""></div>
+    <div class="editorial-content"><div class="section-eyebrow">Ambacht & Traditie</div><h2 class="section-title" style="margin-bottom:1rem;">Eerlijke luxe,<br>Gemaakt om te blijven</h2><p style="color:var(--muted); line-height:1.7; margin-bottom:2rem;">Onze producten worden met de hand gemaakt door Europese ambachtslieden. Elke steek, elk detail vertelt een verhaal van passie.</p><button class="btn-primary" onclick="showPage('shop')">Ontdek de collectie</button></div>
   </div>
 </div>
 
@@ -1398,11 +459,19 @@ footer li:hover { color: var(--cream); }
 </div>
 
 <div id="loginPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Welkom terug</h2><p>Log in op uw MAISON account</p><div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord"></div><button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button><div class="auth-msg" id="loginMsg"></div><p class="auth-link"><a onclick="showPage('forgot-password')">Wachtwoord vergeten?</a></p><p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Welkom terug</h2><p>Log in op uw MAISON account</p>
+    <div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com"></div>
+    <div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord"></div>
+    <button class="btn-primary" style="width:100%; margin-bottom: 1rem;" onclick="doLogin()">Inloggen</button>
+    <button class="btn-primary btn-google" style="width:100%; background:#4285F4;" onclick="googleLogin()">🔐 Inloggen met Google</button>
+    <div class="auth-msg" id="loginMsg"></div>
+    <p class="auth-link"><a onclick="showPage('forgot-password')">Wachtwoord vergeten?</a></p>
+    <p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p>
+  </div></div>
 </div>
 
 <div id="forgotPasswordPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Wachtwoord vergeten</h2><p>Vul uw e-mailadres in</p><div class="field"><label>E-mailadres</label><input type="email" id="forgotEmail" placeholder="naam@email.com"></div><button class="btn-primary" style="width:100%;" onclick="requestPasswordReset()">Reset aanvragen</button><div class="auth-msg" id="forgotMsg"></div><p class="auth-link"><a onclick="showPage('login')">Terug</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Wachtwoord vergeten</h2><p>Vul uw e-mailadres in</p><div class="field"><label>E-mailadres</label><input type="email" id="forgotEmail" placeholder="naam@email.com"></div><button class="btn-primary" style="width:100%;" onclick="sendPasswordReset()">Reset aanvragen</button><div class="auth-msg" id="forgotMsg"></div><p class="auth-link"><a onclick="showPage('login')">Terug</a></p></div></div>
 </div>
 
 <div id="resetPasswordPage" class="page">
@@ -1410,7 +479,16 @@ footer li:hover { color: var(--cream); }
 </div>
 
 <div id="registerPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div><div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div><div class="checkbox-row"><input type="checkbox" id="termsBox"><label>Ik ga akkoord met de voorwaarden</label></div><button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button><div class="auth-msg" id="regMsg"></div><p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><p>Registreer met e-mail of Google</p>
+    <div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div>
+    <div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div>
+    <div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div>
+    <div class="checkbox-row"><input type="checkbox" id="termsBox"><label>Ik ga akkoord met de voorwaarden</label></div>
+    <button class="btn-primary" style="width:100%; margin-bottom: 1rem;" onclick="doRegister()">Account aanmaken</button>
+    <button class="btn-primary btn-google" style="width:100%; background:#4285F4;" onclick="googleLogin()">🔐 Registreren met Google</button>
+    <div class="auth-msg" id="regMsg"></div>
+    <p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p>
+  </div></div>
 </div>
 
 <div id="adminPage" class="page">
@@ -1426,19 +504,25 @@ footer li:hover { color: var(--cream); }
       <button class="btn-add-product" onclick="adminAddProduct()">+ PRODUCT TOEVOEGEN</button>
     </div>
     <div class="admin-form"><h3>Producten beheren</h3>
-      <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>Foto</th><th>Product</th><th>Categorie</th><th>Prijs</th><th>Status</th><th>Acties</th></tr></thead><tbody id="adminTableBody"></tbody></table></div>
+      <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>Foto</th><th>Product</th><th>Categorie</th><th>Prijs</th><th>Status</th><th>Acties</th></tr></thead><tbody id="adminTableBody"></tbody>}</div>
     </div>
-    <div class="admin-form"><h3>Gebruikers beheren (Admin rechten geven)</h3>
-      <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>E-mail</th><th>Naam</th><th>Admin</th><th>Acties</th></tr></thead><tbody id="adminUsersTable"></tbody></table></div>
+    <div class="admin-form"><h3>Gebruikers beheren</h3>
+      <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>E-mail</th><th>Naam</th><th>Geverifieerd</th><th>Provider</th><th>Acties</th></tr></thead><tbody id="adminUsersTable"></tbody>}</div>
     </div>
     <div class="admin-form"><h3>Alle bestellingen</h3>
-      <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>Bestel ID</th><th>Klant</th><th>Datum</th><th>Status</th><th>Totaal</th><th>Adres</th><th>Items</th></tr></thead><tbody id="adminOrdersTable"></tbody></table></div>
+      <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>Bestel ID</th><th>Klant</th><th>Datum</th><th>Status</th><th>Totaal</th><th>Adres</th><th>Items</th></tr></thead><tbody id="adminOrdersTable"></tbody>}</div>
     </div>
   </div>
 </div>
 
 <div id="profilePage" class="page">
-  <div class="section"><div class="section-head"><div><div class="section-eyebrow">Account</div><h2 class="section-title">Mijn profiel</h2></div></div><div class="auth-card" style="max-width:500px; margin:0 auto;"><p><strong>Naam:</strong> <span id="profileName"></span></p><p><strong>E-mail:</strong> <span id="profileEmail"></span></p><p><strong>Lid sinds:</strong> <span id="profileSince"></span></p><button class="btn-primary" style="margin-top:1rem;" onclick="showPage('shop')">Verder winkelen</button></div></div>
+  <div class="section"><div class="section-head"><div><div class="section-eyebrow">Account</div><h2 class="section-title">Mijn profiel</h2></div></div><div class="auth-card" style="max-width:500px; margin:0 auto;">
+    <p><strong>Naam:</strong> <span id="profileName"></span></p>
+    <p><strong>E-mail:</strong> <span id="profileEmail"></span></p>
+    <p><strong>Account type:</strong> <span id="profileProvider"></span></p>
+    <p><strong>E-mail geverifieerd:</strong> <span id="profileVerified"></span></p>
+    <button class="btn-primary" style="margin-top:1rem; background:var(--elevated);" onclick="showPage('shop')">Verder winkelen</button>
+  </div></div>
 </div>
 
 <div id="contactPage" class="page">
@@ -1516,363 +600,1070 @@ footer li:hover { color: var(--cream); }
 </footer>
 <div class="footer-bottom"><span>© 2025 MAISON</span><span>Veilig betalen</span></div>
 
-<script>
-const ADMIN_EMAIL = "elmouchania@gmail.com";
-let products, cart, wishlist, user, coupon, users, orders, resetTokens, currentModalProduct, modalZoomed;
+<script type="module">
+  // Import Firebase modules
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+  import { 
+    getAuth, 
+    createUserWithEmailAndPassword, 
+    signInWithEmailAndPassword, 
+    signInWithPopup,
+    GoogleAuthProvider,
+    signOut, 
+    onAuthStateChanged, 
+    updateProfile,
+    sendPasswordResetEmail,
+    sendEmailVerification,
+    applyActionCode,
+    checkActionCode
+  } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  import { getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, deleteDoc, query, where, orderBy, addDoc } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-firestore.js";
 
-function loadState() {
-  products = JSON.parse(localStorage.getItem('ms_products')) || [];
-  cart = JSON.parse(localStorage.getItem('ms_cart')) || [];
-  wishlist = JSON.parse(localStorage.getItem('ms_wish')) || [];
-  coupon = 0;
-  users = JSON.parse(localStorage.getItem('ms_users')) || {};
-  orders = JSON.parse(localStorage.getItem('ms_orders')) || {};
-  try { 
-    user = JSON.parse(localStorage.getItem('ms_user')); 
-  } catch { 
-    user = null; 
-  }
-  Object.values(orders).forEach(userOrders => {
-    userOrders.forEach(order => {
-      if (!order.status) order.status = 'pending';
-    });
-  });
-  resetTokens = {};
-  currentModalProduct = null;
-  modalZoomed = false;
-}
-
-loadState();
-
-function save() {
-  localStorage.setItem('ms_products', JSON.stringify(products));
-  localStorage.setItem('ms_cart', JSON.stringify(cart));
-  localStorage.setItem('ms_wish', JSON.stringify(wishlist));
-  localStorage.setItem('ms_users', JSON.stringify(users));
-  localStorage.setItem('ms_orders', JSON.stringify(orders));
-  if (user) localStorage.setItem('ms_user', JSON.stringify(user));
-  else localStorage.removeItem('ms_user');
-}
-
-function toast(msg) {
-  const t = document.createElement('div');
-  t.className = 'toast';
-  t.textContent = msg;
-  document.getElementById('toastContainer').appendChild(t);
-  setTimeout(() => t.remove(), 3000);
-}
-
-function toggleUserMenu() {
-  document.getElementById('userMenuDropdown').classList.toggle('show');
-}
-function closeUserMenu() {
-  document.getElementById('userMenuDropdown').classList.remove('show');
-}
-document.addEventListener('click', function(e) {
-  const chip = document.getElementById('userChip');
-  const menu = document.getElementById('userMenuDropdown');
-  if (chip && !chip.contains(e.target) && menu && !menu.contains(e.target)) {
-    menu.classList.remove('show');
-  }
-});
-
-function updateNav() {
-  const logged = !!user;
-  document.getElementById('guestBtns').style.display = logged ? 'none' : 'flex';
-  document.getElementById('userChip').style.display = logged ? 'flex' : 'none';
-  const isAdmin = logged && (user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true);
-  document.getElementById('adminNavLink').style.display = isAdmin ? 'block' : 'none';
-  if (logged) {
-    document.getElementById('userLabel').textContent = user.name || user.email.split('@')[0];
-    document.getElementById('avatarIcon').textContent = (user.name?.[0] || user.email[0] || '?').toUpperCase();
-  }
-  document.getElementById('cartBadge').textContent = cart.reduce((a, b) => a + b.qty, 0);
-  document.getElementById('wishlistBadge').textContent = wishlist.length ? `(${wishlist.length})` : '';
-  const heroStat = document.getElementById('heroStatCount');
-  if (heroStat) heroStat.textContent = products.filter(p => p.published).length;
-}
-
-function openProductDetail(productId) {
-  const product = products.find(p => p.id === productId);
-  if (!product) return;
-  currentModalProduct = product;
-  document.getElementById('modalTitle').textContent = product.title;
-  document.getElementById('modalCat').textContent = product.category;
-  document.getElementById('modalPrice').textContent = '€' + product.price.toFixed(2);
-  document.getElementById('modalDesc').textContent = product.desc || 'Geen beschrijving beschikbaar.';
-  const mainImg = document.getElementById('modalMainImg');
-  mainImg.src = (product.images && product.images.length > 0) ? product.images[0] : (product.imageUrl || 'https://placehold.co/600x600/111/888?text=Geen+foto');
-  const thumbContainer = document.getElementById('modalThumbnails');
-  thumbContainer.innerHTML = '';
-  const allImages = product.images && product.images.length > 0 ? product.images : (product.imageUrl ? [product.imageUrl] : []);
-  allImages.forEach((img, idx) => {
-    const thumb = document.createElement('img');
-    thumb.src = img;
-    thumb.className = 'modal-thumb' + (idx === 0 ? ' active' : '');
-    thumb.onclick = () => { mainImg.src = img; document.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('active')); thumb.classList.add('active'); };
-    thumbContainer.appendChild(thumb);
-  });
-  const addBtn = document.getElementById('addImageBtn');
-  if (user && (user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true)) {
-    addBtn.style.display = 'block';
-  } else {
-    addBtn.style.display = 'none';
-  }
-  const inWish = wishlist.includes(product.id);
-  document.getElementById('modalWishlistBtn').textContent = inWish ? '❤️' : '🤍';
-  document.getElementById('productModal').classList.add('active');
-  modalZoomed = false;
-  document.getElementById('modalMainImage').classList.remove('zoomed');
-}
-
-function addProductImage() {
-  if (!currentModalProduct) return;
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = 'image/*';
-  input.onchange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        if (!currentModalProduct.images) currentModalProduct.images = [];
-        if (currentModalProduct.imageUrl && !currentModalProduct.images.includes(currentModalProduct.imageUrl)) {
-          currentModalProduct.images.unshift(currentModalProduct.imageUrl);
-        }
-        currentModalProduct.images.push(ev.target.result);
-        currentModalProduct.imageUrl = currentModalProduct.images[0];
-        save();
-        openProductDetail(currentModalProduct.id);
-        renderHome(); renderShop(); renderAdmin();
-        toast('Extra foto toegevoegd');
-      };
-      reader.readAsDataURL(file);
-    }
+  // Firebase configuratie
+  const firebaseConfig = {
+    apiKey: "AIzaSyCz-EYcHMVG20tX0z-jbEVUVM8b4NC7VcM",
+    authDomain: "shop-2eab0.firebaseapp.com",
+    projectId: "shop-2eab0",
+    storageBucket: "shop-2eab0.firebasestorage.app",
+    messagingSenderId: "846711763840",
+    appId: "1:846711763840:web:67c360a26f0d741f7d4765",
+    measurementId: "G-M7C93E0CTE"
   };
-  input.click();
-}
 
-function closeModal() {
-  document.getElementById('productModal').classList.remove('active');
-  currentModalProduct = null;
-}
-function closeModalOnBackground(e) { if (e.target === document.getElementById('productModal')) closeModal(); }
-function toggleZoom() {
-  modalZoomed = !modalZoomed;
-  document.getElementById('modalMainImage').classList.toggle('zoomed', modalZoomed);
-}
-function addToCartFromModal() { if (currentModalProduct) addToCart(currentModalProduct.id); }
-function toggleWishFromModal() {
-  if (currentModalProduct) {
-    toggleWish(currentModalProduct.id);
-    const inWish = wishlist.includes(currentModalProduct.id);
-    document.getElementById('modalWishlistBtn').textContent = inWish ? '❤️' : '🤍';
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const googleProvider = new GoogleAuthProvider();
+
+  // Admin email constant
+  const ADMIN_EMAIL = "elmouchania@gmail.com";
+
+  // Global state
+  let products = [];
+  let cart = [];
+  let wishlist = [];
+  let currentUser = null;
+  let coupon = 0;
+  let currentModalProduct = null;
+  let modalZoomed = false;
+  let pendingVerificationEmail = null;
+  let pendingVerificationCode = null;
+
+  // Helper function for toast notifications
+  function toast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.getElementById('toastContainer').appendChild(t);
+    setTimeout(() => t.remove(), 3000);
   }
-}
 
-function makeCard(p) {
-  const inWish = wishlist.includes(p.id);
-  const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.imageUrl || 'https://placehold.co/400x530/111/888?text=Geen+foto');
-  return `<div class="product-card" onclick="openProductDetail(${p.id})"><div class="product-img-wrap"><img src="${imgUrl}" alt="${p.title}" loading="lazy">${!p.published ? '<div class="badge-pill">Concept</div>' : ''}<button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(${p.id})">${inWish ? '❤️' : '🤍'}</button><button class="quick-add" onclick="event.stopPropagation();addToCart(${p.id})">+ In winkelwagen</button></div><div class="product-info"><div class="product-cat">${p.category}</div><div class="product-name">${p.title}</div><div class="product-sub">${p.desc || ''}</div><div class="product-footer"><div class="product-price">€${p.price.toFixed(2)}</div></div></div></div>`;
-}
+  // Genereer een 6-cijferige code
+  function generateVerificationCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
 
-function renderHome() {
-  const featured = products.filter(p => p.published).slice(0, 6);
-  document.getElementById('homeFeaturedGrid').innerHTML = featured.length ? featured.map(makeCard).join('') : '<div style="text-align:center;padding:4rem;">Nog geen producten. Admin kan producten toevoegen.</div>';
-}
-function renderShop() {
-  const cat = document.querySelector('.filter-pill.active')?.dataset.cat || 'all';
-  const q = (document.getElementById('shopSearch')?.value || '').toLowerCase();
-  const sort = document.getElementById('shopSort')?.value || '';
-  let list = products.filter(p => p.published && (cat === 'all' || p.category === cat) && (p.title.toLowerCase().includes(q) || p.desc?.toLowerCase().includes(q)));
-  if (sort === 'asc') list.sort((a,b)=>a.price-b.price);
-  if (sort === 'desc') list.sort((a,b)=>b.price-a.price);
-  if (sort === 'name') list.sort((a,b)=>a.title.localeCompare(b.title));
-  document.getElementById('shopGrid').innerHTML = list.length ? list.map(makeCard).join('') : '<p style="padding:3rem 0;">Geen producten gevonden.</p>';
-  document.getElementById('shopCount').innerHTML = list.length ? `(${list.length})` : '';
-  const cats = [...new Set(products.filter(p=>p.published).map(p=>p.category))];
-  document.getElementById('catFilters').innerHTML = cats.map(c => `<button class="filter-pill${cat===c?' active':''}" data-cat="${c}" onclick="setFilter('${c}',this)">${c}</button>`).join('');
-}
-window.setFilter = (cat, el) => { document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderShop(); };
-function renderWishlist() {
-  const items = products.filter(p => wishlist.includes(p.id));
-  document.getElementById('wishlistContent').innerHTML = items.length ? `<div class="products-grid">${items.map(makeCard).join('')}</div>` : '<div class="wishlist-empty"><span class="wishlist-empty-icon">♡</span><h3>Uw verlanglijst is leeg</h3></div>';
-}
-function renderCart() {
-  const listDiv = document.getElementById('cartList'), totsDiv = document.getElementById('cartTotals');
-  if (!cart.length) { listDiv.innerHTML = '<div class="cart-empty">Uw winkelmand is leeg</div>'; totsDiv.innerHTML = ''; return; }
-  let sub = 0;
-  listDiv.innerHTML = cart.map(item => { const p = products.find(pr => pr.id === item.id); if (!p) return ''; sub += p.price * item.qty; return `<div class="cart-item"><div class="cart-item-img"><img src="${(p.images && p.images[0]) || p.imageUrl || 'https://placehold.co/70/111/888'}" alt="${p.title}"></div><div class="cart-item-info"><div class="cart-item-name">${p.title}</div><div class="cart-item-price">€${p.price.toFixed(2)}</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty(${p.id},1)">+</button></div></div><button class="cart-rm" onclick="removeFromCart(${p.id})">🗑</button></div>`; }).join('');
-  const ship = sub >= 50 ? 0 : 4.95, disc = sub * (coupon / 100), tot = sub - disc + ship;
-  totsDiv.innerHTML = `<div class="cart-line"><span>Subtotaal</span><span>€${sub.toFixed(2)}</span></div>${coupon ? `<div class="cart-line"><span>Korting (${coupon}%)</span><span>−€${disc.toFixed(2)}</span></div>` : ''}<div class="cart-line"><span>Verzending</span><span>${ship ? '€'+ship.toFixed(2) : 'Gratis'}</span></div><div class="cart-line total"><span>Totaal</span><span>€${tot.toFixed(2)}</span></div>`;
-}
-function renderOrders() {
-  const userOrders = (orders[user?.email] || []).filter(o => o.status !== 'cancelled');
-  const container = document.getElementById('ordersList');
-  if (!userOrders.length) { container.innerHTML = '<div class="auth-card" style="max-width:600px; margin:0 auto;"><p>U heeft nog geen bestellingen geplaatst.</p><button class="btn-primary" onclick="showPage(\'shop\')">Nu winkelen</button></div>'; return; }
-  container.innerHTML = userOrders.map(order => {
-    if (!order.status) order.status = 'pending';
-    const orderDate = new Date(order.date);
-    const now = new Date();
-    const hoursDiff = (now - orderDate) / (1000 * 60 * 60);
-    const canCancel = order.status === 'pending' && hoursDiff < 24;
-    return `<div class="order-card"><h4>Bestelling #${order.id}</h4><p>Datum: ${orderDate.toLocaleDateString('nl-NL')}</p><p>Status: ${order.status === 'pending' ? 'In behandeling' : order.status === 'cancelled' ? 'Geannuleerd' : 'Voltooid'}</p><p>Adres: ${order.address.street}, ${order.address.zipcode} ${order.address.city}</p><p>Totaal: €${order.total.toFixed(2)}</p><div class="order-items">${order.items.map(i => `<div class="order-item"><div class="order-item-meta"><div style="display:flex; align-items:center;"><img src="${escapeHtml(i.image || 'https://placehold.co/70/111/888')}" alt="${escapeHtml(i.title)}"><div><strong>${escapeHtml(i.title)}</strong><br><span>${i.qty}x</span></div></div><span>€${(i.price * i.qty).toFixed(2)}</span></div></div>`).join('')}</div>${canCancel ? `<button class="btn-primary" onclick="cancelOrder(${order.id})">Annuleren</button>` : ''}</div>`;
-  }).join('');
-  save();
-}
-function renderAdmin() {
-  if (!user || !(user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true)) return;
-  const pub = products.filter(p=>p.published).length, dft = products.filter(p=>!p.published).length;
-  document.getElementById('adminStats').innerHTML = `<div class="stat-card"><div class="label">Producten</div><div class="value">${products.length}</div></div><div class="stat-card"><div class="label">Gepubliceerd</div><div class="value">${pub}</div></div><div class="stat-card"><div class="label">Concept</div><div class="value">${dft}</div></div><div class="stat-card"><div class="label">Gebruikers</div><div class="value">${Object.keys(users).length}</div></div>`;
-  document.getElementById('adminTableBody').innerHTML = products.map(p => `<tr><td><img class="admin-thumb" src="${(p.images && p.images[0]) || p.imageUrl || 'https://placehold.co/48/111/888'}" onclick="uploadNewImage(${p.id})"></td><td><strong>${escapeHtml(p.title)}</strong><br><span style="font-size:0.7rem;">${escapeHtml(p.desc||'')}</span></td><td>${p.category}</td><td>€${p.price.toFixed(2)}</td><td><span class="${p.published?'status-live':'status-draft'}">${p.published?'Live':'Concept'}</span></td><td><button class="tbl-btn" onclick="togglePublish(${p.id})">${p.published?'Verberg':'Publiceer'}</button><button class="tbl-btn danger" onclick="deleteProduct(${p.id})">Verwijder</button></td></tr>`).join('');
-  document.getElementById('adminUsersTable').innerHTML = Object.entries(users).map(([email, u]) => `<tr><td>${escapeHtml(email)}</td><td>${escapeHtml(u.name)}</td><td>${u.isAdmin ? '✅ Ja' : '❌ Nee'}</td><td>${email !== user.email && email !== ADMIN_EMAIL ? `<button class="tbl-btn" onclick="toggleAdmin('${email}')">${u.isAdmin ? 'Admin ontnemen' : 'Admin maken'}</button><button class="tbl-btn danger" onclick="deleteUser('${email}')">Verwijder</button>` : email === ADMIN_EMAIL ? 'Hoofdadmin' : 'Jijzelf'}</td></tr>`).join('');
-  const allOrders = Object.entries(orders).flatMap(([email, userOrders]) => userOrders.filter(order => order.status !== 'cancelled').map(order => ({ ...order, customer: email })));
-  document.getElementById('adminOrdersTable').innerHTML = allOrders.map(order => `<tr><td>${order.id}</td><td>${escapeHtml(order.customer)}</td><td>${new Date(order.date).toLocaleDateString('nl-NL')}</td><td>${order.status === 'pending' ? 'In behandeling' : order.status === 'cancelled' ? 'Geannuleerd' : 'Voltooid'}</td><td>€${order.total.toFixed(2)}</td><td>${escapeHtml(order.address.street)}, ${order.address.zipcode} ${order.address.city}</td><td>${order.items.map(i => `<div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.4rem;"><img src="${escapeHtml(i.image || 'https://placehold.co/70/111/888')}" alt="${escapeHtml(i.title)}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">${escapeHtml(i.title)} x ${i.qty}</div>`).join('')}</td></tr>`).join('');
-}
-function toggleAdmin(email) { if (users[email]) { users[email].isAdmin = !users[email].isAdmin; save(); renderAdmin(); toast(`${email} is nu ${users[email].isAdmin ? 'admin' : 'gewone gebruiker'}`); } }
-function deleteUser(email) { if (confirm(`Verwijder ${email}?`)) { delete users[email]; save(); renderAdmin(); toast('Gebruiker verwijderd'); } }
-function uploadNewImage(productId) { const input = document.createElement('input'); input.type='file'; input.accept='image/*'; input.onchange=e=>{const file=e.target.files[0]; if(file){const reader=new FileReader(); reader.onload=ev=>{const p=products.find(x=>x.id===productId); if(p){p.imageUrl=ev.target.result; if(!p.images)p.images=[]; p.images.unshift(ev.target.result); save(); renderAdmin(); renderHome(); renderShop(); toast(`Foto bijgewerkt`);}}; reader.readAsDataURL(file);}}; input.click(); }
-function adminAddProduct() {
-  const title = document.getElementById('aTitle').value.trim(), cat = document.getElementById('aCat').value, price = parseFloat(document.getElementById('aPrice').value), desc = document.getElementById('aDesc').value.trim(), files = Array.from(document.getElementById('aImageFile').files);
-  if (!title || isNaN(price) || price <= 0) { toast('Vul geldige naam en prijs in'); return; }
-  const newProduct = { id: Date.now(), title, category: cat, price, desc: desc || 'Nieuw product', published: false, images: [] };
-  if (files.length > 0) {
-    const images = [];
-    let loaded = 0;
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onload = ev => {
-        images.push(ev.target.result);
-        loaded++;
-        if (loaded === files.length) {
-          newProduct.images = images;
-          newProduct.imageUrl = images[0];
-          products.push(newProduct);
-          save();
-          renderAdmin();
-          renderHome();
-          renderShop();
-          toast(`"${title}" toegevoegd met ${images.length} foto's`);
-          clearAdminForm();
+  // Stuur verificatiecode naar e-mail (via Firebase)
+  async function sendVerificationCodeToEmail(email) {
+    try {
+      // Firebase stuurt een verificatielink, maar wij gebruiken de code methode
+      // We slaan de code op in Firestore en sturen een e-mail via een service
+      const code = generateVerificationCode();
+      pendingVerificationCode = code;
+      pendingVerificationEmail = email;
+      
+      // Sla code op in Firestore met vervaltijd (10 minuten)
+      await setDoc(doc(db, "verificationCodes", email), {
+        code: code,
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 10 * 60000).toISOString()
+      });
+      
+      // Omdat Firebase geen eigen code-verzending heeft, gebruiken we de verificatielink
+      const user = auth.currentUser;
+      if (user) {
+        await sendEmailVerification(user);
+        toast(`Verificatiecode is naar ${email} gestuurd! (Check ook je spam map)`);
+        toast(`Jouw code is: ${code} (alleen voor testdoeleinden)`);
+      } else {
+        toast(`Code ${code} is opgeslagen. Maar je moet eerst inloggen om e-mail te ontvangen.`);
+      }
+      
+      return code;
+    } catch (error) {
+      console.error("Error sending code:", error);
+      toast("Fout bij verzenden van code: " + error.message);
+      return null;
+    }
+  }
+
+  // Verifieer de ingevoerde code
+  async function verifyEmailCode() {
+    const enteredCode = document.getElementById('verifyCode').value.trim();
+    const msg = document.getElementById('verifyMsg');
+    
+    if (!enteredCode || enteredCode.length !== 6) {
+      msg.textContent = 'Voer een 6-cijferige code in';
+      msg.className = 'auth-msg error';
+      return;
+    }
+    
+    try {
+      const codeDoc = await getDoc(doc(db, "verificationCodes", pendingVerificationEmail || currentUser?.email));
+      if (!codeDoc.exists()) {
+        msg.textContent = 'Geen code gevonden. Vraag een nieuwe code aan.';
+        msg.className = 'auth-msg error';
+        return;
+      }
+      
+      const data = codeDoc.data();
+      const expiresAt = new Date(data.expiresAt);
+      
+      if (expiresAt < new Date()) {
+        msg.textContent = 'Code is verlopen. Vraag een nieuwe code aan.';
+        msg.className = 'auth-msg error';
+        await deleteDoc(doc(db, "verificationCodes", pendingVerificationEmail || currentUser?.email));
+        return;
+      }
+      
+      if (data.code !== enteredCode) {
+        msg.textContent = 'Ongeldige code. Probeer opnieuw.';
+        msg.className = 'auth-msg error';
+        return;
+      }
+      
+      // Code is correct! Markeer e-mail als geverifieerd in Firestore
+      if (currentUser) {
+        await setDoc(doc(db, "users", currentUser.email), {
+          emailVerified: true,
+          verifiedAt: new Date().toISOString()
+        }, { merge: true });
+        
+        // Verwijder gebruikte code
+        await deleteDoc(doc(db, "verificationCodes", currentUser.email));
+        
+        toast('E-mail succesvol geverifieerd! Je kunt nu bestellingen plaatsen.');
+        closeVerifyModal();
+      }
+      
+      msg.textContent = 'Verificatie succesvol!';
+      msg.className = 'auth-msg success';
+      
+      setTimeout(() => {
+        closeVerifyModal();
+        if (document.getElementById('profilePage').classList.contains('active')) {
+          document.getElementById('profileVerified').innerHTML = '✅ Ja';
         }
-      };
-      reader.readAsDataURL(file);
-    });
-  } else {
-    products.push(newProduct);
-    save();
-    renderAdmin();
+      }, 1500);
+      
+    } catch (error) {
+      console.error("Verification error:", error);
+      msg.textContent = 'Fout bij verificatie: ' + error.message;
+      msg.className = 'auth-msg error';
+    }
+  }
+
+  async function resendVerificationCode() {
+    if (currentUser) {
+      await sendVerificationCodeToEmail(currentUser.email);
+      showVerifyModal(currentUser.email);
+    }
+  }
+
+  function showVerifyModal(email) {
+    document.getElementById('verifyEmailDisplay').textContent = email;
+    document.getElementById('verifyCode').value = '';
+    document.getElementById('verifyMsg').textContent = '';
+    document.getElementById('verifyModal').classList.add('active');
+  }
+
+  function closeVerifyModal() {
+    document.getElementById('verifyModal').classList.remove('active');
+  }
+
+  function closeVerifyModalOnBackground(e) {
+    if (e.target === document.getElementById('verifyModal')) closeVerifyModal();
+  }
+
+  // Toggle user menu
+  window.toggleUserMenu = function() {
+    document.getElementById('userMenuDropdown').classList.toggle('show');
+  }
+
+  window.closeUserMenu = function() {
+    document.getElementById('userMenuDropdown').classList.remove('show');
+  }
+
+  document.addEventListener('click', function(e) {
+    const chip = document.getElementById('userChip');
+    const menu = document.getElementById('userMenuDropdown');
+    if (chip && !chip.contains(e.target) && menu && !menu.contains(e.target)) {
+      menu.classList.remove('show');
+    }
+  });
+
+  // Update navigation
+  function updateNav() {
+    const logged = !!currentUser;
+    document.getElementById('guestBtns').style.display = logged ? 'none' : 'flex';
+    document.getElementById('userChip').style.display = logged ? 'flex' : 'none';
+    const isAdmin = logged && currentUser.email === ADMIN_EMAIL;
+    document.getElementById('adminNavLink').style.display = isAdmin ? 'block' : 'none';
+    if (logged && currentUser) {
+      let displayName = currentUser.displayName || currentUser.email.split('@')[0];
+      document.getElementById('userLabel').textContent = displayName;
+      document.getElementById('avatarIcon').textContent = (currentUser.displayName?.[0] || currentUser.email[0] || '?').toUpperCase();
+    }
+    const cartCount = cart.reduce((a, b) => a + (b.qty || 1), 0);
+    document.getElementById('cartBadge').textContent = cartCount;
+    document.getElementById('wishlistBadge').textContent = wishlist.length ? `(${wishlist.length})` : '';
+  }
+
+  // Load products
+  async function loadProducts() {
+    try {
+      const productsSnapshot = await getDocs(collection(db, "products"));
+      if (!productsSnapshot.empty) {
+        products = productsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      } else {
+        await initDemoProducts();
+      }
+    } catch (error) {
+      console.error("Error loading products:", error);
+      products = [];
+    }
     renderHome();
     renderShop();
-    toast(`"${title}" toegevoegd`);
-    clearAdminForm();
   }
-}
-function clearAdminForm() { document.getElementById('aTitle').value = ''; document.getElementById('aPrice').value = ''; document.getElementById('aImageFile').value = ''; document.getElementById('aDesc').value = ''; }
-function addToCart(id) { if (!user) { toast('Log in om te winkelen'); showPage('login'); return; } const ex = cart.find(i => i.id === id); if (ex) ex.qty++; else cart.push({ id, qty: 1 }); save(); updateNav(); renderCart(); toast('Toegevoegd aan winkelmand'); }
-function changeQty(id, delta) { const idx = cart.findIndex(x => x.id === id); if (idx === -1) return; cart[idx].qty += delta; if (cart[idx].qty <= 0) cart.splice(idx, 1); save(); updateNav(); renderCart(); }
-function removeFromCart(id) { cart = cart.filter(i => i.id !== id); save(); updateNav(); renderCart(); }
-function toggleWish(id) { if (!user) { toast('Log in'); showPage('login'); return; } const idx = wishlist.indexOf(id); if (idx === -1) { wishlist.push(id); toast('Toegevoegd aan verlanglijst'); } else { wishlist.splice(idx, 1); toast('Verwijderd'); } save(); updateNav(); if(document.getElementById('shopPage').classList.contains('active')) renderShop(); if(document.getElementById('wishlistPage').classList.contains('active')) renderWishlist(); renderHome(); }
-function applyCoupon() { const code = document.getElementById('couponInput').value.trim().toUpperCase(); if (code === 'WELKOM10') { coupon = 10; toast('10% korting!'); } else if (code === 'MAISON20') { coupon = 20; toast('20% korting!'); } else { toast('Ongeldige code'); return; } renderCart(); }
-function showCheckout() { if (!user) { toast('Log in om af te rekenen'); showPage('login'); return; } if (!cart.length) { toast('Winkelmand is leeg'); return; } document.getElementById('checkoutModal').classList.add('active'); }
-function closeCheckoutModal() { document.getElementById('checkoutModal').classList.remove('active'); }
-function closeCheckoutModalOnBackground(e) { if (e.target === document.getElementById('checkoutModal')) closeCheckoutModal(); }
-function showPaypalModal(amount) {
-  document.getElementById('paypalAmount').textContent = amount.toFixed(2);
-  document.getElementById('paypalModal').classList.add('active');
-}
-function closePaypalModal() {
-  document.getElementById('paypalModal').classList.remove('active');
-}
-function closePaypalModalOnBackground(e) { if (e.target === document.getElementById('paypalModal')) closePaypalModal(); }
-function cancelOrder(orderId) {
-  if (confirm('Weet u zeker dat u deze bestelling wilt annuleren?')) {
-    const userOrders = orders[user.email] || [];
-    const orderIndex = userOrders.findIndex(o => o.id === orderId);
-    if (orderIndex !== -1 && userOrders[orderIndex].status === 'pending') {
-      userOrders.splice(orderIndex, 1);
-      if (!userOrders.length) delete orders[user.email];
-      save();
-      renderOrders();
-      renderAdmin();
-      toast('Bestelling verwijderd.');
+
+  async function initDemoProducts() {
+    const demoProducts = [
+      { id: "1", title: "Signature Hoodie", category: "Kleding", price: 89.99, desc: "Premium katoen, limited editie.", published: true, images: ["https://placehold.co/600x800/1a1a1a/888?text=Hoodie"], imageUrl: "https://placehold.co/600x800/1a1a1a/888?text=Hoodie" },
+      { id: "2", title: "Leather Weekender", category: "Accessoires", price: 249.99, desc: "Handgemaakt Italiaans leer.", published: true, images: ["https://placehold.co/600x800/1a1a1a/888?text=Bag"], imageUrl: "https://placehold.co/600x800/1a1a1a/888?text=Leather+Bag" },
+      { id: "3", title: "Minimalist Watch", category: "Accessoires", price: 189.99, desc: "RVS, waterdicht.", published: true, images: ["https://placehold.co/600x800/1a1a1a/888?text=Watch"], imageUrl: "https://placehold.co/600x800/1a1a1a/888?text=Watch" },
+      { id: "4", title: "Ceramic Vase", category: "Wonen", price: 79.99, desc: "Handgedraaid, uniek stuk.", published: true, images: ["https://placehold.co/600x800/1a1a1a/888?text=Vase"], imageUrl: "https://placehold.co/600x800/1a1a1a/888?text=Vase" }
+    ];
+    
+    for (const product of demoProducts) {
+      await setDoc(doc(db, "products", product.id), product);
+    }
+    products = demoProducts;
+  }
+
+  // Save user data
+  async function saveUserData() {
+    if (!currentUser) return;
+    try {
+      const userDoc = await getDoc(doc(db, "users", currentUser.email));
+      const existingData = userDoc.exists() ? userDoc.data() : {};
+      
+      await setDoc(doc(db, "users", currentUser.email), {
+        email: currentUser.email,
+        name: currentUser.displayName,
+        cart: cart,
+        wishlist: wishlist,
+        emailVerified: existingData.emailVerified || false,
+        provider: existingData.provider || (currentUser.providerData?.[0]?.providerId || 'email'),
+        updatedAt: new Date().toISOString()
+      }, { merge: true });
+    } catch(e) {
+      console.warn("Could not save user data:", e);
     }
   }
-}
-function placeOrder() {
-  const firstname = document.getElementById('checkoutFirstname').value.trim(), lastname = document.getElementById('checkoutLastname').value.trim(), address = document.getElementById('checkoutAddress').value.trim(), zipcode = document.getElementById('checkoutZipcode').value.trim(), city = document.getElementById('checkoutCity').value.trim(), country = document.getElementById('checkoutCountry').value, phone = document.getElementById('checkoutPhone').value.trim();
-  if (!firstname || !lastname || !address || !zipcode || !city || !phone) { toast('Vul alle adresgegevens in'); return; }
-  let sub = cart.reduce((s,item) => { const p = products.find(pr => pr.id === item.id); return s + (p ? p.price * item.qty : 0); }, 0);
-  const ship = sub >= 50 ? 0 : 4.95, disc = sub * (coupon / 100), total = sub - disc + ship;
-  const orderItems = cart.map(item => { const p = products.find(pr => pr.id === item.id); return { id: item.id, title: p?.title, price: p?.price, qty: item.qty, image: (p?.images && p?.images[0]) || p?.imageUrl }; });
-  const newOrder = { id: Date.now(), date: new Date().toISOString(), status: 'pending', items: orderItems, subtotal: sub, shipping: ship, discount: disc, total: total, address: { firstname, lastname, street: address, zipcode, city, country, phone } };
-  if (!orders[user.email]) orders[user.email] = [];
-  orders[user.email].unshift(newOrder);
-  cart = []; coupon = 0;
-  save(); updateNav(); renderCart(); closeCheckoutModal(); toast('Bestelling geplaatst! Bedankt voor uw aankoop');
-  showPaypalModal(total);
-}
-function togglePublish(id) { const p = products.find(x => x.id === id); if (p) { p.published = !p.published; save(); renderAdmin(); renderHome(); renderShop(); toast(`${p.title} ${p.published ? 'gepubliceerd' : 'verborgen'}`); } }
-function deleteProduct(id) { if (confirm('Verwijderen?')) { products = products.filter(p => p.id !== id); cart = cart.filter(i => i.id !== id); wishlist = wishlist.filter(w => w !== id); save(); renderAdmin(); renderHome(); renderShop(); toast('Product verwijderd'); } }
-function requestPasswordReset() { const email = document.getElementById('forgotEmail').value.trim().toLowerCase(), msg = document.getElementById('forgotMsg'); if (!email) { msg.textContent = 'Vul e-mailadres in'; msg.className='auth-msg error'; return; } if (!users[email]) { msg.textContent = 'Geen account gevonden'; msg.className='auth-msg error'; return; } const token = Math.random().toString(36).substring(2,20)+Date.now().toString(36); resetTokens[token]=email; localStorage.setItem('ms_reset_token_'+token, email); msg.innerHTML = `Reset-link verzonden. <a href="#" onclick="simulateReset('${token}');return false;" style="color:var(--gold);">Klik hier om te simuleren</a>`; msg.className='auth-msg success'; }
-function simulateReset(token) { const email = resetTokens[token] || localStorage.getItem('ms_reset_token_'+token); if(email) { showPage('reset-password'); document.getElementById('resetMsg').innerHTML = `<span style="color:var(--sage);">Reset voor: ${email}</span>`; document.getElementById('resetMsg').className='auth-msg success'; window.resetEmail=email; window.resetToken=token; } else { toast('Ongeldige link'); } }
-function confirmPasswordReset() { const newPass = document.getElementById('resetNewPass').value, confirmPass = document.getElementById('resetConfirmPass').value, email = window.resetEmail, token = window.resetToken; if(!email||!token) { document.getElementById('resetMsg').textContent='Geen actieve reset'; document.getElementById('resetMsg').className='auth-msg error'; return; } if(!newPass||newPass.length<6) { document.getElementById('resetMsg').textContent='Minimaal 6 tekens'; document.getElementById('resetMsg').className='auth-msg error'; return; } if(newPass!==confirmPass) { document.getElementById('resetMsg').textContent='Komen niet overeen'; document.getElementById('resetMsg').className='auth-msg error'; return; } if(users[email]) { users[email].password=newPass; save(); toast('Wachtwoord gewijzigd!'); delete resetTokens[token]; localStorage.removeItem('ms_reset_token_'+token); delete window.resetEmail; delete window.resetToken; showPage('login'); } }
-function doLogin() { const email = document.getElementById('loginEmail').value.trim().toLowerCase(), pass = document.getElementById('loginPass').value, msg = document.getElementById('loginMsg'); if(!users[email] || users[email].password !== pass) { msg.textContent='Ongeldig'; msg.className='auth-msg error'; return; } user = { email: email, name: users[email].name }; save(); updateNav(); toast(`Welkom, ${users[email].name}`); if(email === ADMIN_EMAIL || users[email].isAdmin === true) showPage('admin'); else showPage('shop'); renderAdmin(); }
-function doRegister() { const name = document.getElementById('regName').value.trim(), email = document.getElementById('regEmail').value.trim().toLowerCase(), pass = document.getElementById('regPass').value, terms = document.getElementById('termsBox').checked, msg = document.getElementById('regMsg'); if(!name||!email||pass.length<6||!terms) { msg.textContent='Vul alle velden in'; msg.className='auth-msg error'; return; } if(users[email]) { msg.textContent='Bestaat al'; msg.className='auth-msg error'; return; } users[email] = { name, password: pass, isAdmin: email === ADMIN_EMAIL, registeredAt: new Date().toISOString() }; save(); toast(email === ADMIN_EMAIL ? 'Admin account aangemaakt!' : 'Account aangemaakt!'); showPage('login'); }
-function logout() { user = null; cart = []; wishlist = []; coupon = 0; save(); updateNav(); closeCart(); showPage('home'); toast('Uitgelogd'); }
-function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(name+'Page').classList.add('active'); document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.page===name)); window.scrollTo({top:0}); if(name==='home') renderHome(); if(name==='shop') renderShop(); if(name==='wishlist') renderWishlist(); if(name==='orders') renderOrders(); if(name==='admin' && user && (user.email===ADMIN_EMAIL || users[user.email]?.isAdmin===true)) renderAdmin(); if(name==='profile' && user) { document.getElementById('profileName').textContent=user.name||'-'; document.getElementById('profileEmail').textContent=user.email; document.getElementById('profileSince').textContent=users[user.email]?.registeredAt?new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL'):'Nieuw'; } closeUserMenu(); closeModal(); closeCheckoutModal(); }
-function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
-function openCart() {
-  renderCart();
-  document.getElementById('cartOverlay').classList.add('open');
-  document.getElementById('cartDrawer').classList.add('open');
-}
-function closeCart() {
-  document.getElementById('cartOverlay').classList.remove('open');
-  document.getElementById('cartDrawer').classList.remove('open');
-}
-document.querySelectorAll('.nav-link').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
-document.getElementById('shopSearch')?.addEventListener('input',renderShop);
-document.getElementById('shopSort')?.addEventListener('change',renderShop);
-window.addEventListener('scroll',()=>document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60));
-if(!localStorage.getItem('ms_cookie')) document.getElementById('cookieBar').style.display='flex';
-document.getElementById('acceptCookie')?.addEventListener('click',()=>{localStorage.setItem('ms_cookie','1'); document.getElementById('cookieBar').style.display='none';});
-document.getElementById('declineCookie')?.addEventListener('click',()=>document.getElementById('cookieBar').style.display='none');
-window.addToCart=addToCart; window.toggleWish=toggleWish; window.changeQty=changeQty; window.removeFromCart=removeFromCart; window.applyCoupon=applyCoupon; window.showCheckout=showCheckout; window.closeCheckoutModal=closeCheckoutModal; window.closeCheckoutModalOnBackground=closeCheckoutModalOnBackground; window.placeOrder=placeOrder; window.showPaypalModal=showPaypalModal; window.closePaypalModal=closePaypalModal; window.closePaypalModalOnBackground=closePaypalModalOnBackground; window.simulatePaypalPayment=simulatePaypalPayment; window.cancelOrder=cancelOrder;
-window.togglePublish=togglePublish; window.deleteProduct=deleteProduct; window.adminAddProduct=adminAddProduct; window.doLogin=doLogin; window.doRegister=doRegister; window.logout=logout; window.showPage=showPage; window.setFilter=window.setFilter;
-window.toggleUserMenu=toggleUserMenu; window.closeUserMenu=closeUserMenu; window.uploadNewImage=uploadNewImage; window.requestPasswordReset=requestPasswordReset; window.confirmPasswordReset=confirmPasswordReset; window.simulateReset=simulateReset;
-window.openProductDetail=openProductDetail; window.closeModal=closeModal; window.closeModalOnBackground=closeModalOnBackground; window.toggleZoom=toggleZoom; window.addToCartFromModal=addToCartFromModal; window.toggleWishFromModal=toggleWishFromModal; window.addProductImage=addProductImage; window.toggleAdmin=toggleAdmin; window.deleteUser=deleteUser;
-function sendContactMessage() {
-  const name = document.getElementById('contactName').value.trim();
-  const email = document.getElementById('contactEmail').value.trim();
-  const subject = document.getElementById('contactSubject').value.trim();
-  const message = document.getElementById('contactMessage').value.trim();
-  const msgEl = document.getElementById('contactMsg');
-  if (!name || !email || !subject || !message) {
-    msgEl.textContent = 'Vul alle velden in.';
-    msgEl.className = 'auth-msg error';
-    return;
+
+  // Load user data
+  async function loadUserData() {
+    if (!currentUser) {
+      cart = [];
+      wishlist = [];
+      updateNav();
+      renderCart();
+      return;
+    }
+    try {
+      const userDoc = await getDoc(doc(db, "users", currentUser.email));
+      if (userDoc.exists()) {
+        const data = userDoc.data();
+        cart = data.cart || [];
+        wishlist = data.wishlist || [];
+      } else {
+        cart = [];
+        wishlist = [];
+      }
+    } catch(e) {
+      console.warn("Could not load user data:", e);
+      cart = [];
+      wishlist = [];
+    }
+    updateNav();
+    renderCart();
+    renderWishlist();
   }
-  // Simulate sending
-  toast('Bedankt voor uw bericht! We nemen zo snel mogelijk contact op.');
-  document.getElementById('contactName').value = '';
-  document.getElementById('contactEmail').value = '';
-  document.getElementById('contactSubject').value = '';
-  document.getElementById('contactMessage').value = '';
-  msgEl.textContent = '';
-}
-function subscribeNewsletter() {
-  const email = document.getElementById('newsletterEmail').value.trim();
-  if (!email) {
-    toast('Vul een e-mailadres in.');
-    return;
+
+  // Open product detail modal
+  window.openProductDetail = function(productId) {
+    const product = products.find(p => p.id == productId);
+    if (!product) return;
+    currentModalProduct = product;
+    document.getElementById('modalTitle').textContent = product.title;
+    document.getElementById('modalCat').textContent = product.category;
+    document.getElementById('modalPrice').textContent = '€' + product.price.toFixed(2);
+    document.getElementById('modalDesc').textContent = product.desc || 'Geen beschrijving beschikbaar.';
+    const mainImg = document.getElementById('modalMainImg');
+    mainImg.src = (product.images && product.images.length > 0) ? product.images[0] : (product.imageUrl || 'https://placehold.co/600x600/111/888?text=Geen+foto');
+    const thumbContainer = document.getElementById('modalThumbnails');
+    thumbContainer.innerHTML = '';
+    const allImages = product.images && product.images.length > 0 ? product.images : (product.imageUrl ? [product.imageUrl] : []);
+    allImages.forEach((img, idx) => {
+      const thumb = document.createElement('img');
+      thumb.src = img;
+      thumb.className = 'modal-thumb' + (idx === 0 ? ' active' : '');
+      thumb.onclick = () => { mainImg.src = img; document.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('active')); thumb.classList.add('active'); };
+      thumbContainer.appendChild(thumb);
+    });
+    const addBtn = document.getElementById('addImageBtn');
+    if (currentUser && currentUser.email === ADMIN_EMAIL) {
+      addBtn.style.display = 'block';
+    } else {
+      addBtn.style.display = 'none';
+    }
+    const inWish = wishlist.includes(product.id);
+    document.getElementById('modalWishlistBtn').textContent = inWish ? '❤️' : '🤍';
+    document.getElementById('productModal').classList.add('active');
+    modalZoomed = false;
+    document.getElementById('modalMainImage').classList.remove('zoomed');
   }
-  toast('Bedankt voor het aanmelden voor de nieuwsbrief!');
-  document.getElementById('newsletterEmail').value = '';
-}
-window.sendContactMessage=sendContactMessage; window.subscribeNewsletter=subscribeNewsletter;
-window.openCart=openCart; window.closeCart=closeCart;
-updateNav(); renderHome(); renderShop();
+
+  window.addProductImage = function() {
+    if (!currentModalProduct || currentUser?.email !== ADMIN_EMAIL) return;
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+          if (!currentModalProduct.images) currentModalProduct.images = [];
+          if (currentModalProduct.imageUrl && !currentModalProduct.images.includes(currentModalProduct.imageUrl)) {
+            currentModalProduct.images.unshift(currentModalProduct.imageUrl);
+          }
+          currentModalProduct.images.push(ev.target.result);
+          currentModalProduct.imageUrl = currentModalProduct.images[0];
+          await setDoc(doc(db, "products", currentModalProduct.id.toString()), currentModalProduct);
+          openProductDetail(currentModalProduct.id);
+          await loadProducts();
+          toast('Extra foto toegevoegd');
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    input.click();
+  }
+
+  window.closeModal = function() {
+    document.getElementById('productModal').classList.remove('active');
+    currentModalProduct = null;
+  }
+
+  window.closeModalOnBackground = function(e) { 
+    if (e.target === document.getElementById('productModal')) window.closeModal(); 
+  }
+
+  window.toggleZoom = function() {
+    modalZoomed = !modalZoomed;
+    document.getElementById('modalMainImage').classList.toggle('zoomed', modalZoomed);
+  }
+
+  window.addToCartFromModal = function() { 
+    if (currentModalProduct) addToCart(currentModalProduct.id); 
+  }
+
+  window.toggleWishFromModal = function() {
+    if (currentModalProduct) {
+      toggleWish(currentModalProduct.id);
+      const inWish = wishlist.includes(currentModalProduct.id);
+      document.getElementById('modalWishlistBtn').textContent = inWish ? '❤️' : '🤍';
+    }
+  }
+
+  function makeCard(p) {
+    const inWish = wishlist.includes(p.id);
+    const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.imageUrl || 'https://placehold.co/400x530/111/888?text=Geen+foto');
+    return `<div class="product-card" onclick="openProductDetail('${p.id}')"><div class="product-img-wrap"><img src="${imgUrl}" alt="${p.title}" loading="lazy">${!p.published ? '<div class="badge-pill">Concept</div>' : ''}<button class="wishlist-btn" onclick="event.stopPropagation();toggleWish('${p.id}')">${inWish ? '❤️' : '🤍'}</button><button class="quick-add" onclick="event.stopPropagation();addToCart('${p.id}')">+ In winkelwagen</button></div><div class="product-info"><div class="product-cat">${escapeHtml(p.category)}</div><div class="product-name">${escapeHtml(p.title)}</div><div class="product-sub">${escapeHtml(p.desc || '')}</div><div class="product-footer"><div class="product-price">€${p.price.toFixed(2)}</div></div></div></div>`;
+  }
+
+  function renderHome() {
+    const featured = products.filter(p => p.published).slice(0, 6);
+    document.getElementById('homeFeaturedGrid').innerHTML = featured.length ? featured.map(makeCard).join('') : '<div style="text-align:center;padding:4rem;">Nog geen producten. Admin kan producten toevoegen.</div>';
+  }
+
+  function renderShop() {
+    const cat = document.querySelector('.filter-pill.active')?.dataset.cat || 'all';
+    const q = (document.getElementById('shopSearch')?.value || '').toLowerCase();
+    const sort = document.getElementById('shopSort')?.value || '';
+    let list = products.filter(p => p.published && (cat === 'all' || p.category === cat) && (p.title.toLowerCase().includes(q) || p.desc?.toLowerCase().includes(q)));
+    if (sort === 'asc') list.sort((a,b)=>a.price-b.price);
+    if (sort === 'desc') list.sort((a,b)=>b.price-a.price);
+    if (sort === 'name') list.sort((a,b)=>a.title.localeCompare(b.title));
+    document.getElementById('shopGrid').innerHTML = list.length ? list.map(makeCard).join('') : '<p style="padding:3rem 0;">Geen producten gevonden.</p>';
+    document.getElementById('shopCount').innerHTML = list.length ? `(${list.length})` : '';
+    const cats = [...new Set(products.filter(p=>p.published).map(p=>p.category))];
+    document.getElementById('catFilters').innerHTML = cats.map(c => `<button class="filter-pill${cat===c?' active':''}" data-cat="${c}" onclick="setFilter('${c}',this)">${escapeHtml(c)}</button>`).join('');
+  }
+
+  window.setFilter = function(cat, el) { 
+    document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active')); 
+    el.classList.add('active'); 
+    renderShop(); 
+  }
+
+  function renderWishlist() {
+    const items = products.filter(p => wishlist.includes(p.id));
+    document.getElementById('wishlistContent').innerHTML = items.length ? `<div class="products-grid">${items.map(makeCard).join('')}</div>` : '<div class="wishlist-empty"><span class="wishlist-empty-icon">♡</span><h3>Uw verlanglijst is leeg</h3></div>';
+  }
+
+  function renderCart() {
+    const listDiv = document.getElementById('cartList'), totsDiv = document.getElementById('cartTotals');
+    if (!cart.length) { 
+      listDiv.innerHTML = '<div class="cart-empty">Uw winkelmand is leeg</div>'; 
+      totsDiv.innerHTML = ''; 
+      return; 
+    }
+    let sub = 0;
+    listDiv.innerHTML = cart.map(item => { 
+      const p = products.find(pr => pr.id == item.id); 
+      if (!p) return ''; 
+      sub += p.price * (item.qty || 1);
+      const qty = item.qty || 1;
+      return `<div class="cart-item"><div class="cart-item-img"><img src="${(p.images && p.images[0]) || p.imageUrl || 'https://placehold.co/70/111/888'}" alt="${escapeHtml(p.title)}"></div><div class="cart-item-info"><div class="cart-item-name">${escapeHtml(p.title)}</div><div class="cart-item-price">€${p.price.toFixed(2)}</div><div class="qty-row"><button class="qty-btn" onclick="changeQty('${p.id}',-1)">−</button><span class="qty-val">${qty}</span><button class="qty-btn" onclick="changeQty('${p.id}',1)">+</button></div></div><button class="cart-rm" onclick="removeFromCart('${p.id}')">🗑</button></div>`; 
+    }).join('');
+    const ship = sub >= 50 ? 0 : 4.95, disc = sub * (coupon / 100), tot = sub - disc + ship;
+    totsDiv.innerHTML = `<div class="cart-line"><span>Subtotaal</span><span>€${sub.toFixed(2)}</span></div>${coupon ? `<div class="cart-line"><span>Korting (${coupon}%)</span><span>−€${disc.toFixed(2)}</span></div>` : ''}<div class="cart-line"><span>Verzending</span><span>${ship ? '€'+ship.toFixed(2) : 'Gratis'}</span></div><div class="cart-line total"><span>Totaal</span><span>€${tot.toFixed(2)}</span></div>`;
+  }
+
+  async function renderOrders() {
+    if (!currentUser) return;
+    try {
+      const q = query(collection(db, "orders"), where("userEmail", "==", currentUser.email), orderBy("date", "desc"));
+      const ordersSnapshot = await getDocs(q);
+      const userOrders = [];
+      ordersSnapshot.forEach(doc => userOrders.push({ id: doc.id, ...doc.data() }));
+      
+      const container = document.getElementById('ordersList');
+      if (!userOrders.length) { 
+        container.innerHTML = '<div class="auth-card" style="max-width:600px; margin:0 auto;"><p>U heeft nog geen bestellingen geplaatst.</p><button class="btn-primary" onclick="showPage(\'shop\')">Nu winkelen</button></div>'; 
+        return; 
+      }
+      container.innerHTML = userOrders.map(order => {
+        const orderDate = new Date(order.date);
+        const now = new Date();
+        const hoursDiff = (now - orderDate) / (1000 * 60 * 60);
+        const canCancel = order.status === 'pending' && hoursDiff < 24;
+        return `<div class="order-card"><h4>Bestelling #${order.id}</h4><p>Datum: ${orderDate.toLocaleDateString('nl-NL')}</p><p>Status: ${order.status === 'pending' ? 'In behandeling' : order.status === 'cancelled' ? 'Geannuleerd' : 'Voltooid'}</p><p>Adres: ${escapeHtml(order.address.street)}, ${escapeHtml(order.address.zipcode)} ${escapeHtml(order.address.city)}</p><p>Totaal: €${order.total.toFixed(2)}</p><div class="order-items">${order.items.map(i => `<div class="order-item"><div class="order-item-meta"><div style="display:flex; align-items:center;"><img src="${escapeHtml(i.image || 'https://placehold.co/70/111/888')}" alt="${escapeHtml(i.title)}" style="width:64px;height:64px;object-fit:cover;border-radius:12px;margin-right:1rem;"><div><strong>${escapeHtml(i.title)}</strong><br><span>${i.qty}x</span></div></div><span>€${(i.price * i.qty).toFixed(2)}</span></div></div>`).join('')}</div>${canCancel ? `<button class="btn-primary" onclick="cancelOrder('${order.id}')">Annuleren</button>` : ''}</div>`;
+      }).join('');
+    } catch(e) {
+      console.warn("Error loading orders:", e);
+    }
+  }
+
+  async function renderAdmin() {
+    if (!currentUser || currentUser.email !== ADMIN_EMAIL) return;
+    const pub = products.filter(p=>p.published).length, dft = products.filter(p=>!p.published).length;
+    document.getElementById('adminStats').innerHTML = `<div class="stat-card"><div class="label">Producten</div><div class="value">${products.length}</div></div><div class="stat-card"><div class="label">Gepubliceerd</div><div class="value">${pub}</div></div><div class="stat-card"><div class="label">Concept</div><div class="value">${dft}</div></div><div class="stat-card"><div class="label">Gebruikers</div><div class="value">-</div></div>`;
+    document.getElementById('adminTableBody').innerHTML = products.map(p => `<tr><td><img class="admin-thumb" src="${(p.images && p.images[0]) || p.imageUrl || 'https://placehold.co/48/111/888'}" onclick="uploadNewImage('${p.id}')"></td><td><strong>${escapeHtml(p.title)}</strong><br><span style="font-size:0.7rem;">${escapeHtml(p.desc||'')}</span></td><td>${escapeHtml(p.category)}</div></td><td>€${p.price.toFixed(2)}</div></td><td><span class="${p.published?'status-live':'status-draft'}">${p.published?'Live':'Concept'}</span></div></td><td><button class="tbl-btn" onclick="togglePublish('${p.id}')">${p.published?'Verberg':'Publiceer'}</button><button class="tbl-btn danger" onclick="deleteProduct('${p.id}')">Verwijder</button></div></tr>`).join('');
+    
+    try {
+      const usersSnapshot = await getDocs(collection(db, "users"));
+      let usersHtml = '';
+      usersSnapshot.forEach(doc => {
+        const userData = doc.data();
+        usersHtml += `<tr><td>${escapeHtml(doc.id)}</div></td><td>${escapeHtml(userData.name || '-')}</div></td><td>${userData.emailVerified ? '✅ Ja' : '❌ Nee'}</div></td><td>${userData.provider || 'email'}</div></td><td>${doc.id !== ADMIN_EMAIL ? `<button class="tbl-btn danger" onclick="deleteUserAccount('${doc.id}')">Verwijder</button>` : 'Hoofdadmin'}</div></tr>`;
+      });
+      document.getElementById('adminUsersTable').innerHTML = usersHtml;
+    } catch(e) {
+      console.warn("Could not load users:", e);
+    }
+    
+    try {
+      const ordersSnapshot = await getDocs(query(collection(db, "orders"), orderBy("date", "desc")));
+      let ordersHtml = '';
+      ordersSnapshot.forEach(doc => {
+        const order = doc.data();
+        ordersHtml += `<tr><td>${doc.id}</div></td><td>${escapeHtml(order.userEmail)}</div></td><td>${new Date(order.date).toLocaleDateString('nl-NL')}</div></td><td>${order.status === 'pending' ? 'In behandeling' : 'Voltooid'}</div></td><td>€${order.total.toFixed(2)}</div><tr><td>${escapeHtml(order.address.street)}, ${escapeHtml(order.address.zipcode)} ${escapeHtml(order.address.city)}</div></td><td>${order.items.map(i => `<div>${escapeHtml(i.title)} x ${i.qty}</div>`).join('')}</div></tr>`;
+      });
+      document.getElementById('adminOrdersTable').innerHTML = ordersHtml;
+    } catch(e) {
+      console.warn("Could not load orders:", e);
+    }
+  }
+
+  window.deleteUserAccount = async function(email) {
+    if (confirm(`Verwijder gebruiker ${email}?`)) {
+      try {
+        await deleteDoc(doc(db, "users", email));
+        toast('Gebruiker verwijderd');
+        renderAdmin();
+      } catch(e) {
+        toast('Fout bij verwijderen');
+      }
+    }
+  }
+
+  window.uploadNewImage = async function(productId) { 
+    const input = document.createElement('input'); 
+    input.type='file'; 
+    input.accept='image/*'; 
+    input.onchange=async (e)=>{
+      const file=e.target.files[0]; 
+      if(file){
+        const reader=new FileReader(); 
+        reader.onload=async (ev)=>{
+          const p=products.find(x=>x.id == productId); 
+          if(p){
+            p.imageUrl=ev.target.result; 
+            if(!p.images) p.images=[]; 
+            p.images.unshift(ev.target.result); 
+            await setDoc(doc(db, "products", p.id.toString()), p);
+            await loadProducts();
+            toast(`Foto bijgewerkt`);
+          }
+        }; 
+        reader.readAsDataURL(file);
+      }
+    }; 
+    input.click(); 
+  }
+
+  window.adminAddProduct = async function() {
+    const title = document.getElementById('aTitle').value.trim(), 
+          cat = document.getElementById('aCat').value, 
+          price = parseFloat(document.getElementById('aPrice').value), 
+          desc = document.getElementById('aDesc').value.trim(), 
+          files = Array.from(document.getElementById('aImageFile').files);
+    if (!title || isNaN(price) || price <= 0) { 
+      toast('Vul geldige naam en prijs in'); 
+      return; 
+    }
+    const newId = Date.now().toString();
+    const newProduct = { 
+      id: newId, 
+      title, 
+      category: cat, 
+      price, 
+      desc: desc || 'Nieuw product', 
+      published: false, 
+      images: [] 
+    };
+    if (files.length > 0) {
+      const images = [];
+      let loaded = 0;
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = async (ev) => {
+          images.push(ev.target.result);
+          loaded++;
+          if (loaded === files.length) {
+            newProduct.images = images;
+            newProduct.imageUrl = images[0];
+            await setDoc(doc(db, "products", newId), newProduct);
+            await loadProducts();
+            toast(`"${title}" toegevoegd met ${images.length} foto's`);
+            clearAdminForm();
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+    } else {
+      await setDoc(doc(db, "products", newId), newProduct);
+      await loadProducts();
+      toast(`"${title}" toegevoegd`);
+      clearAdminForm();
+    }
+  }
+
+  function clearAdminForm() { 
+    document.getElementById('aTitle').value = ''; 
+    document.getElementById('aPrice').value = ''; 
+    document.getElementById('aImageFile').value = ''; 
+    document.getElementById('aDesc').value = ''; 
+  }
+
+  window.addToCart = async function(id) { 
+    if (!currentUser) { 
+      toast('Log in om te winkelen'); 
+      showPage('login'); 
+      return; 
+    } 
+    const ex = cart.find(i => i.id == id); 
+    if (ex) { 
+      ex.qty = (ex.qty || 1) + 1; 
+    } else { 
+      cart.push({ id: id, qty: 1 }); 
+    } 
+    await saveUserData(); 
+    updateNav(); 
+    renderCart(); 
+    toast('Toegevoegd aan winkelmand'); 
+  }
+
+  window.changeQty = async function(id, delta) { 
+    const idx = cart.findIndex(x => x.id == id); 
+    if (idx === -1) return; 
+    const currentQty = cart[idx].qty || 1;
+    const newQty = currentQty + delta;
+    if (newQty <= 0) { 
+      cart.splice(idx, 1); 
+    } else { 
+      cart[idx].qty = newQty; 
+    } 
+    await saveUserData(); 
+    updateNav(); 
+    renderCart(); 
+  }
+
+  window.removeFromCart = async function(id) { 
+    cart = cart.filter(i => i.id != id); 
+    await saveUserData(); 
+    updateNav(); 
+    renderCart(); 
+  }
+
+  window.toggleWish = async function(id) { 
+    if (!currentUser) { 
+      toast('Log in'); 
+      showPage('login'); 
+      return; 
+    } 
+    const idx = wishlist.indexOf(id); 
+    if (idx === -1) { 
+      wishlist.push(id); 
+      toast('Toegevoegd aan verlanglijst'); 
+    } else { 
+      wishlist.splice(idx, 1); 
+      toast('Verwijderd'); 
+    } 
+    await saveUserData(); 
+    updateNav(); 
+    if(document.getElementById('shopPage').classList.contains('active')) renderShop(); 
+    if(document.getElementById('wishlistPage').classList.contains('active')) renderWishlist(); 
+    renderHome(); 
+  }
+
+  window.applyCoupon = function() { 
+    const code = document.getElementById('couponInput').value.trim().toUpperCase(); 
+    if (code === 'WELKOM10') { 
+      coupon = 10; 
+      toast('10% korting!'); 
+    } else if (code === 'MAISON20') { 
+      coupon = 20; 
+      toast('20% korting!'); 
+    } else { 
+      toast('Ongeldige code'); 
+      return; 
+    } 
+    renderCart(); 
+  }
+
+  window.sendPasswordReset = async function() {
+    const email = document.getElementById('forgotEmail').value.trim();
+    const msg = document.getElementById('forgotMsg');
+    if (!email) {
+      msg.textContent = 'Vul e-mailadres in';
+      msg.className = 'auth-msg error';
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      msg.innerHTML = 'Reset-link verzonden! Check je e-mail.';
+      msg.className = 'auth-msg success';
+    } catch(error) {
+      msg.textContent = 'Fout: ' + error.message;
+      msg.className = 'auth-msg error';
+    }
+  }
+
+  window.confirmPasswordReset = function() {
+    toast('Gebruik de link in je e-mail om je wachtwoord te resetten.');
+    showPage('login');
+  }
+
+  window.showCheckout = function() { 
+    if (!currentUser) { 
+      toast('Log in om af te rekenen'); 
+      showPage('login'); 
+      return; 
+    } 
+    if (!auth.currentUser?.emailVerified) {
+      toast('Verifieer eerst je e-mailadres voordat je kunt bestellen!');
+      sendVerificationCodeToEmail(currentUser.email);
+      showVerifyModal(currentUser.email);
+      return;
+    }
+    if (!cart.length) { 
+      toast('Winkelmand is leeg'); 
+      return; 
+    } 
+    document.getElementById('checkoutModal').classList.add('active'); 
+  }
+
+  window.closeCheckoutModal = function() { 
+    document.getElementById('checkoutModal').classList.remove('active'); 
+  }
+
+  window.closeCheckoutModalOnBackground = function(e) { 
+    if (e.target === document.getElementById('checkoutModal')) window.closeCheckoutModal(); 
+  }
+
+  window.showPaypalModal = function(amount) {
+    document.getElementById('paypalAmount').textContent = amount.toFixed(2);
+    document.getElementById('paypalModal').classList.add('active');
+  }
+
+  window.closePaypalModal = function() {
+    document.getElementById('paypalModal').classList.remove('active');
+  }
+
+  window.closePaypalModalOnBackground = function(e) { 
+    if (e.target === document.getElementById('paypalModal')) window.closePaypalModal(); 
+  }
+
+  window.simulatePaypalPayment = function() {
+    window.closePaypalModal();
+    toast('Betaling voltooid! Bedankt voor uw aankoop.');
+  }
+
+  window.cancelOrder = async function(orderId) {
+    if (confirm('Weet u zeker dat u deze bestelling wilt annuleren?')) {
+      try {
+        await updateDoc(doc(db, "orders", orderId), { status: 'cancelled' });
+        toast('Bestelling geannuleerd.');
+        renderOrders();
+        renderAdmin();
+      } catch(e) {
+        toast('Fout bij annuleren');
+      }
+    }
+  }
+
+  window.placeOrder = async function() {
+    const firstname = document.getElementById('checkoutFirstname').value.trim(), 
+          lastname = document.getElementById('checkoutLastname').value.trim(), 
+          address = document.getElementById('checkoutAddress').value.trim(), 
+          zipcode = document.getElementById('checkoutZipcode').value.trim(), 
+          city = document.getElementById('checkoutCity').value.trim(), 
+          country = document.getElementById('checkoutCountry').value, 
+          phone = document.getElementById('checkoutPhone').value.trim();
+    if (!firstname || !lastname || !address || !zipcode || !city || !phone) { 
+      toast('Vul alle adresgegevens in'); 
+      return; 
+    }
+    let sub = cart.reduce((s,item) => { 
+      const p = products.find(pr => pr.id == item.id); 
+      return s + (p ? p.price * (item.qty || 1) : 0); 
+    }, 0);
+    const ship = sub >= 50 ? 0 : 4.95, 
+          disc = sub * (coupon / 100), 
+          total = sub - disc + ship;
+    const orderItems = cart.map(item => { 
+      const p = products.find(pr => pr.id == item.id); 
+      return { 
+        id: item.id, 
+        title: p?.title, 
+        price: p?.price, 
+        qty: item.qty || 1, 
+        image: (p?.images && p?.images[0]) || p?.imageUrl 
+      }; 
+    });
+    const newOrder = { 
+      userEmail: currentUser.email,
+      date: new Date().toISOString(), 
+      status: 'pending', 
+      items: orderItems, 
+      subtotal: sub, 
+      shipping: ship, 
+      discount: disc, 
+      total: total, 
+      address: { firstname, lastname, street: address, zipcode, city, country, phone } 
+    };
+    
+    try {
+      await addDoc(collection(db, "orders"), newOrder);
+      cart = []; 
+      coupon = 0;
+      await saveUserData(); 
+      updateNav(); 
+      renderCart(); 
+      window.closeCheckoutModal(); 
+      toast('Bestelling geplaatst! Bedankt voor uw aankoop');
+      window.showPaypalModal(total);
+    } catch(e) {
+      toast('Fout bij plaatsen bestelling');
+    }
+  }
+
+  window.togglePublish = async function(id) { 
+    const p = products.find(x => x.id == id); 
+    if (p) { 
+      p.published = !p.published; 
+      await setDoc(doc(db, "products", id.toString()), p);
+      await loadProducts();
+      toast(`${p.title} ${p.published ? 'gepubliceerd' : 'verborgen'}`); 
+    } 
+  }
+
+  window.deleteProduct = async function(id) { 
+    if (confirm('Verwijderen?')) { 
+      await deleteDoc(doc(db, "products", id.toString()));
+      cart = cart.filter(i => i.id != id); 
+      wishlist = wishlist.filter(w => w != id); 
+      await saveUserData();
+      await loadProducts();
+      toast('Product verwijderd'); 
+    } 
+  }
+
+  // Google Login
+  window.googleLogin = async function() {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      // Check of gebruiker al bestaat in Firestore
+      const userDoc = await getDoc(doc(db, "users", user.email));
+      if (!userDoc.exists()) {
+        await setDoc(doc(db, "users", user.email), {
+          name: user.displayName,
+          email: user.email,
+          emailVerified: user.emailVerified,
+          provider: 'google.com',
+          registeredAt: new Date().toISOString(),
+          isAdmin: user.email === ADMIN_EMAIL
+        });
+      }
+      
+      toast(`Welkom, ${user.displayName || user.email.split('@')[0]}!`);
+      showPage('shop');
+    } catch(error) {
+      console.error("Google login error:", error);
+      toast('Google login mislukt: ' + error.message);
+    }
+  }
+
+  // Email/Password Login
+  window.doLogin = async function() { 
+    const email = document.getElementById('loginEmail').value.trim().toLowerCase(), 
+          password = document.getElementById('loginPass').value, 
+          msg = document.getElementById('loginMsg');
+    
+    if (!email || !password) {
+      msg.textContent='Vul e-mail en wachtwoord in';
+      msg.className='auth-msg error';
+      return;
+    }
+    
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      msg.textContent='';
+      toast('Inloggen succesvol!');
+    } catch(error) {
+      msg.textContent='Ongeldige inloggegevens: ' + error.message;
+      msg.className='auth-msg error';
+    }
+  }
+
+  // Register with email/password + verification code
+  window.doRegister = async function() { 
+    const name = document.getElementById('regName').value.trim(), 
+          email = document.getElementById('regEmail').value.trim().toLowerCase(), 
+          password = document.getElementById('regPass').value, 
+          terms = document.getElementById('termsBox').checked, 
+          msg = document.getElementById('regMsg');
+    
+    if(!name||!email||password.length<6||!terms) { 
+      msg.textContent='Vul alle velden in (wachtwoord min 6 tekens)'; 
+      msg.className='auth-msg error'; 
+      return; 
+    }
+    
+    try {
+      // Account aanmaken
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: name });
+      
+      // Verificatiecode genereren en opslaan
+      const code = generateVerificationCode();
+      pendingVerificationCode = code;
+      pendingVerificationEmail = email;
+      
+      await setDoc(doc(db, "verificationCodes", email), {
+        code: code,
+        createdAt: new Date().toISOString(),
+        expiresAt: new Date(Date.now() + 10 * 60000).toISOString()
+      });
+      
+      // Sla gebruikersdata op
+      await setDoc(doc(db, "users", email), {
+        name: name,
+        email: email,
+        registeredAt: new Date().toISOString(),
+        isAdmin: email === ADMIN_EMAIL,
+        emailVerified: false,
+        provider: 'password'
+      });
+      
+      // Stuur verificatie-e-mail (bevat de code)
+      await sendEmailVerification(userCredential.user);
+      
+      toast(`Account aangemaakt! Check je e-mail voor de verificatiecode.`);
+      toast(`Test code: ${code} (alleen voor demo)`);
+      
+      // Toon verificatie modal
+      showVerifyModal(email);
+    } catch(error) {
+      console.error("Register error:", error);
+      msg.textContent='Registratie mislukt: ' + error.message;
+      msg.className='auth-msg error';
+    }
+  }
+
+  window.logout = async function() { 
+    try {
+      await signOut(auth);
+    } catch(e) {
+      console.warn("Sign out error:", e);
+    }
+    currentUser = null; 
+    cart = []; 
+    wishlist = []; 
+    coupon = 0; 
+    updateNav(); 
+    window.closeCart(); 
+    showPage('home'); 
+    toast('Uitgelogd'); 
+  }
+
+  // Auth state listener (fix voor refresh probleem!)
+  onAuthStateChanged(auth, async (firebaseUser) => {
+    if (firebaseUser) {
+      // Haal verificatie status uit Firestore
+      const userDoc = await getDoc(doc(db, "users", firebaseUser.email));
+      const isVerified = userDoc.exists() ? userDoc.data().emailVerified : false;
+      
+      currentUser = {
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName,
+        uid: firebaseUser.uid,
+        emailVerified: isVerified || firebaseUser.emailVerified
+      };
+      await loadUserData();
+      updateNav();
+      renderAdmin();
+      renderOrders();
+      
+      if (!isVerified && !firebaseUser.emailVerified) {
+        toast('Verifieer je e-mailadres met de code die we hebben gestuurd!');
+      }
+    } else {
+      currentUser = null;
+      cart = [];
+      wishlist = [];
+      updateNav();
+    }
+    
+    if (!authInitialized) {
+      authInitialized = true;
+      renderHome();
+      renderShop();
+    } else {
+      renderHome();
+      renderShop();
+    }
+  });
+
+  window.showPage = function(name) { 
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); 
+    const pageElement = document.getElementById(name+'Page');
+    if (pageElement) pageElement.classList.add('active');
+    document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.page===name)); 
+    window.scrollTo({top:0}); 
+    if(name==='home') renderHome(); 
+    if(name==='shop') renderShop(); 
+    if(name==='wishlist') renderWishlist(); 
+    if(name==='orders') renderOrders(); 
+    if(name==='admin' && currentUser && currentUser.email === ADMIN_EMAIL) renderAdmin(); 
+    if(name==='profile' && currentUser) { 
+      document.getElementById('profileName').textContent=currentUser.displayName || '-'; 
+      document.getElementById('profileEmail').textContent=currentUser.email;
+      document.getElementById('profileProvider').textContent='Google (via email)' 
+      document.getElementById('profileVerified').innerHTML = currentUser.emailVerified ? '✅ Ja' : '❌ Nee - <button onclick="resendVerificationCode()" style="background:none;border:none;color:var(--gold);cursor:pointer;">Verificatiecode verzenden</button>';
+    } 
+    window.closeUserMenu(); 
+    window.closeModal(); 
+    window.closeCheckoutModal(); 
+  }
+
+  function escapeHtml(str) { 
+    if(!str) return ''; 
+    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); 
+  }
+
+  window.openCart = function() {
+    renderCart();
+    document.getElementById('cartOverlay').classList.add('open');
+    document.getElementById('cartDrawer').classList.add('open');
+  }
+
+  window.closeCart = function() {
+    document.getElementById('cartOverlay').classList.remove('open');
+    document.getElementById('cartDrawer').classList.remove('open');
+  }
+
+  window.sendContactMessage = function() {
+    const name = document.getElementById('contactName').value.trim();
+    const email = document.getElementById('contactEmail').value.trim();
+    const subject = document.getElementById('contactSubject').value.trim();
+    const message = document.getElementById('contactMessage').value.trim();
+    const msgEl = document.getElementById('contactMsg');
+    if (!name || !email || !subject || !message) {
+      msgEl.textContent = 'Vul alle velden in.';
+      msgEl.className = 'auth-msg error';
+      return;
+    }
+    toast('Bedankt voor uw bericht! We nemen zo snel mogelijk contact op.');
+    document.getElementById('contactName').value = '';
+    document.getElementById('contactEmail').value = '';
+    document.getElementById('contactSubject').value = '';
+    document.getElementById('contactMessage').value = '';
+    msgEl.textContent = '';
+  }
+
+  window.subscribeNewsletter = function() {
+    const email = document.getElementById('newsletterEmail').value.trim();
+    if (!email) {
+      toast('Vul een e-mailadres in.');
+      return;
+    }
+    toast('Bedankt voor het aanmelden voor de nieuwsbrief!');
+    document.getElementById('newsletterEmail').value = '';
+  }
+
+  window.resendVerificationCode = resendVerificationCode;
+  window.verifyEmailCode = verifyEmailCode;
+  window.closeVerifyModal = closeVerifyModal;
+  window.closeVerifyModalOnBackground = closeVerifyModalOnBackground;
+
+  document.querySelectorAll('.nav-link').forEach(btn=>btn.addEventListener('click',()=>window.showPage(btn.dataset.page)));
+  document.getElementById('shopSearch')?.addEventListener('input',renderShop);
+  document.getElementById('shopSort')?.addEventListener('change',renderShop);
+  window.addEventListener('scroll',()=>document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60));
+
+  if(!localStorage.getItem('ms_cookie')) document.getElementById('cookieBar').style.display='flex';
+  document.getElementById('acceptCookie')?.addEventListener('click',()=>{localStorage.setItem('ms_cookie','1'); document.getElementById('cookieBar').style.display='none';});
+  document.getElementById('declineCookie')?.addEventListener('click',()=>document.getElementById('cookieBar').style.display='none');
+
+  loadProducts();
 </script>
 </body>
 </html>
