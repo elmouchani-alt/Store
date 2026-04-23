@@ -614,6 +614,7 @@ footer li:hover { color: var(--cream); }
     updateProfile,
     sendPasswordResetEmail,
     sendEmailVerification,
+    fetchSignInMethodsForEmail,
     applyActionCode,
     checkActionCode
   } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
@@ -649,6 +650,7 @@ footer li:hover { color: var(--cream); }
   let modalZoomed = false;
   let pendingVerificationEmail = null;
   let pendingVerificationCode = null;
+  let authInitialized = false;
 
   // Helper function for toast notifications
   function toast(msg) {
@@ -1429,7 +1431,13 @@ footer li:hover { color: var(--cream); }
     try {
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
-      
+      currentUser = {
+        email: user.email,
+        displayName: user.displayName,
+        uid: user.uid,
+        emailVerified: user.emailVerified
+      };
+
       // Check of gebruiker al bestaat in Firestore
       const userDoc = await getDoc(doc(db, "users", user.email));
       if (!userDoc.exists()) {
@@ -1442,12 +1450,21 @@ footer li:hover { color: var(--cream); }
           isAdmin: user.email === ADMIN_EMAIL
         });
       }
-      
+      await loadUserData();
+      updateNav();
       toast(`Welkom, ${user.displayName || user.email.split('@')[0]}!`);
       showPage('shop');
     } catch(error) {
       console.error("Google login error:", error);
-      toast('Google login mislukt: ' + error.message);
+      let friendlyMsg;
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        friendlyMsg = 'Er bestaat al een account met dit e-mailadres via een andere methode. Gebruik die methode of reset je wachtwoord.';
+      } else if (error.code === 'auth/email-already-in-use') {
+        friendlyMsg = 'Dit e-mailadres is al in gebruik. Probeer in te loggen met je bestaande account of kies Google als dat je account is.';
+      } else {
+        friendlyMsg = error.message;
+      }
+      toast('Google login mislukt: ' + friendlyMsg);
     }
   }
 
@@ -1523,7 +1540,21 @@ footer li:hover { color: var(--cream); }
       showVerifyModal(email);
     } catch(error) {
       console.error("Register error:", error);
-      msg.textContent='Registratie mislukt: ' + error.message;
+      if (error.code === 'auth/email-already-in-use') {
+        try {
+          const methods = await fetchSignInMethodsForEmail(auth, email);
+          if (methods.includes('google.com')) {
+            msg.textContent = 'Dit e-mailadres is al in gebruik met Google. Gebruik de Google-knop om in te loggen.';
+          } else {
+            msg.textContent = 'Dit e-mailadres is al in gebruik. Probeer in te loggen of reset je wachtwoord.';
+          }
+        } catch (methodError) {
+          console.error('Fetch sign-in methods error:', methodError);
+          msg.textContent = 'Dit e-mailadres is al in gebruik. Probeer in te loggen of reset je wachtwoord.';
+        }
+      } else {
+        msg.textContent = 'Registratie mislukt: ' + error.message;
+      }
       msg.className='auth-msg error';
     }
   }
