@@ -163,6 +163,29 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   display: block;
   margin: 0 auto;
 }
+.btn-apple-circle {
+  background: #000;
+  border: 1px solid #000;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-apple-circle:hover {
+  background: #1a1a1a;
+  border-color: #333;
+}
+.btn-apple-circle svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  margin: 0 auto;
+}
 .btn-gold { background: var(--gold); border: 1px solid var(--gold); color: var(--void); font-weight: 700; }
 .btn-gold:hover { background: var(--gold-bright); }
 .user-chip {
@@ -1421,7 +1444,7 @@ footer li:hover { color: var(--cream); }
 </div>
 
 <div id="loginPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Welkom terug</h2><p>Log in op uw MAISON account</p><div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord"></div><button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button><button class="btn-google-circle" style="margin:0.75rem auto 0; display:block;" title="Inloggen met Google" onclick="loginWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><div class="auth-msg" id="loginMsg"></div><p class="auth-link"><a onclick="showPage('forgot-password')">Wachtwoord vergeten?</a></p><p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Welkom terug</h2><p>Log in op uw MAISON account</p><div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord"></div><button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button><div style="display:flex; gap:0.5rem; justify-content:center; margin:0.75rem 0 0;"><button class="btn-google-circle" title="Inloggen met Google" onclick="loginWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><button class="btn-apple-circle" title="Inloggen met Apple" onclick="loginWithApple()"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.3-.99 3.58-.85 1.51.17 2.61.93 3.23 2.36-3.13 1.93-2.6 5.85.37 6.88-.92 2.38-2.37 3.81-4.26 4.78l-.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg></button></div><div class="auth-msg" id="loginMsg"></div><p class="auth-link"><a onclick="showPage('forgot-password')">Wachtwoord vergeten?</a></p><p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p></div></div>
 </div>
 
 <div id="forgotPasswordPage" class="page">
@@ -1433,7 +1456,7 @@ footer li:hover { color: var(--cream); }
 </div>
 
 <div id="registerPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div><div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div><div class="checkbox-row"><input type="checkbox" id="termsBox"><label>Ik ga akkoord met de voorwaarden</label></div><button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button><button class="btn-google-circle" style="margin:0.75rem auto 0; display:block;" title="Registreer met Google" onclick="registerWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><div class="auth-msg" id="regMsg"></div><p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div><div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div><div class="checkbox-row"><input type="checkbox" id="termsBox"><label>Ik ga akkoord met de voorwaarden</label></div><button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button><div style="display:flex; gap:0.5rem; justify-content:center; margin:0.75rem 0 0;"><button class="btn-google-circle" title="Registreer met Google" onclick="registerWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><button class="btn-apple-circle" title="Registreer met Apple" onclick="registerWithApple()"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.3-.99 3.58-.85 1.51.17 2.61.93 3.23 2.36-3.13 1.93-2.6 5.85.37 6.88-.92 2.38-2.37 3.81-4.26 4.78l-.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg></button></div><div class="auth-msg" id="regMsg"></div><p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p></div></div>
 </div>
 
 <div id="verifyPage" class="page">
@@ -1559,6 +1582,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
+const appleProvider = new firebase.auth.OAuthProvider('apple.com');
 
 const ADMIN_EMAIL = "elmouchania@gmail.com";
 let products, cart, wishlist, user, coupon, users, orders, resetTokens, verificationCodes, currentModalProduct, modalZoomed;
@@ -2074,6 +2098,27 @@ async function loginWithGoogle() {
   }
 }
 function registerWithGoogle() { loginWithGoogle(); }
+async function loginWithApple() {
+  if (!auth) { toast('Firebase niet geladen'); return; }
+  try {
+    appleProvider.addScope('email');
+    appleProvider.addScope('name');
+    const result = await auth.signInWithPopup(appleProvider);
+    handleFirebaseSignIn(result.user);
+  } catch (error) {
+    console.error(error);
+    const errorMap = {
+      'auth/account-exists-with-different-credential': 'Dit e-mailadres is al gekoppeld aan een ander inlogtype. Gebruik dezelfde methode om in te loggen.',
+      'auth/email-already-in-use': 'Dit e-mailadres is al in gebruik. Probeer in te loggen met uw bestaande account of gebruik Apple als dat uw account is.',
+      'auth/popup-closed-by-user': 'Popup gesloten. Probeer opnieuw in te loggen met Apple.',
+      'auth/cancelled-popup-request': 'Popup geprobeerd te openen terwijl er al een andere popup open is. Probeer opnieuw.',
+      'auth/popup-blocked': 'Popup geblokkeerd. Sta popups toe en probeer opnieuw.'
+    };
+    const msg = errorMap[error.code] || error.message || 'Apple login geannuleerd of mislukt';
+    toast(msg);
+  }
+}
+function registerWithApple() { loginWithApple(); }
 function logout() { if (auth) { auth.signOut().catch(() => {}); } user = null; cart = []; wishlist = []; coupon = 0; save(); updateNav(); closeCart(); showPage('home'); toast('Uitgelogd'); }
 function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(name+'Page').classList.add('active'); document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.page===name)); window.scrollTo({top:0}); if(name==='home') renderHome(); if(name==='shop') renderShop(); if(name==='wishlist') renderWishlist(); if(name==='orders') renderOrders(); if(name==='admin' && user && (user.email===ADMIN_EMAIL || users[user.email]?.isAdmin===true)) renderAdmin(); if(name==='profile' && user) { document.getElementById('profileName').textContent=user.name||'-'; document.getElementById('profileEmail').textContent=user.email; document.getElementById('profileSince').textContent=users[user.email]?.registeredAt?new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL'):'Nieuw'; } closeUserMenu(); closeModal(); closeCheckoutModal(); }
 function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
@@ -2094,7 +2139,7 @@ if(!localStorage.getItem('ms_cookie')) document.getElementById('cookieBar').styl
 document.getElementById('acceptCookie')?.addEventListener('click',()=>{localStorage.setItem('ms_cookie','1'); document.getElementById('cookieBar').style.display='none';});
 document.getElementById('declineCookie')?.addEventListener('click',()=>document.getElementById('cookieBar').style.display='none');
 window.addToCart=addToCart; window.toggleWish=toggleWish; window.changeQty=changeQty; window.removeFromCart=removeFromCart; window.applyCoupon=applyCoupon; window.showCheckout=showCheckout; window.closeCheckoutModal=closeCheckoutModal; window.closeCheckoutModalOnBackground=closeCheckoutModalOnBackground; window.placeOrder=placeOrder; window.showPaypalModal=showPaypalModal; window.closePaypalModal=closePaypalModal; window.closePaypalModalOnBackground=closePaypalModalOnBackground; window.simulatePaypalPayment=simulatePaypalPayment; window.cancelOrder=cancelOrder;
-window.togglePublish=togglePublish; window.deleteProduct=deleteProduct; window.adminAddProduct=adminAddProduct; window.doLogin=doLogin; window.doRegister=doRegister; window.loginWithGoogle=loginWithGoogle; window.registerWithGoogle=registerWithGoogle; window.logout=logout; window.showPage=showPage; window.setFilter=window.setFilter;
+window.togglePublish=togglePublish; window.deleteProduct=deleteProduct; window.adminAddProduct=adminAddProduct; window.doLogin=doLogin; window.doRegister=doRegister; window.loginWithGoogle=loginWithGoogle; window.registerWithGoogle=registerWithGoogle; window.loginWithApple=loginWithApple; window.registerWithApple=registerWithApple; window.logout=logout; window.showPage=showPage; window.setFilter=window.setFilter;
 window.toggleUserMenu=toggleUserMenu; window.closeUserMenu=closeUserMenu; window.uploadNewImage=uploadNewImage; window.requestPasswordReset=requestPasswordReset; window.confirmPasswordReset=confirmPasswordReset; window.simulateReset=simulateReset;
 window.openProductDetail=openProductDetail; window.closeModal=closeModal; window.closeModalOnBackground=closeModalOnBackground; window.toggleZoom=toggleZoom; window.addToCartFromModal=addToCartFromModal; window.toggleWishFromModal=toggleWishFromModal; window.addProductImage=addProductImage; window.toggleAdmin=toggleAdmin; window.deleteUser=deleteUser;
 function sendContactMessage() {
