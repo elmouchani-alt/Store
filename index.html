@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MAISON — Premium Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- PayPal Cart SDK (Deel 1) -->
+<script src="https://www.paypalobjects.com/ncp/cart/cart.js" data-merchant-id="83QSZHA7LRCQ2"></script>
+
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 :root {
@@ -41,6 +45,14 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .nav-link:hover, .nav-link.active { color: var(--cream); }
 .nav-link:hover::after, .nav-link.active::after { left: 20%; right: 20%; }
 .nav-right { display: flex; align-items: center; gap: 1.5rem; position: relative; }
+
+/* PayPal cart button styling in nav */
+.paypal-cart-wrap {
+  display: flex; align-items: center;
+}
+paypal-cart-button {
+  --paypal-button-border-radius: 40px;
+}
 
 /* ─── HAMBURGER ─── */
 .mobile-menu-btn {
@@ -80,6 +92,8 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .mobile-auth-section .btn-ghost { width: 100%; text-align: center; padding: 1rem; border-color: var(--border-hover); }
 .mobile-user-section { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.5rem; }
 .mobile-user-name { font-family: var(--font-serif); font-size: 1.2rem; color: var(--gold); margin-bottom: 0.5rem; }
+/* PayPal cart knop in mobile menu */
+.mobile-paypal-cart { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
 
 .cart-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; position: relative; color: var(--text); transition: color 0.2s; }
 .cart-btn:hover { color: var(--gold); }
@@ -161,6 +175,15 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .product-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.2rem; }
 .product-price { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 300; color: var(--gold); }
 
+/* PayPal add-to-cart wrapper in product card */
+.pp-atc-wrap {
+  margin-top: 0.75rem;
+  padding: 0 1.5rem 1.5rem;
+}
+.pp-atc-wrap paypal-add-to-cart-button {
+  width: 100%;
+}
+
 /* MODAL */
 .modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
 .modal.active { display: flex; }
@@ -179,7 +202,9 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .modal-info .modal-cat { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
 .modal-info .modal-price { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--gold); margin: 1rem 0; }
 .modal-info .modal-desc { color: var(--muted); line-height: 1.6; margin-bottom: 2rem; }
-.modal-actions { display: flex; gap: 1rem; margin-top: 1rem; }
+.modal-actions { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; align-items: center; }
+/* PayPal add-to-cart in modal */
+.modal-pp-atc { margin-top: 0.75rem; width: 100%; }
 .add-image-btn { background: var(--elevated); border: 1px dashed var(--border); color: var(--muted); padding: 0.5rem; cursor: pointer; text-align: center; font-size: 0.7rem; transition: all 0.2s; }
 .add-image-btn:hover { border-color: var(--gold); color: var(--gold); }
 @media (max-width: 768px) { .modal-content { grid-template-columns: 1fr; width: 95%; padding: 1rem; } }
@@ -327,7 +352,6 @@ footer li:hover { color: var(--cream); }
   footer { grid-template-columns: 1fr; padding: 3rem 2rem; }
   .cart-drawer { width: 100%; }
   .admin-wrap { padding: 1rem; }
-  /* Toon cart icoon naast hamburger op mobile */
   .mobile-cart-btn { display: flex !important; }
 }
 .mobile-cart-btn { display: none; background: none; border: none; font-size: 1.1rem; cursor: pointer; position: relative; color: var(--text); }
@@ -435,6 +459,10 @@ footer li:hover { color: var(--cream); }
         <button class="btn-primary" id="modalAddToCartBtn" onclick="addToCartFromModal()">In winkelwagen</button>
         <button class="wishlist-btn" id="modalWishlistBtn" style="position:relative; width:50px; height:50px;" onclick="toggleWishFromModal()">🤍</button>
       </div>
+      <!-- PayPal Add to Cart in modal (Deel 2 – product knop) -->
+      <div class="modal-pp-atc">
+        <paypal-add-to-cart-button data-id="4J6PV8TQYTCQQ" id="modalPpAtc"></paypal-add-to-cart-button>
+      </div>
     </div>
   </div>
 </div>
@@ -452,6 +480,10 @@ footer li:hover { color: var(--cream); }
     <button class="nav-link" data-page="admin" id="adminNavLink" style="display:none;">Admin</button>
   </div>
   <div class="nav-right">
+    <!-- PayPal Cart Button desktop (Deel 2 – cart weergeven) -->
+    <div class="paypal-cart-wrap">
+      <paypal-cart-button data-id="pp-view-cart-desktop"></paypal-cart-button>
+    </div>
     <button class="cart-btn" onclick="openCart()">🛒<span class="cart-count" id="cartBadge">0</span></button>
     <div id="guestBtns" style="display:flex; gap:0.5rem;">
       <button class="btn-nav btn-ghost" onclick="showPage('login')">Inloggen</button>
@@ -488,6 +520,11 @@ footer li:hover { color: var(--cream); }
   <button class="mobile-link" onclick="showPage('orders'); closeMobileMenu()">Bestellingen</button>
   <button class="mobile-link" onclick="showPage('contact'); closeMobileMenu()">Contact</button>
   <button class="mobile-link" id="mobileAdminLink" style="display:none;" onclick="showPage('admin'); closeMobileMenu()">Admin</button>
+
+  <!-- PayPal Cart Button in mobile menu (Deel 2 – cart weergeven) -->
+  <div class="mobile-paypal-cart">
+    <paypal-cart-button data-id="pp-view-cart-mobile"></paypal-cart-button>
+  </div>
 
   <!-- Guest buttons (hidden when logged in) -->
   <div class="mobile-auth-section" id="mobileGuestSection">
@@ -716,11 +753,38 @@ function save() {
 function escapeHtml(str) { if(!str) return ''; return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
 function toast(msg) { const t = document.createElement('div'); t.className='toast'; t.textContent=msg; document.getElementById('toastContainer').appendChild(t); setTimeout(()=>t.remove(),3000); }
 
+// ─── PayPal Cart initialiseren (Deel 2 – cart + add-to-cart knoppen) ───
+function initPaypalCartButtons() {
+  if (typeof cartPaypal === 'undefined') {
+    // Wacht tot SDK geladen is
+    setTimeout(initPaypalCartButtons, 300);
+    return;
+  }
+  try {
+    cartPaypal.Cart({ id: "pp-view-cart-desktop" });
+  } catch(e) { /* al geïnitialiseerd */ }
+  try {
+    cartPaypal.Cart({ id: "pp-view-cart-mobile" });
+  } catch(e) { /* al geïnitialiseerd */ }
+  initModalPaypalAtc();
+}
+
+function initModalPaypalAtc() {
+  if (typeof cartPaypal === 'undefined') return;
+  try {
+    cartPaypal.AddToCart({ id: "4J6PV8TQYTCQQ" });
+  } catch(e) { /* al geïnitialiseerd */ }
+}
+
+// Wacht op DOMContentLoaded en start daarna initialisatie
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(initPaypalCartButtons, 500);
+});
+
 // ─── NAV ─────────────────────────────────────────────────────────
 function updateNav() {
   const logged = !!user;
   const isAdmin = logged && (user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true);
-  // Desktop
   document.getElementById('guestBtns').style.display = logged ? 'none' : 'flex';
   document.getElementById('userChip').style.display = logged ? 'flex' : 'none';
   document.getElementById('adminNavLink').style.display = isAdmin ? 'block' : 'none';
@@ -728,12 +792,10 @@ function updateNav() {
     document.getElementById('userLabel').textContent = user.name || user.email.split('@')[0];
     document.getElementById('avatarIcon').textContent = (user.name?.[0] || user.email[0] || '?').toUpperCase();
   }
-  // Mobile menu state
   document.getElementById('mobileGuestSection').style.display = logged ? 'none' : 'flex';
   document.getElementById('mobileUserSection').style.display = logged ? 'block' : 'none';
   document.getElementById('mobileAdminLink').style.display = isAdmin ? 'block' : 'none';
   if (logged) document.getElementById('mobileUserName').textContent = user.name || user.email.split('@')[0];
-  // Badges
   const count = cart.reduce((a,b)=>a+b.qty,0);
   document.getElementById('cartBadge').textContent = count;
   document.getElementById('mobileCartBadge').textContent = count;
@@ -760,7 +822,6 @@ function toggleMobileMenu() {
   btn.classList.toggle('open', mobileOpen);
   btn.setAttribute('aria-expanded', mobileOpen);
   menu.setAttribute('aria-hidden', !mobileOpen);
-  // Voorkom scrollen op body als menu open is
   document.body.style.overflow = mobileOpen ? 'hidden' : '';
 }
 function closeMobileMenu() {
@@ -836,8 +897,7 @@ function placeOrder() {
   openPaypalModal();
 }
 
-// ─── PAYPAL ──────────────────────────────────────────────────────
-// PayPal SDK wordt dynamisch geladen zodat timing gegarandeerd is
+// ─── PAYPAL SDK (checkout buttons) ───────────────────────────────
 let paypalSdkLoaded = false;
 let paypalSdkLoading = false;
 
@@ -917,12 +977,61 @@ function cancelOrder(orderId) {
 function makeCard(p) {
   const inWish=wishlist.includes(p.id);
   const imgUrl=(p.images&&p.images.length>0)?p.images[0]:(p.imageUrl||'https://placehold.co/400x530/111/888?text=Geen+foto');
-  return`<div class="product-card" onclick="openProductDetail(${p.id})"><div class="product-img-wrap"><img src="${imgUrl}" alt="${escapeHtml(p.title)}" loading="lazy">${!p.published?'<div class="badge-pill">Concept</div>':''}<button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(${p.id})">${inWish?'❤️':'🤍'}</button><button class="quick-add" onclick="event.stopPropagation();addToCart(${p.id})">+ In winkelwagen</button></div><div class="product-info"><div class="product-cat">${escapeHtml(p.category)}</div><div class="product-name">${escapeHtml(p.title)}</div><div class="product-sub">${escapeHtml(p.desc||'')}</div><div class="product-footer"><div class="product-price">€${p.price.toFixed(2)}</div></div></div></div>`;
+  return`<div class="product-card" onclick="openProductDetail(${p.id})">
+    <div class="product-img-wrap">
+      <img src="${imgUrl}" alt="${escapeHtml(p.title)}" loading="lazy">
+      ${!p.published?'<div class="badge-pill">Concept</div>':''}
+      <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(${p.id})">${inWish?'❤️':'🤍'}</button>
+      <button class="quick-add" onclick="event.stopPropagation();addToCart(${p.id})">+ In winkelwagen</button>
+    </div>
+    <div class="product-info">
+      <div class="product-cat">${escapeHtml(p.category)}</div>
+      <div class="product-name">${escapeHtml(p.title)}</div>
+      <div class="product-sub">${escapeHtml(p.desc||'')}</div>
+      <div class="product-footer">
+        <div class="product-price">€${p.price.toFixed(2)}</div>
+      </div>
+    </div>
+    <div class="pp-atc-wrap" onclick="event.stopPropagation()">
+      <paypal-add-to-cart-button data-id="4J6PV8TQYTCQQ" data-product-id="${p.id}"></paypal-add-to-cart-button>
+    </div>
+  </div>`;
 }
-function renderHome() { const featured=products.filter(p=>p.published).slice(0,6); document.getElementById('homeFeaturedGrid').innerHTML=featured.length?featured.map(makeCard).join(''):'<div style="text-align:center;padding:4rem;">Nog geen producten. Admin kan producten toevoegen.</div>'; }
-function renderShop() { const cat=document.querySelector('.filter-pill.active')?.dataset.cat||'all'; const q=(document.getElementById('shopSearch')?.value||'').toLowerCase(); const sort=document.getElementById('shopSort')?.value||''; let list=products.filter(p=>p.published&&(cat==='all'||p.category===cat)&&(p.title.toLowerCase().includes(q)||p.desc?.toLowerCase().includes(q))); if(sort==='asc')list.sort((a,b)=>a.price-b.price); if(sort==='desc')list.sort((a,b)=>b.price-a.price); if(sort==='name')list.sort((a,b)=>a.title.localeCompare(b.title)); document.getElementById('shopGrid').innerHTML=list.length?list.map(makeCard).join(''):'<p style="padding:3rem 0;">Geen producten gevonden.</p>'; document.getElementById('shopCount').innerHTML=list.length?`(${list.length})`:''; const cats=[...new Set(products.filter(p=>p.published).map(p=>p.category))]; document.getElementById('catFilters').innerHTML=cats.map(c=>`<button class="filter-pill${cat===c?' active':''}" data-cat="${c}" onclick="setFilter('${c}',this)">${escapeHtml(c)}</button>`).join(''); }
+
+// Na het renderen van producten de PayPal knoppen initialiseren
+function initProductPaypalButtons() {
+  if (typeof cartPaypal === 'undefined') return;
+  document.querySelectorAll('paypal-add-to-cart-button:not([data-pp-init])').forEach(el => {
+    el.setAttribute('data-pp-init', '1');
+    try { cartPaypal.AddToCart({ id: "4J6PV8TQYTCQQ" }); } catch(e) {}
+  });
+}
+
+function renderHome() {
+  const featured=products.filter(p=>p.published).slice(0,6);
+  document.getElementById('homeFeaturedGrid').innerHTML=featured.length?featured.map(makeCard).join(''):'<div style="text-align:center;padding:4rem;">Nog geen producten. Admin kan producten toevoegen.</div>';
+  setTimeout(initProductPaypalButtons, 200);
+}
+function renderShop() {
+  const cat=document.querySelector('.filter-pill.active')?.dataset.cat||'all';
+  const q=(document.getElementById('shopSearch')?.value||'').toLowerCase();
+  const sort=document.getElementById('shopSort')?.value||'';
+  let list=products.filter(p=>p.published&&(cat==='all'||p.category===cat)&&(p.title.toLowerCase().includes(q)||p.desc?.toLowerCase().includes(q)));
+  if(sort==='asc')list.sort((a,b)=>a.price-b.price);
+  if(sort==='desc')list.sort((a,b)=>b.price-a.price);
+  if(sort==='name')list.sort((a,b)=>a.title.localeCompare(b.title));
+  document.getElementById('shopGrid').innerHTML=list.length?list.map(makeCard).join(''):'<p style="padding:3rem 0;">Geen producten gevonden.</p>';
+  document.getElementById('shopCount').innerHTML=list.length?`(${list.length})`:'';
+  const cats=[...new Set(products.filter(p=>p.published).map(p=>p.category))];
+  document.getElementById('catFilters').innerHTML=cats.map(c=>`<button class="filter-pill${cat===c?' active':''}" data-cat="${c}" onclick="setFilter('${c}',this)">${escapeHtml(c)}</button>`).join('');
+  setTimeout(initProductPaypalButtons, 200);
+}
 window.setFilter=(cat,el)=>{document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderShop();};
-function renderWishlist() { const items=products.filter(p=>wishlist.includes(p.id)); document.getElementById('wishlistContent').innerHTML=items.length?`<div class="products-grid">${items.map(makeCard).join('')}</div>`:'<div class="wishlist-empty"><span class="wishlist-empty-icon">♡</span><h3>Uw verlanglijst is leeg</h3></div>'; }
+function renderWishlist() {
+  const items=products.filter(p=>wishlist.includes(p.id));
+  document.getElementById('wishlistContent').innerHTML=items.length?`<div class="products-grid">${items.map(makeCard).join('')}</div>`:'<div class="wishlist-empty"><span class="wishlist-empty-icon">♡</span><h3>Uw verlanglijst is leeg</h3></div>';
+  setTimeout(initProductPaypalButtons, 200);
+}
 function renderOrders() {
   const userOrders=(orders[user?.email]||[]).filter(o=>o.status!=='cancelled');
   const container=document.getElementById('ordersList');
@@ -953,6 +1062,8 @@ function openProductDetail(productId) {
   document.getElementById('modalWishlistBtn').textContent=wishlist.includes(product.id)?'❤️':'🤍';
   document.getElementById('productModal').classList.add('active');
   modalZoomed=false; document.getElementById('modalMainImage').classList.remove('zoomed');
+  // Init PayPal ATC in modal
+  setTimeout(initModalPaypalAtc, 100);
 }
 function closeModal() { document.getElementById('productModal').classList.remove('active'); currentModalProduct=null; }
 function closeModalOnBackground(e) { if(e.target===document.getElementById('productModal'))closeModal(); }
@@ -1054,7 +1165,6 @@ if(!localStorage.getItem('ms_cookie'))document.getElementById('cookieBar').style
 document.getElementById('acceptCookie')?.addEventListener('click',()=>{localStorage.setItem('ms_cookie','1');document.getElementById('cookieBar').style.display='none';});
 document.getElementById('declineCookie')?.addEventListener('click',()=>document.getElementById('cookieBar').style.display='none');
 
-// Sluit mobile menu bij klik buiten
 document.addEventListener('click', e => {
   if (!mobileOpen) return;
   const menu = document.getElementById('mobileMenu');
