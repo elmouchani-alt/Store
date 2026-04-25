@@ -6,7 +6,7 @@
 <title>MAISON — Premium Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <script 
-  src="https://www.paypal.com/sdk/js?client-id=BAAy2qM6I9vndhfh8odALEb0H9r2l9Le4pyPfn_Sc3TN9KujY--QZpbklXE_A0dypItgTMYI4agtjv5pz8&components=hosted-buttons&disable-funding=venmo&currency=EUR">
+  src="https://www.paypal.com/sdk/js?client-id=BAAy2qM6I9vndhfh8odALEb0H9r2l9Le4pyPfn_Sc3TN9KujY--QZpbklXE_A0dypItgTMYI4agtjv5pz8&disable-funding=venmo&currency=EUR">
 </script>
 <style>
 * {
@@ -1405,15 +1405,8 @@ footer li:hover { color: var(--cream); }
     <button class="modal-close" onclick="closePaypalModal()">&times;</button>
     <div style="padding: 2rem;">
       <h3>Betaling via PayPal</h3>
-      <p>Klik op de PayPal button om de betaling te voltooien.</p>
-      <div style="margin: 2rem 0;">
-        <div id="paypal-container-YXZZVN44P9DFN"></div>
-        <script>
-          paypal.HostedButtons({
-            hostedButtonId: "YXZZVN44P9DFN",
-          }).render("#paypal-container-YXZZVN44P9DFN")
-        </script>
-      </div>
+      <p>Je betaalt nu €<strong id="paypalTotal">0.00</strong>. Klik op de PayPal-knop om af te ronden.</p>
+      <div style="margin: 2rem 0;" id="paypalButtonsContainer"></div>
       <p style="font-size: 0.8rem; margin-top: 1rem; color: var(--muted);">Veilig betalen met PayPal.</p>
     </div>
   </div>
@@ -1654,7 +1647,7 @@ const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
 
 const ADMIN_EMAIL = "elmouchania@gmail.com";
-let products, cart, wishlist, user, coupon, users, orders, resetTokens, verificationCodes, currentModalProduct, modalZoomed;
+let products, cart, wishlist, user, coupon, users, orders, resetTokens, verificationCodes, currentModalProduct, modalZoomed, pendingOrder;
 
 function loadState() {
   products = JSON.parse(localStorage.getItem('ms_products')) || [];
@@ -1952,6 +1945,61 @@ function applyCoupon() { const code = document.getElementById('couponInput').val
 function showCheckout() { if (!user) { toast('Log in om af te rekenen'); showPage('login'); return; } if (!cart.length) { toast('Winkelmand is leeg'); return; } document.getElementById('checkoutModal').classList.add('active'); }
 function closeCheckoutModal() { document.getElementById('checkoutModal').classList.remove('active'); }
 function closeCheckoutModalOnBackground(e) { if (e.target === document.getElementById('checkoutModal')) closeCheckoutModal(); }
+function getCartTotals() {
+  const sub = cart.reduce((s, item) => { const p = products.find(pr => pr.id === item.id); return s + (p ? p.price * item.qty : 0); }, 0);
+  const ship = sub >= 50 ? 0 : 4.95;
+  const disc = sub * (coupon / 100);
+  const total = sub - disc + ship;
+  return { sub, ship, disc, total };
+}
+function preparePaypalModal() {
+  const totals = getCartTotals();
+  document.getElementById('paypalTotal').textContent = totals.total.toFixed(2);
+  showPaypalModal();
+}
+function renderPaypalButtons() {
+  if (!window.paypal) return;
+  const container = document.getElementById('paypalButtonsContainer');
+  if (!container) return;
+  if (container.innerHTML.trim()) return;
+  paypal.Buttons({
+    createOrder: (data, actions) => {
+      const totals = getCartTotals();
+      return actions.order.create({
+        purchase_units: [{
+          amount: {
+            currency_code: 'EUR',
+            value: totals.total.toFixed(2)
+          }
+        }]
+      });
+    },
+    onApprove: async (data, actions) => {
+      const details = await actions.order.capture();
+      completePendingOrder(details);
+    },
+    onError: err => {
+      console.error(err);
+      toast('Betaling mislukt. Probeer opnieuw.');
+    }
+  }).render('#paypalButtonsContainer');
+}
+function completePendingOrder(details) {
+  if (!pendingOrder) return;
+  pendingOrder.payment = details;
+  if (!orders[user.email]) orders[user.email] = [];
+  orders[user.email].unshift(pendingOrder);
+  pendingOrder = null;
+  cart = [];
+  coupon = 0;
+  save();
+  updateNav();
+  renderCart();
+  renderOrders();
+  renderAdmin();
+  closePaypalModal();
+  toast('Betaling geslaagd! Bestelling geplaatst.');
+}
 function showPaypalModal() {
   document.getElementById('paypalModal').classList.add('active');
 }
@@ -1976,15 +2024,11 @@ function cancelOrder(orderId) {
 function placeOrder() {
   const firstname = document.getElementById('checkoutFirstname').value.trim(), lastname = document.getElementById('checkoutLastname').value.trim(), address = document.getElementById('checkoutAddress').value.trim(), zipcode = document.getElementById('checkoutZipcode').value.trim(), city = document.getElementById('checkoutCity').value.trim(), country = document.getElementById('checkoutCountry').value, phone = document.getElementById('checkoutPhone').value.trim();
   if (!firstname || !lastname || !address || !zipcode || !city || !phone) { toast('Vul alle adresgegevens in'); return; }
-  let sub = cart.reduce((s,item) => { const p = products.find(pr => pr.id === item.id); return s + (p ? p.price * item.qty : 0); }, 0);
-  const ship = sub >= 50 ? 0 : 4.95, disc = sub * (coupon / 100), total = sub - disc + ship;
+  const { sub, ship, disc, total } = getCartTotals();
   const orderItems = cart.map(item => { const p = products.find(pr => pr.id === item.id); return { id: item.id, title: p?.title, price: p?.price, qty: item.qty, image: (p?.images && p?.images[0]) || p?.imageUrl }; });
-  const newOrder = { id: Date.now(), date: new Date().toISOString(), status: 'pending', items: orderItems, subtotal: sub, shipping: ship, discount: disc, total: total, address: { firstname, lastname, street: address, zipcode, city, country, phone } };
-  if (!orders[user.email]) orders[user.email] = [];
-  orders[user.email].unshift(newOrder);
-  cart = []; coupon = 0;
-  save(); updateNav(); renderCart(); closeCheckoutModal(); toast('Bestelling geplaatst! Bedankt voor uw aankoop');
-  showPaypalModal();
+  pendingOrder = { id: Date.now(), date: new Date().toISOString(), status: 'pending', items: orderItems, subtotal: sub, shipping: ship, discount: disc, total: total, address: { firstname, lastname, street: address, zipcode, city, country, phone } };
+  closeCheckoutModal();
+  preparePaypalModal();
 }
 function togglePublish(id) { const p = products.find(x => x.id === id); if (p) { p.published = !p.published; save(); renderAdmin(); renderHome(); renderShop(); toast(`${p.title} ${p.published ? 'gepubliceerd' : 'verborgen'}`); } }
 function deleteProduct(id) { if (confirm('Verwijderen?')) { products = products.filter(p => p.id !== id); cart = cart.filter(i => i.id !== id); wishlist = wishlist.filter(w => w !== id); save(); renderAdmin(); renderHome(); renderShop(); toast('Product verwijderd'); } }
@@ -2197,6 +2241,7 @@ window.addToCart=addToCart; window.toggleWish=toggleWish; window.changeQty=chang
 window.togglePublish=togglePublish; window.deleteProduct=deleteProduct; window.adminAddProduct=adminAddProduct; window.doLogin=doLogin; window.doRegister=doRegister; window.loginWithGoogle=loginWithGoogle; window.registerWithGoogle=registerWithGoogle; window.logout=logout; window.showPage=showPage; window.setFilter=window.setFilter;
 window.toggleUserMenu=toggleUserMenu; window.closeUserMenu=closeUserMenu; window.uploadNewImage=uploadNewImage; window.requestPasswordReset=requestPasswordReset; window.confirmPasswordReset=confirmPasswordReset; window.simulateReset=simulateReset;
 window.openProductDetail=openProductDetail; window.closeModal=closeModal; window.closeModalOnBackground=closeModalOnBackground; window.toggleZoom=toggleZoom; window.addToCartFromModal=addToCartFromModal; window.toggleWishFromModal=toggleWishFromModal; window.addProductImage=addProductImage; window.toggleAdmin=toggleAdmin; window.deleteUser=deleteUser;
+renderPaypalButtons();
 function sendContactMessage() {
   const name = document.getElementById('contactName').value.trim();
   const email = document.getElementById('contactEmail').value.trim();
