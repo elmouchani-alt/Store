@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MAISON — Premium Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<script 
+  src="https://www.paypal.com/sdk/js?client-id=BAAy2qM6I9vndhfh8odALEb0H9r2l9Le4pyPfn_Sc3TN9KujY--QZpbklXE_A0dypItgTMYI4agtjv5pz8&components=hosted-buttons&disable-funding=venmo&currency=EUR">
+</script>
 <style>
 * {
   margin: 0;
@@ -102,6 +105,65 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
 .nav-link:hover, .nav-link.active { color: var(--cream); }
 .nav-link:hover::after, .nav-link.active::after { left: 20%; right: 20%; }
 .nav-right { display: flex; align-items: center; gap: 1.5rem; position: relative; }
+.mobile-menu-btn {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+.mobile-menu-btn span {
+  display: block;
+  width: 25px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+.mobile-menu-btn span + span {
+  margin-top: 6px;
+}
+.mobile-menu {
+  display: none;
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.2rem;
+  background: rgba(5, 5, 5, 0.96);
+  backdrop-filter: blur(12px);
+  z-index: 1100;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+}
+.mobile-menu.show {
+  display: flex;
+}
+.mobile-link {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--cream);
+  font-size: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
+}
+.mobile-link.mobile-cart {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+}
+.mobile-link span {
+  color: var(--gold);
+}
 .cart-btn {
   background: none;
   border: none;
@@ -158,29 +220,6 @@ nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
   border-color: #c6c6c6;
 }
 .btn-google-circle svg {
-  width: 22px;
-  height: 22px;
-  display: block;
-  margin: 0 auto;
-}
-.btn-apple-circle {
-  background: #000;
-  border: 1px solid #000;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-  line-height: 0;
-  transition: background 0.2s, border-color 0.2s;
-}
-.btn-apple-circle:hover {
-  background: #1a1a1a;
-  border-color: #333;
-}
-.btn-apple-circle svg {
   width: 22px;
   height: 22px;
   display: block;
@@ -1268,6 +1307,9 @@ footer li:hover { color: var(--cream); }
 
 @media (max-width: 900px) {
   nav { padding: 0 1.5rem; }
+  .mobile-menu-btn { display: flex; }
+  .nav-links, .nav-right { display: none; }
+  .mobile-menu { top: 56px; }
   .hero { grid-template-columns: 1fr; }
   .hero-right { height: 50vh; }
   .hero-left { padding: 4rem 2rem; }
@@ -1280,17 +1322,26 @@ footer li:hover { color: var(--cream); }
 }
 
 @media (max-width: 480px) {
-  nav { padding: 0 1rem; height: 56px; }
-  .logo { font-size: 1.4rem; letter-spacing: 6px; }
-  .nav-links { gap: 0.1rem; }
-  .nav-link { font-size: 0.55rem; padding: 0.3rem 0.8rem; }
+  nav { padding: 0 0.75rem; height: auto; flex-wrap: wrap; justify-content: center; }
+  .logo { font-size: 1.4rem; letter-spacing: 6px; margin: 0.5rem 0; }
+  .nav-links { gap: 0.2rem; flex-wrap: wrap; justify-content: center; width: 100%; }
+  .nav-link { font-size: 0.65rem; padding: 0.4rem 0.8rem; }
+  .nav-right { flex-wrap: wrap; justify-content: center; gap: 0.75rem; width: 100%; margin-bottom: 0.75rem; }
+  .mobile-menu { top: 56px; }
   .hero-left { padding: 2rem 1rem; }
-  .hero h1 { font-size: clamp(2rem, 6vw, 4rem); }
+  .hero h1 { font-size: clamp(2rem, 6vw, 3.5rem); }
   .section { padding: 3rem 1rem; }
   .products-grid { grid-template-columns: 1fr; }
-  .editorial-content { padding: 3rem 2rem; }
-  .auth-page { padding: 2rem 1rem; }
-  .auth-card { padding: 2rem; }
+  .editorial-content { padding: 2rem 1rem; }
+  .auth-page { padding: 1.5rem 0.75rem; min-height: auto; }
+  .auth-card { padding: 1.5rem; width: 100%; max-width: 100%; margin: 0 auto; }
+  .auth-card h2 { font-size: 2rem; }
+  .auth-card p { margin-bottom: 1.5rem; }
+  .btn-primary, .btn-google-circle, .btn-ghost { width: 100%; }
+  .btn-google-circle { margin: 0.75rem 0 0; }
+  .field label { font-size: 0.75rem; }
+  .field input { padding: 0.95rem 0.95rem; font-size: 1rem; }
+  .checkbox-row { flex-direction: column; align-items: flex-start; }
   .cookie-bar { padding: 1rem; flex-direction: column; align-items: flex-start; }
   footer { padding: 2rem 1rem; }
   .footer-bottom { padding: 1rem; }
@@ -1348,18 +1399,22 @@ footer li:hover { color: var(--cream); }
   </div>
 </div>
 
-<!-- PAYPAL PAYMENT SIMULATION MODAL -->
+<!-- PAYPAL PAYMENT MODAL -->
 <div id="paypalModal" class="modal" onclick="closePaypalModalOnBackground(event)">
   <div class="modal-content" style="max-width: 500px; text-align: center;">
     <button class="modal-close" onclick="closePaypalModal()">&times;</button>
     <div style="padding: 2rem;">
       <h3>Betaling via PayPal</h3>
-      <p>Simulatie: Klik op de PayPal button om de betaling te voltooien.</p>
+      <p>Klik op de PayPal button om de betaling te voltooien.</p>
       <div style="margin: 2rem 0;">
-        <img src="https://www.paypalobjects.com/webstatic/en_US/i/buttons/PP_logo_h_150x38.png" alt="PayPal" style="width: 150px;">
+        <div id="paypal-container-YXZZVN44P9DFN"></div>
+        <script>
+          paypal.HostedButtons({
+            hostedButtonId: "YXZZVN44P9DFN",
+          }).render("#paypal-container-YXZZVN44P9DFN")
+        </script>
       </div>
-      <button class="btn-primary" onclick="simulatePaypalPayment()">Betaal €<span id="paypalAmount"></span> met PayPal</button>
-      <p style="font-size: 0.8rem; margin-top: 1rem; color: var(--muted);">Dit is een demo. Geen echte betaling.</p>
+      <p style="font-size: 0.8rem; margin-top: 1rem; color: var(--muted);">Veilig betalen met PayPal.</p>
     </div>
   </div>
 </div>
@@ -1392,6 +1447,11 @@ footer li:hover { color: var(--cream); }
 
 <nav id="mainNav">
   <div class="logo" onclick="showPage('home')">MAISON<span>.</span></div>
+  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
   <div class="nav-links">
     <button class="nav-link" data-page="home">Home</button>
     <button class="nav-link" data-page="shop">Collectie</button>
@@ -1417,6 +1477,16 @@ footer li:hover { color: var(--cream); }
       <hr>
       <button onclick="logout(); closeUserMenu()">Uitloggen</button>
     </div>
+  </div>
+  <div id="mobileMenu" class="mobile-menu" aria-hidden="true">
+    <button class="mobile-link" onclick="showPage('home')">Home</button>
+    <button class="mobile-link" onclick="showPage('shop')">Collectie</button>
+    <button class="mobile-link" onclick="showPage('wishlist')">Verlanglijst <span id="mobileWishlistBadge"></span></button>
+    <button class="mobile-link" onclick="showPage('orders')">Bestellingen</button>
+    <button class="mobile-link" onclick="showPage('contact')">Contact</button>
+    <button class="mobile-link mobile-cart" onclick="openCart()">🛒<span id="mobileCartCount">0</span></button>
+    <button class="mobile-link" onclick="showPage('login')">Inloggen</button>
+    <button class="mobile-link" onclick="showPage('register')">Registreren</button>
   </div>
 </nav>
 
@@ -1444,7 +1514,7 @@ footer li:hover { color: var(--cream); }
 </div>
 
 <div id="loginPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Welkom terug</h2><p>Log in op uw MAISON account</p><div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord"></div><button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button><div style="display:flex; gap:0.5rem; justify-content:center; margin:0.75rem 0 0;"><button class="btn-google-circle" title="Inloggen met Google" onclick="loginWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><button class="btn-apple-circle" title="Inloggen met Apple" onclick="loginWithApple()"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.3-.99 3.58-.85 1.51.17 2.61.93 3.23 2.36-3.13 1.93-2.6 5.85.37 6.88-.92 2.38-2.37 3.81-4.26 4.78l-.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg></button></div><div class="auth-msg" id="loginMsg"></div><p class="auth-link"><a onclick="showPage('forgot-password')">Wachtwoord vergeten?</a></p><p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Welkom terug</h2><p>Log in op uw MAISON account</p><div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord"></div><button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button><button class="btn-google-circle" style="margin:0.75rem auto 0; display:block;" title="Inloggen met Google" onclick="loginWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><div class="auth-msg" id="loginMsg"></div><p class="auth-link"><a onclick="showPage('forgot-password')">Wachtwoord vergeten?</a></p><p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p></div></div>
 </div>
 
 <div id="forgotPasswordPage" class="page">
@@ -1456,11 +1526,11 @@ footer li:hover { color: var(--cream); }
 </div>
 
 <div id="registerPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div><div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div><div class="checkbox-row"><input type="checkbox" id="termsBox"><label>Ik ga akkoord met de voorwaarden</label></div><button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button><div style="display:flex; gap:0.5rem; justify-content:center; margin:0.75rem 0 0;"><button class="btn-google-circle" title="Registreer met Google" onclick="registerWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><button class="btn-apple-circle" title="Registreer met Apple" onclick="registerWithApple()"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.3-.99 3.58-.85 1.51.17 2.61.93 3.23 2.36-3.13 1.93-2.6 5.85.37 6.88-.92 2.38-2.37 3.81-4.26 4.78l-.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/></svg></button></div><div class="auth-msg" id="regMsg"></div><p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div><div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div><div class="checkbox-row"><input type="checkbox" id="termsBox"><label>Ik ga akkoord met de voorwaarden</label></div><button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button><button class="btn-google-circle" style="margin:0.75rem auto 0; display:block;" title="Registreer met Google" onclick="registerWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><div class="auth-msg" id="regMsg"></div><p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p></div></div>
 </div>
 
 <div id="verifyPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Verifieer uw e-mail</h2><p>Er is een verificatie-e-mail gestuurd naar <strong id="verifyEmailDisplay"></strong>. Klik op de link in uw inbox om je account te verifiëren.</p><button class="btn-primary" style="width:100%;" onclick="confirmVerification()">Ik heb geverifieerd</button><button class="btn-ghost" style="width:100%; margin-top:0.75rem;" onclick="resendVerificationCode()">E-mail opnieuw sturen</button><div class="auth-msg" id="verifyMsg"></div><p class="auth-link">Niet ontvangen? <a onclick="showPage('register')">Terug naar registratie</a></p></div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Verifieer uw e-mail</h2><p>Er is een verificatie-e-mail gestuurd naar <strong id="verifyEmailDisplay"></strong>. Klik op de link in uw inbox en kom daarna terug om in te loggen.</p><button class="btn-primary" style="width:100%;" onclick="confirmVerification()">Ik heb geverifieerd</button><button class="btn-ghost" style="width:100%; margin-top:0.75rem;" onclick="resendVerificationCode()">E-mail opnieuw sturen</button><div class="auth-msg" id="verifyMsg"></div><p class="auth-link">Niet ontvangen? <a onclick="showPage('register')">Terug naar registratie</a></p></div></div>
 </div>
 
 <div id="adminPage" class="page">
@@ -1582,7 +1652,6 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const provider = new firebase.auth.GoogleAuthProvider();
-const appleProvider = new firebase.auth.OAuthProvider('apple.com');
 
 const ADMIN_EMAIL = "elmouchania@gmail.com";
 let products, cart, wishlist, user, coupon, users, orders, resetTokens, verificationCodes, currentModalProduct, modalZoomed;
@@ -1614,26 +1683,27 @@ function loadState() {
 loadState();
 
 function handleFirebaseSignIn(fbUser) {
-  if (!fbUser || !fbUser.email) return;
-  const email = fbUser.email.toLowerCase();
-  const name = fbUser.displayName || email.split('@')[0];
+  if (!fbUser) return;
+  const identifier = fbUser.email ? fbUser.email.toLowerCase() : fbUser.phoneNumber;
+  if (!identifier) return;
+  const name = fbUser.displayName || identifier.split('@')[0] || identifier;
   const providerId = fbUser.providerData && fbUser.providerData[0] ? fbUser.providerData[0].providerId : 'password';
-  const provider = providerId === 'google.com' ? 'google' : 'local';
-  const isVerified = fbUser.emailVerified === true || provider === 'google';
+  const provider = providerId === 'google.com' ? 'google' : providerId === 'phone' ? 'phone' : 'local';
+  const isVerified = fbUser.emailVerified === true || provider === 'google' || provider === 'phone';
   if (provider === 'local' && !isVerified) {
     return;
   }
-  if (!users[email]) {
-    users[email] = { name, password: '', isAdmin: email === ADMIN_EMAIL, registeredAt: new Date().toISOString(), isVerified, provider };
+  if (!users[identifier]) {
+    users[identifier] = { name, password: '', isAdmin: identifier === ADMIN_EMAIL, registeredAt: new Date().toISOString(), isVerified, provider };
   } else {
-    users[email].provider = provider;
-    if (isVerified) users[email].isVerified = true;
+    users[identifier].provider = provider;
+    if (isVerified) users[identifier].isVerified = true;
   }
-  user = { email, name };
+  user = { email: identifier, name };
   save();
   updateNav();
   toast(provider === 'google' ? 'Ingelogd met Google' : 'Ingelogd');
-  if (email === ADMIN_EMAIL || users[email]?.isAdmin === true) showPage('admin');
+  if (identifier === ADMIN_EMAIL || users[identifier]?.isAdmin === true) showPage('admin');
   else showPage('shop');
   renderAdmin();
 }
@@ -1689,6 +1759,10 @@ function updateNav() {
   }
   document.getElementById('cartBadge').textContent = cart.reduce((a, b) => a + b.qty, 0);
   document.getElementById('wishlistBadge').textContent = wishlist.length ? `(${wishlist.length})` : '';
+  const mobileCart = document.getElementById('mobileCartCount');
+  if (mobileCart) mobileCart.textContent = cart.reduce((a, b) => a + b.qty, 0);
+  const mobileWishlist = document.getElementById('mobileWishlistBadge');
+  if (mobileWishlist) mobileWishlist.textContent = wishlist.length ? `(${wishlist.length})` : '';
   const heroStat = document.getElementById('heroStatCount');
   if (heroStat) heroStat.textContent = products.filter(p => p.published).length;
 }
@@ -1878,8 +1952,7 @@ function applyCoupon() { const code = document.getElementById('couponInput').val
 function showCheckout() { if (!user) { toast('Log in om af te rekenen'); showPage('login'); return; } if (!cart.length) { toast('Winkelmand is leeg'); return; } document.getElementById('checkoutModal').classList.add('active'); }
 function closeCheckoutModal() { document.getElementById('checkoutModal').classList.remove('active'); }
 function closeCheckoutModalOnBackground(e) { if (e.target === document.getElementById('checkoutModal')) closeCheckoutModal(); }
-function showPaypalModal(amount) {
-  document.getElementById('paypalAmount').textContent = amount.toFixed(2);
+function showPaypalModal() {
   document.getElementById('paypalModal').classList.add('active');
 }
 function closePaypalModal() {
@@ -1911,7 +1984,7 @@ function placeOrder() {
   orders[user.email].unshift(newOrder);
   cart = []; coupon = 0;
   save(); updateNav(); renderCart(); closeCheckoutModal(); toast('Bestelling geplaatst! Bedankt voor uw aankoop');
-  showPaypalModal(total);
+  showPaypalModal();
 }
 function togglePublish(id) { const p = products.find(x => x.id === id); if (p) { p.published = !p.published; save(); renderAdmin(); renderHome(); renderShop(); toast(`${p.title} ${p.published ? 'gepubliceerd' : 'verborgen'}`); } }
 function deleteProduct(id) { if (confirm('Verwijderen?')) { products = products.filter(p => p.id !== id); cart = cart.filter(i => i.id !== id); wishlist = wishlist.filter(w => w !== id); save(); renderAdmin(); renderHome(); renderShop(); toast('Product verwijderd'); } }
@@ -1971,7 +2044,8 @@ async function confirmPasswordReset() {
     showPage('login');
   }
 }
-function doLogin() { const email = document.getElementById('loginEmail').value.trim().toLowerCase(), pass = document.getElementById('loginPass').value, msg = document.getElementById('loginMsg'); if(!users[email] || users[email].password !== pass) { msg.textContent='Ongeldig'; msg.className='auth-msg error'; return; } if(users[email].provider === 'local' && !users[email].isVerified) { msg.textContent='Account nog niet geverifieerd. Controleer uw e-mail.'; msg.className='auth-msg error'; showVerifyPage(email); return; } user = { email: email, name: users[email].name }; save(); updateNav(); toast(`Welkom, ${users[email].name}`); if(email === ADMIN_EMAIL || users[email].isAdmin === true) showPage('admin'); else showPage('shop'); renderAdmin(); }
+function doLogin() { const email = document.getElementById('loginEmail').value.trim().toLowerCase(), pass = document.getElementById('loginPass').value, msg = document.getElementById('loginMsg'); if(!users[email] || users[email].password !== pass) { msg.textContent='Ongeldig e-mailadres of wachtwoord'; msg.className='auth-msg error'; return; } if(users[email].provider === 'local' && !users[email].isVerified) { msg.textContent='Account nog niet geverifieerd. Controleer uw e-mail.'; msg.className='auth-msg error'; showVerifyPage(email); return; } user = { email: email, name: users[email].name }; save(); updateNav(); toast(`Welkom, ${users[email].name}`); if(email === ADMIN_EMAIL || users[email].isAdmin === true) showPage('admin'); else showPage('shop'); renderAdmin(); }
+
 async function doRegister() {
   const name = document.getElementById('regName').value.trim();
   const email = document.getElementById('regEmail').value.trim().toLowerCase();
@@ -1984,7 +2058,7 @@ async function doRegister() {
     return;
   }
   if (users[email]) {
-    msg.textContent = users[email].provider === 'google' ? 'Gebruik Google om in te loggen met dit e-mailadres' : 'Bestaat al';
+    msg.textContent = users[email].provider === 'google' ? 'Gebruik Google om in te loggen met dit e-mailadres' : 'Dit e-mailadres bestaat al';
     msg.className = 'auth-msg error';
     return;
   }
@@ -2004,7 +2078,7 @@ async function doRegister() {
   } catch (error) {
     console.error(error);
     const errorMap = {
-      'auth/email-already-in-use': 'Dit e-mailadres is al in gebruik. Probeer in te loggen of gebruik een andere e-mail.',
+      'auth/email-already-in-use': 'Dit e-mailadres is al in gebruik. Probeer in te loggen of gebruik een ander e-mailadres.',
       'auth/weak-password': 'Wachtwoord moet minimaal 6 tekens bevatten.',
       'auth/invalid-email': 'Ongeldig e-mailadres.'
     };
@@ -2098,29 +2172,10 @@ async function loginWithGoogle() {
   }
 }
 function registerWithGoogle() { loginWithGoogle(); }
-async function loginWithApple() {
-  if (!auth) { toast('Firebase niet geladen'); return; }
-  try {
-    appleProvider.addScope('email');
-    appleProvider.addScope('name');
-    const result = await auth.signInWithPopup(appleProvider);
-    handleFirebaseSignIn(result.user);
-  } catch (error) {
-    console.error(error);
-    const errorMap = {
-      'auth/account-exists-with-different-credential': 'Dit e-mailadres is al gekoppeld aan een ander inlogtype. Gebruik dezelfde methode om in te loggen.',
-      'auth/email-already-in-use': 'Dit e-mailadres is al in gebruik. Probeer in te loggen met uw bestaande account of gebruik Apple als dat uw account is.',
-      'auth/popup-closed-by-user': 'Popup gesloten. Probeer opnieuw in te loggen met Apple.',
-      'auth/cancelled-popup-request': 'Popup geprobeerd te openen terwijl er al een andere popup open is. Probeer opnieuw.',
-      'auth/popup-blocked': 'Popup geblokkeerd. Sta popups toe en probeer opnieuw.'
-    };
-    const msg = errorMap[error.code] || error.message || 'Apple login geannuleerd of mislukt';
-    toast(msg);
-  }
-}
-function registerWithApple() { loginWithApple(); }
 function logout() { if (auth) { auth.signOut().catch(() => {}); } user = null; cart = []; wishlist = []; coupon = 0; save(); updateNav(); closeCart(); showPage('home'); toast('Uitgelogd'); }
-function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(name+'Page').classList.add('active'); document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.page===name)); window.scrollTo({top:0}); if(name==='home') renderHome(); if(name==='shop') renderShop(); if(name==='wishlist') renderWishlist(); if(name==='orders') renderOrders(); if(name==='admin' && user && (user.email===ADMIN_EMAIL || users[user.email]?.isAdmin===true)) renderAdmin(); if(name==='profile' && user) { document.getElementById('profileName').textContent=user.name||'-'; document.getElementById('profileEmail').textContent=user.email; document.getElementById('profileSince').textContent=users[user.email]?.registeredAt?new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL'):'Nieuw'; } closeUserMenu(); closeModal(); closeCheckoutModal(); }
+function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(name+'Page').classList.add('active'); document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.page===name)); closeMobileMenu(); window.scrollTo({top:0}); if(name==='home') renderHome(); if(name==='shop') renderShop(); if(name==='wishlist') renderWishlist(); if(name==='orders') renderOrders(); if(name==='admin' && user && (user.email===ADMIN_EMAIL || users[user.email]?.isAdmin===true)) renderAdmin(); if(name==='profile' && user) { document.getElementById('profileName').textContent=user.name||'-'; document.getElementById('profileEmail').textContent=user.email; document.getElementById('profileSince').textContent=users[user.email]?.registeredAt?new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL'):'Nieuw'; } closeUserMenu(); closeModal(); closeCheckoutModal(); }
+function toggleMobileMenu() { const menu = document.getElementById('mobileMenu'); if (!menu) return; menu.classList.toggle('show'); }
+function closeMobileMenu() { const menu = document.getElementById('mobileMenu'); if (menu) menu.classList.remove('show'); }
 function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
 function openCart() {
   renderCart();
@@ -2138,8 +2193,8 @@ window.addEventListener('scroll',()=>document.getElementById('mainNav').classLis
 if(!localStorage.getItem('ms_cookie')) document.getElementById('cookieBar').style.display='flex';
 document.getElementById('acceptCookie')?.addEventListener('click',()=>{localStorage.setItem('ms_cookie','1'); document.getElementById('cookieBar').style.display='none';});
 document.getElementById('declineCookie')?.addEventListener('click',()=>document.getElementById('cookieBar').style.display='none');
-window.addToCart=addToCart; window.toggleWish=toggleWish; window.changeQty=changeQty; window.removeFromCart=removeFromCart; window.applyCoupon=applyCoupon; window.showCheckout=showCheckout; window.closeCheckoutModal=closeCheckoutModal; window.closeCheckoutModalOnBackground=closeCheckoutModalOnBackground; window.placeOrder=placeOrder; window.showPaypalModal=showPaypalModal; window.closePaypalModal=closePaypalModal; window.closePaypalModalOnBackground=closePaypalModalOnBackground; window.simulatePaypalPayment=simulatePaypalPayment; window.cancelOrder=cancelOrder;
-window.togglePublish=togglePublish; window.deleteProduct=deleteProduct; window.adminAddProduct=adminAddProduct; window.doLogin=doLogin; window.doRegister=doRegister; window.loginWithGoogle=loginWithGoogle; window.registerWithGoogle=registerWithGoogle; window.loginWithApple=loginWithApple; window.registerWithApple=registerWithApple; window.logout=logout; window.showPage=showPage; window.setFilter=window.setFilter;
+window.addToCart=addToCart; window.toggleWish=toggleWish; window.changeQty=changeQty; window.removeFromCart=removeFromCart; window.applyCoupon=applyCoupon; window.showCheckout=showCheckout; window.closeCheckoutModal=closeCheckoutModal; window.closeCheckoutModalOnBackground=closeCheckoutModalOnBackground; window.placeOrder=placeOrder; window.showPaypalModal=showPaypalModal; window.closePaypalModal=closePaypalModal; window.closePaypalModalOnBackground=closePaypalModalOnBackground; window.cancelOrder=cancelOrder;
+window.togglePublish=togglePublish; window.deleteProduct=deleteProduct; window.adminAddProduct=adminAddProduct; window.doLogin=doLogin; window.doRegister=doRegister; window.loginWithGoogle=loginWithGoogle; window.registerWithGoogle=registerWithGoogle; window.logout=logout; window.showPage=showPage; window.setFilter=window.setFilter;
 window.toggleUserMenu=toggleUserMenu; window.closeUserMenu=closeUserMenu; window.uploadNewImage=uploadNewImage; window.requestPasswordReset=requestPasswordReset; window.confirmPasswordReset=confirmPasswordReset; window.simulateReset=simulateReset;
 window.openProductDetail=openProductDetail; window.closeModal=closeModal; window.closeModalOnBackground=closeModalOnBackground; window.toggleZoom=toggleZoom; window.addToCartFromModal=addToCartFromModal; window.toggleWishFromModal=toggleWishFromModal; window.addProductImage=addProductImage; window.toggleAdmin=toggleAdmin; window.deleteUser=deleteUser;
 function sendContactMessage() {
