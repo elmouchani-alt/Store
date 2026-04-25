@@ -862,8 +862,50 @@ function showPage(name) {
 // ─── CART ────────────────────────────────────────────────────────
 function openCart() { renderCart(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartDrawer').classList.add('open'); }
 function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartDrawer').classList.remove('open'); }
-function addToCart(id) { if(!user){toast('Log in om te winkelen');showPage('login');return;} const ex=cart.find(i=>i.id===id); if(ex)ex.qty++; else cart.push({id,qty:1}); save(); updateNav(); renderCart(); toast('Toegevoegd aan winkelmand'); }
-function changeQty(id,delta) { const idx=cart.findIndex(x=>x.id===id); if(idx===-1)return; cart[idx].qty+=delta; if(cart[idx].qty<=0)cart.splice(idx,1); save(); updateNav(); renderCart(); }
+
+function addToPaypalCart(product) {
+  // Voeg product toe aan PayPal cart via de NCP Cart SDK
+  if (typeof cartPaypal !== 'undefined' && cartPaypal.addItem) {
+    try {
+      cartPaypal.addItem({
+        name: product.title,
+        price: product.price.toFixed(2),
+        quantity: 1,
+        currency: 'EUR',
+        sku: String(product.id),
+        imageUrl: (product.images && product.images[0]) || product.imageUrl || '',
+      });
+    } catch(e) {
+      console.warn('PayPal addItem fout:', e);
+    }
+  }
+}
+
+function addToCart(id) {
+  if(!user){toast('Log in om te winkelen');showPage('login');return;}
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+  const ex = cart.find(i => i.id === id);
+  if(ex) ex.qty++; else cart.push({id, qty:1});
+  save(); updateNav(); renderCart();
+  toast('Toegevoegd aan winkelmand');
+  // Sync naar PayPal cart
+  addToPaypalCart(product);
+}
+
+function changeQty(id, delta) {
+  const idx = cart.findIndex(x => x.id === id);
+  if(idx === -1) return;
+  cart[idx].qty += delta;
+  if(cart[idx].qty <= 0) {
+    cart.splice(idx, 1);
+  } else if(delta > 0) {
+    // Extra item toegevoegd — sync naar PayPal
+    const product = products.find(p => p.id === id);
+    if(product) addToPaypalCart(product);
+  }
+  save(); updateNav(); renderCart();
+}
 function removeFromCart(id) { cart=cart.filter(i=>i.id!==id); save(); updateNav(); renderCart(); }
 function applyCoupon() { const code=document.getElementById('couponInput').value.trim().toUpperCase(); if(code==='WELKOM10'){coupon=10;toast('10% korting!');}else if(code==='MAISON20'){coupon=20;toast('20% korting!');}else{toast('Ongeldige code');return;} renderCart(); }
 function toggleWish(id) { if(!user){toast('Log in');showPage('login');return;} const idx=wishlist.indexOf(id); if(idx===-1){wishlist.push(id);toast('Toegevoegd aan verlanglijst');}else{wishlist.splice(idx,1);toast('Verwijderd');} save(); updateNav(); if(document.getElementById('shopPage').classList.contains('active'))renderShop(); if(document.getElementById('wishlistPage').classList.contains('active'))renderWishlist(); renderHome(); }
