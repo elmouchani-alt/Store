@@ -1954,18 +1954,26 @@ function getCartTotals() {
 }
 function preparePaypalModal() {
   const totals = getCartTotals();
+  if (totals.total <= 0) {
+    toast('Winkelwagen bevat geen geldig bedrag.');
+    pendingOrder = null;
+    return;
+  }
   document.getElementById('paypalTotal').textContent = totals.total.toFixed(2);
-  renderPaypalButtons();
   showPaypalModal();
+  renderPaypalButtons();
 }
 function renderPaypalButtons() {
   if (!window.paypal) return;
   const container = document.getElementById('paypalButtonsContainer');
   if (!container) return;
-  if (container.innerHTML.trim()) return;
+  container.innerHTML = '';
   paypal.Buttons({
     createOrder: (data, actions) => {
       const totals = getCartTotals();
+      if (totals.total <= 0) {
+        return Promise.reject(new Error('Ongeldig totaalbedrag'));
+      }
       return actions.order.create({
         purchase_units: [{
           amount: {
@@ -1976,17 +1984,25 @@ function renderPaypalButtons() {
       });
     },
     onApprove: async (data, actions) => {
-      const details = await actions.order.capture();
-      completePendingOrder(details);
+      try {
+        const details = await actions.order.capture();
+        completePendingOrder(details);
+      } catch (err) {
+        console.error(err);
+        toast('Betaling niet afgerond. Probeer opnieuw.');
+        pendingOrder = null;
+      }
     },
     onCancel: () => {
       toast('Betaling geannuleerd. Er is geen bestelling geplaatst.');
       pendingOrder = null;
+      closePaypalModal();
     },
     onError: err => {
       console.error(err);
       toast('Betaling mislukt. Probeer opnieuw.');
       pendingOrder = null;
+      closePaypalModal();
     }
   }).render('#paypalButtonsContainer');
 }
@@ -2011,6 +2027,7 @@ function showPaypalModal() {
 }
 function closePaypalModal() {
   document.getElementById('paypalModal').classList.remove('active');
+  document.getElementById('paypalButtonsContainer').innerHTML = '';
   pendingOrder = null;
 }
 function closePaypalModalOnBackground(e) { if (e.target === document.getElementById('paypalModal')) closePaypalModal(); }
