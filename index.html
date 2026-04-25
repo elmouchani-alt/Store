@@ -5,279 +5,1061 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MAISON — Premium Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- PayPal Cart SDK (Deel 1) -->
-<script src="https://www.paypalobjects.com/ncp/cart/cart.js" data-merchant-id="83QSZHA7LRCQ2"></script>
-
+<script 
+  src="https://www.paypal.com/sdk/js?client-id=BAAy2qM6I9vndhfh8odALEb0H9r2l9Le4pyPfn_Sc3TN9KujY--QZpbklXE_A0dypItgTMYI4agtjv5pz8&disable-funding=venmo&currency=EUR">
+</script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-:root {
-  --void: #050505; --deep: #0c0c0c; --surface: #111111; --elevated: #181818;
-  --border: rgba(255,255,255,0.07); --border-hover: rgba(255,255,255,0.15);
-  --gold: #D4AF37; --gold-bright: #E8C97A; --cream: #F5EFE6;
-  --text: #EBE5DA; --muted: rgba(235,229,218,0.5); --rust: #9B4B3C; --sage: #4A6B5D;
-  --font-serif: 'Cormorant Garamond', Georgia, serif; --font-sans: 'Outfit', sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
+
+:root {
+  --void: #050505;
+  --deep: #0c0c0c;
+  --surface: #111111;
+  --elevated: #181818;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.15);
+  --gold: #D4AF37;
+  --gold-bright: #E8C97A;
+  --cream: #F5EFE6;
+  --text: #EBE5DA;
+  --muted: rgba(235,229,218,0.5);
+  --rust: #9B4B3C;
+  --sage: #4A6B5D;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans: 'Outfit', sans-serif;
+}
+
 html { scroll-behavior: smooth; }
 body { font-family: var(--font-sans); background: var(--void); color: var(--text); overflow-x: hidden; }
+
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: var(--void); }
-::-webkit-scrollbar-thumb { background: var(--gold); }
+::-webkit-scrollbar-thumb { background: var(--gold-dim); }
+
 body::before {
-  content: ''; position: fixed; inset: 0;
+  content: '';
+  position: fixed;
+  inset: 0;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
-  pointer-events: none; z-index: 9999; opacity: 0.4;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
 }
-.topbar { background: var(--gold); color: var(--void); font-size: 0.65rem; font-weight: 600; letter-spacing: 3px; text-align: center; padding: 10px; text-transform: uppercase; }
+
+.topbar {
+  background: var(--gold);
+  color: var(--void);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-align: center;
+  padding: 10px;
+  text-transform: uppercase;
+}
+
 nav {
-  position: sticky; top: 0; z-index: 1000; height: 72px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 3rem; background: rgba(5,5,5,0.92);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 3rem;
+  background: rgba(5,5,5,0.85);
   backdrop-filter: blur(24px) saturate(180%);
-  border-bottom: 1px solid var(--border); transition: all 0.3s;
+  border-bottom: 1px solid var(--border);
+  transition: all 0.3s;
 }
 nav.scrolled { height: 60px; border-bottom-color: rgba(212,175,55,0.2); }
-.logo { font-family: var(--font-serif); font-size: 1.9rem; font-weight: 300; letter-spacing: 8px; text-transform: uppercase; color: var(--cream); cursor: pointer; }
+.logo {
+  font-family: var(--font-serif);
+  font-size: 1.9rem;
+  font-weight: 300;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  color: var(--cream);
+  cursor: pointer;
+}
 .logo span { color: var(--gold); }
 .nav-links { display: flex; gap: 0.25rem; }
-.nav-link { background: none; border: none; font-family: var(--font-sans); font-size: 0.7rem; font-weight: 400; letter-spacing: 2.5px; text-transform: uppercase; color: var(--muted); padding: 0.5rem 1.2rem; cursor: pointer; transition: color 0.2s; position: relative; }
+.nav-link {
+  background: none;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+  position: relative;
+}
 .nav-link::after { content: ''; position: absolute; bottom: 2px; left: 50%; right: 50%; height: 1px; background: var(--gold); transition: 0.3s; }
 .nav-link:hover, .nav-link.active { color: var(--cream); }
 .nav-link:hover::after, .nav-link.active::after { left: 20%; right: 20%; }
 .nav-right { display: flex; align-items: center; gap: 1.5rem; position: relative; }
-
-/* PayPal cart button styling in nav */
-.paypal-cart-wrap {
-  display: flex; align-items: center;
-}
-paypal-cart-button {
-  --paypal-button-border-radius: 40px;
-}
-
-/* ─── HAMBURGER ─── */
 .mobile-menu-btn {
-  display: none; background: none; border: none; cursor: pointer;
-  width: 44px; height: 44px; align-items: center; justify-content: center;
-  flex-direction: column; gap: 6px; padding: 0; z-index: 1200;
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
 }
 .mobile-menu-btn span {
-  display: block; width: 24px; height: 2px; background: var(--text);
-  border-radius: 2px; transition: transform 0.3s ease, opacity 0.3s ease;
-  transform-origin: center;
+  display: block;
+  width: 25px;
+  height: 2px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.25s ease, opacity 0.25s ease;
 }
-.mobile-menu-btn.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
-.mobile-menu-btn.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
-.mobile-menu-btn.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
-
+.mobile-menu-btn span + span {
+  margin-top: 6px;
+}
 .mobile-menu {
-  display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-  padding: 90px 1.5rem 2rem; background: rgba(5,5,5,0.98);
-  backdrop-filter: blur(20px); z-index: 1100;
-  flex-direction: column; gap: 0; overflow-y: auto;
-  transform: translateX(100%); transition: transform 0.35s cubic-bezier(0.22,1,0.36,1);
+  display: none;
+  position: fixed;
+  top: 72px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 1.2rem;
+  background: rgba(5, 5, 5, 0.96);
+  backdrop-filter: blur(12px);
+  z-index: 1100;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
 }
-.mobile-menu.show { transform: translateX(0); }
-.mobile-menu.visible { display: flex; }
+.mobile-menu.show {
+  display: flex;
+}
 .mobile-link {
-  width: 100%; text-align: left; background: none; border: none;
-  color: var(--cream); font-family: var(--font-sans); font-size: 1rem;
-  font-weight: 300; letter-spacing: 1px; padding: 1.1rem 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06); cursor: pointer;
-  transition: color 0.2s; display: flex; justify-content: space-between; align-items: center;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--cream);
+  font-size: 1rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer;
 }
-.mobile-link:hover { color: var(--gold); }
-.mobile-link .mobile-badge { color: var(--gold); font-size: 0.75rem; font-weight: 600; }
-.mobile-auth-section { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem; }
-.mobile-auth-section .btn-primary { width: 100%; text-align: center; padding: 1rem; }
-.mobile-auth-section .btn-ghost { width: 100%; text-align: center; padding: 1rem; border-color: var(--border-hover); }
-.mobile-user-section { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.5rem; }
-.mobile-user-name { font-family: var(--font-serif); font-size: 1.2rem; color: var(--gold); margin-bottom: 0.5rem; }
-/* PayPal cart knop in mobile menu */
-.mobile-paypal-cart { margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
-
-.cart-btn { background: none; border: none; font-size: 1.1rem; cursor: pointer; position: relative; color: var(--text); transition: color 0.2s; }
+.mobile-link.mobile-cart {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+}
+.mobile-link span {
+  color: var(--gold);
+}
+.cart-btn {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  position: relative;
+  color: var(--text);
+  transition: color 0.2s;
+}
 .cart-btn:hover { color: var(--gold); }
-.cart-count { position: absolute; top: -8px; right: -10px; background: var(--gold); color: var(--void); font-size: 0.6rem; font-weight: 700; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
-.btn-nav { font-family: var(--font-sans); font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 0.5rem 1.4rem; border-radius: 40px; cursor: pointer; transition: all 0.2s; }
+.cart-count {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+  background: var(--gold);
+  color: var(--void);
+  font-size: 0.6rem;
+  font-weight: 700;
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-nav {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.5rem 1.4rem;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 .btn-ghost { background: none; border: 1px solid var(--border-hover); color: var(--muted); }
 .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
-.btn-google-circle { background: #fff; border: 1px solid #dadce0; width: 46px; height: 46px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; padding: 0; line-height: 0; transition: background 0.2s, border-color 0.2s; cursor: pointer; }
-.btn-google-circle:hover { background: #f8f9fa; border-color: #c6c6c6; }
-.btn-google-circle svg { width: 22px; height: 22px; display: block; }
+.btn-google-circle {
+  background: #fff;
+  border: 1px solid #dadce0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  line-height: 0;
+  transition: background 0.2s, border-color 0.2s;
+}
+.btn-google-circle:hover {
+  background: #f8f9fa;
+  border-color: #c6c6c6;
+}
+.btn-google-circle svg {
+  width: 22px;
+  height: 22px;
+  display: block;
+  margin: 0 auto;
+}
 .btn-gold { background: var(--gold); border: 1px solid var(--gold); color: var(--void); font-weight: 700; }
 .btn-gold:hover { background: var(--gold-bright); }
-.user-chip { display: flex; align-items: center; gap: 10px; background: var(--elevated); border: 1px solid var(--border); padding: 0.3rem 1rem 0.3rem 0.4rem; border-radius: 40px; cursor: pointer; transition: background 0.2s; }
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  padding: 0.3rem 1rem 0.3rem 0.4rem;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
 .user-chip:hover { background: #222; }
-.avatar { width: 28px; height: 28px; background: var(--gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-serif); font-size: 0.9rem; font-weight: 600; color: var(--void); }
-.user-menu-dropdown { position: absolute; top: 55px; right: 0; background: var(--elevated); border: 1px solid var(--border); border-radius: 12px; padding: 0.5rem 0; min-width: 180px; z-index: 1100; opacity: 0; visibility: hidden; transform: translateY(-10px); transition: all 0.2s; box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
-.user-menu-dropdown.show { opacity: 1; visibility: visible; transform: translateY(0); }
-.user-menu-dropdown button { display: block; width: 100%; text-align: left; padding: 0.75rem 1.2rem; font-size: 0.75rem; color: var(--muted); background: none; border: none; cursor: pointer; transition: all 0.2s; font-family: var(--font-sans); }
-.user-menu-dropdown button:hover { background: rgba(212,175,55,0.1); color: var(--gold); }
-.user-menu-dropdown hr { margin: 0.3rem 0; border-color: var(--border); }
+.avatar {
+  width: 28px;
+  height: 28px;
+  background: var(--gold);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--void);
+}
+.user-menu-dropdown {
+  position: absolute;
+  top: 55px;
+  right: 0;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.5rem 0;
+  min-width: 180px;
+  z-index: 1100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+}
+.user-menu-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.user-menu-dropdown button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem 1.2rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-sans);
+}
+.user-menu-dropdown button:hover {
+  background: rgba(212,175,55,0.1);
+  color: var(--gold);
+}
+.user-menu-dropdown hr {
+  margin: 0.3rem 0;
+  border-color: var(--border);
+}
 
 .page { display: none; }
 .page.active { display: block; animation: pageIn 0.5s cubic-bezier(0.22,1,0.36,1); }
 @keyframes pageIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 
-.hero { position: relative; min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; }
-.hero-left { padding: 8rem 4rem 6rem 5rem; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; }
-.hero-eyebrow { font-size: 0.6rem; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem; display: flex; align-items: center; gap: 12px; }
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
+}
+.hero-left {
+  padding: 8rem 4rem 6rem 5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+}
+.hero-eyebrow {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .hero-eyebrow::before { content: ''; display: block; width: 40px; height: 1px; background: var(--gold); }
-.hero h1 { font-family: var(--font-serif); font-size: clamp(3rem, 5.5vw, 6rem); font-weight: 300; line-height: 1.05; color: var(--cream); letter-spacing: -1px; }
+.hero h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(3rem, 5.5vw, 6rem);
+  font-weight: 300;
+  line-height: 1.05;
+  color: var(--cream);
+  letter-spacing: -1px;
+}
 .hero h1 em { font-style: italic; color: var(--gold); }
-.hero-sub { margin: 2rem 0 3rem; color: var(--muted); font-size: 0.95rem; font-weight: 300; line-height: 1.8; max-width: 420px; }
+.hero-sub {
+  margin: 2rem 0 3rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.8;
+  max-width: 420px;
+}
 .hero-ctas { display: flex; gap: 1rem; align-items: center; }
-.btn-primary { font-family: var(--font-sans); font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; background: var(--gold); color: var(--void); border: none; padding: 1rem 2.5rem; cursor: pointer; transition: all 0.25s; }
+.btn-primary {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  background: var(--gold);
+  color: var(--void);
+  border: none;
+  padding: 1rem 2.5rem;
+  cursor: pointer;
+  transition: all 0.25s;
+}
 .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(212,175,55,0.3); background: var(--gold-bright); }
-.btn-link { background: none; border: none; font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); cursor: pointer; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+.btn-link {
+  background: none;
+  border: none;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s;
+}
 .btn-link:hover { color: var(--gold); }
-.hero-stats { margin-top: 5rem; display: flex; gap: 3rem; border-top: 1px solid var(--border); padding-top: 2rem; }
-.hero-stat-num { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--cream); }
+.hero-stats {
+  margin-top: 5rem;
+  display: flex;
+  gap: 3rem;
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+}
+.hero-stat-num {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--cream);
+}
 .hero-stat-num span { color: var(--gold); }
 .hero-stat-label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 4px; }
-.hero-right { position: relative; background: var(--deep); overflow: hidden; }
-.hero-mosaic { position: absolute; inset: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3px; padding: 3px; }
-.hero-tile { position: relative; overflow: hidden; background: var(--elevated); }
-.hero-tile img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s cubic-bezier(0.22,1,0.36,1); filter: brightness(0.7) saturate(0.8); }
+
+.hero-right {
+  position: relative;
+  background: var(--deep);
+  overflow: hidden;
+}
+.hero-mosaic {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 3px;
+  padding: 3px;
+}
+.hero-tile {
+  position: relative;
+  overflow: hidden;
+  background: var(--elevated);
+}
+.hero-tile img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.22,1,0.36,1);
+  filter: brightness(0.7) saturate(0.8);
+}
 .hero-tile:hover img { transform: scale(1.06); filter: brightness(0.85) saturate(1); }
-.hero-tile-label { position: absolute; bottom: 0; left: 0; right: 0; padding: 1.5rem 1rem 1rem; background: linear-gradient(transparent, rgba(5,5,5,0.85)); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+.hero-tile-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 1.5rem 1rem 1rem;
+  background: linear-gradient(transparent, rgba(5,5,5,0.85));
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
 .hero-tile-price { font-size: 0.85rem; color: var(--gold); font-weight: 300; }
 .hero-tile.big { grid-row: span 2; }
-.marquee-wrap { background: var(--gold); color: var(--void); padding: 12px 0; overflow: hidden; }
-.marquee-track { display: flex; gap: 3rem; white-space: nowrap; animation: marquee 20s linear infinite; }
-.marquee-track span { font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; flex-shrink: 0; }
+
+.marquee-wrap {
+  background: var(--gold);
+  color: var(--void);
+  padding: 12px 0;
+  overflow: hidden;
+}
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  white-space: nowrap;
+  animation: marquee 20s linear infinite;
+}
+.marquee-track span {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
 .marquee-dot { color: rgba(5,5,5,0.4); }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
 .section { padding: 6rem 5rem; max-width: 1440px; margin: 0 auto; }
-.section-eyebrow { font-size: 0.6rem; font-weight: 600; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; display: flex; align-items: center; gap: 12px; }
+.section-eyebrow {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 .section-eyebrow::before { content: ''; display: block; width: 30px; height: 1px; background: var(--gold); }
-.section-title { font-family: var(--font-serif); font-size: clamp(2rem, 3.5vw, 3.5rem); font-weight: 300; color: var(--cream); line-height: 1.1; }
-.section-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1rem; }
-.link-all { font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: color 0.2s; }
+.section-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3.5vw, 3.5rem);
+  font-weight: 300;
+  color: var(--cream);
+  line-height: 1.1;
+}
+.section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.link-all {
+  font-size: 0.65rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s;
+}
 .link-all:hover { color: var(--gold); }
 .link-all::after { content: '→'; transition: transform 0.2s; }
 .link-all:hover::after { transform: translateX(4px); }
-.products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 1.5px; background: var(--border); }
-.product-card { background: var(--surface); cursor: pointer; position: relative; overflow: hidden; transition: background 0.3s; }
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.5px;
+  background: var(--border);
+}
+.product-card {
+  background: var(--surface);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
 .product-card:hover { background: var(--elevated); }
-.product-img-wrap { aspect-ratio: 3/4; overflow: hidden; position: relative; background: var(--elevated); }
-.product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.7s cubic-bezier(0.22,1,0.36,1), filter 0.4s; filter: brightness(0.8) saturate(0.7); }
-.product-card:hover .product-img-wrap img { transform: scale(1.04); filter: brightness(0.95) saturate(1); }
-.badge-pill { position: absolute; top: 16px; left: 16px; font-size: 0.55rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 4px 10px; background: var(--gold); color: var(--void); z-index: 2; }
-.wishlist-btn { position: absolute; top: 12px; right: 12px; width: 36px; height: 36px; background: rgba(5,5,5,0.6); backdrop-filter: blur(8px); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; z-index: 2; transition: all 0.2s; }
+.product-img-wrap {
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  position: relative;
+  background: var(--elevated);
+}
+.product-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.7s cubic-bezier(0.22,1,0.36,1), filter 0.4s;
+  filter: brightness(0.8) saturate(0.7);
+}
+.product-card:hover .product-img-wrap img {
+  transform: scale(1.04);
+  filter: brightness(0.95) saturate(1);
+}
+.badge-pill {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  background: var(--gold);
+  color: var(--void);
+  z-index: 2;
+}
+.wishlist-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 36px;
+  height: 36px;
+  background: rgba(5,5,5,0.6);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  z-index: 2;
+  transition: all 0.2s;
+}
 .wishlist-btn:hover { border-color: var(--gold); background: rgba(212,175,55,0.15); }
-.quick-add { position: absolute; bottom: -48px; left: 0; right: 0; background: rgba(212,175,55,0.95); color: var(--void); text-align: center; padding: 14px; font-size: 0.6rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; border: none; transition: bottom 0.3s cubic-bezier(0.22,1,0.36,1); }
+.quick-add {
+  position: absolute;
+  bottom: -48px;
+  left: 0;
+  right: 0;
+  background: rgba(212,175,55,0.95);
+  color: var(--void);
+  text-align: center;
+  padding: 14px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: bottom 0.3s cubic-bezier(0.22,1,0.36,1);
+}
 .product-img-wrap:hover .quick-add { bottom: 0; }
 .product-info { padding: 1.5rem 1.5rem 2rem; }
 .product-cat { font-size: 0.6rem; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
-.product-name { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 300; color: var(--cream); margin: 6px 0 4px; line-height: 1.2; }
+.product-name {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  font-weight: 300;
+  color: var(--cream);
+  margin: 6px 0 4px;
+  line-height: 1.2;
+}
 .product-sub { font-size: 0.75rem; color: var(--muted); }
 .product-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1.2rem; }
-.product-price { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 300; color: var(--gold); }
-
-/* PayPal add-to-cart wrapper in product card */
-.pp-atc-wrap {
-  margin-top: 0.75rem;
-  padding: 0 1.5rem 1.5rem;
+.product-price {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: var(--gold);
 }
-.pp-atc-wrap paypal-add-to-cart-button {
+
+/* PRODUCT DETAIL MODAL MET MEERDERE FOTO'S */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 10000;
+  left: 0;
+  top: 0;
   width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.95);
+  backdrop-filter: blur(8px);
+  align-items: center;
+  justify-content: center;
+}
+.modal.active {
+  display: flex;
+}
+.modal-content {
+  max-width: 1200px;
+  width: 90%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem;
+  position: relative;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 2rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s;
+}
+.modal-close:hover { color: var(--gold); }
+.modal-gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.modal-main-image {
+  background: var(--elevated);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  cursor: pointer;
+  overflow: hidden;
+}
+.modal-main-image img {
+  max-width: 100%;
+  max-height: 450px;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+.modal-main-image.zoomed img {
+  transform: scale(1.5);
+  cursor: zoom-out;
+}
+.modal-thumbnails {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.modal-thumb {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+.modal-thumb:hover, .modal-thumb.active {
+  border-color: var(--gold);
+}
+.modal-info { padding: 1rem; }
+.modal-info h2 {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
+.modal-info .modal-cat {
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+.modal-info .modal-price {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--gold);
+  margin: 1rem 0;
+}
+.modal-info .modal-desc {
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.add-image-btn {
+  background: var(--elevated);
+  border: 1px dashed var(--border);
+  color: var(--muted);
+  padding: 0.5rem;
+  cursor: pointer;
+  text-align: center;
+  font-size: 0.7rem;
+  transition: all 0.2s;
+}
+.add-image-btn:hover { border-color: var(--gold); color: var(--gold); }
+@media (max-width: 768px) {
+  .modal-content { grid-template-columns: 1fr; width: 95%; padding: 1rem; }
 }
 
-/* MODAL */
-.modal { display: none; position: fixed; z-index: 10000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.95); backdrop-filter: blur(8px); align-items: center; justify-content: center; }
-.modal.active { display: flex; }
-.modal-content { max-width: 1200px; width: 90%; background: var(--surface); border: 1px solid var(--border); display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; padding: 2rem; position: relative; max-height: 90vh; overflow-y: auto; }
-.modal-close { position: absolute; top: 1rem; right: 1rem; background: none; border: none; color: var(--muted); font-size: 2rem; cursor: pointer; z-index: 10; transition: color 0.2s; }
-.modal-close:hover { color: var(--gold); }
-.modal-gallery { display: flex; flex-direction: column; gap: 1rem; }
-.modal-main-image { background: var(--elevated); display: flex; align-items: center; justify-content: center; min-height: 400px; cursor: pointer; overflow: hidden; }
-.modal-main-image img { max-width: 100%; max-height: 450px; object-fit: contain; transition: transform 0.3s ease; }
-.modal-main-image.zoomed img { transform: scale(1.5); cursor: zoom-out; }
-.modal-thumbnails { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-.modal-thumb { width: 60px; height: 60px; object-fit: cover; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; }
-.modal-thumb:hover, .modal-thumb.active { border-color: var(--gold); }
-.modal-info { padding: 1rem; }
-.modal-info h2 { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--cream); margin-bottom: 0.5rem; }
-.modal-info .modal-cat { font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
-.modal-info .modal-price { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--gold); margin: 1rem 0; }
-.modal-info .modal-desc { color: var(--muted); line-height: 1.6; margin-bottom: 2rem; }
-.modal-actions { display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap; align-items: center; }
-/* PayPal add-to-cart in modal */
-.modal-pp-atc { margin-top: 0.75rem; width: 100%; }
-.add-image-btn { background: var(--elevated); border: 1px dashed var(--border); color: var(--muted); padding: 0.5rem; cursor: pointer; text-align: center; font-size: 0.7rem; transition: all 0.2s; }
-.add-image-btn:hover { border-color: var(--gold); color: var(--gold); }
-@media (max-width: 768px) { .modal-content { grid-template-columns: 1fr; width: 95%; padding: 1rem; } }
-
-.filters-row { display: flex; gap: 0.5rem; margin-bottom: 2.5rem; flex-wrap: wrap; align-items: center; }
-.filter-pill { font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 0.55rem 1.4rem; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; transition: all 0.2s; }
-.filter-pill:hover, .filter-pill.active { background: var(--gold); border-color: var(--gold); color: var(--void); }
+.filters-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-pill {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.55rem 1.4rem;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.filter-pill:hover, .filter-pill.active {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: var(--void);
+}
 .search-wrap { margin-left: auto; position: relative; }
-.shop-search { background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.8rem; padding: 0.55rem 1rem 0.55rem 2.5rem; width: 220px; outline: none; }
+.shop-search {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.8rem;
+  padding: 0.55rem 1rem 0.55rem 2.5rem;
+  width: 220px;
+  outline: none;
+}
 .shop-search:focus { border-color: var(--gold); }
 .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.8rem; color: var(--muted); }
-.sort-sel { background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 1px; padding: 0.55rem 1rem; cursor: pointer; outline: none; }
+.sort-sel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 1px;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+  outline: none;
+}
 
-.cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(6px); z-index: 5000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+.editorial {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 500px;
+  overflow: hidden;
+}
+.editorial-img img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6) saturate(0.6); transition: 0.8s; }
+.editorial:hover .editorial-img img { transform: scale(1.03); filter: brightness(0.7) saturate(0.8); }
+.editorial-content {
+  background: var(--deep);
+  padding: 5rem 4rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border: 1px solid var(--border);
+}
+
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(6px);
+  z-index: 5000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s;
+}
 .cart-overlay.open { opacity: 1; pointer-events: all; }
-.cart-drawer { position: fixed; right: 0; top: 0; bottom: 0; width: 460px; background: var(--deep); border-left: 1px solid var(--border); z-index: 5001; transform: translateX(100%); transition: transform 0.4s cubic-bezier(0.22,1,0.36,1); display: flex; flex-direction: column; }
+.cart-drawer {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 460px;
+  background: var(--deep);
+  border-left: 1px solid var(--border);
+  z-index: 5001;
+  transform: translateX(100%);
+  transition: transform 0.4s cubic-bezier(0.22,1,0.36,1);
+  display: flex;
+  flex-direction: column;
+}
 .cart-drawer.open { transform: translateX(0); }
-.cart-header { padding: 2rem; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-.cart-header h3 { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 300; color: var(--cream); }
-.cart-close { background: none; border: 1px solid var(--border); color: var(--muted); width: 36px; height: 36px; cursor: pointer; font-size: 1rem; transition: all 0.2s; }
+.cart-header {
+  padding: 2rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.cart-header h3 {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: var(--cream);
+}
+.cart-close {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
 .cart-close:hover { border-color: var(--gold); color: var(--gold); }
 .cart-items { flex: 1; overflow-y: auto; padding: 1.5rem; }
 .cart-empty { text-align: center; padding: 4rem 2rem; color: var(--muted); font-family: var(--font-serif); font-size: 1.2rem; font-weight: 300; }
-.cart-item { display: flex; gap: 1rem; padding: 1.2rem 0; border-bottom: 1px solid var(--border); }
-.cart-item-img { width: 70px; height: 70px; background: var(--elevated); overflow: hidden; flex-shrink: 0; }
+.cart-item {
+  display: flex;
+  gap: 1rem;
+  padding: 1.2rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.cart-item-img {
+  width: 70px;
+  height: 70px;
+  background: var(--elevated);
+  overflow: hidden;
+  flex-shrink: 0;
+}
 .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
 .cart-item-info { flex: 1; }
 .cart-item-name { font-family: var(--font-serif); font-size: 1rem; font-weight: 300; color: var(--cream); }
 .cart-item-price { font-size: 0.8rem; color: var(--gold); margin-top: 4px; }
 .qty-row { display: flex; align-items: center; gap: 0.8rem; margin-top: 0.7rem; }
-.qty-btn { width: 26px; height: 26px; background: var(--elevated); border: 1px solid var(--border); color: var(--text); cursor: pointer; font-size: 0.9rem; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.qty-btn {
+  width: 26px;
+  height: 26px;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .qty-btn:hover { border-color: var(--gold); color: var(--gold); }
 .qty-val { font-size: 0.8rem; min-width: 20px; text-align: center; }
 .cart-rm { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 1rem; margin-left: auto; transition: color 0.2s; }
 .cart-rm:hover { color: var(--rust); }
 .cart-footer { padding: 1.5rem; border-top: 1px solid var(--border); }
 .coupon-row { display: flex; gap: 8px; margin-bottom: 1.2rem; }
-.coupon-input { flex: 1; background: var(--surface); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.75rem; padding: 0.6rem 1rem; outline: none; }
+.coupon-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  padding: 0.6rem 1rem;
+  outline: none;
+}
 .coupon-input:focus { border-color: var(--gold); }
-.btn-apply { background: none; border: 1px solid var(--border-hover); color: var(--muted); padding: 0.6rem 1.2rem; font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+.btn-apply {
+  background: none;
+  border: 1px solid var(--border-hover);
+  color: var(--muted);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 .btn-apply:hover { border-color: var(--gold); color: var(--gold); }
 .cart-totals { margin-bottom: 1.2rem; }
 .cart-line { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
 .cart-line.total { color: var(--cream); font-size: 1rem; font-family: var(--font-serif); font-weight: 300; padding-top: 8px; border-top: 1px solid var(--border); }
-.btn-checkout { width: 100%; background: var(--gold); border: none; color: var(--void); font-family: var(--font-sans); font-size: 0.65rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; padding: 1rem; cursor: pointer; transition: all 0.2s; }
+.btn-checkout {
+  width: 100%;
+  background: var(--gold);
+  border: none;
+  color: var(--void);
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
 .btn-checkout:hover { background: var(--gold-bright); }
 
-.checkout-form { background: var(--surface); border: 1px solid var(--border); padding: 2rem; margin-bottom: 1rem; }
-.checkout-form h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 300; color: var(--gold); margin-bottom: 1.5rem; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
-.form-group { margin-bottom: 1rem; }
-.form-group label { display: block; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
-.form-group input, .form-group select { width: 100%; background: var(--elevated); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.9rem; padding: 0.8rem 1rem; outline: none; }
+/* CHECKOUT FORM */
+.checkout-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  margin-bottom: 1rem;
+}
+.checkout-form h3 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.form-group {
+  margin-bottom: 1rem;
+}
+.form-group label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.form-group input, .form-group select {
+  width: 100%;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+  outline: none;
+}
 .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
 @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
 
-.cookie-bar { position: fixed; bottom: 0; left: 0; right: 0; background: var(--deep); border-top: 1px solid var(--border); padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; z-index: 9000; }
+.cookie-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--deep);
+  border-top: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  z-index: 9000;
+}
 .cookie-bar p { font-size: 0.75rem; color: var(--muted); }
 .cookie-bar a { color: var(--gold); }
 .cookie-btns { display: flex; gap: 0.8rem; }
-.btn-cookie-sm { font-size: 0.6rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.5rem 1.2rem; border: 1px solid var(--border); background: none; color: var(--muted); cursor: pointer; transition: all 0.2s; }
+.btn-cookie-sm {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.5rem 1.2rem;
+  border: 1px solid var(--border);
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
 .btn-cookie-sm:hover { border-color: var(--muted); color: var(--text); }
 .btn-cookie-sm.accept { background: var(--gold); border-color: var(--gold); color: var(--void); }
 
-.auth-page { min-height: 80vh; display: flex; align-items: center; justify-content: center; padding: 3rem; position: relative; }
-.auth-card { background: var(--surface); border: 1px solid var(--border); padding: 3rem; width: 100%; max-width: 460px; position: relative; z-index: 2; }
-.auth-card h2 { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 300; color: var(--cream); margin-bottom: 0.5rem; }
+.auth-page {
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  position: relative;
+}
+.auth-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 3rem;
+  width: 100%;
+  max-width: 460px;
+  position: relative;
+  z-index: 2;
+}
+.auth-card h2 {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 0.5rem;
+}
 .auth-card p { font-size: 0.8rem; color: var(--muted); margin-bottom: 2rem; }
 .field { margin-bottom: 1.2rem; }
-.field label { display: block; font-size: 0.6rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
-.field input { width: 100%; background: var(--elevated); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.9rem; padding: 0.8rem 1rem; outline: none; }
+.field label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.field input {
+  width: 100%;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+  outline: none;
+}
 .field input:focus { border-color: var(--gold); }
-.field textarea { width: 100%; background: var(--elevated); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.9rem; padding: 0.8rem 1rem; outline: none; resize: vertical; }
+.field textarea {
+  width: 100%;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+  outline: none;
+  resize: vertical;
+}
 .field textarea:focus { border-color: var(--gold); }
 .auth-msg { font-size: 0.75rem; margin-top: 0.8rem; min-height: 1.2rem; }
 .auth-msg.error { color: var(--rust); }
@@ -289,61 +1071,245 @@ paypal-cart-button {
 .checkbox-row label { font-size: 0.75rem; color: var(--muted); letter-spacing: normal; text-transform: none; }
 
 .admin-wrap { padding: 3rem; max-width: 1400px; margin: 0 auto; }
-.admin-title { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 300; color: var(--cream); margin-bottom: 2rem; text-align: center; }
-.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; background: var(--border); margin-bottom: 2rem; }
-.stat-card { background: var(--surface); padding: 1.5rem; text-align: center; }
-.stat-card .label { font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
-.stat-card .value { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--gold); }
-.admin-form { background: var(--surface); border: 1px solid var(--border); padding: 2rem; margin-bottom: 2rem; }
-.admin-form h3 { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 300; color: var(--gold); margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
-.form-group { margin-bottom: 1.2rem; }
-.form-group label { display: block; font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
-.form-group input, .form-group select { width: 100%; background: var(--elevated); border: 1px solid var(--border); color: var(--text); font-family: var(--font-sans); font-size: 0.9rem; padding: 0.8rem 1rem; outline: none; }
+.admin-title {
+  font-family: var(--font-serif);
+  font-size: 2.5rem;
+  font-weight: 300;
+  color: var(--cream);
+  margin-bottom: 2rem;
+  text-align: center;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--surface);
+  padding: 1.5rem;
+  text-align: center;
+}
+.stat-card .label {
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+.stat-card .value {
+  font-family: var(--font-serif);
+  font-size: 2rem;
+  font-weight: 300;
+  color: var(--gold);
+}
+
+.admin-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+.admin-form h3 {
+  font-family: var(--font-serif);
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: var(--gold);
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.form-group {
+  margin-bottom: 1.2rem;
+}
+.form-group label {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+}
+.form-group input, .form-group select {
+  width: 100%;
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 0.9rem;
+  padding: 0.8rem 1rem;
+  outline: none;
+}
 .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
 .form-group input[type="file"] { padding: 0.5rem 0; background: none; }
-.btn-add-product { background: var(--gold); border: none; color: var(--void); font-family: var(--font-sans); font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 0.8rem 2rem; cursor: pointer; transition: all 0.2s; width: 100%; }
+.btn-add-product {
+  background: var(--gold);
+  border: none;
+  color: var(--void);
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 0.8rem 2rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+}
 .btn-add-product:hover { background: var(--gold-bright); }
-.admin-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-.admin-table th { text-align: left; padding: 0.8rem; font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
-.admin-table td { padding: 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; vertical-align: middle; }
-.admin-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 4px; cursor: pointer; }
-.status-live { font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #5a9e6f; background: rgba(90,158,111,0.12); padding: 4px 8px; display: inline-block; }
-.status-draft { font-size: 0.6rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); background: var(--elevated); padding: 4px 8px; display: inline-block; }
-.tbl-btn { font-size: 0.6rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: none; border: 1px solid var(--border); color: var(--muted); padding: 4px 10px; cursor: pointer; transition: all 0.2s; margin-right: 5px; }
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+.admin-table th {
+  text-align: left;
+  padding: 0.8rem;
+  font-size: 0.6rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+}
+.admin-table td {
+  padding: 0.8rem;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  font-size: 0.8rem;
+  vertical-align: middle;
+}
+.admin-thumb {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.status-live {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #5a9e6f;
+  background: rgba(90,158,111,0.12);
+  padding: 4px 8px;
+  display: inline-block;
+}
+.status-draft {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: var(--elevated);
+  padding: 4px 8px;
+  display: inline-block;
+}
+.tbl-btn {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-right: 5px;
+}
 .tbl-btn:hover { border-color: var(--gold); color: var(--gold); }
 .tbl-btn.danger:hover { border-color: var(--rust); color: var(--rust); }
-.wishlist-empty { text-align: center; padding: 8rem 2rem; color: var(--muted); }
+
+.wishlist-empty {
+  text-align: center;
+  padding: 8rem 2rem;
+  color: var(--muted);
+}
 .wishlist-empty-icon { font-size: 3rem; display: block; margin-bottom: 1.5rem; opacity: 0.4; }
 .wishlist-empty h3 { font-family: var(--font-serif); font-size: 2rem; font-weight: 300; color: var(--cream); margin-bottom: 0.5rem; }
-.order-card { background: var(--surface); border: 1px solid var(--border); padding: 1.5rem; margin-bottom: 1rem; }
-.order-card h4 { font-family: var(--font-serif); font-size: 1.2rem; color: var(--gold); margin-bottom: 0.5rem; }
+
+.order-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+.order-card h4 {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  color: var(--gold);
+  margin-bottom: 0.5rem;
+}
 .order-items { margin-top: 1rem; }
-.order-item { display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid var(--border); }
-.order-item img { width: 64px; height: 64px; object-fit: cover; border-radius: 12px; margin-right: 1rem; }
-.order-item-meta { flex: 1; display: flex; flex-direction: column; gap: 0.2rem; }
+.order-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+.order-item img {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-right: 1rem;
+}
+.order-item-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
 .toast-container { position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 99998; display: flex; flex-direction: column; gap: 0.6rem; align-items: center; pointer-events: none; }
-.toast { background: var(--elevated); border: 1px solid var(--border); border-left: 3px solid var(--gold); color: var(--cream); padding: 0.8rem 1.5rem; font-size: 0.8rem; font-weight: 400; white-space: nowrap; animation: toastIn 0.3s ease, toastOut 0.3s 2.5s forwards; pointer-events: none; }
+.toast {
+  background: var(--elevated);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  color: var(--cream);
+  padding: 0.8rem 1.5rem;
+  font-size: 0.8rem;
+  font-weight: 400;
+  white-space: nowrap;
+  animation: toastIn 0.3s ease, toastOut 0.3s 2.5s forwards;
+  pointer-events: none;
+}
 @keyframes toastIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
 @keyframes toastOut { to { opacity: 0; transform: translateY(-8px); } }
-footer { background: var(--deep); border-top: 1px solid var(--border); padding: 5rem; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 4rem; }
+
+footer {
+  background: var(--deep);
+  border-top: 1px solid var(--border);
+  padding: 5rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 4rem;
+}
 .footer-brand .logo { font-size: 2rem; display: block; margin-bottom: 1rem; }
 .footer-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.8; max-width: 260px; }
 footer h4 { font-size: 0.6rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; }
 footer ul { list-style: none; }
 footer li { font-size: 0.8rem; color: var(--muted); margin-bottom: 0.8rem; cursor: pointer; transition: color 0.2s; }
 footer li:hover { color: var(--cream); }
-.footer-bottom { background: var(--void); border-top: 1px solid var(--border); padding: 1.2rem 5rem; display: flex; justify-content: space-between; font-size: 0.65rem; color: var(--muted); letter-spacing: 1px; }
-
-/* PayPal loading state */
-.paypal-loading { text-align: center; padding: 2rem; color: var(--muted); }
-.paypal-loading .spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.8s linear infinite; margin-bottom: 1rem; }
-@keyframes spin { to { transform: rotate(360deg); } }
+.footer-bottom {
+  background: var(--void);
+  border-top: 1px solid var(--border);
+  padding: 1.2rem 5rem;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.65rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
 
 @media (max-width: 900px) {
-  nav { padding: 0 1.2rem; }
+  nav { padding: 0 1.5rem; }
   .mobile-menu-btn { display: flex; }
   .nav-links, .nav-right { display: none; }
-  .logo { font-size: 1.6rem; }
+  .mobile-menu { top: 56px; }
   .hero { grid-template-columns: 1fr; }
   .hero-right { height: 50vh; }
   .hero-left { padding: 4rem 2rem; }
@@ -351,24 +1317,34 @@ footer li:hover { color: var(--cream); }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   footer { grid-template-columns: 1fr; padding: 3rem 2rem; }
   .cart-drawer { width: 100%; }
+  .editorial { grid-template-columns: 1fr; }
   .admin-wrap { padding: 1rem; }
-  .mobile-cart-btn { display: flex !important; }
 }
-.mobile-cart-btn { display: none; background: none; border: none; font-size: 1.1rem; cursor: pointer; position: relative; color: var(--text); }
-.mobile-cart-btn .cart-count { position: absolute; top: -8px; right: -10px; background: var(--gold); color: var(--void); font-size: 0.6rem; font-weight: 700; border-radius: 50%; width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; }
 
 @media (max-width: 480px) {
-  .logo { font-size: 1.4rem; letter-spacing: 5px; }
+  nav { padding: 0 0.75rem; height: auto; flex-wrap: wrap; justify-content: center; }
+  .logo { font-size: 1.4rem; letter-spacing: 6px; margin: 0.5rem 0; }
+  .nav-links { gap: 0.2rem; flex-wrap: wrap; justify-content: center; width: 100%; }
+  .nav-link { font-size: 0.65rem; padding: 0.4rem 0.8rem; }
+  .nav-right { flex-wrap: wrap; justify-content: center; gap: 0.75rem; width: 100%; margin-bottom: 0.75rem; }
+  .mobile-menu { top: 56px; }
   .hero-left { padding: 2rem 1rem; }
   .hero h1 { font-size: clamp(2rem, 6vw, 3.5rem); }
   .section { padding: 3rem 1rem; }
   .products-grid { grid-template-columns: 1fr; }
+  .editorial-content { padding: 2rem 1rem; }
   .auth-page { padding: 1.5rem 0.75rem; min-height: auto; }
-  .auth-card { padding: 1.5rem; max-width: 100%; }
+  .auth-card { padding: 1.5rem; width: 100%; max-width: 100%; margin: 0 auto; }
   .auth-card h2 { font-size: 2rem; }
+  .auth-card p { margin-bottom: 1.5rem; }
+  .btn-primary, .btn-google-circle, .btn-ghost { width: 100%; }
+  .btn-google-circle { margin: 0.75rem 0 0; }
+  .field label { font-size: 0.75rem; }
+  .field input { padding: 0.95rem 0.95rem; font-size: 1rem; }
+  .checkbox-row { flex-direction: column; align-items: flex-start; }
   .cookie-bar { padding: 1rem; flex-direction: column; align-items: flex-start; }
   footer { padding: 2rem 1rem; }
-  .footer-bottom { padding: 1rem; flex-direction: column; gap: 0.5rem; }
+  .footer-bottom { padding: 1rem; }
 }
 </style>
 </head>
@@ -423,23 +1399,20 @@ footer li:hover { color: var(--cream); }
   </div>
 </div>
 
-<!-- PAYPAL MODAL -->
+<!-- PAYPAL PAYMENT MODAL -->
 <div id="paypalModal" class="modal" onclick="closePaypalModalOnBackground(event)">
   <div class="modal-content" style="max-width: 500px; text-align: center;">
     <button class="modal-close" onclick="closePaypalModal()">&times;</button>
     <div style="padding: 2rem;">
-      <h3 style="font-family:var(--font-serif); font-size:1.8rem; font-weight:300; color:var(--cream); margin-bottom:0.5rem;">Betaling</h3>
-      <p style="color:var(--muted); margin-bottom:0.5rem;">Totaalbedrag: <strong style="color:var(--gold);">€<span id="paypalTotal">0.00</span></strong></p>
-      <p style="color:var(--muted); font-size:0.8rem; margin-bottom:1.5rem;">Klik op de PayPal-knop om veilig af te ronden.</p>
-      <div id="paypalButtonsContainer">
-        <div class="paypal-loading"><div class="spinner"></div><p>PayPal laden...</p></div>
-      </div>
-      <p style="font-size:0.75rem; margin-top:1rem; color:var(--muted);">🔒 Veilig betalen met PayPal</p>
+      <h3>Betaling via PayPal</h3>
+      <p>Je betaalt nu €<strong id="paypalTotal">0.00</strong>. Klik op de PayPal-knop om af te ronden.</p>
+      <div style="margin: 2rem 0;" id="paypalButtonsContainer"></div>
+      <p style="font-size: 0.8rem; margin-top: 1rem; color: var(--muted);">Veilig betalen met PayPal.</p>
     </div>
   </div>
 </div>
 
-<!-- PRODUCT DETAIL MODAL -->
+<!-- PRODUCT DETAIL MODAL MET MEERDERE FOTO'S -->
 <div id="productModal" class="modal" onclick="closeModalOnBackground(event)">
   <div class="modal-content">
     <button class="modal-close" onclick="closeModal()">&times;</button>
@@ -459,10 +1432,6 @@ footer li:hover { color: var(--cream); }
         <button class="btn-primary" id="modalAddToCartBtn" onclick="addToCartFromModal()">In winkelwagen</button>
         <button class="wishlist-btn" id="modalWishlistBtn" style="position:relative; width:50px; height:50px;" onclick="toggleWishFromModal()">🤍</button>
       </div>
-      <!-- PayPal Add to Cart in modal (Deel 2 – product knop) -->
-      <div class="modal-pp-atc">
-        <paypal-add-to-cart-button data-id="4J6PV8TQYTCQQ" id="modalPpAtc"></paypal-add-to-cart-button>
-      </div>
     </div>
   </div>
 </div>
@@ -471,6 +1440,11 @@ footer li:hover { color: var(--cream); }
 
 <nav id="mainNav">
   <div class="logo" onclick="showPage('home')">MAISON<span>.</span></div>
+  <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Menu">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
   <div class="nav-links">
     <button class="nav-link" data-page="home">Home</button>
     <button class="nav-link" data-page="shop">Collectie</button>
@@ -480,12 +1454,8 @@ footer li:hover { color: var(--cream); }
     <button class="nav-link" data-page="admin" id="adminNavLink" style="display:none;">Admin</button>
   </div>
   <div class="nav-right">
-    <!-- PayPal Cart Button desktop (Deel 2 – cart weergeven) -->
-    <div class="paypal-cart-wrap">
-      <paypal-cart-button data-id="pp-view-cart-desktop"></paypal-cart-button>
-    </div>
     <button class="cart-btn" onclick="openCart()">🛒<span class="cart-count" id="cartBadge">0</span></button>
-    <div id="guestBtns" style="display:flex; gap:0.5rem;">
+    <div id="guestBtns">
       <button class="btn-nav btn-ghost" onclick="showPage('login')">Inloggen</button>
       <button class="btn-nav btn-gold" onclick="showPage('register')">Registreren</button>
     </div>
@@ -501,44 +1471,17 @@ footer li:hover { color: var(--cream); }
       <button onclick="logout(); closeUserMenu()">Uitloggen</button>
     </div>
   </div>
-  <!-- Mobile rechts: cart + hamburger -->
-  <div style="display:flex; align-items:center; gap:0.75rem;">
-    <button class="mobile-cart-btn" onclick="openCart()">🛒<span class="cart-count" id="mobileCartBadge">0</span></button>
-    <button class="mobile-menu-btn" id="mobileMenuBtn" onclick="toggleMobileMenu()" aria-label="Menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+  <div id="mobileMenu" class="mobile-menu" aria-hidden="true">
+    <button class="mobile-link" onclick="showPage('home')">Home</button>
+    <button class="mobile-link" onclick="showPage('shop')">Collectie</button>
+    <button class="mobile-link" onclick="showPage('wishlist')">Verlanglijst <span id="mobileWishlistBadge"></span></button>
+    <button class="mobile-link" onclick="showPage('orders')">Bestellingen</button>
+    <button class="mobile-link" onclick="showPage('contact')">Contact</button>
+    <button class="mobile-link mobile-cart" onclick="openCart()">🛒<span id="mobileCartCount">0</span></button>
+    <button class="mobile-link" onclick="showPage('login')">Inloggen</button>
+    <button class="mobile-link" onclick="showPage('register')">Registreren</button>
   </div>
 </nav>
-
-<!-- MOBILE MENU (slide-in panel) -->
-<div id="mobileMenu" class="mobile-menu visible" aria-hidden="true">
-  <button class="mobile-link" onclick="showPage('home'); closeMobileMenu()">Home</button>
-  <button class="mobile-link" onclick="showPage('shop'); closeMobileMenu()">Collectie</button>
-  <button class="mobile-link" onclick="showPage('wishlist'); closeMobileMenu()">
-    Verlanglijst <span class="mobile-badge" id="mobileWishBadge"></span>
-  </button>
-  <button class="mobile-link" onclick="showPage('orders'); closeMobileMenu()">Bestellingen</button>
-  <button class="mobile-link" onclick="showPage('contact'); closeMobileMenu()">Contact</button>
-  <button class="mobile-link" id="mobileAdminLink" style="display:none;" onclick="showPage('admin'); closeMobileMenu()">Admin</button>
-
-  <!-- PayPal Cart Button in mobile menu (Deel 2 – cart weergeven) -->
-  <div class="mobile-paypal-cart">
-    <paypal-cart-button data-id="pp-view-cart-mobile"></paypal-cart-button>
-  </div>
-
-  <!-- Guest buttons (hidden when logged in) -->
-  <div class="mobile-auth-section" id="mobileGuestSection">
-    <button class="btn-primary" onclick="showPage('login'); closeMobileMenu()">Inloggen</button>
-    <button class="btn-nav btn-ghost" style="padding:1rem; border-radius:0;" onclick="showPage('register'); closeMobileMenu()">Registreren</button>
-  </div>
-
-  <!-- User section (hidden when logged out) -->
-  <div class="mobile-user-section" id="mobileUserSection" style="display:none;">
-    <div class="mobile-user-name" id="mobileUserName"></div>
-    <button class="mobile-link" onclick="showPage('profile'); closeMobileMenu()">Mijn profiel</button>
-    <button class="mobile-link" onclick="logout(); closeMobileMenu()">Uitloggen</button>
-  </div>
-</div>
 
 <div id="homePage" class="page active">
   <div class="section">
@@ -564,64 +1507,23 @@ footer li:hover { color: var(--cream); }
 </div>
 
 <div id="loginPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Welkom terug</h2><p>Log in op uw MAISON account</p>
-    <div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com"></div>
-    <div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord"></div>
-    <button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button>
-    <button class="btn-google-circle" style="margin:0.75rem auto 0; display:block;" title="Inloggen met Google" onclick="loginWithGoogle()">
-      <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg>
-    </button>
-    <div class="auth-msg" id="loginMsg"></div>
-    <p class="auth-link"><a onclick="showPage('forgot-password')">Wachtwoord vergeten?</a></p>
-    <p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p>
-  </div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Welkom terug</h2><p>Log in op uw MAISON account</p><div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord"></div><button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button><button class="btn-google-circle" style="margin:0.75rem auto 0; display:block;" title="Inloggen met Google" onclick="loginWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><div class="auth-msg" id="loginMsg"></div><p class="auth-link"><a onclick="showPage('forgot-password')">Wachtwoord vergeten?</a></p><p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p></div></div>
 </div>
 
 <div id="forgotPasswordPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Wachtwoord vergeten</h2><p>Vul uw e-mailadres in</p>
-    <div class="field"><label>E-mailadres</label><input type="email" id="forgotEmail" placeholder="naam@email.com"></div>
-    <button class="btn-primary" style="width:100%;" onclick="requestPasswordReset()">Reset aanvragen</button>
-    <div class="auth-msg" id="forgotMsg"></div>
-    <p class="auth-link"><a onclick="showPage('login')">Terug</a></p>
-  </div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Wachtwoord vergeten</h2><p>Vul uw e-mailadres in</p><div class="field"><label>E-mailadres</label><input type="email" id="forgotEmail" placeholder="naam@email.com"></div><button class="btn-primary" style="width:100%;" onclick="requestPasswordReset()">Reset aanvragen</button><div class="auth-msg" id="forgotMsg"></div><p class="auth-link"><a onclick="showPage('login')">Terug</a></p></div></div>
 </div>
 
 <div id="resetPasswordPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Nieuw wachtwoord</h2>
-    <p>Er is een code verzonden naar <strong id="resetEmailDisplay"></strong>. Vul de code en uw nieuwe wachtwoord in.</p>
-    <div class="field"><label>Verificatiecode</label><input type="text" id="resetCodeInput" placeholder="123456"></div>
-    <div class="field"><label>Nieuw wachtwoord</label><input type="password" id="resetNewPass" placeholder="Minimaal 6 tekens"></div>
-    <div class="field"><label>Bevestig</label><input type="password" id="resetConfirmPass" placeholder="Bevestig"></div>
-    <button class="btn-primary" style="width:100%;" onclick="confirmPasswordReset()">Wachtwoord bijwerken</button>
-    <button class="btn-ghost" style="width:100%; margin-top:0.75rem; padding:0.8rem;" onclick="resendResetCode()">Code opnieuw sturen</button>
-    <div class="auth-msg" id="resetMsg"></div>
-    <p class="auth-link"><a onclick="showPage('login')">Terug</a></p>
-  </div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Nieuw wachtwoord</h2><p>Er is een code verzonden naar <strong id="resetEmailDisplay"></strong>. Vul de code en uw nieuwe wachtwoord in.</p><div class="field"><label>Verificatiecode</label><input type="text" id="resetCodeInput" placeholder="123456"></div><div class="field"><label>Nieuw wachtwoord</label><input type="password" id="resetNewPass" placeholder="Minimaal 6 tekens"></div><div class="field"><label>Bevestig</label><input type="password" id="resetConfirmPass" placeholder="Bevestig"></div><button class="btn-primary" style="width:100%;" onclick="confirmPasswordReset()">Wachtwoord bijwerken</button><button class="btn-ghost" style="width:100%; margin-top:0.75rem;" onclick="resendResetCode()">Code opnieuw sturen</button><div class="auth-msg" id="resetMsg"></div><p class="auth-link"><a onclick="showPage('login')">Terug</a></p></div></div>
 </div>
 
 <div id="registerPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2>
-    <div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div>
-    <div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div>
-    <div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div>
-    <div class="checkbox-row"><input type="checkbox" id="termsBox"><label>Ik ga akkoord met de voorwaarden</label></div>
-    <button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button>
-    <button class="btn-google-circle" style="margin:0.75rem auto 0; display:block;" title="Registreer met Google" onclick="registerWithGoogle()">
-      <svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg>
-    </button>
-    <div class="auth-msg" id="regMsg"></div>
-    <p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p>
-  </div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div><div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div><div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div><div class="checkbox-row"><input type="checkbox" id="termsBox"><label>Ik ga akkoord met de voorwaarden</label></div><button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button><button class="btn-google-circle" style="margin:0.75rem auto 0; display:block;" title="Registreer met Google" onclick="registerWithGoogle()"><svg viewBox="0 0 18 18" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button><div class="auth-msg" id="regMsg"></div><p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p></div></div>
 </div>
 
 <div id="verifyPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Verifieer uw e-mail</h2>
-    <p>Er is een verificatie-e-mail gestuurd naar <strong id="verifyEmailDisplay"></strong>. Klik op de link in uw inbox en kom daarna terug om in te loggen.</p>
-    <button class="btn-primary" style="width:100%;" onclick="confirmVerification()">Ik heb geverifieerd</button>
-    <button class="btn-ghost" style="width:100%; margin-top:0.75rem; padding:0.8rem;" onclick="resendVerificationCode()">E-mail opnieuw sturen</button>
-    <div class="auth-msg" id="verifyMsg"></div>
-    <p class="auth-link">Niet ontvangen? <a onclick="showPage('register')">Terug naar registratie</a></p>
-  </div></div>
+  <div class="auth-page"><div class="auth-card"><h2>Verifieer uw e-mail</h2><p>Er is een verificatie-e-mail gestuurd naar <strong id="verifyEmailDisplay"></strong>. Klik op de link in uw inbox en kom daarna terug om in te loggen.</p><button class="btn-primary" style="width:100%;" onclick="confirmVerification()">Ik heb geverifieerd</button><button class="btn-ghost" style="width:100%; margin-top:0.75rem;" onclick="resendVerificationCode()">E-mail opnieuw sturen</button><div class="auth-msg" id="verifyMsg"></div><p class="auth-link">Niet ontvangen? <a onclick="showPage('register')">Terug naar registratie</a></p></div></div>
 </div>
 
 <div id="adminPage" class="page">
@@ -639,7 +1541,7 @@ footer li:hover { color: var(--cream); }
     <div class="admin-form"><h3>Producten beheren</h3>
       <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>Foto</th><th>Product</th><th>Categorie</th><th>Prijs</th><th>Status</th><th>Acties</th></tr></thead><tbody id="adminTableBody"></tbody></table></div>
     </div>
-    <div class="admin-form"><h3>Gebruikers beheren</h3>
+    <div class="admin-form"><h3>Gebruikers beheren (Admin rechten geven)</h3>
       <div style="overflow-x:auto;"><table class="admin-table"><thead><tr><th>E-mail</th><th>Naam</th><th>Admin</th><th>Acties</th></tr></thead><tbody id="adminUsersTable"></tbody></table></div>
     </div>
     <div class="admin-form"><h3>Alle bestellingen</h3>
@@ -649,28 +1551,38 @@ footer li:hover { color: var(--cream); }
 </div>
 
 <div id="profilePage" class="page">
-  <div class="section"><div class="section-head"><div><div class="section-eyebrow">Account</div><h2 class="section-title">Mijn profiel</h2></div></div>
-    <div class="auth-card" style="max-width:500px; margin:0 auto;">
-      <p><strong>Naam:</strong> <span id="profileName"></span></p>
-      <p><strong>E-mail:</strong> <span id="profileEmail"></span></p>
-      <p><strong>Lid sinds:</strong> <span id="profileSince"></span></p>
-      <button class="btn-primary" style="margin-top:1rem;" onclick="showPage('shop')">Verder winkelen</button>
-    </div>
-  </div>
+  <div class="section"><div class="section-head"><div><div class="section-eyebrow">Account</div><h2 class="section-title">Mijn profiel</h2></div></div><div class="auth-card" style="max-width:500px; margin:0 auto;"><p><strong>Naam:</strong> <span id="profileName"></span></p><p><strong>E-mail:</strong> <span id="profileEmail"></span></p><p><strong>Lid sinds:</strong> <span id="profileSince"></span></p><button class="btn-primary" style="margin-top:1rem;" onclick="showPage('shop')">Verder winkelen</button></div></div>
 </div>
 
 <div id="contactPage" class="page">
   <div class="section">
-    <div class="section-head"><div><div class="section-eyebrow">Neem contact op</div><h2 class="section-title">Vragen of feedback?</h2></div></div>
+    <div class="section-head">
+      <div>
+        <div class="section-eyebrow">Neem contact op</div>
+        <h2 class="section-title">Vragen of feedback?</h2>
+      </div>
+    </div>
     <div style="max-width: 600px; margin: 0 auto;">
-      <div class="auth-card" style="padding: 2rem;">
-        <div class="field"><label>Naam</label><input type="text" id="contactName" placeholder="Uw naam"></div>
-        <div class="field"><label>E-mailadres</label><input type="email" id="contactEmail" placeholder="naam@email.com"></div>
-        <div class="field"><label>Onderwerp</label><input type="text" id="contactSubject" placeholder="Onderwerp"></div>
-        <div class="field"><label>Bericht</label><textarea id="contactMessage" rows="5" placeholder="Uw bericht"></textarea></div>
+      <form class="auth-card" style="padding: 2rem;">
+        <div class="field">
+          <label>Naam</label>
+          <input type="text" id="contactName" placeholder="Uw naam">
+        </div>
+        <div class="field">
+          <label>E-mailadres</label>
+          <input type="email" id="contactEmail" placeholder="naam@email.com">
+        </div>
+        <div class="field">
+          <label>Onderwerp</label>
+          <input type="text" id="contactSubject" placeholder="Onderwerp">
+        </div>
+        <div class="field">
+          <label>Bericht</label>
+          <textarea id="contactMessage" rows="5" placeholder="Uw bericht"></textarea>
+        </div>
         <button class="btn-primary" style="width: 100%;" onclick="sendContactMessage()">Verstuur bericht</button>
         <div class="auth-msg" id="contactMsg"></div>
-      </div>
+      </form>
       <div style="text-align: center; margin-top: 2rem; color: var(--muted);">
         <p><strong>Adres:</strong> Voorbeeldstraat 123, 1234 AB Amsterdam</p>
         <p><strong>Telefoon:</strong> 020 123 4567</p>
@@ -684,32 +1596,42 @@ footer li:hover { color: var(--cream); }
   <div class="footer-section footer-brand">
     <div class="logo">MAISON<span>.</span></div>
     <p class="footer-desc">Premium store voor tijdloze elegantie. Handgeselecteerde essentials voor de moderne levensstijl.</p>
-    <div style="margin-top:1.5rem; display:flex; gap:0.5rem;">
-      <input type="email" placeholder="E-mail nieuwsbrief" id="newsletterEmail" style="flex:1; background:var(--elevated); border:1px solid var(--border); color:var(--text); font-family:var(--font-sans); font-size:0.8rem; padding:0.6rem 1rem; outline:none;">
-      <button onclick="subscribeNewsletter()" style="background:var(--gold); border:none; color:var(--void); font-size:0.65rem; font-weight:700; letter-spacing:1px; padding:0.6rem 1rem; cursor:pointer;">OK</button>
+    <div class="footer-newsletter">
+      <input type="email" placeholder="E-mail voor nieuwsbrief" id="newsletterEmail">
+      <button onclick="subscribeNewsletter()">Aanmelden</button>
     </div>
   </div>
   <div class="footer-section">
     <h4>Shop</h4>
-    <ul><li onclick="showPage('shop')">Collectie</li><li onclick="showPage('wishlist')">Verlanglijst</li><li onclick="openCart()">Winkelwagen</li></ul>
+    <ul>
+      <li onclick="showPage('shop')">Collectie</li>
+      <li onclick="showPage('wishlist')">Verlanglijst</li>
+      <li onclick="openCart()">Winkelwagen</li>
+    </ul>
   </div>
   <div class="footer-section">
     <h4>Account</h4>
-    <ul><li onclick="showPage('login')">Inloggen</li><li onclick="showPage('register')">Registreren</li><li onclick="showPage('orders')">Bestellingen</li></ul>
+    <ul>
+      <li onclick="showPage('login')">Inloggen</li>
+      <li onclick="showPage('register')">Registreren</li>
+      <li onclick="showPage('orders')">Bestellingen</li>
+    </ul>
   </div>
   <div class="footer-section">
     <h4>Support</h4>
-    <ul><li onclick="showPage('contact')">Contact</li><li>Verzending</li><li>Retouren</li><li>FAQ</li></ul>
+    <ul>
+      <li onclick="showPage('contact')">Contact</li>
+      <li>Verzending</li>
+      <li>Retouren</li>
+      <li>FAQ</li>
+    </ul>
   </div>
 </footer>
-<div class="footer-bottom"><span>© 2025 MAISON</span><span>🔒 Veilig betalen</span></div>
+<div class="footer-bottom"><span>© 2025 MAISON</span><span>Veilig betalen</span></div>
 
-<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/12.12.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.12.1/firebase-auth-compat.js"></script>
-
 <script>
-// ─── STATE ───────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyCz-EYcHMVG20tX0z-jbEVUVM8b4NC7VcM",
   authDomain: "shop-2eab0.firebaseapp.com",
@@ -717,10 +1639,13 @@ const firebaseConfig = {
   storageBucket: "shop-2eab0.firebasestorage.app",
   messagingSenderId: "846711763840",
   appId: "1:846711763840:web:67c360a26f0d741f7d4765",
+  measurementId: "G-M7C93E0CTE"
 };
+
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const googleProvider = new firebase.auth.GoogleAuthProvider();
+const provider = new firebase.auth.GoogleAuthProvider();
+
 const ADMIN_EMAIL = "elmouchania@gmail.com";
 let products, cart, wishlist, user, coupon, users, orders, resetTokens, verificationCodes, currentModalProduct, modalZoomed, pendingOrder;
 
@@ -733,10 +1658,53 @@ function loadState() {
   verificationCodes = JSON.parse(localStorage.getItem('ms_verification_codes')) || {};
   resetTokens = JSON.parse(localStorage.getItem('ms_reset_tokens')) || {};
   orders = JSON.parse(localStorage.getItem('ms_orders')) || {};
-  try { user = JSON.parse(localStorage.getItem('ms_user')); } catch { user = null; }
-  currentModalProduct = null; modalZoomed = false; pendingOrder = null;
+  try { 
+    user = JSON.parse(localStorage.getItem('ms_user')); 
+  } catch { 
+    user = null; 
+  }
+  Object.values(orders).forEach(userOrders => {
+    userOrders.forEach(order => {
+      if (!order.status) order.status = 'pending';
+    });
+  });
+  resetTokens = {};
+  currentModalProduct = null;
+  modalZoomed = false;
 }
+
 loadState();
+
+function handleFirebaseSignIn(fbUser) {
+  if (!fbUser) return;
+  const identifier = fbUser.email ? fbUser.email.toLowerCase() : fbUser.phoneNumber;
+  if (!identifier) return;
+  const name = fbUser.displayName || identifier.split('@')[0] || identifier;
+  const providerId = fbUser.providerData && fbUser.providerData[0] ? fbUser.providerData[0].providerId : 'password';
+  const provider = providerId === 'google.com' ? 'google' : providerId === 'phone' ? 'phone' : 'local';
+  const isVerified = fbUser.emailVerified === true || provider === 'google' || provider === 'phone';
+  if (provider === 'local' && !isVerified) {
+    return;
+  }
+  if (!users[identifier]) {
+    users[identifier] = { name, password: '', isAdmin: identifier === ADMIN_EMAIL, registeredAt: new Date().toISOString(), isVerified, provider };
+  } else {
+    users[identifier].provider = provider;
+    if (isVerified) users[identifier].isVerified = true;
+  }
+  user = { email: identifier, name };
+  save();
+  updateNav();
+  toast(provider === 'google' ? 'Ingelogd met Google' : 'Ingelogd');
+  if (identifier === ADMIN_EMAIL || users[identifier]?.isAdmin === true) showPage('admin');
+  else showPage('shop');
+  renderAdmin();
+}
+
+auth.onAuthStateChanged(fbUser => {
+  if (!fbUser) return;
+  handleFirebaseSignIn(fbUser);
+});
 
 function save() {
   localStorage.setItem('ms_products', JSON.stringify(products));
@@ -750,488 +1718,585 @@ function save() {
   else localStorage.removeItem('ms_user');
 }
 
-function escapeHtml(str) { if(!str) return ''; return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m])); }
-function toast(msg) { const t = document.createElement('div'); t.className='toast'; t.textContent=msg; document.getElementById('toastContainer').appendChild(t); setTimeout(()=>t.remove(),3000); }
+function toast(msg) {
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
 
-// ─── PayPal Cart initialiseren (Deel 2 – cart + add-to-cart knoppen) ───
-function initPaypalCartButtons() {
-  if (typeof cartPaypal === 'undefined') {
-    // Wacht tot SDK geladen is
-    setTimeout(initPaypalCartButtons, 300);
-    return;
+function toggleUserMenu() {
+  document.getElementById('userMenuDropdown').classList.toggle('show');
+}
+function closeUserMenu() {
+  document.getElementById('userMenuDropdown').classList.remove('show');
+}
+document.addEventListener('click', function(e) {
+  const chip = document.getElementById('userChip');
+  const menu = document.getElementById('userMenuDropdown');
+  if (chip && !chip.contains(e.target) && menu && !menu.contains(e.target)) {
+    menu.classList.remove('show');
   }
-  try {
-    cartPaypal.Cart({ id: "pp-view-cart-desktop" });
-  } catch(e) { /* al geïnitialiseerd */ }
-  try {
-    cartPaypal.Cart({ id: "pp-view-cart-mobile" });
-  } catch(e) { /* al geïnitialiseerd */ }
-  initModalPaypalAtc();
-}
-
-function initModalPaypalAtc() {
-  if (typeof cartPaypal === 'undefined') return;
-  try {
-    cartPaypal.AddToCart({ id: "4J6PV8TQYTCQQ" });
-  } catch(e) { /* al geïnitialiseerd */ }
-}
-
-// Wacht op DOMContentLoaded en start daarna initialisatie
-document.addEventListener('DOMContentLoaded', () => {
-  setTimeout(initPaypalCartButtons, 500);
 });
 
-// ─── NAV ─────────────────────────────────────────────────────────
 function updateNav() {
   const logged = !!user;
-  const isAdmin = logged && (user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true);
   document.getElementById('guestBtns').style.display = logged ? 'none' : 'flex';
   document.getElementById('userChip').style.display = logged ? 'flex' : 'none';
+  const isAdmin = logged && (user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true);
   document.getElementById('adminNavLink').style.display = isAdmin ? 'block' : 'none';
   if (logged) {
     document.getElementById('userLabel').textContent = user.name || user.email.split('@')[0];
     document.getElementById('avatarIcon').textContent = (user.name?.[0] || user.email[0] || '?').toUpperCase();
   }
-  document.getElementById('mobileGuestSection').style.display = logged ? 'none' : 'flex';
-  document.getElementById('mobileUserSection').style.display = logged ? 'block' : 'none';
-  document.getElementById('mobileAdminLink').style.display = isAdmin ? 'block' : 'none';
-  if (logged) document.getElementById('mobileUserName').textContent = user.name || user.email.split('@')[0];
-  const count = cart.reduce((a,b)=>a+b.qty,0);
-  document.getElementById('cartBadge').textContent = count;
-  document.getElementById('mobileCartBadge').textContent = count;
-  const wishCount = wishlist.length ? `(${wishlist.length})` : '';
-  document.getElementById('wishlistBadge').textContent = wishCount;
-  document.getElementById('mobileWishBadge').textContent = wishCount;
+  document.getElementById('cartBadge').textContent = cart.reduce((a, b) => a + b.qty, 0);
+  document.getElementById('wishlistBadge').textContent = wishlist.length ? `(${wishlist.length})` : '';
+  const mobileCart = document.getElementById('mobileCartCount');
+  if (mobileCart) mobileCart.textContent = cart.reduce((a, b) => a + b.qty, 0);
+  const mobileWishlist = document.getElementById('mobileWishlistBadge');
+  if (mobileWishlist) mobileWishlist.textContent = wishlist.length ? `(${wishlist.length})` : '';
+  const heroStat = document.getElementById('heroStatCount');
+  if (heroStat) heroStat.textContent = products.filter(p => p.published).length;
 }
 
-function toggleUserMenu() { document.getElementById('userMenuDropdown').classList.toggle('show'); }
-function closeUserMenu() { document.getElementById('userMenuDropdown').classList.remove('show'); }
-document.addEventListener('click', e => {
-  const chip = document.getElementById('userChip');
-  const menu = document.getElementById('userMenuDropdown');
-  if (chip && !chip.contains(e.target) && menu && !menu.contains(e.target)) menu.classList.remove('show');
-});
-
-// ─── HAMBURGER ───────────────────────────────────────────────────
-let mobileOpen = false;
-function toggleMobileMenu() {
-  mobileOpen = !mobileOpen;
-  const menu = document.getElementById('mobileMenu');
-  const btn = document.getElementById('mobileMenuBtn');
-  menu.classList.toggle('show', mobileOpen);
-  btn.classList.toggle('open', mobileOpen);
-  btn.setAttribute('aria-expanded', mobileOpen);
-  menu.setAttribute('aria-hidden', !mobileOpen);
-  document.body.style.overflow = mobileOpen ? 'hidden' : '';
-}
-function closeMobileMenu() {
-  if (!mobileOpen) return;
-  mobileOpen = false;
-  const menu = document.getElementById('mobileMenu');
-  const btn = document.getElementById('mobileMenuBtn');
-  menu.classList.remove('show');
-  btn.classList.remove('open');
-  btn.setAttribute('aria-expanded', 'false');
-  menu.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-}
-
-// ─── PAGES ───────────────────────────────────────────────────────
-function showPage(name) {
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  const pg = document.getElementById(name+'Page');
-  if (pg) pg.classList.add('active');
-  document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active', b.dataset.page===name));
-  closeMobileMenu();
-  closeUserMenu();
-  closeModal();
-  closeCheckoutModal();
-  window.scrollTo({top:0});
-  if(name==='home') renderHome();
-  if(name==='shop') renderShop();
-  if(name==='wishlist') renderWishlist();
-  if(name==='orders') renderOrders();
-  if(name==='admin' && user && (user.email===ADMIN_EMAIL || users[user.email]?.isAdmin===true)) renderAdmin();
-  if(name==='profile' && user) {
-    document.getElementById('profileName').textContent=user.name||'-';
-    document.getElementById('profileEmail').textContent=user.email;
-    document.getElementById('profileSince').textContent=users[user.email]?.registeredAt?new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL'):'Nieuw';
-  }
-}
-
-// ─── CART ────────────────────────────────────────────────────────
-function openCart() { renderCart(); document.getElementById('cartOverlay').classList.add('open'); document.getElementById('cartDrawer').classList.add('open'); }
-function closeCart() { document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('cartDrawer').classList.remove('open'); }
-
-function addToPaypalCart(product) {
-  // Voeg product toe aan PayPal cart via de NCP Cart SDK
-  if (typeof cartPaypal !== 'undefined' && cartPaypal.addItem) {
-    try {
-      cartPaypal.addItem({
-        name: product.title,
-        price: product.price.toFixed(2),
-        quantity: 1,
-        currency: 'EUR',
-        sku: String(product.id),
-        imageUrl: (product.images && product.images[0]) || product.imageUrl || '',
-      });
-    } catch(e) {
-      console.warn('PayPal addItem fout:', e);
-    }
-  }
-}
-
-function addToCart(id) {
-  if(!user){toast('Log in om te winkelen');showPage('login');return;}
-  const product = products.find(p => p.id === id);
+function openProductDetail(productId) {
+  const product = products.find(p => p.id === productId);
   if (!product) return;
-  const ex = cart.find(i => i.id === id);
-  if(ex) ex.qty++; else cart.push({id, qty:1});
-  save(); updateNav(); renderCart();
-  toast('Toegevoegd aan winkelmand');
-  // Sync naar PayPal cart
-  addToPaypalCart(product);
-}
-
-function changeQty(id, delta) {
-  const idx = cart.findIndex(x => x.id === id);
-  if(idx === -1) return;
-  cart[idx].qty += delta;
-  if(cart[idx].qty <= 0) {
-    cart.splice(idx, 1);
-  } else if(delta > 0) {
-    // Extra item toegevoegd — sync naar PayPal
-    const product = products.find(p => p.id === id);
-    if(product) addToPaypalCart(product);
+  currentModalProduct = product;
+  document.getElementById('modalTitle').textContent = product.title;
+  document.getElementById('modalCat').textContent = product.category;
+  document.getElementById('modalPrice').textContent = '€' + product.price.toFixed(2);
+  document.getElementById('modalDesc').textContent = product.desc || 'Geen beschrijving beschikbaar.';
+  const mainImg = document.getElementById('modalMainImg');
+  mainImg.src = (product.images && product.images.length > 0) ? product.images[0] : (product.imageUrl || 'https://placehold.co/600x600/111/888?text=Geen+foto');
+  const thumbContainer = document.getElementById('modalThumbnails');
+  thumbContainer.innerHTML = '';
+  const allImages = product.images && product.images.length > 0 ? product.images : (product.imageUrl ? [product.imageUrl] : []);
+  allImages.forEach((img, idx) => {
+    const thumb = document.createElement('img');
+    thumb.src = img;
+    thumb.className = 'modal-thumb' + (idx === 0 ? ' active' : '');
+    thumb.onclick = () => { mainImg.src = img; document.querySelectorAll('.modal-thumb').forEach(t => t.classList.remove('active')); thumb.classList.add('active'); };
+    thumbContainer.appendChild(thumb);
+  });
+  const addBtn = document.getElementById('addImageBtn');
+  if (user && (user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true)) {
+    addBtn.style.display = 'block';
+  } else {
+    addBtn.style.display = 'none';
   }
-  save(); updateNav(); renderCart();
+  const inWish = wishlist.includes(product.id);
+  document.getElementById('modalWishlistBtn').textContent = inWish ? '❤️' : '🤍';
+  document.getElementById('productModal').classList.add('active');
+  modalZoomed = false;
+  document.getElementById('modalMainImage').classList.remove('zoomed');
 }
-function removeFromCart(id) { cart=cart.filter(i=>i.id!==id); save(); updateNav(); renderCart(); }
-function applyCoupon() { const code=document.getElementById('couponInput').value.trim().toUpperCase(); if(code==='WELKOM10'){coupon=10;toast('10% korting!');}else if(code==='MAISON20'){coupon=20;toast('20% korting!');}else{toast('Ongeldige code');return;} renderCart(); }
-function toggleWish(id) { if(!user){toast('Log in');showPage('login');return;} const idx=wishlist.indexOf(id); if(idx===-1){wishlist.push(id);toast('Toegevoegd aan verlanglijst');}else{wishlist.splice(idx,1);toast('Verwijderd');} save(); updateNav(); if(document.getElementById('shopPage').classList.contains('active'))renderShop(); if(document.getElementById('wishlistPage').classList.contains('active'))renderWishlist(); renderHome(); }
-function getCartTotals() { const sub=cart.reduce((s,item)=>{const p=products.find(pr=>pr.id===item.id);return s+(p?p.price*item.qty:0);},0); const ship=sub>=50?0:4.95; const disc=sub*(coupon/100); const total=sub-disc+ship; return{sub,ship,disc,total}; }
+
+function addProductImage() {
+  if (!currentModalProduct) return;
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.onchange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        if (!currentModalProduct.images) currentModalProduct.images = [];
+        if (currentModalProduct.imageUrl && !currentModalProduct.images.includes(currentModalProduct.imageUrl)) {
+          currentModalProduct.images.unshift(currentModalProduct.imageUrl);
+        }
+        currentModalProduct.images.push(ev.target.result);
+        currentModalProduct.imageUrl = currentModalProduct.images[0];
+        save();
+        openProductDetail(currentModalProduct.id);
+        renderHome(); renderShop(); renderAdmin();
+        toast('Extra foto toegevoegd');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  input.click();
+}
+
+function closeModal() {
+  document.getElementById('productModal').classList.remove('active');
+  currentModalProduct = null;
+}
+function closeModalOnBackground(e) { if (e.target === document.getElementById('productModal')) closeModal(); }
+function toggleZoom() {
+  modalZoomed = !modalZoomed;
+  document.getElementById('modalMainImage').classList.toggle('zoomed', modalZoomed);
+}
+function addToCartFromModal() { if (currentModalProduct) addToCart(currentModalProduct.id); }
+function toggleWishFromModal() {
+  if (currentModalProduct) {
+    toggleWish(currentModalProduct.id);
+    const inWish = wishlist.includes(currentModalProduct.id);
+    document.getElementById('modalWishlistBtn').textContent = inWish ? '❤️' : '🤍';
+  }
+}
+
+function makeCard(p) {
+  const inWish = wishlist.includes(p.id);
+  const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : (p.imageUrl || 'https://placehold.co/400x530/111/888?text=Geen+foto');
+  return `<div class="product-card" onclick="openProductDetail(${p.id})"><div class="product-img-wrap"><img src="${imgUrl}" alt="${p.title}" loading="lazy">${!p.published ? '<div class="badge-pill">Concept</div>' : ''}<button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(${p.id})">${inWish ? '❤️' : '🤍'}</button><button class="quick-add" onclick="event.stopPropagation();addToCart(${p.id})">+ In winkelwagen</button></div><div class="product-info"><div class="product-cat">${p.category}</div><div class="product-name">${p.title}</div><div class="product-sub">${p.desc || ''}</div><div class="product-footer"><div class="product-price">€${p.price.toFixed(2)}</div></div></div></div>`;
+}
+
+function renderHome() {
+  const featured = products.filter(p => p.published).slice(0, 6);
+  document.getElementById('homeFeaturedGrid').innerHTML = featured.length ? featured.map(makeCard).join('') : '<div style="text-align:center;padding:4rem;">Nog geen producten. Admin kan producten toevoegen.</div>';
+}
+function renderShop() {
+  const cat = document.querySelector('.filter-pill.active')?.dataset.cat || 'all';
+  const q = (document.getElementById('shopSearch')?.value || '').toLowerCase();
+  const sort = document.getElementById('shopSort')?.value || '';
+  let list = products.filter(p => p.published && (cat === 'all' || p.category === cat) && (p.title.toLowerCase().includes(q) || p.desc?.toLowerCase().includes(q)));
+  if (sort === 'asc') list.sort((a,b)=>a.price-b.price);
+  if (sort === 'desc') list.sort((a,b)=>b.price-a.price);
+  if (sort === 'name') list.sort((a,b)=>a.title.localeCompare(b.title));
+  document.getElementById('shopGrid').innerHTML = list.length ? list.map(makeCard).join('') : '<p style="padding:3rem 0;">Geen producten gevonden.</p>';
+  document.getElementById('shopCount').innerHTML = list.length ? `(${list.length})` : '';
+  const cats = [...new Set(products.filter(p=>p.published).map(p=>p.category))];
+  document.getElementById('catFilters').innerHTML = cats.map(c => `<button class="filter-pill${cat===c?' active':''}" data-cat="${c}" onclick="setFilter('${c}',this)">${c}</button>`).join('');
+}
+window.setFilter = (cat, el) => { document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active')); el.classList.add('active'); renderShop(); };
+function renderWishlist() {
+  const items = products.filter(p => wishlist.includes(p.id));
+  document.getElementById('wishlistContent').innerHTML = items.length ? `<div class="products-grid">${items.map(makeCard).join('')}</div>` : '<div class="wishlist-empty"><span class="wishlist-empty-icon">♡</span><h3>Uw verlanglijst is leeg</h3></div>';
+}
 function renderCart() {
-  const listDiv=document.getElementById('cartList'), totsDiv=document.getElementById('cartTotals');
-  if(!cart.length){listDiv.innerHTML='<div class="cart-empty">Uw winkelmand is leeg</div>';totsDiv.innerHTML='';return;}
-  let sub=0;
-  listDiv.innerHTML=cart.map(item=>{const p=products.find(pr=>pr.id===item.id);if(!p)return'';sub+=p.price*item.qty;return`<div class="cart-item"><div class="cart-item-img"><img src="${(p.images&&p.images[0])||p.imageUrl||'https://placehold.co/70/111/888'}" alt="${escapeHtml(p.title)}"></div><div class="cart-item-info"><div class="cart-item-name">${escapeHtml(p.title)}</div><div class="cart-item-price">€${p.price.toFixed(2)}</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty(${p.id},1)">+</button></div></div><button class="cart-rm" onclick="removeFromCart(${p.id})">🗑</button></div>`;}).join('');
-  const{ship,disc,total}=getCartTotals();
-  totsDiv.innerHTML=`<div class="cart-line"><span>Subtotaal</span><span>€${sub.toFixed(2)}</span></div>${coupon?`<div class="cart-line"><span>Korting (${coupon}%)</span><span>−€${disc.toFixed(2)}</span></div>`:''}<div class="cart-line"><span>Verzending</span><span>${ship?'€'+ship.toFixed(2):'Gratis'}</span></div><div class="cart-line total"><span>Totaal</span><span>€${total.toFixed(2)}</span></div>`;
+  const listDiv = document.getElementById('cartList'), totsDiv = document.getElementById('cartTotals');
+  if (!cart.length) { listDiv.innerHTML = '<div class="cart-empty">Uw winkelmand is leeg</div>'; totsDiv.innerHTML = ''; return; }
+  let sub = 0;
+  listDiv.innerHTML = cart.map(item => { const p = products.find(pr => pr.id === item.id); if (!p) return ''; sub += p.price * item.qty; return `<div class="cart-item"><div class="cart-item-img"><img src="${(p.images && p.images[0]) || p.imageUrl || 'https://placehold.co/70/111/888'}" alt="${p.title}"></div><div class="cart-item-info"><div class="cart-item-name">${p.title}</div><div class="cart-item-price">€${p.price.toFixed(2)}</div><div class="qty-row"><button class="qty-btn" onclick="changeQty(${p.id},-1)">−</button><span class="qty-val">${item.qty}</span><button class="qty-btn" onclick="changeQty(${p.id},1)">+</button></div></div><button class="cart-rm" onclick="removeFromCart(${p.id})">🗑</button></div>`; }).join('');
+  const ship = sub >= 50 ? 0 : 4.95, disc = sub * (coupon / 100), tot = sub - disc + ship;
+  totsDiv.innerHTML = `<div class="cart-line"><span>Subtotaal</span><span>€${sub.toFixed(2)}</span></div>${coupon ? `<div class="cart-line"><span>Korting (${coupon}%)</span><span>−€${disc.toFixed(2)}</span></div>` : ''}<div class="cart-line"><span>Verzending</span><span>${ship ? '€'+ship.toFixed(2) : 'Gratis'}</span></div><div class="cart-line total"><span>Totaal</span><span>€${tot.toFixed(2)}</span></div>`;
 }
-
-// ─── CHECKOUT ────────────────────────────────────────────────────
-function showCheckout() { if(!user){toast('Log in om af te rekenen');showPage('login');return;} if(!cart.length){toast('Winkelmand is leeg');return;} document.getElementById('checkoutModal').classList.add('active'); }
+function renderOrders() {
+  const userOrders = (orders[user?.email] || []).filter(o => o.status !== 'cancelled');
+  const container = document.getElementById('ordersList');
+  if (!userOrders.length) { container.innerHTML = '<div class="auth-card" style="max-width:600px; margin:0 auto;"><p>U heeft nog geen bestellingen geplaatst.</p><button class="btn-primary" onclick="showPage(\'shop\')">Nu winkelen</button></div>'; return; }
+  container.innerHTML = userOrders.map(order => {
+    if (!order.status) order.status = 'pending';
+    const orderDate = new Date(order.date);
+    const now = new Date();
+    const hoursDiff = (now - orderDate) / (1000 * 60 * 60);
+    const canCancel = order.status === 'pending' && hoursDiff < 24;
+    return `<div class="order-card"><h4>Bestelling #${order.id}</h4><p>Datum: ${orderDate.toLocaleDateString('nl-NL')}</p><p>Status: ${order.status === 'pending' ? 'In behandeling' : order.status === 'cancelled' ? 'Geannuleerd' : 'Voltooid'}</p><p>Adres: ${order.address.street}, ${order.address.zipcode} ${order.address.city}</p><p>Totaal: €${order.total.toFixed(2)}</p><div class="order-items">${order.items.map(i => `<div class="order-item"><div class="order-item-meta"><div style="display:flex; align-items:center;"><img src="${escapeHtml(i.image || 'https://placehold.co/70/111/888')}" alt="${escapeHtml(i.title)}"><div><strong>${escapeHtml(i.title)}</strong><br><span>${i.qty}x</span></div></div><span>€${(i.price * i.qty).toFixed(2)}</span></div></div>`).join('')}</div>${canCancel ? `<button class="btn-primary" onclick="cancelOrder(${order.id})">Annuleren</button>` : ''}</div>`;
+  }).join('');
+  save();
+}
+function renderAdmin() {
+  if (!user || !(user.email === ADMIN_EMAIL || users[user.email]?.isAdmin === true)) return;
+  const pub = products.filter(p=>p.published).length, dft = products.filter(p=>!p.published).length;
+  document.getElementById('adminStats').innerHTML = `<div class="stat-card"><div class="label">Producten</div><div class="value">${products.length}</div></div><div class="stat-card"><div class="label">Gepubliceerd</div><div class="value">${pub}</div></div><div class="stat-card"><div class="label">Concept</div><div class="value">${dft}</div></div><div class="stat-card"><div class="label">Gebruikers</div><div class="value">${Object.keys(users).length}</div></div>`;
+  document.getElementById('adminTableBody').innerHTML = products.map(p => `<tr><td><img class="admin-thumb" src="${(p.images && p.images[0]) || p.imageUrl || 'https://placehold.co/48/111/888'}" onclick="uploadNewImage(${p.id})"></td><td><strong>${escapeHtml(p.title)}</strong><br><span style="font-size:0.7rem;">${escapeHtml(p.desc||'')}</span></td><td>${p.category}</td><td>€${p.price.toFixed(2)}</td><td><span class="${p.published?'status-live':'status-draft'}">${p.published?'Live':'Concept'}</span></td><td><button class="tbl-btn" onclick="togglePublish(${p.id})">${p.published?'Verberg':'Publiceer'}</button><button class="tbl-btn danger" onclick="deleteProduct(${p.id})">Verwijder</button></td></tr>`).join('');
+  document.getElementById('adminUsersTable').innerHTML = Object.entries(users).map(([email, u]) => `<tr><td>${escapeHtml(email)}</td><td>${escapeHtml(u.name)}</td><td>${u.isAdmin ? '✅ Ja' : '❌ Nee'}</td><td>${email !== user.email && email !== ADMIN_EMAIL ? `<button class="tbl-btn" onclick="toggleAdmin('${email}')">${u.isAdmin ? 'Admin ontnemen' : 'Admin maken'}</button><button class="tbl-btn danger" onclick="deleteUser('${email}')">Verwijder</button>` : email === ADMIN_EMAIL ? 'Hoofdadmin' : 'Jijzelf'}</td></tr>`).join('');
+  const allOrders = Object.entries(orders).flatMap(([email, userOrders]) => userOrders.filter(order => order.status !== 'cancelled').map(order => ({ ...order, customer: email })));
+  document.getElementById('adminOrdersTable').innerHTML = allOrders.map(order => `<tr><td>${order.id}</td><td>${escapeHtml(order.customer)}</td><td>${new Date(order.date).toLocaleDateString('nl-NL')}</td><td>${order.status === 'pending' ? 'In behandeling' : order.status === 'cancelled' ? 'Geannuleerd' : 'Voltooid'}</td><td>€${order.total.toFixed(2)}</td><td>${escapeHtml(order.address.street)}, ${order.address.zipcode} ${order.address.city}</td><td>${order.items.map(i => `<div style="display:flex; align-items:center; gap:0.75rem; margin-bottom:0.4rem;"><img src="${escapeHtml(i.image || 'https://placehold.co/70/111/888')}" alt="${escapeHtml(i.title)}" style="width:48px;height:48px;object-fit:cover;border-radius:8px;">${escapeHtml(i.title)} x ${i.qty}</div>`).join('')}</td></tr>`).join('');
+}
+function toggleAdmin(email) { if (users[email]) { users[email].isAdmin = !users[email].isAdmin; save(); renderAdmin(); toast(`${email} is nu ${users[email].isAdmin ? 'admin' : 'gewone gebruiker'}`); } }
+function deleteUser(email) { if (confirm(`Verwijder ${email}?`)) { delete users[email]; save(); renderAdmin(); toast('Gebruiker verwijderd'); } }
+function uploadNewImage(productId) { const input = document.createElement('input'); input.type='file'; input.accept='image/*'; input.onchange=e=>{const file=e.target.files[0]; if(file){const reader=new FileReader(); reader.onload=ev=>{const p=products.find(x=>x.id===productId); if(p){p.imageUrl=ev.target.result; if(!p.images)p.images=[]; p.images.unshift(ev.target.result); save(); renderAdmin(); renderHome(); renderShop(); toast(`Foto bijgewerkt`);}}; reader.readAsDataURL(file);}}; input.click(); }
+function adminAddProduct() {
+  const title = document.getElementById('aTitle').value.trim(), cat = document.getElementById('aCat').value, price = parseFloat(document.getElementById('aPrice').value), desc = document.getElementById('aDesc').value.trim(), files = Array.from(document.getElementById('aImageFile').files);
+  if (!title || isNaN(price) || price <= 0) { toast('Vul geldige naam en prijs in'); return; }
+  const newProduct = { id: Date.now(), title, category: cat, price, desc: desc || 'Nieuw product', published: false, images: [] };
+  if (files.length > 0) {
+    const images = [];
+    let loaded = 0;
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = ev => {
+        images.push(ev.target.result);
+        loaded++;
+        if (loaded === files.length) {
+          newProduct.images = images;
+          newProduct.imageUrl = images[0];
+          products.push(newProduct);
+          save();
+          renderAdmin();
+          renderHome();
+          renderShop();
+          toast(`"${title}" toegevoegd met ${images.length} foto's`);
+          clearAdminForm();
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  } else {
+    products.push(newProduct);
+    save();
+    renderAdmin();
+    renderHome();
+    renderShop();
+    toast(`"${title}" toegevoegd`);
+    clearAdminForm();
+  }
+}
+function clearAdminForm() { document.getElementById('aTitle').value = ''; document.getElementById('aPrice').value = ''; document.getElementById('aImageFile').value = ''; document.getElementById('aDesc').value = ''; }
+function addToCart(id) { if (!user) { toast('Log in om te winkelen'); showPage('login'); return; } const ex = cart.find(i => i.id === id); if (ex) ex.qty++; else cart.push({ id, qty: 1 }); save(); updateNav(); renderCart(); toast('Toegevoegd aan winkelmand'); }
+function changeQty(id, delta) { const idx = cart.findIndex(x => x.id === id); if (idx === -1) return; cart[idx].qty += delta; if (cart[idx].qty <= 0) cart.splice(idx, 1); save(); updateNav(); renderCart(); }
+function removeFromCart(id) { cart = cart.filter(i => i.id !== id); save(); updateNav(); renderCart(); }
+function toggleWish(id) { if (!user) { toast('Log in'); showPage('login'); return; } const idx = wishlist.indexOf(id); if (idx === -1) { wishlist.push(id); toast('Toegevoegd aan verlanglijst'); } else { wishlist.splice(idx, 1); toast('Verwijderd'); } save(); updateNav(); if(document.getElementById('shopPage').classList.contains('active')) renderShop(); if(document.getElementById('wishlistPage').classList.contains('active')) renderWishlist(); renderHome(); }
+function applyCoupon() { const code = document.getElementById('couponInput').value.trim().toUpperCase(); if (code === 'WELKOM10') { coupon = 10; toast('10% korting!'); } else if (code === 'MAISON20') { coupon = 20; toast('20% korting!'); } else { toast('Ongeldige code'); return; } renderCart(); }
+function showCheckout() { if (!user) { toast('Log in om af te rekenen'); showPage('login'); return; } if (!cart.length) { toast('Winkelmand is leeg'); return; } document.getElementById('checkoutModal').classList.add('active'); }
 function closeCheckoutModal() { document.getElementById('checkoutModal').classList.remove('active'); }
-function closeCheckoutModalOnBackground(e) { if(e.target===document.getElementById('checkoutModal'))closeCheckoutModal(); }
-function placeOrder() {
-  const firstname=document.getElementById('checkoutFirstname').value.trim();
-  const lastname=document.getElementById('checkoutLastname').value.trim();
-  const address=document.getElementById('checkoutAddress').value.trim();
-  const zipcode=document.getElementById('checkoutZipcode').value.trim();
-  const city=document.getElementById('checkoutCity').value.trim();
-  const country=document.getElementById('checkoutCountry').value;
-  const phone=document.getElementById('checkoutPhone').value.trim();
-  if(!firstname||!lastname||!address||!zipcode||!city||!phone){toast('Vul alle adresgegevens in');return;}
-  const{sub,ship,disc,total}=getCartTotals();
-  const orderItems=cart.map(item=>{const p=products.find(pr=>pr.id===item.id);return{id:item.id,title:p?.title,price:p?.price,qty:item.qty,image:(p?.images&&p?.images[0])||p?.imageUrl};});
-  pendingOrder={id:Date.now(),date:new Date().toISOString(),status:'pending',items:orderItems,subtotal:sub,shipping:ship,discount:disc,total,address:{firstname,lastname,street:address,zipcode,city,country,phone}};
-  closeCheckoutModal();
-  openPaypalModal();
+function closeCheckoutModalOnBackground(e) { if (e.target === document.getElementById('checkoutModal')) closeCheckoutModal(); }
+function getCartTotals() {
+  const sub = cart.reduce((s, item) => { const p = products.find(pr => pr.id === item.id); return s + (p ? p.price * item.qty : 0); }, 0);
+  const ship = sub >= 50 ? 0 : 4.95;
+  const disc = sub * (coupon / 100);
+  const total = sub - disc + ship;
+  return { sub, ship, disc, total };
 }
-
-// ─── PAYPAL SDK (checkout buttons) ───────────────────────────────
-let paypalSdkLoaded = false;
-let paypalSdkLoading = false;
-
-function loadPaypalSdk(callback) {
-  if (paypalSdkLoaded && window.paypal) { callback(); return; }
-  if (paypalSdkLoading) { setTimeout(()=>loadPaypalSdk(callback), 200); return; }
-  paypalSdkLoading = true;
-  const script = document.createElement('script');
-  script.src = 'https://www.paypal.com/sdk/js?client-id=BAAy2qM6I9vndhfh8odALEb0H9r2l9Le4pyPfn_Sc3TN9KujY--QZpbklXE_A0dypItgTMYI4agtjv5pz8&disable-funding=venmo&currency=EUR';
-  script.onload = () => { paypalSdkLoaded = true; paypalSdkLoading = false; callback(); };
-  script.onerror = () => { paypalSdkLoading = false; toast('Kon PayPal niet laden. Controleer uw internetverbinding.'); };
-  document.head.appendChild(script);
-}
-
-function openPaypalModal() {
+function preparePaypalModal() {
   const totals = getCartTotals();
+  if (totals.total <= 0) {
+    toast('Winkelwagen bevat geen geldig bedrag.');
+    pendingOrder = null;
+    return;
+  }
   document.getElementById('paypalTotal').textContent = totals.total.toFixed(2);
-  document.getElementById('paypalButtonsContainer').innerHTML = '<div class="paypal-loading"><div class="spinner"></div><p>PayPal laden...</p></div>';
-  document.getElementById('paypalModal').classList.add('active');
-  loadPaypalSdk(renderPaypalButtons);
+  showPaypalModal();
+  renderPaypalButtons();
 }
-
 function renderPaypalButtons() {
-  if (!window.paypal) { toast('PayPal niet beschikbaar'); return; }
+  if (!window.paypal) return;
   const container = document.getElementById('paypalButtonsContainer');
   if (!container) return;
   container.innerHTML = '';
   paypal.Buttons({
     createOrder: (data, actions) => {
       const totals = getCartTotals();
-      if (totals.total <= 0) return Promise.reject(new Error('Ongeldig bedrag'));
+      if (totals.total <= 0) {
+        return Promise.reject(new Error('Ongeldig totaalbedrag'));
+      }
       return actions.order.create({
-        purchase_units: [{ amount: { currency_code: 'EUR', value: totals.total.toFixed(2) } }]
+        purchase_units: [{
+          amount: {
+            currency_code: 'EUR',
+            value: totals.total.toFixed(2)
+          }
+        }]
       });
     },
     onApprove: async (data, actions) => {
       try {
         const details = await actions.order.capture();
         completePendingOrder(details);
-      } catch(err) { console.error(err); toast('Betaling niet afgerond. Probeer opnieuw.'); pendingOrder=null; }
+      } catch (err) {
+        console.error(err);
+        toast('Betaling niet afgerond. Probeer opnieuw.');
+        pendingOrder = null;
+      }
     },
-    onCancel: () => { toast('Betaling geannuleerd. Er is geen bestelling geplaatst.'); pendingOrder=null; closePaypalModal(); },
-    onError: err => { console.error(err); toast('Betaling mislukt. Probeer opnieuw.'); pendingOrder=null; closePaypalModal(); }
-  }).render('#paypalButtonsContainer').catch(err => {
-    console.error('PayPal render error:', err);
-    container.innerHTML = '<p style="color:var(--rust); padding:1rem;">PayPal kon niet laden. Controleer uw verbinding en probeer opnieuw.</p>';
-  });
+    onCancel: () => {
+      toast('Betaling geannuleerd. Er is geen bestelling geplaatst.');
+      pendingOrder = null;
+      closePaypalModal();
+    },
+    onError: err => {
+      console.error(err);
+      toast('Betaling mislukt. Probeer opnieuw.');
+      pendingOrder = null;
+      closePaypalModal();
+    }
+  }).render('#paypalButtonsContainer');
 }
-
 function completePendingOrder(details) {
   if (!pendingOrder) return;
   pendingOrder.payment = details;
   if (!orders[user.email]) orders[user.email] = [];
   orders[user.email].unshift(pendingOrder);
-  pendingOrder = null; cart = []; coupon = 0;
-  save(); updateNav(); renderCart(); renderOrders(); renderAdmin();
+  pendingOrder = null;
+  cart = [];
+  coupon = 0;
+  save();
+  updateNav();
+  renderCart();
+  renderOrders();
+  renderAdmin();
   closePaypalModal();
-  toast('Betaling geslaagd! Bestelling geplaatst. 🎉');
+  toast('Betaling geslaagd! Bestelling geplaatst.');
 }
-
+function showPaypalModal() {
+  document.getElementById('paypalModal').classList.add('active');
+}
 function closePaypalModal() {
   document.getElementById('paypalModal').classList.remove('active');
-  document.getElementById('paypalButtonsContainer').innerHTML = '<div class="paypal-loading"><div class="spinner"></div><p>PayPal laden...</p></div>';
+  document.getElementById('paypalButtonsContainer').innerHTML = '';
   pendingOrder = null;
 }
-function closePaypalModalOnBackground(e) { if(e.target===document.getElementById('paypalModal'))closePaypalModal(); }
-
+function closePaypalModalOnBackground(e) { if (e.target === document.getElementById('paypalModal')) closePaypalModal(); }
 function cancelOrder(orderId) {
-  if(confirm('Weet u zeker dat u deze bestelling wilt annuleren?')){
-    const userOrders=orders[user.email]||[];
-    const idx=userOrders.findIndex(o=>o.id===orderId);
-    if(idx!==-1){userOrders.splice(idx,1);if(!userOrders.length)delete orders[user.email];save();renderOrders();renderAdmin();toast('Bestelling verwijderd.');}
+  if (confirm('Weet u zeker dat u deze bestelling wilt annuleren?')) {
+    const userOrders = orders[user.email] || [];
+    const orderIndex = userOrders.findIndex(o => o.id === orderId);
+    if (orderIndex !== -1) {
+      userOrders.splice(orderIndex, 1);
+      if (!userOrders.length) delete orders[user.email];
+      save();
+      renderOrders();
+      renderAdmin();
+      toast('Bestelling verwijderd.');
+    }
+  }
+}
+function placeOrder() {
+  const firstname = document.getElementById('checkoutFirstname').value.trim(), lastname = document.getElementById('checkoutLastname').value.trim(), address = document.getElementById('checkoutAddress').value.trim(), zipcode = document.getElementById('checkoutZipcode').value.trim(), city = document.getElementById('checkoutCity').value.trim(), country = document.getElementById('checkoutCountry').value, phone = document.getElementById('checkoutPhone').value.trim();
+  if (!firstname || !lastname || !address || !zipcode || !city || !phone) { toast('Vul alle adresgegevens in'); return; }
+  const { sub, ship, disc, total } = getCartTotals();
+  const orderItems = cart.map(item => { const p = products.find(pr => pr.id === item.id); return { id: item.id, title: p?.title, price: p?.price, qty: item.qty, image: (p?.images && p?.images[0]) || p?.imageUrl }; });
+  pendingOrder = { id: Date.now(), date: new Date().toISOString(), status: 'pending', items: orderItems, subtotal: sub, shipping: ship, discount: disc, total: total, address: { firstname, lastname, street: address, zipcode, city, country, phone } };
+  closeCheckoutModal();
+  preparePaypalModal();
+}
+function togglePublish(id) { const p = products.find(x => x.id === id); if (p) { p.published = !p.published; save(); renderAdmin(); renderHome(); renderShop(); toast(`${p.title} ${p.published ? 'gepubliceerd' : 'verborgen'}`); } }
+function deleteProduct(id) { if (confirm('Verwijderen?')) { products = products.filter(p => p.id !== id); cart = cart.filter(i => i.id !== id); wishlist = wishlist.filter(w => w !== id); save(); renderAdmin(); renderHome(); renderShop(); toast('Product verwijderd'); } }
+function requestPasswordReset() { const email = document.getElementById('forgotEmail').value.trim().toLowerCase(), msg = document.getElementById('forgotMsg'); if (!email) { msg.textContent = 'Vul e-mailadres in'; msg.className='auth-msg error'; return; } if (!users[email]) { msg.textContent = 'Geen account gevonden'; msg.className='auth-msg error'; return; } const code = Math.floor(100000 + Math.random() * 900000).toString(); resetTokens[email] = code; save(); showResetPasswordPage(email); msg.textContent = 'Verificatiecode verzonden. Controleer je e-mail.'; msg.className='auth-msg success'; }
+function showResetPasswordPage(email) { document.getElementById('resetEmailDisplay').textContent = email; document.getElementById('resetCodeInput').value = ''; document.getElementById('resetNewPass').value = ''; document.getElementById('resetConfirmPass').value = ''; const msg = document.getElementById('resetMsg'); msg.textContent = ''; showPage('reset-password'); }
+function resendResetCode() { const email = document.getElementById('resetEmailDisplay').textContent; if (!email) return; const code = Math.floor(100000 + Math.random() * 900000).toString(); resetTokens[email] = code; save(); const msg = document.getElementById('resetMsg'); msg.textContent = 'Nieuwe code verzonden. Controleer je e-mail.'; msg.className='auth-msg success'; }
+async function confirmPasswordReset() {
+  const email = document.getElementById('resetEmailDisplay').textContent;
+  const code = document.getElementById('resetCodeInput').value.trim();
+  const newPass = document.getElementById('resetNewPass').value;
+  const confirmPass = document.getElementById('resetConfirmPass').value;
+  const msg = document.getElementById('resetMsg');
+  if (!email) {
+    msg.textContent = 'Geen account geselecteerd';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  if (!code) {
+    msg.textContent = 'Vul de verificatiecode in';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  if (resetTokens[email] !== code) {
+    msg.textContent = 'Ongeldige code';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  if (!newPass || newPass.length < 6) {
+    msg.textContent = 'Minimaal 6 tekens';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  if (newPass !== confirmPass) {
+    msg.textContent = 'Wachtwoorden komen niet overeen';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  if (users[email]) {
+    const oldPass = users[email].password;
+    users[email].password = newPass;
+    delete resetTokens[email];
+    save();
+    try {
+      if (!auth.currentUser || auth.currentUser.email?.toLowerCase() !== email) {
+        await auth.signInWithEmailAndPassword(email, oldPass);
+      }
+      if (auth.currentUser) {
+        await auth.currentUser.updatePassword(newPass);
+        await auth.signOut().catch(() => {});
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    toast('Wachtwoord gewijzigd!');
+    msg.textContent = 'Wachtwoord gewijzigd! U kunt nu inloggen.';
+    msg.className = 'auth-msg success';
+    showPage('login');
+  }
+}
+function doLogin() { const email = document.getElementById('loginEmail').value.trim().toLowerCase(), pass = document.getElementById('loginPass').value, msg = document.getElementById('loginMsg'); if(!users[email] || users[email].password !== pass) { msg.textContent='Ongeldig e-mailadres of wachtwoord'; msg.className='auth-msg error'; return; } if(users[email].provider === 'local' && !users[email].isVerified) { msg.textContent='Account nog niet geverifieerd. Controleer uw e-mail.'; msg.className='auth-msg error'; showVerifyPage(email); return; } user = { email: email, name: users[email].name }; save(); updateNav(); toast(`Welkom, ${users[email].name}`); if(email === ADMIN_EMAIL || users[email].isAdmin === true) showPage('admin'); else showPage('shop'); renderAdmin(); }
+
+async function doRegister() {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim().toLowerCase();
+  const pass = document.getElementById('regPass').value;
+  const terms = document.getElementById('termsBox').checked;
+  const msg = document.getElementById('regMsg');
+  if (!name || !email || pass.length < 6 || !terms) {
+    msg.textContent = 'Vul alle velden in';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  if (users[email]) {
+    msg.textContent = users[email].provider === 'google' ? 'Gebruik Google om in te loggen met dit e-mailadres' : 'Dit e-mailadres bestaat al';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  try {
+    const credential = await auth.createUserWithEmailAndPassword(email, pass);
+    const fbUser = credential.user;
+    if (fbUser) {
+      await fbUser.updateProfile({ displayName: name }).catch(() => {});
+      await fbUser.sendEmailVerification();
+      await auth.signOut().catch(() => {});
+    }
+    users[email] = { name, password: pass, isAdmin: email === ADMIN_EMAIL, registeredAt: new Date().toISOString(), isVerified: false, provider: 'local' };
+    save();
+    msg.innerHTML = `Registratie voltooid. Er is een verificatie-e-mail naar ${escapeHtml(email)} gestuurd. Controleer je inbox en klik op de link om te verifiëren.`;
+    msg.className = 'auth-msg success';
+    showVerifyPage(email);
+  } catch (error) {
+    console.error(error);
+    const errorMap = {
+      'auth/email-already-in-use': 'Dit e-mailadres is al in gebruik. Probeer in te loggen of gebruik een ander e-mailadres.',
+      'auth/weak-password': 'Wachtwoord moet minimaal 6 tekens bevatten.',
+      'auth/invalid-email': 'Ongeldig e-mailadres.'
+    };
+    msg.textContent = errorMap[error.code] || error.message || 'Registratie mislukt. Probeer opnieuw.';
+    msg.className = 'auth-msg error';
   }
 }
 
-// ─── PRODUCTS ────────────────────────────────────────────────────
-function makeCard(p) {
-  const inWish=wishlist.includes(p.id);
-  const imgUrl=(p.images&&p.images.length>0)?p.images[0]:(p.imageUrl||'https://placehold.co/400x530/111/888?text=Geen+foto');
-  return`<div class="product-card" onclick="openProductDetail(${p.id})">
-    <div class="product-img-wrap">
-      <img src="${imgUrl}" alt="${escapeHtml(p.title)}" loading="lazy">
-      ${!p.published?'<div class="badge-pill">Concept</div>':''}
-      <button class="wishlist-btn" onclick="event.stopPropagation();toggleWish(${p.id})">${inWish?'❤️':'🤍'}</button>
-      <button class="quick-add" onclick="event.stopPropagation();addToCart(${p.id})">+ In winkelwagen</button>
-    </div>
-    <div class="product-info">
-      <div class="product-cat">${escapeHtml(p.category)}</div>
-      <div class="product-name">${escapeHtml(p.title)}</div>
-      <div class="product-sub">${escapeHtml(p.desc||'')}</div>
-      <div class="product-footer">
-        <div class="product-price">€${p.price.toFixed(2)}</div>
-      </div>
-    </div>
-    <div class="pp-atc-wrap" onclick="event.stopPropagation()">
-      <paypal-add-to-cart-button data-id="4J6PV8TQYTCQQ" data-product-id="${p.id}"></paypal-add-to-cart-button>
-    </div>
-  </div>`;
+async function sendVerificationEmail(email) {
+  const msg = document.getElementById('verifyMsg');
+  try {
+    if (!auth.currentUser || auth.currentUser.email?.toLowerCase() !== email) {
+      await auth.signInWithEmailAndPassword(email, users[email].password);
+    }
+    if (auth.currentUser) {
+      await auth.currentUser.sendEmailVerification();
+      await auth.signOut().catch(() => {});
+    }
+    msg.textContent = 'Verificatie-e-mail opnieuw verzonden. Controleer je inbox.';
+    msg.className = 'auth-msg success';
+  } catch (error) {
+    console.error(error);
+    msg.textContent = 'Kon verificatie-e-mail niet versturen. Probeer opnieuw.';
+    msg.className = 'auth-msg error';
+  }
 }
 
-// Na het renderen van producten de PayPal knoppen initialiseren
-function initProductPaypalButtons() {
-  if (typeof cartPaypal === 'undefined') return;
-  document.querySelectorAll('paypal-add-to-cart-button:not([data-pp-init])').forEach(el => {
-    el.setAttribute('data-pp-init', '1');
-    try { cartPaypal.AddToCart({ id: "4J6PV8TQYTCQQ" }); } catch(e) {}
-  });
+function showVerifyPage(email) {
+  document.getElementById('verifyEmailDisplay').textContent = email;
+  document.getElementById('verifyMsg').textContent = '';
+  showPage('verify');
 }
 
-function renderHome() {
-  const featured=products.filter(p=>p.published).slice(0,6);
-  document.getElementById('homeFeaturedGrid').innerHTML=featured.length?featured.map(makeCard).join(''):'<div style="text-align:center;padding:4rem;">Nog geen producten. Admin kan producten toevoegen.</div>';
-  setTimeout(initProductPaypalButtons, 200);
-}
-function renderShop() {
-  const cat=document.querySelector('.filter-pill.active')?.dataset.cat||'all';
-  const q=(document.getElementById('shopSearch')?.value||'').toLowerCase();
-  const sort=document.getElementById('shopSort')?.value||'';
-  let list=products.filter(p=>p.published&&(cat==='all'||p.category===cat)&&(p.title.toLowerCase().includes(q)||p.desc?.toLowerCase().includes(q)));
-  if(sort==='asc')list.sort((a,b)=>a.price-b.price);
-  if(sort==='desc')list.sort((a,b)=>b.price-a.price);
-  if(sort==='name')list.sort((a,b)=>a.title.localeCompare(b.title));
-  document.getElementById('shopGrid').innerHTML=list.length?list.map(makeCard).join(''):'<p style="padding:3rem 0;">Geen producten gevonden.</p>';
-  document.getElementById('shopCount').innerHTML=list.length?`(${list.length})`:'';
-  const cats=[...new Set(products.filter(p=>p.published).map(p=>p.category))];
-  document.getElementById('catFilters').innerHTML=cats.map(c=>`<button class="filter-pill${cat===c?' active':''}" data-cat="${c}" onclick="setFilter('${c}',this)">${escapeHtml(c)}</button>`).join('');
-  setTimeout(initProductPaypalButtons, 200);
-}
-window.setFilter=(cat,el)=>{document.querySelectorAll('.filter-pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderShop();};
-function renderWishlist() {
-  const items=products.filter(p=>wishlist.includes(p.id));
-  document.getElementById('wishlistContent').innerHTML=items.length?`<div class="products-grid">${items.map(makeCard).join('')}</div>`:'<div class="wishlist-empty"><span class="wishlist-empty-icon">♡</span><h3>Uw verlanglijst is leeg</h3></div>';
-  setTimeout(initProductPaypalButtons, 200);
-}
-function renderOrders() {
-  const userOrders=(orders[user?.email]||[]).filter(o=>o.status!=='cancelled');
-  const container=document.getElementById('ordersList');
-  if(!userOrders.length){container.innerHTML='<div class="auth-card" style="max-width:600px; margin:0 auto;"><p>U heeft nog geen bestellingen geplaatst.</p><button class="btn-primary" onclick="showPage(\'shop\')">Nu winkelen</button></div>';return;}
-  container.innerHTML=userOrders.map(order=>{
-    const orderDate=new Date(order.date);
-    const canCancel=order.status==='pending'&&(new Date()-orderDate)<86400000;
-    return`<div class="order-card"><h4>Bestelling #${order.id}</h4><p>Datum: ${orderDate.toLocaleDateString('nl-NL')}</p><p>Status: ${order.status==='pending'?'In behandeling':order.status==='cancelled'?'Geannuleerd':'Voltooid'}</p><p>Adres: ${escapeHtml(order.address.street)}, ${escapeHtml(order.address.zipcode)} ${escapeHtml(order.address.city)}</p><p>Totaal: €${order.total.toFixed(2)}</p><div class="order-items">${order.items.map(i=>`<div class="order-item"><div class="order-item-meta"><div style="display:flex;align-items:center;gap:0.75rem;"><img src="${escapeHtml(i.image||'https://placehold.co/70/111/888')}" alt="${escapeHtml(i.title)}"><div><strong>${escapeHtml(i.title)}</strong><br><span>${i.qty}x — €${(i.price*i.qty).toFixed(2)}</span></div></div></div></div>`).join('')}</div>${canCancel?`<button class="btn-primary" style="margin-top:1rem;" onclick="cancelOrder(${order.id})">Annuleren</button>`:''}</div>`;
-  }).join('');
+async function confirmVerification() {
+  const email = document.getElementById('verifyEmailDisplay').textContent;
+  const msg = document.getElementById('verifyMsg');
+  if (!email) {
+    msg.textContent = 'Geen e-mailadres geselecteerd';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  if (!users[email]) {
+    msg.textContent = 'Geen account gevonden';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  try {
+    if (!auth.currentUser || auth.currentUser.email?.toLowerCase() !== email) {
+      await auth.signInWithEmailAndPassword(email, users[email].password);
+    }
+    await auth.currentUser.reload();
+    if (auth.currentUser.emailVerified) {
+      users[email].isVerified = true;
+      save();
+      await auth.signOut().catch(() => {});
+      msg.textContent = 'E-mail succesvol geverifieerd! U kunt nu inloggen.';
+      msg.className = 'auth-msg success';
+      showPage('login');
+    } else {
+      msg.textContent = 'E-mail nog niet geverifieerd. Controleer je e-mail en klik op de link.';
+      msg.className = 'auth-msg error';
+    }
+  } catch (error) {
+    console.error(error);
+    msg.textContent = 'Kon verificatie niet controleren. Probeer opnieuw.';
+    msg.className = 'auth-msg error';
+  }
 }
 
-// ─── PRODUCT MODAL ───────────────────────────────────────────────
-function openProductDetail(productId) {
-  const product=products.find(p=>p.id===productId); if(!product)return;
-  currentModalProduct=product;
-  document.getElementById('modalTitle').textContent=product.title;
-  document.getElementById('modalCat').textContent=product.category;
-  document.getElementById('modalPrice').textContent='€'+product.price.toFixed(2);
-  document.getElementById('modalDesc').textContent=product.desc||'Geen beschrijving beschikbaar.';
-  const mainImg=document.getElementById('modalMainImg');
-  mainImg.src=(product.images&&product.images.length>0)?product.images[0]:(product.imageUrl||'https://placehold.co/600x600/111/888?text=Geen+foto');
-  const thumbContainer=document.getElementById('modalThumbnails');
-  thumbContainer.innerHTML='';
-  const allImages=product.images&&product.images.length>0?product.images:(product.imageUrl?[product.imageUrl]:[]);
-  allImages.forEach((img,idx)=>{const thumb=document.createElement('img');thumb.src=img;thumb.className='modal-thumb'+(idx===0?' active':'');thumb.onclick=()=>{mainImg.src=img;document.querySelectorAll('.modal-thumb').forEach(t=>t.classList.remove('active'));thumb.classList.add('active');};thumbContainer.appendChild(thumb);});
-  const addBtn=document.getElementById('addImageBtn');
-  addBtn.style.display=(user&&(user.email===ADMIN_EMAIL||users[user.email]?.isAdmin===true))?'block':'none';
-  document.getElementById('modalWishlistBtn').textContent=wishlist.includes(product.id)?'❤️':'🤍';
-  document.getElementById('productModal').classList.add('active');
-  modalZoomed=false; document.getElementById('modalMainImage').classList.remove('zoomed');
-  // Init PayPal ATC in modal
-  setTimeout(initModalPaypalAtc, 100);
-}
-function closeModal() { document.getElementById('productModal').classList.remove('active'); currentModalProduct=null; }
-function closeModalOnBackground(e) { if(e.target===document.getElementById('productModal'))closeModal(); }
-function toggleZoom() { modalZoomed=!modalZoomed; document.getElementById('modalMainImage').classList.toggle('zoomed',modalZoomed); }
-function addToCartFromModal() { if(currentModalProduct)addToCart(currentModalProduct.id); }
-function toggleWishFromModal() { if(currentModalProduct){toggleWish(currentModalProduct.id);document.getElementById('modalWishlistBtn').textContent=wishlist.includes(currentModalProduct.id)?'❤️':'🤍';} }
-function addProductImage() { if(!currentModalProduct)return; const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=e=>{const file=e.target.files[0];if(file){const reader=new FileReader();reader.onload=ev=>{if(!currentModalProduct.images)currentModalProduct.images=[];if(currentModalProduct.imageUrl&&!currentModalProduct.images.includes(currentModalProduct.imageUrl))currentModalProduct.images.unshift(currentModalProduct.imageUrl);currentModalProduct.images.push(ev.target.result);currentModalProduct.imageUrl=currentModalProduct.images[0];save();openProductDetail(currentModalProduct.id);renderHome();renderShop();renderAdmin();toast('Extra foto toegevoegd');};reader.readAsDataURL(file);}};input.click(); }
-
-// ─── ADMIN ───────────────────────────────────────────────────────
-function renderAdmin() {
-  if(!user||(user.email!==ADMIN_EMAIL&&!users[user.email]?.isAdmin))return;
-  const pub=products.filter(p=>p.published).length,dft=products.filter(p=>!p.published).length;
-  document.getElementById('adminStats').innerHTML=`<div class="stat-card"><div class="label">Producten</div><div class="value">${products.length}</div></div><div class="stat-card"><div class="label">Gepubliceerd</div><div class="value">${pub}</div></div><div class="stat-card"><div class="label">Concept</div><div class="value">${dft}</div></div><div class="stat-card"><div class="label">Gebruikers</div><div class="value">${Object.keys(users).length}</div></div>`;
-  document.getElementById('adminTableBody').innerHTML=products.map(p=>`<tr><td><img class="admin-thumb" src="${(p.images&&p.images[0])||p.imageUrl||'https://placehold.co/48/111/888'}" onclick="uploadNewImage(${p.id})"></td><td><strong>${escapeHtml(p.title)}</strong><br><span style="font-size:0.7rem;">${escapeHtml(p.desc||'')}</span></td><td>${escapeHtml(p.category)}</td><td>€${p.price.toFixed(2)}</td><td><span class="${p.published?'status-live':'status-draft'}">${p.published?'Live':'Concept'}</span></td><td><button class="tbl-btn" onclick="togglePublish(${p.id})">${p.published?'Verberg':'Publiceer'}</button><button class="tbl-btn danger" onclick="deleteProduct(${p.id})">Verwijder</button></td></tr>`).join('');
-  document.getElementById('adminUsersTable').innerHTML=Object.entries(users).map(([email,u])=>`<tr><td>${escapeHtml(email)}</td><td>${escapeHtml(u.name)}</td><td>${u.isAdmin?'✅ Ja':'❌ Nee'}</td><td>${email!==user.email&&email!==ADMIN_EMAIL?`<button class="tbl-btn" onclick="toggleAdmin('${email}')">${u.isAdmin?'Admin ontnemen':'Admin maken'}</button><button class="tbl-btn danger" onclick="deleteUser('${email}')">Verwijder</button>`:email===ADMIN_EMAIL?'Hoofdadmin':'Jijzelf'}</td></tr>`).join('');
-  const allOrders=Object.entries(orders).flatMap(([email,userOrders])=>userOrders.filter(o=>o.status!=='cancelled').map(o=>({...o,customer:email})));
-  document.getElementById('adminOrdersTable').innerHTML=allOrders.map(order=>`<tr><td>${order.id}</td><td>${escapeHtml(order.customer)}</td><td>${new Date(order.date).toLocaleDateString('nl-NL')}</td><td>${order.status==='pending'?'In behandeling':'Voltooid'}</td><td>€${order.total.toFixed(2)}</td><td>${escapeHtml(order.address.street)}, ${escapeHtml(order.address.zipcode)} ${escapeHtml(order.address.city)}</td><td>${order.items.map(i=>`<div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.3rem;"><img src="${escapeHtml(i.image||'https://placehold.co/48/111/888')}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;">${escapeHtml(i.title)} x${i.qty}</div>`).join('')}</td></tr>`).join('');
-}
-function toggleAdmin(email) { if(users[email]){users[email].isAdmin=!users[email].isAdmin;save();renderAdmin();toast(`${email} is nu ${users[email].isAdmin?'admin':'gewone gebruiker'}`);} }
-function deleteUser(email) { if(confirm(`Verwijder ${email}?`)){delete users[email];save();renderAdmin();toast('Gebruiker verwijderd');} }
-function uploadNewImage(productId) { const input=document.createElement('input');input.type='file';input.accept='image/*';input.onchange=e=>{const file=e.target.files[0];if(file){const reader=new FileReader();reader.onload=ev=>{const p=products.find(x=>x.id===productId);if(p){p.imageUrl=ev.target.result;if(!p.images)p.images=[];p.images.unshift(ev.target.result);save();renderAdmin();renderHome();renderShop();toast('Foto bijgewerkt');}};reader.readAsDataURL(file);}};input.click(); }
-function adminAddProduct() {
-  const title=document.getElementById('aTitle').value.trim(),cat=document.getElementById('aCat').value,price=parseFloat(document.getElementById('aPrice').value),desc=document.getElementById('aDesc').value.trim(),files=Array.from(document.getElementById('aImageFile').files);
-  if(!title||isNaN(price)||price<=0){toast('Vul geldige naam en prijs in');return;}
-  const newProduct={id:Date.now(),title,category:cat,price,desc:desc||'Nieuw product',published:false,images:[]};
-  if(files.length>0){const images=[];let loaded=0;files.forEach(file=>{const reader=new FileReader();reader.onload=ev=>{images.push(ev.target.result);loaded++;if(loaded===files.length){newProduct.images=images;newProduct.imageUrl=images[0];products.push(newProduct);save();renderAdmin();renderHome();renderShop();toast(`"${title}" toegevoegd`);clearAdminForm();}};reader.readAsDataURL(file);});}else{products.push(newProduct);save();renderAdmin();renderHome();renderShop();toast(`"${title}" toegevoegd`);clearAdminForm();}
-}
-function clearAdminForm() { document.getElementById('aTitle').value='';document.getElementById('aPrice').value='';document.getElementById('aImageFile').value='';document.getElementById('aDesc').value=''; }
-function togglePublish(id) { const p=products.find(x=>x.id===id);if(p){p.published=!p.published;save();renderAdmin();renderHome();renderShop();toast(`${p.title} ${p.published?'gepubliceerd':'verborgen'}`);} }
-function deleteProduct(id) { if(confirm('Verwijderen?')){products=products.filter(p=>p.id!==id);cart=cart.filter(i=>i.id!==id);wishlist=wishlist.filter(w=>w!==id);save();renderAdmin();renderHome();renderShop();toast('Product verwijderd');} }
-
-// ─── AUTH ────────────────────────────────────────────────────────
-function handleFirebaseSignIn(fbUser) {
-  if(!fbUser)return;
-  const identifier=fbUser.email?fbUser.email.toLowerCase():fbUser.phoneNumber;
-  if(!identifier)return;
-  const name=fbUser.displayName||identifier.split('@')[0];
-  const providerId=fbUser.providerData?.[0]?.providerId||'password';
-  const prov=providerId==='google.com'?'google':'local';
-  const isVerified=fbUser.emailVerified||prov==='google';
-  if(prov==='local'&&!isVerified)return;
-  if(!users[identifier])users[identifier]={name,password:'',isAdmin:identifier===ADMIN_EMAIL,registeredAt:new Date().toISOString(),isVerified,provider:prov};
-  else{users[identifier].provider=prov;if(isVerified)users[identifier].isVerified=true;}
-  user={email:identifier,name};save();updateNav();toast(prov==='google'?'Ingelogd met Google':'Ingelogd');
-  if(identifier===ADMIN_EMAIL||users[identifier]?.isAdmin===true)showPage('admin');else showPage('shop');renderAdmin();
-}
-auth.onAuthStateChanged(fbUser=>{if(!fbUser)return;handleFirebaseSignIn(fbUser);});
-
-function doLogin() {
-  const email=document.getElementById('loginEmail').value.trim().toLowerCase(),pass=document.getElementById('loginPass').value,msg=document.getElementById('loginMsg');
-  if(!users[email]||users[email].password!==pass){msg.textContent='Ongeldig e-mailadres of wachtwoord';msg.className='auth-msg error';return;}
-  if(users[email].provider==='local'&&!users[email].isVerified){msg.textContent='Account nog niet geverifieerd.';msg.className='auth-msg error';showVerifyPage(email);return;}
-  user={email,name:users[email].name};save();updateNav();toast(`Welkom, ${users[email].name}`);
-  if(email===ADMIN_EMAIL||users[email].isAdmin===true)showPage('admin');else showPage('shop');renderAdmin();
-}
-async function doRegister() {
-  const name=document.getElementById('regName').value.trim(),email=document.getElementById('regEmail').value.trim().toLowerCase(),pass=document.getElementById('regPass').value,terms=document.getElementById('termsBox').checked,msg=document.getElementById('regMsg');
-  if(!name||!email||pass.length<6||!terms){msg.textContent='Vul alle velden in';msg.className='auth-msg error';return;}
-  if(users[email]){msg.textContent=users[email].provider==='google'?'Gebruik Google om in te loggen':'Dit e-mailadres bestaat al';msg.className='auth-msg error';return;}
-  try{const cred=await auth.createUserWithEmailAndPassword(email,pass);if(cred.user){await cred.user.updateProfile({displayName:name}).catch(()=>{});await cred.user.sendEmailVerification();await auth.signOut().catch(()=>{});}users[email]={name,password:pass,isAdmin:email===ADMIN_EMAIL,registeredAt:new Date().toISOString(),isVerified:false,provider:'local'};save();showVerifyPage(email);}
-  catch(error){const errorMap={'auth/email-already-in-use':'Dit e-mailadres is al in gebruik.','auth/weak-password':'Minimaal 6 tekens.','auth/invalid-email':'Ongeldig e-mailadres.'};msg.textContent=errorMap[error.code]||'Registratie mislukt';msg.className='auth-msg error';}
+async function resendVerificationCode() {
+  const email = document.getElementById('verifyEmailDisplay').textContent;
+  if (!email) return;
+  await sendVerificationEmail(email);
 }
 async function loginWithGoogle() {
-  try{const result=await auth.signInWithPopup(googleProvider);handleFirebaseSignIn(result.user);}
-  catch(error){const map={'auth/popup-closed-by-user':'Popup gesloten.','auth/popup-blocked':'Sta popups toe en probeer opnieuw.'};toast(map[error.code]||'Google login mislukt');}
+  if (!auth) { toast('Firebase niet geladen'); return; }
+  try {
+    const result = await auth.signInWithPopup(provider);
+    handleFirebaseSignIn(result.user);
+  } catch (error) {
+    console.error(error);
+    const errorMap = {
+      'auth/account-exists-with-different-credential': 'Dit e-mailadres is al gekoppeld aan een ander inlogtype. Gebruik dezelfde methode om in te loggen.',
+      'auth/email-already-in-use': 'Dit e-mailadres is al in gebruik. Probeer in te loggen met uw bestaande account of gebruik Google als dat uw account is.',
+      'auth/popup-closed-by-user': 'Popup gesloten. Probeer opnieuw in te loggen met Google.',
+      'auth/cancelled-popup-request': 'Popup geprobeerd te openen terwijl er al een andere popup open is. Probeer opnieuw.',
+      'auth/popup-blocked': 'Popup geblokkeerd. Sta popups toe en probeer opnieuw.'
+    };
+    const msg = errorMap[error.code] || error.message || 'Google login geannuleerd of mislukt';
+    toast(msg);
+  }
 }
-function registerWithGoogle(){loginWithGoogle();}
-function logout(){if(auth)auth.signOut().catch(()=>{});user=null;cart=[];wishlist=[];coupon=0;save();updateNav();closeCart();showPage('home');toast('Uitgelogd');}
-function showVerifyPage(email){document.getElementById('verifyEmailDisplay').textContent=email;document.getElementById('verifyMsg').textContent='';showPage('verify');}
-async function confirmVerification(){
-  const email=document.getElementById('verifyEmailDisplay').textContent,msg=document.getElementById('verifyMsg');
-  if(!email||!users[email]){msg.textContent='Geen account gevonden';msg.className='auth-msg error';return;}
-  try{if(!auth.currentUser||auth.currentUser.email?.toLowerCase()!==email)await auth.signInWithEmailAndPassword(email,users[email].password);await auth.currentUser.reload();if(auth.currentUser.emailVerified){users[email].isVerified=true;save();await auth.signOut().catch(()=>{});msg.textContent='Geverifieerd! U kunt nu inloggen.';msg.className='auth-msg success';showPage('login');}else{msg.textContent='Nog niet geverifieerd. Controleer je e-mail.';msg.className='auth-msg error';}}
-  catch(e){msg.textContent='Kon verificatie niet controleren.';msg.className='auth-msg error';}
+function registerWithGoogle() { loginWithGoogle(); }
+function logout() { if (auth) { auth.signOut().catch(() => {}); } user = null; cart = []; wishlist = []; coupon = 0; save(); updateNav(); closeCart(); showPage('home'); toast('Uitgelogd'); }
+function showPage(name) { document.querySelectorAll('.page').forEach(p=>p.classList.remove('active')); document.getElementById(name+'Page').classList.add('active'); document.querySelectorAll('.nav-link').forEach(b=>b.classList.toggle('active',b.dataset.page===name)); closeMobileMenu(); window.scrollTo({top:0}); if(name==='home') renderHome(); if(name==='shop') renderShop(); if(name==='wishlist') renderWishlist(); if(name==='orders') renderOrders(); if(name==='admin' && user && (user.email===ADMIN_EMAIL || users[user.email]?.isAdmin===true)) renderAdmin(); if(name==='profile' && user) { document.getElementById('profileName').textContent=user.name||'-'; document.getElementById('profileEmail').textContent=user.email; document.getElementById('profileSince').textContent=users[user.email]?.registeredAt?new Date(users[user.email].registeredAt).toLocaleDateString('nl-NL'):'Nieuw'; } closeUserMenu(); closeModal(); closeCheckoutModal(); }
+function toggleMobileMenu() { const menu = document.getElementById('mobileMenu'); if (!menu) return; menu.classList.toggle('show'); }
+function closeMobileMenu() { const menu = document.getElementById('mobileMenu'); if (menu) menu.classList.remove('show'); }
+function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[m])); }
+function openCart() {
+  renderCart();
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartDrawer').classList.add('open');
 }
-async function resendVerificationCode(){const email=document.getElementById('verifyEmailDisplay').textContent;if(!email||!users[email])return;try{if(!auth.currentUser||auth.currentUser.email?.toLowerCase()!==email)await auth.signInWithEmailAndPassword(email,users[email].password);await auth.currentUser.sendEmailVerification();await auth.signOut().catch(()=>{});document.getElementById('verifyMsg').textContent='Verificatie-e-mail opnieuw verzonden.';document.getElementById('verifyMsg').className='auth-msg success';}catch(e){document.getElementById('verifyMsg').textContent='Kon e-mail niet versturen.';document.getElementById('verifyMsg').className='auth-msg error';}}
-function requestPasswordReset(){const email=document.getElementById('forgotEmail').value.trim().toLowerCase(),msg=document.getElementById('forgotMsg');if(!email){msg.textContent='Vul e-mailadres in';msg.className='auth-msg error';return;}if(!users[email]){msg.textContent='Geen account gevonden';msg.className='auth-msg error';return;}const code=Math.floor(100000+Math.random()*900000).toString();resetTokens[email]=code;save();showResetPasswordPage(email);}
-function showResetPasswordPage(email){document.getElementById('resetEmailDisplay').textContent=email;document.getElementById('resetCodeInput').value='';document.getElementById('resetNewPass').value='';document.getElementById('resetConfirmPass').value='';document.getElementById('resetMsg').textContent='';showPage('reset-password');}
-function resendResetCode(){const email=document.getElementById('resetEmailDisplay').textContent;if(!email)return;resetTokens[email]=Math.floor(100000+Math.random()*900000).toString();save();const msg=document.getElementById('resetMsg');msg.textContent='Nieuwe code verzonden.';msg.className='auth-msg success';}
-async function confirmPasswordReset(){
-  const email=document.getElementById('resetEmailDisplay').textContent,code=document.getElementById('resetCodeInput').value.trim(),newPass=document.getElementById('resetNewPass').value,confirmPass=document.getElementById('resetConfirmPass').value,msg=document.getElementById('resetMsg');
-  if(!code){msg.textContent='Vul de verificatiecode in';msg.className='auth-msg error';return;}
-  if(resetTokens[email]!==code){msg.textContent='Ongeldige code';msg.className='auth-msg error';return;}
-  if(!newPass||newPass.length<6){msg.textContent='Minimaal 6 tekens';msg.className='auth-msg error';return;}
-  if(newPass!==confirmPass){msg.textContent='Wachtwoorden komen niet overeen';msg.className='auth-msg error';return;}
-  if(users[email]){users[email].password=newPass;delete resetTokens[email];save();toast('Wachtwoord gewijzigd!');msg.textContent='Wachtwoord gewijzigd! U kunt nu inloggen.';msg.className='auth-msg success';showPage('login');}
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartDrawer').classList.remove('open');
 }
-
-// ─── MISC ────────────────────────────────────────────────────────
-function sendContactMessage(){const name=document.getElementById('contactName').value.trim(),email=document.getElementById('contactEmail').value.trim(),subject=document.getElementById('contactSubject').value.trim(),message=document.getElementById('contactMessage').value.trim(),msgEl=document.getElementById('contactMsg');if(!name||!email||!subject||!message){msgEl.textContent='Vul alle velden in.';msgEl.className='auth-msg error';return;}toast('Bedankt voor uw bericht!');document.getElementById('contactName').value='';document.getElementById('contactEmail').value='';document.getElementById('contactSubject').value='';document.getElementById('contactMessage').value='';msgEl.textContent='';}
-function subscribeNewsletter(){const email=document.getElementById('newsletterEmail').value.trim();if(!email){toast('Vul een e-mailadres in.');return;}toast('Aangemeld voor de nieuwsbrief!');document.getElementById('newsletterEmail').value='';}
-
-// ─── EVENT LISTENERS ─────────────────────────────────────────────
 document.querySelectorAll('.nav-link').forEach(btn=>btn.addEventListener('click',()=>showPage(btn.dataset.page)));
 document.getElementById('shopSearch')?.addEventListener('input',renderShop);
 document.getElementById('shopSort')?.addEventListener('change',renderShop);
 window.addEventListener('scroll',()=>document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60));
-if(!localStorage.getItem('ms_cookie'))document.getElementById('cookieBar').style.display='flex';
-document.getElementById('acceptCookie')?.addEventListener('click',()=>{localStorage.setItem('ms_cookie','1');document.getElementById('cookieBar').style.display='none';});
+if(!localStorage.getItem('ms_cookie')) document.getElementById('cookieBar').style.display='flex';
+document.getElementById('acceptCookie')?.addEventListener('click',()=>{localStorage.setItem('ms_cookie','1'); document.getElementById('cookieBar').style.display='none';});
 document.getElementById('declineCookie')?.addEventListener('click',()=>document.getElementById('cookieBar').style.display='none');
-
-document.addEventListener('click', e => {
-  if (!mobileOpen) return;
-  const menu = document.getElementById('mobileMenu');
-  const btn = document.getElementById('mobileMenuBtn');
-  if (menu && !menu.contains(e.target) && btn && !btn.contains(e.target)) closeMobileMenu();
-});
-
-// Expose globals
-Object.assign(window, {
-  addToCart,toggleWish,changeQty,removeFromCart,applyCoupon,showCheckout,
-  closeCheckoutModal,closeCheckoutModalOnBackground,placeOrder,
-  closePaypalModal,closePaypalModalOnBackground,cancelOrder,
-  togglePublish,deleteProduct,adminAddProduct,doLogin,doRegister,
-  loginWithGoogle,registerWithGoogle,logout,showPage,setFilter,
-  toggleUserMenu,closeUserMenu,uploadNewImage,requestPasswordReset,
-  confirmPasswordReset,resendResetCode,openProductDetail,closeModal,
-  closeModalOnBackground,toggleZoom,addToCartFromModal,toggleWishFromModal,
-  addProductImage,toggleAdmin,deleteUser,openCart,closeCart,
-  sendContactMessage,subscribeNewsletter,confirmVerification,resendVerificationCode
-});
-
-// ─── INIT ────────────────────────────────────────────────────────
-updateNav();
-renderHome();
-renderShop();
+window.addToCart=addToCart; window.toggleWish=toggleWish; window.changeQty=changeQty; window.removeFromCart=removeFromCart; window.applyCoupon=applyCoupon; window.showCheckout=showCheckout; window.closeCheckoutModal=closeCheckoutModal; window.closeCheckoutModalOnBackground=closeCheckoutModalOnBackground; window.placeOrder=placeOrder; window.showPaypalModal=showPaypalModal; window.closePaypalModal=closePaypalModal; window.closePaypalModalOnBackground=closePaypalModalOnBackground; window.cancelOrder=cancelOrder;
+window.togglePublish=togglePublish; window.deleteProduct=deleteProduct; window.adminAddProduct=adminAddProduct; window.doLogin=doLogin; window.doRegister=doRegister; window.loginWithGoogle=loginWithGoogle; window.registerWithGoogle=registerWithGoogle; window.logout=logout; window.showPage=showPage; window.setFilter=window.setFilter;
+window.toggleUserMenu=toggleUserMenu; window.closeUserMenu=closeUserMenu; window.uploadNewImage=uploadNewImage; window.requestPasswordReset=requestPasswordReset; window.confirmPasswordReset=confirmPasswordReset; window.simulateReset=simulateReset;
+window.openProductDetail=openProductDetail; window.closeModal=closeModal; window.closeModalOnBackground=closeModalOnBackground; window.toggleZoom=toggleZoom; window.addToCartFromModal=addToCartFromModal; window.toggleWishFromModal=toggleWishFromModal; window.addProductImage=addProductImage; window.toggleAdmin=toggleAdmin; window.deleteUser=deleteUser;
+renderPaypalButtons();
+function sendContactMessage() {
+  const name = document.getElementById('contactName').value.trim();
+  const email = document.getElementById('contactEmail').value.trim();
+  const subject = document.getElementById('contactSubject').value.trim();
+  const message = document.getElementById('contactMessage').value.trim();
+  const msgEl = document.getElementById('contactMsg');
+  if (!name || !email || !subject || !message) {
+    msgEl.textContent = 'Vul alle velden in.';
+    msgEl.className = 'auth-msg error';
+    return;
+  }
+  // Simulate sending
+  toast('Bedankt voor uw bericht! We nemen zo snel mogelijk contact op.');
+  document.getElementById('contactName').value = '';
+  document.getElementById('contactEmail').value = '';
+  document.getElementById('contactSubject').value = '';
+  document.getElementById('contactMessage').value = '';
+  msgEl.textContent = '';
+}
+function subscribeNewsletter() {
+  const email = document.getElementById('newsletterEmail').value.trim();
+  if (!email) {
+    toast('Vul een e-mailadres in.');
+    return;
+  }
+  toast('Bedankt voor het aanmelden voor de nieuwsbrief!');
+  document.getElementById('newsletterEmail').value = '';
+}
+window.sendContactMessage=sendContactMessage; window.subscribeNewsletter=subscribeNewsletter;
+window.openCart=openCart; window.closeCart=closeCart;
+updateNav(); renderHome(); renderShop();
 </script>
 </body>
 </html>
