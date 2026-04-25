@@ -1955,6 +1955,7 @@ function getCartTotals() {
 function preparePaypalModal() {
   const totals = getCartTotals();
   document.getElementById('paypalTotal').textContent = totals.total.toFixed(2);
+  renderPaypalButtons();
   showPaypalModal();
 }
 function renderPaypalButtons() {
@@ -1978,9 +1979,14 @@ function renderPaypalButtons() {
       const details = await actions.order.capture();
       completePendingOrder(details);
     },
+    onCancel: () => {
+      toast('Betaling geannuleerd. Er is geen bestelling geplaatst.');
+      pendingOrder = null;
+    },
     onError: err => {
       console.error(err);
       toast('Betaling mislukt. Probeer opnieuw.');
+      pendingOrder = null;
     }
   }).render('#paypalButtonsContainer');
 }
@@ -2005,13 +2011,14 @@ function showPaypalModal() {
 }
 function closePaypalModal() {
   document.getElementById('paypalModal').classList.remove('active');
+  pendingOrder = null;
 }
 function closePaypalModalOnBackground(e) { if (e.target === document.getElementById('paypalModal')) closePaypalModal(); }
 function cancelOrder(orderId) {
   if (confirm('Weet u zeker dat u deze bestelling wilt annuleren?')) {
     const userOrders = orders[user.email] || [];
     const orderIndex = userOrders.findIndex(o => o.id === orderId);
-    if (orderIndex !== -1 && userOrders[orderIndex].status === 'pending') {
+    if (orderIndex !== -1) {
       userOrders.splice(orderIndex, 1);
       if (!userOrders.length) delete orders[user.email];
       save();
