@@ -3,7 +3,7 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <title>MAISON — Premium Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Outfit:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
 <script src="https://www.paypal.com/sdk/js?client-id=AdsXWwkuDjZhYtu-fK0gTcThYzPgzLHZmK9BkBCnH1cmMCvB2zsg1Gsy74hppUTiKcsORmtqWnV2Cdck&currency=EUR"></script>
@@ -62,6 +62,22 @@ nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .user-menu-dropdown hr{margin:0.3rem 0;border:none;border-top:1px solid var(--border);}
 .cart-badge{position:absolute;top:-8px;right:-8px;width:20px;height:20px;background:var(--rust);border-radius:50%;font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff;z-index:10;display:none;}
 
+/* HAMBURGER MENU (toegevoegd) */
+.hamburger{display:none;flex-direction:column;gap:6px;cursor:pointer;padding:0.5rem;z-index:1100;}
+.hamburger span{display:block;width:28px;height:2px;background:var(--cream);transition:all 0.3s;}
+.mobile-menu{position:fixed;top:0;right:-100%;width:80%;max-width:350px;height:100vh;background:rgba(10,10,10,0.98);backdrop-filter:blur(20px);z-index:2000;transition:right 0.3s ease;padding:90px 2rem 2rem;display:flex;flex-direction:column;gap:1rem;border-left:1px solid var(--border);}
+.mobile-menu.open{right:0;}
+.mobile-link{background:none;border:none;color:var(--cream);font-family:var(--font-sans);font-size:1rem;font-weight:300;letter-spacing:1px;padding:1rem 0;cursor:pointer;text-align:left;border-bottom:1px solid rgba(255,255,255,0.1);transition:color 0.2s;}
+.mobile-link:hover{color:var(--gold);}
+.mobile-close{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--muted);font-size:2rem;cursor:pointer;}
+.mobile-close:hover{color:var(--gold);}
+@media(max-width:900px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .nav-right .btn-ghost,.nav-right .btn-gold{display:none;}
+  .section{padding:4rem 2rem;}
+  .cart-content{width:100%;}
+}
 /* HERO */
 .hero{position:relative;min-height:80vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#050505 0%,#0d0a06 50%,#050505 100%);}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(212,175,55,0.06) 0%,transparent 70%);}
@@ -198,11 +214,14 @@ footer li:hover{color:var(--cream);}
 
 /* RESPONSIVE */
 @media(max-width:900px){
-nav{padding:0 1.2rem;}
+nav{padding:0 1.5rem;}
+.nav-links{display:none;}
+.hamburger{display:flex;}
 .section{padding:4rem 2rem;}
 .modal-content{grid-template-columns:1fr;width:95%;padding:1rem;}
 .cart-content{width:100%;max-width:100%;}
 footer{grid-template-columns:1fr;padding:3rem 2rem;}
+.nav-right .btn-ghost,.nav-right .btn-gold{display:none;}
 }
 @media(max-width:480px){
 .logo{font-size:1.4rem;letter-spacing:5px;}
@@ -254,11 +273,33 @@ footer{padding:2rem 1rem;}
       <hr>
       <button onclick="logout();closeUserMenu()">Uitloggen</button>
     </div>
+    <!-- Hamburger menu button -->
+    <div class="hamburger" id="hamburgerBtn">
+      <span></span><span></span><span></span>
+    </div>
   </div>
 </nav>
 
-<!-- CART MODAL -->
+<!-- Mobiel menu -->
+<div id="mobileMenu" class="mobile-menu">
+  <button class="mobile-close" id="closeMobileMenu">×</button>
+  <button class="mobile-link" data-page="home">Home</button>
+  <button class="mobile-link" data-page="shop">Shop</button>
+  <button class="mobile-link" data-page="wishlist">Verlanglijst <span id="mobileWishBadge"></span></button>
+  <button class="mobile-link" data-page="contact">Contact</button>
+  <button class="mobile-link" data-page="admin" id="mobileAdminLink" style="display:none;">Admin</button>
+  <div id="mobileAuthLinks">
+    <button class="mobile-link" onclick="showPage('login');closeMobileMenu()">Inloggen</button>
+    <button class="mobile-link" onclick="showPage('register');closeMobileMenu()">Registreren</button>
+  </div>
+  <div id="mobileUserLinks" style="display:none;">
+    <button class="mobile-link" onclick="showPage('profile');closeMobileMenu()">Mijn profiel</button>
+    <button class="mobile-link" onclick="showPage('orders');closeMobileMenu()">Bestellingen</button>
+    <button class="mobile-link" onclick="logout();closeMobileMenu()">Uitloggen</button>
+  </div>
+</div>
 
+<!-- CART MODAL -->
 <div id="cartModal" class="cart-modal" onclick="if(event.target===this)closeCart()">
   <div class="cart-content">
     <div class="cart-header">
@@ -280,7 +321,6 @@ footer{padding:2rem 1rem;}
 </div>
 
 <!-- PRODUCT MODAL -->
-
 <div id="productModal" class="modal" onclick="closeModalOnBg(event)">
   <div class="modal-content">
     <button class="modal-close" onclick="closeModal()">×</button>
@@ -304,7 +344,6 @@ footer{padding:2rem 1rem;}
 </div>
 
 <!-- HOME PAGE -->
-
 <div id="homePage" class="page active">
   <div class="hero">
     <div class="hero-content">
@@ -331,7 +370,6 @@ footer{padding:2rem 1rem;}
 </div>
 
 <!-- SHOP PAGE -->
-
 <div id="shopPage" class="page">
   <div class="section">
     <div class="section-head">
@@ -351,7 +389,6 @@ footer{padding:2rem 1rem;}
 </div>
 
 <!-- WISHLIST PAGE -->
-
 <div id="wishlistPage" class="page">
   <div class="section">
     <div class="section-head">
@@ -362,7 +399,6 @@ footer{padding:2rem 1rem;}
 </div>
 
 <!-- ORDERS PAGE -->
-
 <div id="ordersPage" class="page">
   <div class="section">
     <div class="section-head"><div><div class="section-eyebrow">Historie</div><h2 class="section-title">Bestellingen</h2></div></div>
@@ -371,7 +407,6 @@ footer{padding:2rem 1rem;}
 </div>
 
 <!-- CONTACT PAGE -->
-
 <div id="contactPage" class="page">
   <div class="section">
     <div class="section-head"><div><div class="section-eyebrow">Contact</div><h2 class="section-title">Vragen of feedback?</h2></div></div>
@@ -387,8 +422,7 @@ footer{padding:2rem 1rem;}
   </div>
 </div>
 
-<!-- LOGIN PAGE (met Google knop) -->
-
+<!-- LOGIN PAGE -->
 <div id="loginPage" class="page">
   <div class="auth-page"><div class="auth-card">
     <h2>Welkom terug</h2><p>Log in op uw MAISON account</p>
@@ -399,20 +433,17 @@ footer{padding:2rem 1rem;}
     </div>
     <button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button>
     <div class="auth-msg" id="loginMsg"></div>
-    
     <div style="text-align:center;margin:0.75rem 0;font-size:0.7rem;color:var(--muted);">— of —</div>
     <div class="google-login-wrapper">
       <button class="btn-google-circle" onclick="loginWithGoogle()">
         <svg viewBox="0 0 18 18" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg>
       </button>
     </div>
-    
     <p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p>
   </div></div>
 </div>
 
-<!-- REGISTER PAGE (met Google knop) -->
-
+<!-- REGISTER PAGE -->
 <div id="registerPage" class="page">
   <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><p>Maak een MAISON account aan.</p>
     <div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div>
@@ -423,20 +454,17 @@ footer{padding:2rem 1rem;}
     </div>
     <button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button>
     <div class="auth-msg" id="regMsg"></div>
-    
     <div style="text-align:center;margin:0.75rem 0;font-size:0.7rem;color:var(--muted);">— of —</div>
     <div class="google-login-wrapper">
       <button class="btn-google-circle" onclick="loginWithGoogle()">
         <svg viewBox="0 0 18 18" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg>
       </button>
     </div>
-    
     <p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p>
   </div></div>
 </div>
 
 <!-- PROFILE PAGE -->
-
 <div id="profilePage" class="page">
   <div class="section">
     <div class="section-head"><div><div class="section-eyebrow">Account</div><h2 class="section-title">Mijn profiel</h2></div></div>
@@ -451,7 +479,6 @@ footer{padding:2rem 1rem;}
 </div>
 
 <!-- ADMIN PAGE -->
-
 <div id="adminPage" class="page">
   <div class="section">
     <h2 class="section-title">Admin Panel</h2>
@@ -996,11 +1023,19 @@ function updateNav() {
   document.getElementById('guestBtns').style.display = user ? 'none' : 'flex';
   document.getElementById('userChip').style.display = user ? 'flex' : 'none';
   document.getElementById('adminNavLink').style.display = isAdmin ? 'block' : 'none';
+  document.getElementById('mobileAdminLink').style.display = isAdmin ? 'block' : 'none';
+  
   if (user) {
     document.getElementById('userLabel').textContent = user.name || user.email.split('@')[0];
     document.getElementById('avatarIcon').textContent = (user.name?.[0]||user.email[0]||'?').toUpperCase();
+    document.getElementById('mobileAuthLinks').style.display = 'none';
+    document.getElementById('mobileUserLinks').style.display = 'flex';
+  } else {
+    document.getElementById('mobileAuthLinks').style.display = 'flex';
+    document.getElementById('mobileUserLinks').style.display = 'none';
   }
   document.getElementById('wishlistBadge').textContent = wishlist.length ? `(${wishlist.length})` : '';
+  document.getElementById('mobileWishBadge').textContent = wishlist.length ? `(${wishlist.length})` : '';
 }
 
 function toggleUserMenu() {
@@ -1040,6 +1075,7 @@ function logout() {
     auth.signOut().catch(() => {});
   }
   user = null; wishlist = []; save(); updateNav(); showPage('home'); toast('Uitgelogd');
+  closeMobileMenu();
 }
 
 function sendContactMessage() {
@@ -1054,6 +1090,25 @@ function sendContactMessage() {
 }
 
 // ═══════════════════════════════════════════
+// MOBILE MENU FUNCTIONS
+// ═══════════════════════════════════════════
+function openMobileMenu() {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  if (menu.classList.contains('open')) closeMobileMenu();
+  else openMobileMenu();
+}
+
+// ═══════════════════════════════════════════
 // PAGE NAVIGATION
 // ═══════════════════════════════════════════
 function showPage(name) {
@@ -1064,6 +1119,7 @@ function showPage(name) {
   closeCart();
   closeModal();
   closeUserMenu();
+  closeMobileMenu();
   
   if (name === 'home') renderHome();
   if (name === 'shop') renderShop();
@@ -1091,7 +1147,7 @@ window.addEventListener('click', e => {
 });
 
 window.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeCart(); closeUserMenu(); }
+  if (e.key === 'Escape') { closeModal(); closeCart(); closeUserMenu(); closeMobileMenu(); }
 });
 
 window.addEventListener('scroll', () => {
@@ -1102,6 +1158,19 @@ document.addEventListener('click', e => {
   const chip = document.getElementById('userChip');
   const menu = document.getElementById('userMenuDropdown');
   if (chip && !chip.contains(e.target) && menu && !menu.contains(e.target)) menu.classList.remove('show');
+});
+
+// Hamburger button event
+document.getElementById('hamburgerBtn').addEventListener('click', toggleMobileMenu);
+document.getElementById('closeMobileMenu').addEventListener('click', closeMobileMenu);
+
+// Mobile menu links
+document.querySelectorAll('.mobile-link').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const page = btn.dataset.page;
+    if (page) showPage(page);
+    closeMobileMenu();
+  });
 });
 
 // ═══════════════════════════════════════════
