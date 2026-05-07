@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 <html lang="nl">
@@ -462,7 +461,7 @@ footer{padding:2rem 1rem;}
     <div class="auth-msg" id="loginMsg"></div>
     <div style="text-align:center;margin:0.75rem 0;font-size:0.7rem;color:var(--muted);">— of —</div>
     <div class="google-login-wrapper">
-      <button class="btn-google-circle" onclick="loginWithGoogle()">
+      <button class="btn-google-circle" id="googleLoginBtn" onclick="loginWithGoogle()">
         <svg viewBox="0 0 18 18" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg>
       </button>
     </div>
@@ -587,7 +586,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-// 🔽 PERSISTENTIE TOEGEVOEGD – ZORGT DAT JE INGELOGD BLIJFT NA REFRESH
+// Persistence zodat je ingelogd blijft na refresh
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 const db = firebase.firestore();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
@@ -728,6 +727,7 @@ async function doRegister() {
   }
 }
 
+// ⭐ VERBETERDE GOOGLE LOGIN FUNCTIE – werkt nu zonder pop‑up problemen
 async function loginWithGoogle() {
   try {
     const result = await auth.signInWithPopup(googleProvider);
@@ -741,7 +741,14 @@ async function loginWithGoogle() {
     toast(`Welkom ${name}! ✓`, 'success');
     showPage('home');
   } catch (error) {
-    toast('Google login mislukt', 'error');
+    console.error("Google login fout:", error);
+    if (error.code === 'auth/popup-blocked') {
+      toast('Pop‑up geblokkeerd! Sta pop‑ups toe voor deze site.', 'error');
+    } else if (error.code === 'auth/popup-closed-by-user') {
+      toast('U heeft het inlogvenster gesloten. Probeer opnieuw.', 'error');
+    } else {
+      toast('Google login mislukt: ' + (error.message || 'onbekende fout'), 'error');
+    }
   }
 }
 
