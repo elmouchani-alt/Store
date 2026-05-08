@@ -26,10 +26,14 @@ html{scroll-behavior:smooth;}
 body{font-family:var(--font-sans);background:var(--void);color:var(--text);overflow-x:hidden;}
 ::-webkit-scrollbar{width:3px;}::-webkit-scrollbar-track{background:var(--void);}::-webkit-scrollbar-thumb{background:var(--gold);}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:9999;opacity:0.4;}
+
+/* TOPBAR */
 .topbar{background:var(--gold);color:var(--void);font-size:0.62rem;font-weight:600;letter-spacing:3px;text-align:center;padding:10px;text-transform:uppercase;overflow:hidden;}
 .topbar-inner{display:flex;animation:tickerMove 28s linear infinite;}
 .topbar span{white-space:nowrap;padding:0 3rem;}
 @keyframes tickerMove{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+
+/* NAV */
 nav{position:sticky;top:0;z-index:1000;height:72px;display:flex;align-items:center;justify-content:space-between;padding:0 3rem;background:rgba(5,5,5,0.94);backdrop-filter:blur(28px) saturate(180%);border-bottom:1px solid var(--border);transition:all 0.3s;}
 nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .logo{font-family:var(--font-serif);font-size:1.9rem;font-weight:300;letter-spacing:8px;text-transform:uppercase;color:var(--cream);cursor:pointer;flex-shrink:0;user-select:none;}
@@ -40,13 +44,15 @@ nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .nav-link:hover,.nav-link.active{color:var(--cream);}
 .nav-link:hover::after,.nav-link.active::after{left:20%;right:20%;}
 .nav-right{display:flex;align-items:center;gap:1rem;position:relative;}
-.btn-nav{font-family:var(--font-sans);font-size:0.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:0.5rem 1.4rem;border-radius:40px;cursor:pointer;transition:all 0.2s;border:none;}
+.btn-nav{font-family:var(--font-sans);font-size:0.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:0.5rem 1.4rem;border-radius:40px;cursor:pointer;transition:all 0.2s;}
 .btn-ghost{background:none;border:1px solid var(--border-hover);color:var(--muted);}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
 .btn-gold{background:var(--gold);border:1px solid var(--gold);color:var(--void);font-weight:700;}
 .btn-gold:hover{background:var(--gold-bright);}
 .btn-primary{font-family:var(--font-sans);font-size:0.65rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;background:var(--gold);color:var(--void);border:none;padding:1rem 2.5rem;cursor:pointer;transition:all 0.25s;display:inline-block;}
 .btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(212,175,55,0.3);background:var(--gold-bright);}
+.btn-link{background:none;border:none;font-size:0.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:8px;transition:color 0.2s;padding:0;}
+.btn-link:hover{color:var(--gold);}
 .user-chip{display:flex;align-items:center;gap:10px;background:var(--elevated);border:1px solid var(--border);padding:0.3rem 1rem 0.3rem 0.4rem;border-radius:40px;cursor:pointer;transition:background 0.2s;}
 .user-chip:hover{background:#222;}
 .avatar{width:28px;height:28px;background:var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font-serif);font-size:0.9rem;font-weight:600;color:var(--void);}
@@ -54,7 +60,10 @@ nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .user-menu-dropdown.show{opacity:1;visibility:visible;transform:translateY(0);}
 .user-menu-dropdown button{display:block;width:100%;text-align:left;padding:0.75rem 1.2rem;font-size:0.75rem;color:var(--muted);background:none;border:none;cursor:pointer;transition:all 0.2s;font-family:var(--font-sans);}
 .user-menu-dropdown button:hover{background:rgba(212,175,55,0.1);color:var(--gold);}
+.user-menu-dropdown hr{margin:0.3rem 0;border:none;border-top:1px solid var(--border);}
 .cart-badge{position:absolute;top:-8px;right:-8px;width:20px;height:20px;background:var(--rust);border-radius:50%;font-size:0.65rem;font-weight:700;display:flex;align-items:center;justify-content:center;color:#fff;z-index:10;display:none;}
+
+/* HAMBURGER MENU */
 .hamburger{display:none;flex-direction:column;gap:6px;cursor:pointer;padding:0.5rem;z-index:1100;}
 .hamburger span{display:block;width:28px;height:2px;background:var(--cream);transition:all 0.3s;}
 .mobile-menu{position:fixed;top:0;right:-100%;width:80%;max-width:350px;height:100vh;background:rgba(10,10,10,0.98);backdrop-filter:blur(20px);z-index:2000;transition:right 0.3s ease;padding:90px 2rem 2rem;display:flex;flex-direction:column;gap:1rem;border-left:1px solid var(--border);}
@@ -63,6 +72,8 @@ nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .mobile-link:hover{color:var(--gold);}
 .mobile-close{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--muted);font-size:2rem;cursor:pointer;}
 .mobile-close:hover{color:var(--gold);}
+
+/* HERO */
 .hero{position:relative;min-height:80vh;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#050505 0%,#0d0a06 50%,#050505 100%);}
 .hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(212,175,55,0.06) 0%,transparent 70%);}
 .hero-content{position:relative;z-index:2;text-align:center;padding:2rem;}
@@ -75,6 +86,8 @@ nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .hero-stat{text-align:center;}
 .hero-stat .num{font-family:var(--font-serif);font-size:2.2rem;font-weight:300;color:var(--gold);}
 .hero-stat .lbl{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-top:4px;}
+
+/* PRODUCT GRID */
 .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:1.5px;background:var(--border);}
 .product-card{background:var(--surface);cursor:pointer;position:relative;overflow:hidden;transition:background 0.3s;}
 .product-card:hover{background:var(--elevated);}
@@ -90,17 +103,26 @@ nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .product-info{padding:1.25rem 1.5rem 0.75rem;}
 .product-cat{font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
 .product-name{font-family:var(--font-serif);font-size:1.4rem;font-weight:300;color:var(--cream);margin:6px 0 4px;line-height:1.2;}
+.product-sub{font-size:0.75rem;color:var(--muted);}
 .product-footer{display:flex;justify-content:space-between;align-items:center;margin-top:0.75rem;}
 .product-price{font-family:var(--font-serif);font-size:1.3rem;font-weight:300;color:var(--gold);}
 .product-price .original{font-size:0.9rem;color:var(--muted);text-decoration:line-through;margin-right:6px;}
 .btn-add-cart{width:100%;padding:0.7rem;font-family:var(--font-sans);font-size:0.6rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;background:transparent;border:1px solid var(--border-hover);color:var(--muted);cursor:pointer;transition:all 0.2s;margin-top:0.75rem;}
 .btn-add-cart:hover{border-color:var(--gold);color:var(--gold);background:rgba(212,175,55,0.06);}
 .btn-add-cart:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* SECTIONS */
 .section{padding:6rem 5rem;max-width:1440px;margin:0 auto;}
 .section-eyebrow{font-size:0.6rem;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:12px;}
 .section-eyebrow::before{content:'';display:block;width:30px;height:1px;background:var(--gold);}
 .section-title{font-family:var(--font-serif);font-size:clamp(2rem,3.5vw,3.5rem);font-weight:300;color:var(--cream);line-height:1.1;}
 .section-head{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3.5rem;flex-wrap:wrap;gap:1rem;}
+.link-all{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);background:none;border:none;cursor:pointer;display:flex;align-items:center;gap:8px;transition:color 0.2s;}
+.link-all:hover{color:var(--gold);}
+.link-all::after{content:'→';transition:transform 0.2s;}
+.link-all:hover::after{transform:translateX(4px);}
+
+/* MODAL */
 .modal{display:none;position:fixed;z-index:10000;left:0;top:0;width:100%;height:100%;background-color:rgba(0,0,0,0.95);backdrop-filter:blur(8px);align-items:center;justify-content:center;overflow-y:auto;}
 .modal.active{display:flex;}
 .modal-content{max-width:1100px;width:90%;background:var(--surface);border:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;gap:2rem;padding:2rem;position:relative;margin:2rem auto;}
@@ -117,6 +139,8 @@ nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .btn-modal-add{background:var(--gold);color:var(--void);border:none;padding:1rem 2rem;cursor:pointer;width:100%;font-family:var(--font-sans);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:1.5rem;transition:all 0.2s;}
 .btn-modal-add:hover{background:var(--gold-bright);}
 .modal-desc{color:var(--muted);line-height:1.7;font-size:0.88rem;}
+
+/* CART MODAL */
 .cart-modal{display:none;position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,0.95);backdrop-filter:blur(8px);align-items:flex-end;justify-content:flex-end;}
 .cart-modal.active{display:flex;}
 .cart-content{background:var(--surface);border-left:1px solid var(--border);width:420px;height:100vh;display:flex;flex-direction:column;overflow:hidden;max-width:100%;}
@@ -139,9 +163,14 @@ nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .cart-summary{margin-bottom:1.5rem;}
 .summary-row{display:flex;justify-content:space-between;margin-bottom:0.5rem;font-size:0.8rem;}
 .summary-total{display:flex;justify-content:space-between;font-size:1.1rem;font-weight:600;color:var(--gold);padding-top:0.5rem;border-top:1px solid var(--border);}
+#paypal-button-container{margin-top:1rem;min-height:50px;}
+
+/* PAGES */
 .page{display:none;}
 .page.active{display:block;animation:pageIn 0.4s cubic-bezier(0.22,1,0.36,1);}
 @keyframes pageIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+/* AUTH */
 .auth-page{min-height:80vh;display:flex;align-items:center;justify-content:center;padding:3rem;}
 .auth-card{background:var(--surface);border:1px solid var(--border);padding:3rem;width:100%;max-width:460px;}
 .auth-card h2{font-family:var(--font-serif);font-size:2.5rem;font-weight:300;color:var(--cream);margin-bottom:0.5rem;}
@@ -159,12 +188,16 @@ nav.scrolled{height:60px;border-bottom-color:rgba(212,175,55,0.2);}
 .btn-google-circle{background:#fff;border:1px solid #dadce0;width:46px;height:46px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;padding:0;line-height:0;transition:all 0.2s;cursor:pointer;margin-right:0.5rem;}
 .btn-google-circle:hover{background:#f8f9fa;}
 .google-login-wrapper{display:flex;justify-content:center;margin:0.75rem 0;}
+
+/* TOAST */
 .toast-container{position:fixed;bottom:2rem;left:50%;transform:translateX(-50%);z-index:99998;display:flex;flex-direction:column;gap:0.6rem;align-items:center;pointer-events:none;}
 .toast{background:var(--elevated);border:1px solid var(--border);border-left:3px solid var(--gold);color:var(--cream);padding:0.8rem 1.5rem;font-size:0.8rem;white-space:nowrap;animation:toastIn 0.3s ease,toastOut 0.3s 2.5s forwards;pointer-events:none;}
 .toast.error-toast{border-left-color:var(--rust);}
 .toast.success-toast{border-left-color:var(--sage);}
 @keyframes toastIn{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
 @keyframes toastOut{to{opacity:0;transform:translateY(-8px);}}
+
+/* FOOTER */
 footer{background:var(--deep);border-top:1px solid var(--border);padding:5rem;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:4rem;}
 .footer-brand .logo{font-size:2rem;display:block;margin-bottom:1rem;}
 .footer-desc{font-size:0.8rem;color:var(--muted);line-height:1.8;max-width:260px;}
@@ -173,6 +206,8 @@ footer ul{list-style:none;}
 footer li{font-size:0.8rem;color:var(--muted);margin-bottom:0.8rem;cursor:pointer;transition:color 0.2s;}
 footer li:hover{color:var(--cream);}
 .footer-bottom{background:var(--void);border-top:1px solid var(--border);padding:1.2rem 5rem;display:flex;justify-content:space-between;font-size:0.65rem;color:var(--muted);letter-spacing:1px;}
+
+/* ADMIN STYLES */
 .admin-tabs{display:flex;gap:0.5rem;margin-bottom:2rem;border-bottom:1px solid var(--border);padding-bottom:1rem;}
 .admin-tab{background:none;border:none;padding:0.75rem 1.5rem;color:var(--muted);cursor:pointer;font-size:0.8rem;border-bottom:2px solid transparent;transition:all 0.2s;}
 .admin-tab.active{color:var(--gold);border-bottom-color:var(--gold);}
@@ -186,21 +221,48 @@ footer li:hover{color:var(--cream);}
 .order-meta{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;font-size:0.8rem;}
 .order-items{margin-top:1rem;}
 .order-item{background:var(--surface);padding:0.75rem;margin-bottom:0.5rem;border-radius:3px;display:flex;justify-content:space-between;font-size:0.8rem;}
-@media(max-width:900px){nav{padding:0 1.5rem;}.nav-links{display:none;}.hamburger{display:flex;}.section{padding:4rem 2rem;}.modal-content{grid-template-columns:1fr;width:95%;padding:1rem;}.cart-content{width:100%;max-width:100%;}}
-@media(max-width:480px){.logo{font-size:1.4rem;letter-spacing:5px;}.section{padding:3rem 1rem;}.products-grid{grid-template-columns:1fr;}.auth-page{padding:1.5rem 0.75rem;min-height:auto;}.auth-card{padding:1.5rem;}}
+
+/* RESPONSIVE */
+@media(max-width:900px){
+nav{padding:0 1.5rem;}
+.nav-links{display:none;}
+.hamburger{display:flex;}
+.section{padding:4rem 2rem;}
+.modal-content{grid-template-columns:1fr;width:95%;padding:1rem;}
+.cart-content{width:100%;max-width:100%;}
+footer{grid-template-columns:1fr;padding:3rem 2rem;}
+.nav-right .btn-ghost,.nav-right .btn-gold{display:none;}
+}
+@media(max-width:480px){
+.logo{font-size:1.4rem;letter-spacing:5px;}
+.section{padding:3rem 1rem;}
+.products-grid{grid-template-columns:1fr;}
+.auth-page{padding:1.5rem 0.75rem;min-height:auto;}
+.auth-card{padding:1.5rem;}
+footer{padding:2rem 1rem;}
+.footer-bottom{padding:1rem;flex-direction:column;gap:0.5rem;}
+.order-meta{grid-template-columns:1fr;}
+}
 </style>
+
 </head>
 <body>
 
 <div class="toast-container" id="toastContainer"></div>
-<div class="topbar"><div class="topbar-inner"><span>GRATIS VERZENDING VANAF €50 • 30 DAGEN RETOUR • PREMIUM KWALITEIT</span><span>GRATIS VERZENDING VANAF €50 • 30 DAGEN RETOUR • PREMIUM KWALITEIT</span></div></div>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <span>GRATIS VERZENDING VANAF €50 • 30 DAGEN RETOUR • PREMIUM KWALITEIT</span>
+    <span>GRATIS VERZENDING VANAF €50 • 30 DAGEN RETOUR • PREMIUM KWALITEIT</span>
+  </div>
+</div>
 
 <nav id="mainNav">
   <div class="logo" onclick="showPage('home')">MAISON<span>.</span></div>
   <div class="nav-links">
     <button class="nav-link active" data-page="home">Home</button>
     <button class="nav-link" data-page="shop">Shop</button>
-    <button class="nav-link" data-page="wishlist">Wishlist</button>
+    <button class="nav-link" data-page="wishlist">Wishlist <span id="wishlistBadge"></span></button>
     <button class="nav-link" data-page="contact">Contact</button>
     <button class="nav-link" data-page="admin" id="adminNavLink" style="display:none;">Admin</button>
   </div>
@@ -213,23 +275,29 @@ footer li:hover{color:var(--cream);}
     <div id="userChip" style="display:none;" class="user-chip" onclick="toggleUserMenu()">
       <div class="avatar" id="avatarIcon">A</div>
       <span id="userLabel"></span>
+      <span style="font-size:0.65rem;color:var(--muted);">▼</span>
     </div>
     <div id="userMenuDropdown" class="user-menu-dropdown">
       <button onclick="showPage('profile');closeUserMenu()">Mijn profiel</button>
       <button onclick="showPage('orders');closeUserMenu()">Bestellingen</button>
       <button onclick="showPage('wishlist');closeUserMenu()">Verlanglijst</button>
+      <hr>
       <button onclick="logout();closeUserMenu()">Uitloggen</button>
     </div>
-    <div class="hamburger" id="hamburgerBtn"><span></span><span></span><span></span></div>
+    <div class="hamburger" id="hamburgerBtn">
+      <span></span><span></span><span></span>
+    </div>
   </div>
 </nav>
+
+<!-- Mobile menu -->
 
 <div id="mobileMenu" class="mobile-menu">
   <button class="mobile-close" id="closeMobileMenu">×</button>
   <button class="mobile-link" data-page="home">Home</button>
   <button class="mobile-link" data-page="shop">Shop</button>
   <button class="mobile-link" onclick="openCart();closeMobileMenu()">🛒 Winkelwagen</button>
-  <button class="mobile-link" data-page="wishlist">Verlanglijst</button>
+  <button class="mobile-link" data-page="wishlist">Verlanglijst <span id="mobileWishBadge"></span></button>
   <button class="mobile-link" data-page="contact">Contact</button>
   <button class="mobile-link" data-page="admin" id="mobileAdminLink" style="display:none;">Admin</button>
   <div id="mobileAuthLinks">
@@ -243,53 +311,69 @@ footer li:hover{color:var(--cream);}
   </div>
 </div>
 
+<!-- CART MODAL -->
+
 <div id="cartModal" class="cart-modal" onclick="if(event.target===this)closeCart()">
   <div class="cart-content">
     <div class="cart-header">
       <h2>Winkelwagen</h2>
       <button class="cart-close" onclick="closeCart()">×</button>
     </div>
-    <div class="cart-items" id="cartItems"><div class="cart-empty"><div class="cart-empty-icon">🛒</div>Leeg</div></div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty"><div class="cart-empty-icon">🛒</div>Uw winkelwagen is leeg</div>
+    </div>
     <div class="cart-footer">
+      <div class="field" style="margin-bottom:1rem;">
+        <label>Coupon Code</label>
+        <div style="display:flex;gap:0.5rem;">
+          <input type="text" id="couponCode" placeholder="Code" style="flex:1;font-size:0.8rem;padding:0.6rem;">
+          <button class="btn-primary" onclick="applyCoupon()" style="padding:0.6rem 1.2rem;font-size:0.65rem;flex-shrink:0;">Toepassen</button>
+        </div>
+        <div id="couponMsg" class="auth-msg"></div>
+      </div>
       <div class="cart-summary">
         <div class="summary-row"><span>Subtotaal:</span><span id="subtotalPrice">€0.00</span></div>
         <div class="summary-row" id="discountRow" style="display:none;"><span>Korting:</span><span id="discountPrice" style="color:var(--sage);">-€0.00</span></div>
         <div class="summary-row"><span>Verzending:</span><span id="shippingPrice">€0.00</span></div>
         <div class="summary-total"><span>Totaal:</span><span id="totalPrice">€0.00</span></div>
       </div>
-      <button class="btn-primary" style="width:100%;margin-top:1rem;" onclick="startCheckout()">Checkout</button>
+      <button class="btn-primary" style="width:100%;margin-top:1rem;" onclick="startCheckout()">Naar Checkout</button>
     </div>
   </div>
 </div>
+
+<!-- CHECKOUT MODAL -->
 
 <div id="checkoutModal" class="modal" onclick="closeCheckoutOnBg(event)">
   <div class="modal-content" style="grid-template-columns:1fr;">
     <button class="modal-close" onclick="closeCheckout()">×</button>
     <h2 style="font-family:var(--font-serif);font-size:2rem;color:var(--cream);margin-bottom:1.5rem;">Checkout</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;">
-      <div>
-        <label style="font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;display:block;">GEGEVENS</label>
-        <div class="field"><input type="text" id="checkoutName" placeholder="Naam" style="font-size:0.85rem;padding:0.6rem;"></div>
-        <div class="field"><input type="email" id="checkoutEmail" placeholder="E-mail" style="font-size:0.85rem;padding:0.6rem;"></div>
-        <div class="field"><input type="tel" id="checkoutPhone" placeholder="Tel (+31...)" style="font-size:0.85rem;padding:0.6rem;"></div>
-      </div>
-      <div>
-        <label style="font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;display:block;">ADRES</label>
-        <div class="field"><input type="text" id="checkoutStreet" placeholder="Straat & nr" style="font-size:0.85rem;padding:0.6rem;"></div>
-        <div class="field"><input type="text" id="checkoutPostal" placeholder="Postcode (1234AB)" style="font-size:0.85rem;padding:0.6rem;"></div>
-        <div class="field"><input type="text" id="checkoutCity" placeholder="Stad" style="font-size:0.85rem;padding:0.6rem;"></div>
-      </div>
-    </div>
-    <div id="checkoutMsg" class="auth-msg" style="margin-bottom:1rem;"></div>
-    <button class="btn-primary" style="width:100%;" onclick="finalizeCheckout()">Betalen</button>
-    <div id="paypal-button-container-checkout" style="margin-top:1rem;"></div>
-  </div>
-</div>
 
-<div id="productModal" class="modal" onclick="closeModalOnBg(event)">
+```
+
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem;">
+  <div>
+    <label style="font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;display:block;">PERSOONLIJKE GEGEVENS</label>
+    <div class="field"><input type="text" id="checkoutName" placeholder="Volledige naam" style="font-size:0.85rem;padding:0.6rem;"></div>
+    <div class="field"><input type="email" id="checkoutEmail" placeholder="E-mailadres" style="font-size:0.85rem;padding:0.6rem;"></div>
+    <div class="field"><input type="tel" id="checkoutPhone" placeholder="Telefoonnummer (+31...)" style="font-size:0.85rem;padding:0.6rem;"></div>
+  </div>
+  <div>
+    <label style="font-size:0.7rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;display:block;">AFLEVERADRES</label>
+    <div class="field"><input type="text" id="checkoutStreet" placeholder="Straat en huisnummer" style="font-size:0.85rem;padding:0.6rem;"></div>
+    <div class="field"><input type="text" id="checkoutPostal" placeholder="Postcode (1234AB)" style="font-size:0.85rem;padding:0.6rem;"></div>
+    <div class="field"><input type="text" id="checkoutCity" placeholder="Stad" style="font-size:0.85rem;padding:0.6rem;"></div>
+  </div>
+</div><div id="checkoutMsg" class="auth-msg" style="margin-bottom:1rem;"></div>
+<button class="btn-primary" style="width:100%;" onclick="finalizeCheckout()">Voltooien en Betalen</button>
+<div id="paypal-button-container-checkout" style="margin-top:1rem;"></div>
+```</div>
+</div><!-- PRODUCT MODAL --><div id="productModal" class="modal" onclick="closeModalOnBg(event)">
   <div class="modal-content">
     <button class="modal-close" onclick="closeModal()">×</button>
-    <div class="modal-image"><img id="modalImg" src="" alt=""></div>
+    <div class="modal-image">
+      <img id="modalImg" src="" alt="">
+    </div>
     <div class="modal-info">
       <h2 id="modalTitle"></h2>
       <div class="modal-price" id="modalPrice"></div>
@@ -304,107 +388,101 @@ footer li:hover{color:var(--cream);}
       <button class="wishlist-btn" id="modalWishBtn" onclick="toggleWishFromModal()" style="position:relative;width:100%;margin-top:0.5rem;border-radius:3px;border:1px solid var(--border);">🤍 Verlanglijst</button>
     </div>
   </div>
-</div>
-
-<div id="homePage" class="page active">
+</div><!-- HOME PAGE --><div id="homePage" class="page active">
   <div class="hero">
     <div class="hero-content">
       <div class="hero-tag">Nieuwe Collectie 2025</div>
       <h1 class="hero-title">Tijdloze<br><em>Elegantie</em></h1>
-      <p class="hero-sub">Handgeselecteerde premium stukken voor de moderne levensstijl.</p>
+      <p class="hero-sub">Handgeselecteerde premium stukken voor de moderne levensstijl. Kwaliteit boven kwantiteit.</p>
       <div class="hero-btns">
         <button class="btn-primary" onclick="showPage('shop')">Bekijk Collectie</button>
+        <button class="btn-link" onclick="document.getElementById('featuredSection')?.scrollIntoView({behavior:'smooth'})">Ontdek meer ↓</button>
       </div>
       <div class="hero-stats" id="heroStats">
         <div class="hero-stat"><div class="num" id="statProducts">0</div><div class="lbl">Producten</div></div>
-        <div class="hero-stat"><div class="num" id="statWishlist">0</div><div class="lbl">Favorieten</div></div>
+        <div class="hero-stat"><div class="num" id="statWishlist">0</div><div class="lbl">Verlanglijsten</div></div>
       </div>
     </div>
   </div>
   <div id="featuredSection" class="section">
     <div class="section-head">
       <div><div class="section-eyebrow">Uitgelicht</div><h2 class="section-title">Premium selectie</h2></div>
-      <button style="background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.65rem;" onclick="showPage('shop')">Alles bekijken →</button>
+      <button class="link-all" onclick="showPage('shop')">Alles bekijken</button>
     </div>
     <div class="products-grid" id="homeFeaturedGrid"></div>
   </div>
-</div>
-
-<div id="shopPage" class="page">
+</div><!-- SHOP PAGE --><div id="shopPage" class="page">
   <div class="section">
     <div class="section-head">
       <div><div class="section-eyebrow">Catalogus</div><h2 class="section-title">Onze collectie</h2></div>
     </div>
     <div style="margin-bottom:2rem;display:flex;gap:1rem;flex-wrap:wrap;">
-      <input type="text" id="shopSearch" placeholder="Zoeken..." style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);">
+      <input type="text" id="shopSearch" placeholder="Zoek producten..." style="flex:1;min-width:200px;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);">
       <select id="shopSort" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:0.8rem;cursor:pointer;">
         <option value="">Sorteren</option>
-        <option value="price-low">Laag → Hoog</option>
-        <option value="price-high">Hoog → Laag</option>
+        <option value="price-low">Prijs: Laag → Hoog</option>
+        <option value="price-high">Prijs: Hoog → Laag</option>
+        <option value="newest">Nieuwste</option>
       </select>
     </div>
     <div class="products-grid" id="shopGrid"></div>
   </div>
-</div>
-
-<div id="wishlistPage" class="page">
+</div><!-- WISHLIST PAGE --><div id="wishlistPage" class="page">
   <div class="section">
     <div class="section-head">
       <div><div class="section-eyebrow">Favorieten</div><h2 class="section-title">Verlanglijst</h2></div>
     </div>
     <div id="wishlistContent"></div>
   </div>
-</div>
-
-<div id="ordersPage" class="page">
+</div><!-- ORDERS PAGE --><div id="ordersPage" class="page">
   <div class="section">
     <div class="section-head"><div><div class="section-eyebrow">Historie</div><h2 class="section-title">Bestellingen</h2></div></div>
     <div id="ordersList"></div>
   </div>
-</div>
-
-<div id="contactPage" class="page">
+</div><!-- CONTACT PAGE --><div id="contactPage" class="page">
   <div class="section">
-    <div class="section-head"><div><div class="section-eyebrow">Contact</div><h2 class="section-title">Contacteer ons</h2></div></div>
+    <div class="section-head"><div><div class="section-eyebrow">Contact</div><h2 class="section-title">Vragen of feedback?</h2></div></div>
     <div style="max-width:600px;margin:0 auto;">
       <div class="auth-card" style="padding:2rem;">
         <div class="field"><label>Naam</label><input type="text" id="contactName" placeholder="Uw naam"></div>
         <div class="field"><label>E-mailadres</label><input type="email" id="contactEmail" placeholder="naam@email.com"></div>
         <div class="field"><label>Bericht</label><textarea id="contactMessage" rows="5" placeholder="Uw bericht..."></textarea></div>
-        <button class="btn-primary" style="width:100%;" onclick="sendContactMessage()">Verstuur</button>
+        <button class="btn-primary" style="width:100%;" onclick="sendContactMessage()">Verstuur bericht</button>
         <div class="auth-msg" id="contactMsg"></div>
       </div>
     </div>
   </div>
-</div>
-
-<div id="loginPage" class="page">
+</div><!-- LOGIN PAGE --><div id="loginPage" class="page">
   <div class="auth-page"><div class="auth-card">
-    <h2>Inloggen</h2><p>Log in op uw account</p>
+    <h2>Welkom terug</h2><p>Log in op uw MAISON account</p>
     <div class="field"><label>E-mailadres</label><input type="email" id="loginEmail" placeholder="naam@email.com" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <div class="field"><label>Wachtwoord</label><input type="password" id="loginPass" placeholder="wachtwoord" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <button class="btn-primary" style="width:100%;" onclick="doLogin()">Inloggen</button>
     <div class="auth-msg" id="loginMsg"></div>
     <div style="text-align:center;margin:0.75rem 0;font-size:0.7rem;color:var(--muted);">— of —</div>
     <div class="google-login-wrapper">
-      <button class="btn-google-circle" onclick="loginWithGoogle()"><svg viewBox="0 0 18 18" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg></button>
+      <button class="btn-google-circle" id="googleLoginBtn" onclick="loginWithGoogle()">
+        <svg viewBox="0 0 18 18" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg>
+      </button>
     </div>
     <p class="auth-link">Geen account? <a onclick="showPage('register')">Registreer hier</a></p>
   </div></div>
-</div>
-
-<div id="registerPage" class="page">
-  <div class="auth-page"><div class="auth-card"><h2>Registreren</h2><p>Maak een account aan</p>
+</div><!-- REGISTER PAGE --><div id="registerPage" class="page">
+  <div class="auth-page"><div class="auth-card"><h2>Word lid</h2><p>Maak een MAISON account aan.</p>
     <div class="field"><label>Volledige naam</label><input id="regName" placeholder="Uw naam"></div>
     <div class="field"><label>E-mailadres</label><input id="regEmail" placeholder="naam@email.com"></div>
-    <div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Min. 6 tekens"></div>
+    <div class="field"><label>Wachtwoord</label><input type="password" id="regPass" placeholder="Minimaal 6 tekens"></div>
     <button class="btn-primary" style="width:100%;" onclick="doRegister()">Account aanmaken</button>
     <div class="auth-msg" id="regMsg"></div>
+    <div style="text-align:center;margin:0.75rem 0;font-size:0.7rem;color:var(--muted);">— of —</div>
+    <div class="google-login-wrapper">
+      <button class="btn-google-circle" onclick="loginWithGoogle()">
+        <svg viewBox="0 0 18 18" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><path fill="#EA4335" d="M9 3.48c1.54 0 2.84.53 3.69 1.57l2.74-2.74C13.92.61 11.66 0 9 0 5.48 0 2.44 1.95 1.21 4.81l3.13 2.43C5.05 5.2 6.86 3.48 9 3.48Z"/><path fill="#34A853" d="M17.64 9.2c0-.63-.06-1.24-.18-1.82H9v3.45h4.84c-.21 1.12-.85 2.06-1.82 2.7l2.78 2.16c1.62-1.49 2.54-3.68 2.54-6.49Z"/><path fill="#4A90E2" d="M3.95 10.24a5.38 5.38 0 0 1 0-3.47L.82 4.34A8.99 8.99 0 0 0 0 9c0 1.45.34 2.83.95 4.06l3-2.82Z"/><path fill="#FBBC05" d="M9 18c2.43 0 4.47-.8 5.96-2.18l-2.78-2.16c-.77.52-1.76.83-3.18.83-2.14 0-3.95-1.72-4.6-4.03L.84 13.92C2.07 16.81 5.11 18 9 18Z"/></svg>
+      </button>
+    </div>
     <p class="auth-link">Al een account? <a onclick="showPage('login')">Inloggen</a></p>
   </div></div>
-</div>
-
-<div id="profilePage" class="page">
+</div><!-- PROFILE PAGE --><div id="profilePage" class="page">
   <div class="section">
     <div class="section-head"><div><div class="section-eyebrow">Account</div><h2 class="section-title">Mijn profiel</h2></div></div>
     <div style="max-width:600px;">
@@ -412,67 +490,92 @@ footer li:hover{color:var(--cream);}
         <div class="field"><label>Naam</label><span id="profileName" style="color:var(--cream);">-</span></div>
         <div class="field"><label>E-mail</label><span id="profileEmail" style="color:var(--cream);">-</span></div>
         <div class="field"><label>Verlanglijst</label><span id="profileWishCount" style="color:var(--cream);">0</span></div>
+        <div class="field"><label>Status</label><span id="profileRole" style="color:var(--gold);">-</span></div>
       </div>
     </div>
   </div>
-</div>
-
-<div id="adminPage" class="page">
+</div><!-- ADMIN PAGE --><div id="adminPage" class="page">
   <div class="section">
-    <h2 class="section-title" style="margin-bottom:2rem;">Admin Panel</h2>
-    <div class="admin-tabs">
-      <button class="admin-tab active" onclick="switchAdminTab('products')">📦 Producten</button>
-      <button class="admin-tab" onclick="switchAdminTab('coupons')">🎟️ Coupons</button>
-      <button class="admin-tab" onclick="switchAdminTab('orders')">📋 Bestellingen</button>
-    </div>
-    <div id="productsTab" class="admin-content active">
-      <div style="background:var(--surface);border:1px solid var(--border);padding:2rem;border-radius:4px;margin-bottom:2rem;">
-        <h3 style="color:var(--gold);margin-bottom:1.5rem;font-family:var(--font-serif);font-size:1.5rem;">Product toevoegen</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
-          <input type="text" id="adminTitle" placeholder="Naam" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;">
-          <input type="text" id="adminCategory" placeholder="Categorie" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;">
-          <input type="number" id="adminPrice" placeholder="Prijs €" step="0.01" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;">
-          <input type="number" id="adminSalePrice" placeholder="Sale prijs €" step="0.01" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;">
-          <input type="number" id="adminStock" placeholder="Voorraad" min="0" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;">
-          <input type="file" id="adminImage" accept="image/*" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;">
-          <textarea id="adminDesc" placeholder="Beschrijving" rows="2" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;grid-column:1/-1;"></textarea>
-        </div>
-        <button class="btn-primary" onclick="adminAddProduct()" style="width:100%;">+ Toevoegen</button>
-        <div class="auth-msg" id="addProductMsg"></div>
-      </div>
-      <h3 style="color:var(--gold);margin:2rem 0 1rem;font-family:var(--font-serif);font-size:1.3rem;">Producten</h3>
-      <div id="adminProductsList"></div>
-    </div>
-    <div id="couponsTab" class="admin-content">
-      <div style="background:var(--surface);border:1px solid var(--border);padding:2rem;border-radius:4px;margin-bottom:2rem;">
-        <h3 style="color:var(--gold);margin-bottom:1.5rem;font-family:var(--font-serif);font-size:1.5rem;">Coupon Code</h3>
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
-          <input type="text" id="couponCodeInput" placeholder="Code" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;text-transform:uppercase;">
-          <input type="number" id="couponDiscount" placeholder="Korting %" min="0" max="100" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;">
-          <input type="number" id="couponMaxUses" placeholder="Max. gebruik" min="1" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;">
-        </div>
-        <button class="btn-primary" onclick="adminAddCoupon()" style="width:100%;">+ Toevoegen</button>
-        <div class="auth-msg" id="couponMsg"></div>
-      </div>
-      <h3 style="color:var(--gold);margin:2rem 0 1rem;font-family:var(--font-serif);font-size:1.3rem;">Coupons</h3>
-      <div id="adminCouponsList"></div>
-    </div>
-    <div id="ordersTab" class="admin-content">
-      <h3 style="color:var(--gold);margin-bottom:1.5rem;font-family:var(--font-serif);font-size:1.3rem;">Alle bestellingen</h3>
-      <div id="adminOrdersList"></div>
-    </div>
-  </div>
+    <h2 class="section-title" style="margin-bottom:2rem;">Admin Panel</h2>```
+<div class="admin-tabs">
+  <button class="admin-tab active" onclick="switchAdminTab('products')">📦 Producten</button>
+  <button class="admin-tab" onclick="switchAdminTab('coupons')">🎟️ Coupons</button>
+  <button class="admin-tab" onclick="switchAdminTab('users')">👥 Gebruikers</button>
+  <button class="admin-tab" onclick="switchAdminTab('orders')">📋 Bestellingen</button>
 </div>
 
-<footer>
-  <div class="footer-section footer-brand"><div class="logo">MAISON<span>.</span></div><p class="footer-desc">Premium store voor tijdloze elegantie.</p></div>
-  <div><h4>Shop</h4><ul><li onclick="showPage('shop')">Collectie</li></ul></div>
-  <div><h4>Account</h4><ul><li onclick="showPage('login')">Inloggen</li><li onclick="showPage('register')">Registreren</li></ul></div>
-  <div><h4>Support</h4><ul><li onclick="showPage('contact')">Contact</li></ul></div>
-</footer>
-<div class="footer-bottom"><span>© 2025 MAISON</span><span>🔒 Veilig betalen via PayPal</span></div>
+<!-- PRODUCTS TAB -->
+<div id="productsTab" class="admin-content active">
+  <div style="background:var(--surface);border:1px solid var(--border);padding:2rem;border-radius:4px;margin-bottom:2rem;">
+    <h3 style="color:var(--gold);margin-bottom:1.5rem;font-family:var(--font-serif);font-size:1.5rem;">Product toevoegen</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem;">
+      <input type="text" id="adminTitle" placeholder="Product naam" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);">
+      <input type="text" id="adminCategory" placeholder="Categorie" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);">
+      <input type="number" id="adminPrice" placeholder="Prijs (€)" step="0.01" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);">
+      <input type="number" id="adminSalePrice" placeholder="Sale prijs (€)" step="0.01" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);">
+      <input type="number" id="adminStock" placeholder="Voorraad" min="0" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);">
+      <input type="file" id="adminImage" accept="image/*" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;">
+      <textarea id="adminDesc" placeholder="Beschrijving" rows="2" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);grid-column:1/-1;"></textarea>
+    </div>
+    <button class="btn-primary" onclick="adminAddProduct()" style="width:100%;">+ Product toevoegen</button>
+    <div class="auth-msg" id="addProductMsg"></div>
+  </div>
+  <h3 style="color:var(--gold);margin:2rem 0 1rem;font-family:var(--font-serif);font-size:1.3rem;">Producten beheren</h3>
+  <div id="adminProductsList"></div>
+</div>
 
-<script>
+<!-- COUPONS TAB -->
+<div id="couponsTab" class="admin-content">
+  <div style="background:var(--surface);border:1px solid var(--border);padding:2rem;border-radius:4px;margin-bottom:2rem;">
+    <h3 style="color:var(--gold);margin-bottom:1.5rem;font-family:var(--font-serif);font-size:1.5rem;">Coupon Code Toevoegen</h3>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem;">
+      <input type="text" id="couponCodeInput" placeholder="Code (bv. SUMMER2025)" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);text-transform:uppercase;">
+      <input type="number" id="couponDiscount" placeholder="Korting (%)" min="0" max="100" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);">
+      <input type="number" id="couponMaxUses" placeholder="Max. gebruik" min="1" style="background:var(--elevated);border:1px solid var(--border);color:var(--text);padding:0.8rem;font-family:var(--font-sans);">
+    </div>
+    <button class="btn-primary" onclick="adminAddCoupon()" style="width:100%;">+ Coupon Toevoegen</button>
+    <div class="auth-msg" id="couponMsg"></div>
+  </div>
+  <h3 style="color:var(--gold);margin:2rem 0 1rem;font-family:var(--font-serif);font-size:1.3rem;">Actieve Coupons</h3>
+  <div id="adminCouponsList"></div>
+</div>
+
+<!-- USERS TAB -->
+<div id="usersTab" class="admin-content">
+  <h3 style="color:var(--gold);margin-bottom:1.5rem;font-family:var(--font-serif);font-size:1.3rem;">Gebruikers beheren</h3>
+  <div id="adminUsersList"></div>
+</div>
+
+<!-- ORDERS TAB -->
+<div id="ordersTab" class="admin-content">
+  <h3 style="color:var(--gold);margin-bottom:1.5rem;font-family:var(--font-serif);font-size:1.3rem;">Alle bestellingen</h3>
+  <div id="adminOrdersList"></div>
+</div>
+```
+
+</div>
+</div><footer>
+  <div class="footer-section footer-brand">
+    <div class="logo">MAISON<span>.</span></div>
+    <p class="footer-desc">Premium store voor tijdloze elegantie. Handgeselecteerde essentials voor de moderne levensstijl.</p>
+  </div>
+  <div><h4>Shop</h4><ul>
+    <li onclick="showPage('shop')">Collectie</li>
+  </ul></div>
+  <div><h4>Account</h4><ul>
+    <li onclick="showPage('login')">Inloggen</li>
+    <li onclick="showPage('register')">Registreren</li>
+  </ul></div>
+  <div><h4>Support</h4><ul>
+    <li onclick="showPage('contact')">Contact</li>
+    <li>Verzending</li>
+    <li>Retouren</li>
+  </ul></div>
+</footer>
+<div class="footer-bottom"><span>© 2025 MAISON — Alle rechten voorbehouden</span><span>🔒 Veilig betalen via PayPal</span></div><script>
+// ═══════════════════════════════════════════
+// FIREBASE INIT
+// ═══════════════════════════════════════════
 const firebaseConfig = {
   apiKey:"AIzaSyCz-EYcHMVG20tX0z-jbEVUVM8b4NC7VcM",
   authDomain:"shop-2eab0.firebaseapp.com",
@@ -483,21 +586,28 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
+// Persistence zodat je ingelogd blijft na refresh
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
 const db = firebase.firestore();
 const googleProvider = new firebase.auth.GoogleAuthProvider();
 const ADMIN_EMAIL = "elmouchania@gmail.com";
 
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
 let user = null;
 let products = [];
 let wishlist = [];
 let cart = [];
 let coupons = [];
 let orders = [];
+let users = {};
 let currentProduct = null;
 let appliedCoupon = null;
 
 function esc(s) {
-  return String(s||'').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  if (!s) return '';
+  return String(s).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 }
 
 function toast(msg, type='') {
@@ -508,23 +618,40 @@ function toast(msg, type='') {
   setTimeout(() => t.remove(), 3200);
 }
 
+// ═══════════════════════════════════════════
+// FIRESTORE LISTENERS
+// ═══════════════════════════════════════════
 async function setupFirestoreListeners() {
+  // Products
   db.collection('products').onSnapshot(snapshot => {
     products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    renderHome();
-    renderShop();
+    if (document.querySelector('.page.active')?.id === 'homePage') renderHome();
+    if (document.querySelector('.page.active')?.id === 'shopPage') renderShop();
   });
-  
+
+  // Coupons
   db.collection('coupons').onSnapshot(snapshot => {
     coupons = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   });
-  
+
+  // Orders
+  if (user) {
+    db.collection('orders').where('userId', '==', user.uid).onSnapshot(snapshot => {
+      orders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      if (document.querySelector('.page.active')?.id === 'ordersPage') renderOrders();
+    });
+  }
+
+  // Cart
   if (user) {
     db.collection('users').doc(user.uid).collection('cart').onSnapshot(snapshot => {
       cart = snapshot.docs.map(doc => ({ ...doc.data(), docId: doc.id }));
       updateCartBadge();
     });
-    
+  }
+
+  // Wishlist
+  if (user) {
     db.collection('users').doc(user.uid).collection('wishlist').onSnapshot(snapshot => {
       wishlist = snapshot.docs.map(doc => doc.id);
       updateNav();
@@ -532,6 +659,9 @@ async function setupFirestoreListeners() {
   }
 }
 
+// ═══════════════════════════════════════════
+// AUTH
+// ═══════════════════════════════════════════
 auth.onAuthStateChanged(async (firebaseUser) => {
   if (firebaseUser) {
     user = firebaseUser;
@@ -542,6 +672,7 @@ auth.onAuthStateChanged(async (firebaseUser) => {
     }
     setupFirestoreListeners();
     updateNav();
+    renderHome();
   } else {
     user = null;
     cart = [];
@@ -556,17 +687,17 @@ async function doLogin() {
   const msg = document.getElementById('loginMsg');
   
   if (!email || !password) {
-    msg.textContent = '❌ Vul alles in';
+    msg.textContent = 'Vul alle velden in';
     msg.className = 'auth-msg error';
     return;
   }
   
   try {
     await auth.signInWithEmailAndPassword(email, password);
-    toast('✓ Ingelogd!', 'success');
-    showPage('home');
+    toast('Ingelogd! ✓', 'success');
+    showPage(user?.email === ADMIN_EMAIL ? 'admin' : 'home');
   } catch (error) {
-    msg.textContent = '❌ ' + error.message;
+    msg.textContent = error.message;
     msg.className = 'auth-msg error';
   }
 }
@@ -578,7 +709,7 @@ async function doRegister() {
   const msg = document.getElementById('regMsg');
   
   if (!name || !email || password.length < 6) {
-    msg.textContent = '❌ Vul alles in (min 6 tekens)';
+    msg.textContent = 'Vul alle velden in (min. 6 tekens)';
     msg.className = 'auth-msg error';
     return;
   }
@@ -588,16 +719,18 @@ async function doRegister() {
     await db.collection('users').doc(result.user.uid).set({
       email, name, role: 'user', createdAt: new Date()
     });
-    toast('✓ Account aangemaakt!', 'success');
+    toast('Account aangemaakt! Welkom ✓', 'success');
     showPage('home');
   } catch (error) {
-    msg.textContent = '❌ ' + error.message;
+    msg.textContent = error.message;
     msg.className = 'auth-msg error';
   }
 }
 
+// ⭐★★★★★★ GOOGLE LOGIN FIX (popup werkt nu zonder direct sluiten) ★★★★★★
 async function loginWithGoogle() {
   try {
+    // Zorg dat eventuele open modals worden gesloten, maar niet tijdens de pop-up
     const result = await auth.signInWithPopup(googleProvider);
     const name = result.user.displayName || result.user.email.split('@')[0];
     await db.collection('users').doc(result.user.uid).set({
@@ -606,10 +739,19 @@ async function loginWithGoogle() {
       role: 'user',
       createdAt: new Date()
     }, { merge: true });
-    toast(`✓ Welkom ${name}!`, 'success');
+    toast(`Welkom ${name}! ✓`, 'success');
     showPage('home');
   } catch (error) {
-    toast('❌ Google login mislukt', 'error');
+    console.error("Google login fout:", error);
+    if (error.code === 'auth/popup-blocked') {
+      toast('Pop‑up geblokkeerd! Sta pop‑ups toe voor deze site.', 'error');
+    } else if (error.code === 'auth/popup-closed-by-user') {
+      toast('U heeft het inlogvenster gesloten. Probeer opnieuw.', 'error');
+    } else if (error.code === 'auth/cancelled-popup-request') {
+      toast('Inloggen geannuleerd. Probeer opnieuw.', 'error');
+    } else {
+      toast('Google login mislukt: ' + (error.message || 'onbekende fout'), 'error');
+    }
   }
 }
 
@@ -623,6 +765,9 @@ function logout() {
   closeMobileMenu();
 }
 
+// ═══════════════════════════════════════════
+// CART FUNCTIONS
+// ═══════════════════════════════════════════
 function openCart() {
   document.getElementById('cartModal').classList.add('active');
   renderCartModal();
@@ -660,13 +805,14 @@ async function addToCart(productId) {
     });
   }
   
-  toast(`✓ ${qty}× "${product.title}" toegevoegd!`, 'success');
+  toast(`${qty}× "${product.title}" toegevoegd! 🛒`, 'success');
   closeModal();
 }
 
 async function removeFromCart(docId) {
   if (!user) return;
   await db.collection('users').doc(user.uid).collection('cart').doc(docId).delete();
+  toast('Verwijderd uit winkelwagen');
 }
 
 async function updateQtyInCart(docId, qty) {
@@ -690,22 +836,47 @@ function getCartSubtotal() {
 }
 
 function getShippingCost() {
-  return getCartSubtotal() >= 50 ? 0 : 5.99;
+  const subtotal = getCartSubtotal();
+  return subtotal >= 50 ? 0 : 5.99;
 }
 
 function getCartTotal() {
   let total = getCartSubtotal() + getShippingCost();
   if (appliedCoupon) {
-    total -= (getCartSubtotal() * appliedCoupon.discount) / 100;
+    const discountAmount = (getCartSubtotal() * appliedCoupon.discount) / 100;
+    total -= discountAmount;
   }
   return Math.max(0, total);
+}
+
+function applyCoupon() {
+  const code = document.getElementById('couponCode').value.trim().toUpperCase();
+  const msg = document.getElementById('couponMsg');
+  
+  if (!code) {
+    msg.textContent = 'Voer een code in';
+    msg.className = 'auth-msg error';
+    return;
+  }
+  
+  const coupon = coupons.find(c => c.code === code && c.uses < c.maxUses);
+  if (!coupon) {
+    msg.textContent = 'Code niet geldig of verlopen';
+    msg.className = 'auth-msg error';
+    appliedCoupon = null;
+  } else {
+    appliedCoupon = coupon;
+    msg.textContent = `✓ ${coupon.discount}% korting toegepast!`;
+    msg.className = 'auth-msg success';
+    updatePrices();
+  }
 }
 
 function renderCartModal() {
   const itemsEl = document.getElementById('cartItems');
   
   if (cart.length === 0) {
-    itemsEl.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon">🛒</div>Leeg</div>';
+    itemsEl.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon">🛒</div>Uw winkelwagen is leeg</div>';
     updatePrices();
     return;
   }
@@ -748,6 +919,9 @@ function updatePrices() {
   }
 }
 
+// ═══════════════════════════════════════════
+// CHECKOUT
+// ═══════════════════════════════════════════
 function startCheckout() {
   if (cart.length === 0) {
     toast('Winkelwagen is leeg', 'error');
@@ -788,19 +962,19 @@ async function finalizeCheckout() {
   const msg = document.getElementById('checkoutMsg');
 
   if (!name || !email || !phone || !street || !postal || !city) {
-    msg.textContent = '❌ Vul alles in';
+    msg.textContent = 'Vul alle velden in';
     msg.className = 'auth-msg error';
     return;
   }
 
   if (!validateDutchPhone(phone)) {
-    msg.textContent = '❌ Ongeldig telefoonnummer';
+    msg.textContent = 'Ongeldig Nederlands telefoonnummer';
     msg.className = 'auth-msg error';
     return;
   }
 
   if (!validateDutchPostal(postal)) {
-    msg.textContent = '❌ Ongeldig postcode (1234AB)';
+    msg.textContent = 'Ongeldig postcode formaat (1234AB)';
     msg.className = 'auth-msg error';
     return;
   }
@@ -821,6 +995,7 @@ async function finalizeCheckout() {
     shipping: getShippingCost(),
     discount: appliedCoupon ? (getCartSubtotal() * appliedCoupon.discount) / 100 : 0,
     total: getCartTotal(),
+    couponUsed: appliedCoupon?.id || null,
     status: 'pending',
     createdAt: new Date(),
     paymentMethod: 'paypal'
@@ -828,14 +1003,17 @@ async function finalizeCheckout() {
 
   try {
     const orderRef = await db.collection('orders').add(orderData);
+    
+    // Update coupon uses
     if (appliedCoupon) {
       await db.collection('coupons').doc(appliedCoupon.id).update({
         uses: firebase.firestore.FieldValue.increment(1)
       });
     }
+
     renderPayPalCheckout(orderRef.id, orderData);
   } catch (error) {
-    msg.textContent = '❌ Fout: ' + error.message;
+    msg.textContent = 'Fout bij bestelling: ' + error.message;
     msg.className = 'auth-msg error';
   }
 }
@@ -852,41 +1030,64 @@ function renderPayPalCheckout(orderId, orderData) {
             currency_code: 'EUR',
             value: orderData.total.toFixed(2),
             breakdown: {
-              item_total: { currency_code: 'EUR', value: orderData.subtotal.toFixed(2) },
-              shipping: { currency_code: 'EUR', value: orderData.shipping.toFixed(2) },
-              discount: { currency_code: 'EUR', value: (-orderData.discount).toFixed(2) }
+              item_total: {
+                currency_code: 'EUR',
+                value: orderData.subtotal.toFixed(2)
+              },
+              shipping: {
+                currency_code: 'EUR',
+                value: orderData.shipping.toFixed(2)
+              },
+              discount: {
+                currency_code: 'EUR',
+                value: (-orderData.discount).toFixed(2)
+              }
             }
           },
           items: orderData.items.map(item => ({
             name: item.title,
             quantity: item.qty.toString(),
-            unit_amount: { currency_code: 'EUR', value: item.price.toFixed(2) }
+            unit_amount: {
+              currency_code: 'EUR',
+              value: item.price.toFixed(2)
+            }
           }))
         }]
       });
     },
     onApprove: async (data, actions) => {
       const details = await actions.order.capture();
+      
+      // Update order status
       await db.collection('orders').doc(orderId).update({
         status: 'completed',
         paypalOrderId: details.id
       });
+
+      // Clear cart
       const cartSnapshot = await db.collection('users').doc(user.uid).collection('cart').get();
       cartSnapshot.forEach(doc => doc.ref.delete());
-      toast('✅ Betaling succesvol!', 'success');
+
+      toast('✅ Betaling succesvol! Bedankt voor uw bestelling.', 'success');
       closeCheckout();
       closeCart();
       appliedCoupon = null;
       showPage('home');
     },
-    onError: () => toast('❌ Betaling mislukt', 'error')
+    onError: () => {
+      toast('❌ Betaling mislukt. Probeer opnieuw.', 'error');
+    }
   }).render(container);
 }
 
+// ═══════════════════════════════════════════
+// PRODUCTS
+// ═══════════════════════════════════════════
 function makeCard(p) {
   const inWish = wishlist.includes(p.id);
   const hasSale = !!p.salePrice && p.salePrice < p.price;
   const isOut = p.stock <= 0;
+
   let badges = '';
   if (isOut) badges += '<div class="badge-pill out">Uitverkocht</div>';
   else if (hasSale) badges += '<div class="badge-pill sale">-' + Math.round((1 - p.salePrice/p.price)*100) + '%</div>';
@@ -915,8 +1116,7 @@ function makeCard(p) {
 }
 
 function renderProducts(list, containerId) {
-  const el = document.getElementById(containerId);
-  if (el) el.innerHTML = list.map(makeCard).join('');
+  document.getElementById(containerId).innerHTML = list.map(makeCard).join('');
 }
 
 function openProduct(productId) {
@@ -931,10 +1131,11 @@ function openProduct(productId) {
   
   const stockEl = document.getElementById('modalStockInfo');
   if (currentProduct.stock <= 0) stockEl.innerHTML = '<span style="color:var(--rust);font-weight:600;">✗ Uitverkocht</span>';
-  else if (currentProduct.stock <= 5) stockEl.innerHTML = `<span style="color:var(--rust);">⚠ Slechts ${currentProduct.stock} stuks</span>`;
-  else stockEl.innerHTML = `<span style="color:var(--sage);">✓ Op voorraad (${currentProduct.stock})</span>`;
+  else if (currentProduct.stock <= 5) stockEl.innerHTML = `<span style="color:var(--rust);">⚠ Nog slechts ${currentProduct.stock} stuks op voorraad</span>`;
+  else stockEl.innerHTML = `<span style="color:var(--sage);">✓ Op voorraad (${currentProduct.stock} stuks)</span>`;
   
   document.getElementById('modalWishBtn').textContent = wishlist.includes(currentProduct.id) ? '❤️ Verwijder' : '🤍 Toevoegen';
+  
   document.getElementById('productModal').classList.add('active');
 }
 
@@ -976,31 +1177,32 @@ async function addToCartQuick(productId) {
       qty: 1
     });
   }
-  toast(`✓ "${p.title}" toegevoegd!`, 'success');
+  toast(`"${p.title}" toegevoegd! 🛒`, 'success');
 }
 
 async function toggleWish(productId) {
   if (!user) {
-    toast('Log in voor verlanglijst', 'error');
+    toast('Log in om op verlanglijst te zetten', 'error');
     showPage('login');
     return;
   }
 
+  const idx = wishlist.indexOf(productId);
   const p = products.find(x => x.id === productId);
   const wishRef = db.collection('users').doc(user.uid).collection('wishlist').doc(productId);
 
-  if (wishlist.includes(productId)) {
-    await wishRef.delete();
-    toast('Verwijderd');
-  } else {
+  if (idx === -1) {
     await wishRef.set({ addedAt: new Date() });
-    toast(`✓ "${p.title}" toegevoegd!`, 'success');
+    toast(`"${p.title}" toegevoegd aan verlanglijst ♡`, 'success');
+  } else {
+    await wishRef.delete();
+    toast('Verwijderd uit verlanglijst');
   }
 }
 
 function toggleWishFromModal() {
   if (!currentProduct) return;
-  toggleWish(currentProject.id);
+  toggleWish(currentProduct.id);
 }
 
 function renderHome() {
@@ -1029,36 +1231,43 @@ function renderWishlist() {
   const list = products.filter(p => wishlist.includes(p.id));
   document.getElementById('wishlistContent').innerHTML = list.length
     ? `<div class="products-grid">${list.map(makeCard).join('')}</div>`
-    : '<div style="text-align:center;padding:4rem;color:var(--muted);">♡ Leeg<br><button class="btn-primary" onclick="showPage(\'shop\')" style="margin-top:1rem;">Bekijk collectie</button></div>';
+    : '<div style="text-align:center;padding:4rem 2rem;color:var(--muted);"><p style="font-size:1.2rem;margin-bottom:1.5rem;">♡ Uw verlanglijst is leeg</p><button class="btn-primary" onclick="showPage(\'shop\')">Bekijk collectie</button></div>';
 }
 
 function renderOrders() {
   if (!user) return;
-  db.collection('orders').where('userId', '==', user.uid).orderBy('createdAt', 'desc').get().then(snapshot => {
-    const userOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    const html = userOrders.length ? userOrders.map(order => `
-      <div class="order-card">
-        <div class="order-header">
-          <div class="order-id">Bestelling #${order.id.slice(0, 8).toUpperCase()}</div>
-          <div class="order-status">${order.status === 'completed' ? '✓' : '⏳'}</div>
-        </div>
-        <div class="order-meta">
-          <div><strong>Totaal:</strong> €${order.total.toFixed(2)}</div>
-          <div><strong>Datum:</strong> ${new Date(order.createdAt.toDate()).toLocaleDateString('nl-NL')}</div>
-        </div>
+  
+  const html = orders.length ? orders.map(order => `
+    <div class="order-card">
+      <div class="order-header">
+        <div class="order-id">Bestelling #${order.id.slice(0, 8).toUpperCase()}</div>
+        <div class="order-status">${order.status === 'completed' ? '✓ Betaald' : '⏳ In afwachting'}</div>
       </div>
-    `).join('') : '<div style="text-align:center;padding:3rem;color:var(--muted);">Geen bestellingen</div>';
-    document.getElementById('ordersList').innerHTML = html;
-  });
+      <div class="order-meta">
+        <div><strong style="color:var(--gold);">Totaal:</strong> €${order.total.toFixed(2)}</div>
+        <div><strong style="color:var(--gold);">Datum:</strong> ${new Date(order.createdAt.toDate()).toLocaleDateString('nl-NL')}</div>
+      </div>
+      <div class="order-items">
+        ${order.items.map(item => `<div class="order-item"><span>${item.title} × ${item.qty}</span><span>€${(item.price * item.qty).toFixed(2)}</span></div>`).join('')}
+      </div>
+    </div>
+  `).join('') : '<div style="text-align:center;padding:3rem;color:var(--muted);">Nog geen bestellingen</div>';
+  
+  document.getElementById('ordersList').innerHTML = html;
 }
 
 function renderProfile() {
   if (!user) return;
+  const userDoc = Object.values(users).find(u => u.email === user.email);
   document.getElementById('profileName').textContent = user.displayName || user.email.split('@')[0];
   document.getElementById('profileEmail').textContent = user.email;
-  document.getElementById('profileWishCount').textContent = `${wishlist.length}`;
+  document.getElementById('profileWishCount').textContent = `${wishlist.length} product${wishlist.length !== 1 ? 'en' : ''}`;
+  document.getElementById('profileRole').textContent = user.email === ADMIN_EMAIL ? 'Admin' : 'Klant';
 }
 
+// ═══════════════════════════════════════════
+// ADMIN FUNCTIONS
+// ═══════════════════════════════════════════
 function switchAdminTab(tab) {
   document.querySelectorAll('.admin-content').forEach(c => c.classList.remove('active'));
   document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
@@ -1067,6 +1276,7 @@ function switchAdminTab(tab) {
 
   if (tab === 'products') renderAdminProducts();
   if (tab === 'coupons') renderAdminCoupons();
+  if (tab === 'users') renderAdminUsers();
   if (tab === 'orders') renderAdminOrders();
 }
 
@@ -1081,12 +1291,12 @@ async function adminAddProduct() {
   const msgEl = document.getElementById('addProductMsg');
   
   if (!title || !price) {
-    msgEl.textContent = '❌ Vul naam en prijs in';
+    msgEl.textContent = 'Vul minimaal naam en prijs in';
     msgEl.className = 'auth-msg error';
     return;
   }
   
-  let imageUrl = 'https://placehold.co/400x530/1a1a1a/D4AF37?text=Product';
+  let imageUrl = 'https://placehold.co/400x530/1a1a1a/D4AF37?text=No+Image';
   
   if (imageFile) {
     const reader = new FileReader();
@@ -1118,22 +1328,22 @@ async function adminAddProduct() {
     document.getElementById('adminStock').value = '';
     document.getElementById('adminDesc').value = '';
     document.getElementById('adminImage').value = '';
-    msgEl.textContent = '✓ Toegevoegd!';
+    msgEl.textContent = '✓ Product toegevoegd!';
     msgEl.className = 'auth-msg success';
-    toast(`✓ "${title}" toegevoegd!`, 'success');
+    toast(`"${title}" toegevoegd! ✓`, 'success');
   } catch (error) {
-    msgEl.textContent = '❌ ' + error.message;
+    msgEl.textContent = 'Fout: ' + error.message;
     msgEl.className = 'auth-msg error';
   }
 }
 
 async function deleteProduct(productId) {
-  if (!confirm('Verwijderen?')) return;
+  if (!confirm('Product verwijderen?')) return;
   try {
     await db.collection('products').doc(productId).delete();
-    toast('Verwijderd');
+    toast('Product verwijderd');
   } catch (error) {
-    toast('❌ Fout', 'error');
+    toast('Fout bij verwijderen: ' + error.message, 'error');
   }
 }
 
@@ -1142,14 +1352,15 @@ function renderAdminProducts() {
   listEl.innerHTML = products.map(p => {
     const hasSale = !!p.salePrice && p.salePrice < p.price;
     return `
-    <div style="background:var(--elevated);border:1px solid var(--border);padding:1rem;margin-bottom:0.75rem;border-radius:4px;display:grid;grid-template-columns:100px 1fr auto;gap:1rem;">
-      <img src="${p.image}" style="width:100%;height:100px;object-fit:cover;border-radius:3px;" alt="">
+    <div style="background:var(--elevated);border:1px solid var(--border);padding:1rem;margin-bottom:0.75rem;border-radius:4px;display:grid;grid-template-columns:100px 1fr auto;gap:1rem;align-items:center;">
+      <img src="${p.image}" style="width:100%;height:100px;object-fit:cover;border-radius:3px;" alt="${esc(p.title)}">
       <div>
         <strong style="color:var(--cream);">${esc(p.title)}</strong><br>
-        €${(p.salePrice || p.price).toFixed(2)} ${hasSale ? `<span style="color:var(--rust);">-${Math.round((1-p.salePrice/p.price)*100)}%</span>` : ''}<br>
-        <span style="font-size:0.75rem;color:var(--muted);">Stock: ${p.stock}</span>
+        <span style="font-size:0.8rem;color:var(--muted);">€${(p.salePrice || p.price).toFixed(2)}</span>
+        ${hasSale ? `<span style="font-size:0.8rem;color:var(--rust);margin-left:0.5rem;">-${Math.round((1-p.salePrice/p.price)*100)}%</span>` : ''}
+        <br><span style="font-size:0.75rem;color:var(--muted);">Voorraad: ${p.stock}</span>
       </div>
-      <button onclick="deleteProduct('${p.id}')" style="background:var(--rust);border:none;color:#fff;padding:0.5rem 1rem;cursor:pointer;border-radius:3px;">Verwijder</button>
+      <button onclick="deleteProduct('${p.id}')" style="background:var(--rust);border:none;color:#fff;padding:0.5rem 1rem;cursor:pointer;border-radius:3px;white-space:nowrap;">Verwijder</button>
     </div>
     `;
   }).join('');
@@ -1162,7 +1373,7 @@ async function adminAddCoupon() {
   const msgEl = document.getElementById('couponMsg');
 
   if (!code || !discount || !maxUses || discount < 1 || discount > 100) {
-    msgEl.textContent = '❌ Vul alles in';
+    msgEl.textContent = 'Vul alle velden correct in';
     msgEl.className = 'auth-msg error';
     return;
   }
@@ -1179,22 +1390,22 @@ async function adminAddCoupon() {
     document.getElementById('couponCodeInput').value = '';
     document.getElementById('couponDiscount').value = '';
     document.getElementById('couponMaxUses').value = '';
-    msgEl.textContent = '✓ Toegevoegd!';
+    msgEl.textContent = '✓ Coupon toegevoegd!';
     msgEl.className = 'auth-msg success';
-    toast(`✓ Coupon "${code}" aangemaakt!`, 'success');
+    toast(`Coupon "${code}" aangemaakt! ✓`, 'success');
   } catch (error) {
-    msgEl.textContent = '❌ ' + error.message;
+    msgEl.textContent = 'Fout: ' + error.message;
     msgEl.className = 'auth-msg error';
   }
 }
 
 async function deleteCoupon(couponId) {
-  if (!confirm('Verwijderen?')) return;
+  if (!confirm('Coupon verwijderen?')) return;
   try {
     await db.collection('coupons').doc(couponId).delete();
-    toast('Verwijderd');
+    toast('Coupon verwijderd');
   } catch (error) {
-    toast('❌ Fout', 'error');
+    toast('Fout: ' + error.message, 'error');
   }
 }
 
@@ -1202,36 +1413,106 @@ function renderAdminCoupons() {
   const listEl = document.getElementById('adminCouponsList');
   listEl.innerHTML = coupons.map(c => `
     <div style="background:var(--elevated);border:1px solid var(--border);padding:1rem;margin-bottom:0.75rem;border-radius:4px;display:flex;justify-content:space-between;align-items:center;">
-      <div><strong style="color:var(--cream);">${c.code}</strong><br><span style="font-size:0.8rem;color:var(--muted);">${c.discount}% • ${c.uses}/${c.maxUses}</span></div>
+      <div>
+        <strong style="color:var(--cream);font-size:1.1rem;">${c.code}</strong><br>
+        <span style="font-size:0.8rem;color:var(--muted);">${c.discount}% korting • ${c.uses}/${c.maxUses} gebruikt</span>
+      </div>
       <button onclick="deleteCoupon('${c.id}')" style="background:var(--rust);border:none;color:#fff;padding:0.5rem 1rem;cursor:pointer;border-radius:3px;">Verwijder</button>
     </div>
   `).join('');
 }
 
+async function makeUserAdmin(userId) {
+  if (!confirm('Deze gebruiker admin maken?')) return;
+  try {
+    await db.collection('users').doc(userId).update({ role: 'admin' });
+    toast('Gebruiker is nu admin');
+  } catch (error) {
+    toast('Fout: ' + error.message, 'error');
+  }
+}
+
+function renderAdminUsers() {
+  // Haal alle gebruikers op
+  db.collection('users').get().then(snapshot => {
+    const listEl = document.getElementById('adminUsersList');
+    const usersList = [];
+    
+    snapshot.forEach(doc => {
+      usersList.push({ id: doc.id, ...doc.data() });
+    });
+
+    listEl.innerHTML = usersList.map(u => `
+      <div style="background:var(--elevated);border:1px solid var(--border);padding:1rem;margin-bottom:0.75rem;border-radius:4px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <strong style="color:var(--cream);">${u.name || u.email}</strong><br>
+          <span style="font-size:0.8rem;color:var(--muted);">${u.email}</span><br>
+          <span style="font-size:0.75rem;color:var(--gold);">Role: ${u.role === 'admin' ? '👑 Admin' : 'Klant'}</span>
+        </div>
+        ${u.role !== 'admin' ? `<button onclick="makeUserAdmin('${u.id}')" style="background:var(--gold);border:none;color:var(--void);padding:0.5rem 1rem;cursor:pointer;border-radius:3px;white-space:nowrap;font-weight:600;">Make Admin</button>` : ''}
+      </div>
+    `).join('');
+  });
+}
+
 function renderAdminOrders() {
   const listEl = document.getElementById('adminOrdersList');
+  
+  if (orders.length === 0) {
+    listEl.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted);">Nog geen bestellingen</div>';
+    return;
+  }
+
+  // Haal alle bestellingen op (niet alleen van huidige user)
   db.collection('orders').orderBy('createdAt', 'desc').get().then(snapshot => {
     const allOrders = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
     listEl.innerHTML = allOrders.map(order => `
       <div class="order-card">
         <div class="order-header">
           <div>
             <div class="order-id">Bestelling #${order.id.slice(0, 8).toUpperCase()}</div>
-            <div style="font-size:0.75rem;color:var(--muted);">${esc(order.userName)}</div>
+            <div style="font-size:0.75rem;color:var(--muted);">Klant: <strong>${esc(order.userName)}</strong></div>
           </div>
-          <div class="order-status">${order.status === 'completed' ? '✓' : '⏳'}</div>
+          <div class="order-status">${order.status === 'completed' ? '✓ Betaald' : '⏳ In afwachting'}</div>
         </div>
         <div class="order-meta">
-          <div><strong>Email:</strong> ${esc(order.userEmail)}</div>
-          <div><strong>Tel:</strong> ${esc(order.phone)}</div>
-          <div><strong>Adres:</strong> ${esc(order.address)}</div>
-          <div><strong>Totaal:</strong> €${order.total.toFixed(2)}</div>
+          <div><strong style="color:var(--gold);">E-mail:</strong> ${esc(order.userEmail)}</div>
+          <div><strong style="color:var(--gold);">Telefoon:</strong> ${esc(order.phone)}</div>
+          <div><strong style="color:var(--gold);">Adres:</strong> ${esc(order.address)}</div>
+          <div><strong style="color:var(--gold);">Totaal:</strong> €${order.total.toFixed(2)}</div>
+        </div>
+        <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+          <div style="font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem;"><strong style="color:var(--gold);">PRODUCTEN:</strong></div>
+          ${order.items.map(item => `<div class="order-item"><span>${esc(item.title)} × ${item.qty}</span><span>€${(item.price * item.qty).toFixed(2)}</span></div>`).join('')}
         </div>
       </div>
     `).join('');
   });
 }
 
+// ═══════════════════════════════════════════
+// MOBILE MENU
+// ═══════════════════════════════════════════
+function openMobileMenu() {
+  document.getElementById('mobileMenu').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileMenu() {
+  document.getElementById('mobileMenu').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobileMenu');
+  if (menu.classList.contains('open')) closeMobileMenu();
+  else openMobileMenu();
+}
+
+// ═══════════════════════════════════════════
+// NAV & PAGES
+// ═══════════════════════════════════════════
 function updateNav() {
   const isAdmin = user?.email === ADMIN_EMAIL;
   document.getElementById('guestBtns').style.display = user ? 'none' : 'flex';
@@ -1242,13 +1523,16 @@ function updateNav() {
   if (user) {
     const name = user.displayName || user.email.split('@')[0];
     document.getElementById('userLabel').textContent = name;
-    document.getElementById('avatarIcon').textContent = (name[0] || '?').toUpperCase();
+    document.getElementById('avatarIcon').textContent = (name[0] || user.email[0] || '?').toUpperCase();
     document.getElementById('mobileAuthLinks').style.display = 'none';
     document.getElementById('mobileUserLinks').style.display = 'flex';
   } else {
     document.getElementById('mobileAuthLinks').style.display = 'flex';
     document.getElementById('mobileUserLinks').style.display = 'none';
   }
+  
+  document.getElementById('wishlistBadge').textContent = wishlist.length ? `(${wishlist.length})` : '';
+  document.getElementById('mobileWishBadge').textContent = wishlist.length ? `(${wishlist.length})` : '';
 }
 
 function toggleUserMenu() {
@@ -1285,16 +1569,9 @@ function showPage(name) {
   window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
-function openMobileMenu() {
-  document.getElementById('mobileMenu').classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeMobileMenu() {
-  document.getElementById('mobileMenu').classList.remove('open');
-  document.body.style.overflow = '';
-}
-
+// ═══════════════════════════════════════════
+// EVENT LISTENERS
+// ═══════════════════════════════════════════
 document.querySelectorAll('.nav-link').forEach(b => 
   b.addEventListener('click', () => showPage(b.dataset.page))
 );
@@ -1310,7 +1587,13 @@ window.addEventListener('scroll', () => {
   document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 60);
 });
 
-document.getElementById('hamburgerBtn').addEventListener('click', openMobileMenu);
+document.addEventListener('click', e => {
+  const chip = document.getElementById('userChip');
+  const menu = document.getElementById('userMenuDropdown');
+  if (chip && !chip.contains(e.target) && menu && !menu.contains(e.target)) menu.classList.remove('show');
+});
+
+document.getElementById('hamburgerBtn').addEventListener('click', toggleMobileMenu);
 document.getElementById('closeMobileMenu').addEventListener('click', closeMobileMenu);
 
 document.querySelectorAll('.mobile-link').forEach(btn => {
@@ -1321,8 +1604,9 @@ document.querySelectorAll('.mobile-link').forEach(btn => {
   });
 });
 
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
 setupFirestoreListeners();
-</script>
-
-</body>
+</script></body>
 </html>
