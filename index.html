@@ -427,7 +427,7 @@ function loadPP(){return window.paypal?Promise.resolve():new Promise((ok,no)=>{c
 window.startCheckout=()=>{if(!user){toast('Log in om af te rekenen','error');closeAll();return go('login')}
  if(calc().G.length)return toast('Haal eerst de producten weg die niet meer beschikbaar zijn','error');if(!calc().L.length)return toast('Je winkelwagen is leeg','error');
  closeAll();if(!$('coName').value)$('coName').value=user.displayName||'';if(!$('coEmail').value)$('coEmail').value=user.email||'';
- $('pp').innerHTML='';$('coBtn').style.display='';setMsg('coMsg','');$('coTotal').textContent=eur(calc().total);openOv('coOv')};
+ $('pp').innerHTML='';$('coBtn').style.display='';setMsg('coMsg','');$('coTotal').textContent=eur(calc().total);$('coBtn').textContent=calc().total<=0?'Bestelling plaatsen (gratis)':'Verder naar betalen';openOv('coOv')};
 window.finalizeCheckout=async()=>{const v=id=>$(id).value.trim(),name=v('coName'),email=v('coEmail'),phone=v('coPhone'),street=v('coStreet'),postal=v('coPostal'),city=v('coCity');
  if(!name||!email||!phone||!street||!postal||!city)return setMsg('coMsg','Vul alle velden in','error');
  if(!/^\S+@\S+\.\S+$/.test(email))return setMsg('coMsg','Dit e-mailadres lijkt niet te kloppen','error');
@@ -435,6 +435,7 @@ window.finalizeCheckout=async()=>{const v=id=>$(id).value.trim(),name=v('coName'
  if(!/^\d{4}\s?[A-Z]{2}$/i.test(postal))return setMsg('coMsg','Postcode graag als 1234 AB','error');
  const{L,sub,disc,ship,total}=calc();if(!L.length)return setMsg('coMsg','Je winkelwagen is leeg','error');
  if(L.some(l=>l.qty>(l.p.stock||0)))return setMsg('coMsg','Van een product is niet genoeg meer op voorraad','error');
+ if(total<=0)return freeOrder({name,email,phone,street,postal,city,L,sub,disc,ship});
  setMsg('coMsg','PayPal wordt geladen...');$('coBtn').disabled=true;
  try{await loadPP()}catch(e){$('coBtn').disabled=false;return setMsg('coMsg','PayPal kon niet laden. Controleer je verbinding of adblocker.','error')}
  setMsg('coMsg','');$('coBtn').style.display='none';$('coBtn').disabled=false;$('pp').innerHTML='';
@@ -451,6 +452,13 @@ window.finalizeCheckout=async()=>{const v=id=>$(id).value.trim(),name=v('coName'
   onError:()=>{toast('Betalen lukte niet. Probeer het nog eens.','error');$('coBtn').style.display=''}
  }).render('#pp')};
 
+async function freeOrder(x){$('coBtn').disabled=true;setMsg('coMsg','Bestelling wordt geplaatst...');
+ const items=x.L.map(l=>({id:l.id,title:l.p.title,qty:l.qty,price:l.price}));
+ try{await db.collection('orders').add({userId:user.uid,userEmail:x.email,userName:x.name,phone:x.phone,address:`${x.street}, ${x.postal.toUpperCase()} ${x.city}`,items,subtotal:x.sub,shipping:x.ship,discount:x.disc,total:0,couponUsed:applied?.id||null,paymentMethod:'gratis',status:'completed',createdAt:FV.serverTimestamp()})}
+ catch(e){$('coBtn').disabled=false;return setMsg('coMsg','Bestellen lukte niet: '+fbErr(e),'error')}
+ try{if(applied)await db.collection('coupons').doc(applied.id).update({uses:FV.increment(1)});for(const i of items)await db.collection('products').doc(i.id).update({stock:FV.increment(-i.qty)})}catch(e){console.warn(e.message)}
+ try{const b=db.batch();cart.forEach(c=>b.delete(uref().collection('cart').doc(c.id)));await b.commit()}catch(e){console.warn(e)}
+ $('coBtn').disabled=false;applied=null;$('couponIn').value='';setMsg('couponMsg','');closeAll();toast('Bedankt, je bestelling is geplaatst. Je hoeft niets te betalen.','success');go('orders')}
 window.sendContact=async()=>{const name=$('cName').value.trim(),email=$('cEmail').value.trim(),message=$('cMsg').value.trim();
  if(!name||!/^\S+@\S+\.\S+$/.test(email)||!message)return setMsg('cInfo','Vul je naam, een geldig e-mailadres en je bericht in','error');
  try{await db.collection('messages').add({name,email,message,createdAt:FV.serverTimestamp()});setMsg('cInfo','Bedankt, we hebben je bericht ontvangen.','success');$('cName').value=$('cEmail').value=$('cMsg').value=''}catch(e){setMsg('cInfo','Versturen lukte niet: '+fbErr(e),'error')}};
