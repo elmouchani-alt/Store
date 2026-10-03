@@ -4,12 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>MAISON — Premium Store</title>
-<!--
-SETUP (eenmalig in Firebase Console):
-1) Authentication > Sign-in method: zet "E-mail/wachtwoord" en "Google" aan
-2) Authentication > Settings > Authorized domains: voeg je domein toe (niet via file:// openen)
-3) Firestore-regels: laat alleen admin schrijven naar products/coupons/users(role) en lezen van alle orders/messages
--->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 <script src="https://www.paypal.com/sdk/js?client-id=AdsXWwkuDjZhYtu-fK0gTcThYzPgzLHZmK9BkBCnH1cmMCvB2zsg1Gsy74hppUTiKcsORmtqWnV2Cdck&currency=EUR"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -22,6 +16,8 @@ html{scroll-behavior:smooth}
 body{font-family:var(--san);background:var(--bg);color:var(--t);overflow-x:hidden}
 button{font-family:inherit;cursor:pointer}
 input,select,textarea{font-family:inherit}
+#diag{display:none;background:#6b2217;color:#fff;padding:.8rem 1rem;font-size:.8rem;line-height:1.5;position:sticky;top:0;z-index:100000}
+#diag button{float:right;background:none;border:none;color:#fff;font-size:1.2rem}
 .topbar{background:var(--g);color:#000;font-size:.62rem;font-weight:600;letter-spacing:3px;text-align:center;padding:9px;text-transform:uppercase}
 nav{position:sticky;top:0;z-index:1000;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem;padding:.8rem 2rem;background:rgba(5,5,5,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--b)}
 .logo{font-family:var(--ser);font-size:1.8rem;font-weight:300;letter-spacing:8px;color:var(--c);cursor:pointer}
@@ -131,7 +127,7 @@ nav{position:sticky;top:0;z-index:1000;display:flex;flex-wrap:wrap;align-items:c
 .ar img{width:70px;height:70px;object-fit:cover;border-radius:3px}
 .ar.n{grid-template-columns:1fr auto}
 .toasts{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:.5rem;align-items:center;pointer-events:none;width:92%}
-.toast{background:var(--e);border:1px solid var(--b);border-left:3px solid var(--g);color:var(--c);padding:.75rem 1.3rem;font-size:.8rem;animation:ti .3s,to .3s 2.6s forwards}
+.toast{background:var(--e);border:1px solid var(--b);border-left:3px solid var(--g);color:var(--c);padding:.75rem 1.3rem;font-size:.8rem;animation:ti .3s,to .3s 3.6s forwards}
 .toast.error{border-left-color:var(--r)}.toast.success{border-left-color:var(--ok)}
 @keyframes ti{from{opacity:0;transform:translateY(14px)}}
 @keyframes to{to{opacity:0}}
@@ -147,6 +143,7 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
 </style>
 </head>
 <body>
+<div id="diag"></div>
 <div class="toasts" id="toasts"></div>
 <div class="topbar">Gratis verzending vanaf €50 • 30 dagen retour • Premium kwaliteit</div>
 
@@ -182,7 +179,7 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
     <div class="ditems" id="cartItems"></div>
     <div class="dfoot">
       <div style="display:flex;gap:.5rem;margin-bottom:.4rem">
-        <div class="fld" style="flex:1;margin:0"><input id="couponIn" placeholder="Couponcode" style="padding:.6rem"></div>
+        <div class="fld" style="flex:1;margin:0"><input id="couponIn" placeholder="Couponcode" style="padding:.6rem" maxlength="30"></div>
         <button class="btn sm" onclick="applyCoupon()">Toepassen</button>
       </div>
       <div class="msg" id="couponMsg" style="margin:0 0 .6rem"></div>
@@ -204,15 +201,15 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
       <div class="form2">
         <div>
           <div class="eyebrow">Gegevens</div>
-          <div class="fld"><input id="coName" placeholder="Volledige naam" autocomplete="name"></div>
-          <div class="fld"><input id="coEmail" type="email" placeholder="E-mailadres" autocomplete="email"></div>
-          <div class="fld"><input id="coPhone" type="tel" placeholder="Telefoon (06...)" autocomplete="tel"></div>
+          <div class="fld"><input id="coName" placeholder="Volledige naam" autocomplete="name" maxlength="100"></div>
+          <div class="fld"><input id="coEmail" type="email" placeholder="E-mailadres" autocomplete="email" maxlength="120"></div>
+          <div class="fld"><input id="coPhone" type="tel" placeholder="Telefoon (06...)" autocomplete="tel" maxlength="20"></div>
         </div>
         <div>
           <div class="eyebrow">Afleveradres</div>
-          <div class="fld"><input id="coStreet" placeholder="Straat en huisnummer" autocomplete="street-address"></div>
-          <div class="fld"><input id="coPostal" placeholder="Postcode (1234AB)" autocomplete="postal-code"></div>
-          <div class="fld"><input id="coCity" placeholder="Stad" autocomplete="address-level2"></div>
+          <div class="fld"><input id="coStreet" placeholder="Straat en huisnummer" autocomplete="street-address" maxlength="120"></div>
+          <div class="fld"><input id="coPostal" placeholder="Postcode (1234AB)" autocomplete="postal-code" maxlength="8"></div>
+          <div class="fld"><input id="coCity" placeholder="Stad" autocomplete="address-level2" maxlength="60"></div>
         </div>
       </div>
       <div class="row tot"><span>Te betalen</span><span id="coTotal"></span></div>
@@ -227,7 +224,7 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
 <div class="ov" id="pOv" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <button class="x" onclick="closeModal()">×</button>
-    <div class="mimg"><img id="mImg" alt="" onerror="this.src=PH"></div>
+    <div class="mimg"><img id="mImg" alt=""></div>
     <div>
       <div class="cat" id="mCat"></div>
       <h2 id="mTitle"></h2>
@@ -289,9 +286,9 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
 <div id="contactPage" class="page"><div class="section">
   <div class="eyebrow">Contact</div><h2 class="title">Vragen of feedback?</h2>
   <div class="box" style="max-width:600px">
-    <div class="fld"><label>Naam</label><input id="cName"></div>
-    <div class="fld"><label>E-mail</label><input id="cEmail" type="email"></div>
-    <div class="fld"><label>Bericht</label><textarea id="cMsg" rows="5"></textarea></div>
+    <div class="fld"><label>Naam</label><input id="cName" maxlength="100"></div>
+    <div class="fld"><label>E-mail</label><input id="cEmail" type="email" maxlength="120"></div>
+    <div class="fld"><label>Bericht</label><textarea id="cMsg" rows="5" maxlength="2000"></textarea></div>
     <button class="btn full" onclick="sendContact()">Verstuur bericht</button>
     <div class="msg" id="cInfo"></div>
   </div>
@@ -312,7 +309,7 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
 <!-- REGISTER -->
 <div id="registerPage" class="page"><div class="section"><div class="box">
   <h2>Word lid</h2><p class="sub">Maak een MAISON account aan.</p>
-  <div class="fld"><label>Naam</label><input id="rName" autocomplete="name"></div>
+  <div class="fld"><label>Naam</label><input id="rName" autocomplete="name" maxlength="100"></div>
   <div class="fld"><label>E-mail</label><input id="rEmail" type="email" autocomplete="email"></div>
   <div class="fld"><label>Wachtwoord</label><input id="rPass" type="password" placeholder="Minimaal 6 tekens" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"></div>
   <button class="btn full" id="rBtn" onclick="doRegister()">Account aanmaken</button>
@@ -329,6 +326,7 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
     <div class="fld"><label>E-mail</label><div id="pfEmail" style="color:var(--c)"></div></div>
     <div class="fld"><label>Verlanglijst</label><div id="pfWish" style="color:var(--c)"></div></div>
     <div class="fld"><label>Status</label><div id="pfRole" style="color:var(--g)"></div></div>
+    <div id="pfVerify"></div>
   </div>
 </div></div>
 
@@ -346,13 +344,13 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
     <div class="box" style="max-width:none;margin-bottom:2rem">
       <h3 style="color:var(--g);font-family:var(--ser);font-size:1.5rem;margin-bottom:1rem">Product toevoegen</h3>
       <div class="form2">
-        <div class="fld"><input id="aTitle" placeholder="Naam"></div>
-        <div class="fld"><input id="aCat" placeholder="Categorie"></div>
+        <div class="fld"><input id="aTitle" placeholder="Naam" maxlength="120"></div>
+        <div class="fld"><input id="aCat" placeholder="Categorie" maxlength="60"></div>
         <div class="fld"><input id="aPrice" type="number" step="0.01" min="0" placeholder="Prijs (€)"></div>
         <div class="fld"><input id="aSale" type="number" step="0.01" min="0" placeholder="Actieprijs (€)"></div>
         <div class="fld"><input id="aStock" type="number" min="0" placeholder="Voorraad"></div>
         <div class="fld"><input id="aImg" type="file" accept="image/*"></div>
-        <div class="fld" style="grid-column:1/-1"><textarea id="aDesc" rows="2" placeholder="Beschrijving"></textarea></div>
+        <div class="fld" style="grid-column:1/-1"><textarea id="aDesc" rows="2" placeholder="Beschrijving" maxlength="1500"></textarea></div>
       </div>
       <button class="btn full" id="aBtn" onclick="adminAddProduct()">+ Product toevoegen</button>
       <div class="msg" id="aMsg"></div>
@@ -362,7 +360,7 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
   <div id="tab-coupons" class="tc">
     <div class="box" style="max-width:none;margin-bottom:2rem">
       <div class="form2" style="grid-template-columns:repeat(3,1fr)">
-        <div class="fld"><input id="kCode" placeholder="CODE" style="text-transform:uppercase"></div>
+        <div class="fld"><input id="kCode" placeholder="CODE" style="text-transform:uppercase" maxlength="30"></div>
         <div class="fld"><input id="kDisc" type="number" min="1" max="100" placeholder="Korting %"></div>
         <div class="fld"><input id="kMax" type="number" min="1" placeholder="Max. gebruik"></div>
       </div>
@@ -382,6 +380,28 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
 </footer>
 
 <script>
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+
+// ───────── DIAGNOSE (toont echte foutoorzaken) ─────────
+function diag(html){const d=$('diag');d.style.display='block';d.innerHTML='<button onclick="this.parentNode.style.display=\'none\'">×</button>'+html}
+window.addEventListener('error',e=>diag('⚠️ Scriptfout: '+esc(e.message)));
+window.addEventListener('unhandledrejection',e=>fbErr(e.reason,true));
+if(location.protocol==='file:')diag('⚠️ Je opent de site als lokaal bestand (file://). Inloggen, Google-login en Firebase werken dan niet goed. Host de site (Firebase Hosting, Netlify, GitHub Pages) of draai <code>npx serve</code> en open <b>http://localhost</b>.');
+if(typeof firebase==='undefined'){diag('⚠️ Firebase kon niet laden (internet, adblocker of firewall). Zonder Firebase werkt niets.');throw new Error('Firebase ontbreekt')}
+
+let shown=false;
+function fbErr(e,banner){
+  const code=e?.code||'',msg=e?.message||String(e);
+  if(code==='permission-denied'||/insufficient permissions/i.test(msg)){
+    if(banner&&!shown){shown=true;diag('⚠️ <b>Firestore blokkeert dit (geen rechten).</b> Plak de Firestore-regels uit de handleiding in Firebase Console → Firestore Database → Rules → Publish. Zorg dat je bent ingelogd en (voor admin) dat je e-mail geverifieerd is.')}
+    return 'Geen rechten (Firestore-regels / niet ingelogd)';
+  }
+  if(code==='failed-precondition')return 'Database niet klaar of index ontbreekt';
+  if(code==='unavailable')return 'Geen verbinding met database';
+  return msg;
+}
+
 // ───────── FIREBASE ─────────
 firebase.initializeApp({
   apiKey:"AIzaSyCz-EYcHMVG20tX0z-jbEVUVM8b4NC7VcM",
@@ -391,55 +411,59 @@ firebase.initializeApp({
   messagingSenderId:"846711763840",
   appId:"1:846711763840:web:67c360a26f0d741f7d4765"
 });
-const auth=firebase.auth(), db=firebase.firestore(), FV=firebase.firestore.FieldValue;
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(console.error);
+const auth=firebase.auth(),db=firebase.firestore(),FV=firebase.firestore.FieldValue;
+auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(console.error));
 const gProvider=new firebase.auth.GoogleAuthProvider();
 const ADMIN_EMAIL="elmouchania@gmail.com";
 const PH="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='530'><rect width='100%25' height='100%25' fill='%23181818'/><text x='50%25' y='50%25' fill='%23D4AF37' font-size='20' text-anchor='middle'>MAISON</text></svg>";
 
 // ───────── STATE ─────────
-let user=null,isAdmin=false,products=[],coupons=[],orders=[],cart=[],wishlist=[],cur=null,applied=null,catFilter='',unsubs=[];
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+let user=null,roleAdmin=false,products=[],coupons=[],orders=[],cart=[],wishlist=[],cur=null,applied=null,catFilter='',unsubs=[];
+const admin=()=>!!user&&((user.email===ADMIN_EMAIL&&user.emailVerified)||roleAdmin);
 const r2=n=>Math.round(n*100)/100;
 const eur=n=>'€'+Number(n).toFixed(2).replace('.',',');
 const pp=p=>p.salePrice&&p.salePrice<p.price?p.salePrice:p.price;
-function toast(m,t=''){const d=document.createElement('div');d.className='toast '+t;d.textContent=m;$('toasts').appendChild(d);setTimeout(()=>d.remove(),3200)}
+const imgOk=u=>typeof u==='string'&&/^(data:image\/|https:\/\/)/.test(u)?u:PH;
+function toast(m,t=''){const d=document.createElement('div');d.className='toast '+t;d.textContent=m;$('toasts').appendChild(d);setTimeout(()=>d.remove(),4200)}
 function setMsg(id,t,c){const e=$(id);e.textContent=t;e.className='msg '+(c||'')}
 function authError(e){return({
  'auth/invalid-credential':'Onjuist e-mailadres of wachtwoord','auth/wrong-password':'Onjuist wachtwoord',
  'auth/user-not-found':'Account niet gevonden','auth/email-already-in-use':'E-mailadres is al in gebruik',
  'auth/invalid-email':'Ongeldig e-mailadres','auth/weak-password':'Wachtwoord te zwak (min. 6 tekens)',
  'auth/too-many-requests':'Te veel pogingen, probeer later opnieuw','auth/network-request-failed':'Geen internetverbinding',
- 'auth/unauthorized-domain':'Dit domein is niet toegestaan in Firebase Console','auth/operation-not-allowed':'Deze loginmethode staat uit in Firebase'
-}[e.code]||e.message)}
+ 'auth/unauthorized-domain':'Dit domein staat niet in Firebase → Authentication → Settings → Authorized domains',
+ 'auth/operation-not-allowed':'Deze loginmethode staat uit in Firebase → Authentication → Sign-in method',
+ 'auth/configuration-not-found':'Authentication is niet ingeschakeld in Firebase Console',
+ 'auth/api-key-not-valid.-please-pass-a-valid-api-key.':'Ongeldige Firebase API-sleutel'
+}[e.code]||(e.code?e.code+': ':'')+e.message)}
 
 // ───────── LISTENERS ─────────
 db.collection('products').onSnapshot(s=>{
   products=s.docs.map(d=>({id:d.id,...d.data()}));
-  refreshView(); renderCart(); if(cur&&$('pOv').classList.contains('active'))openProduct(cur.id,true);
-  if(activePage()==='adminPage'&&isAdmin)renderAdminProducts();
-},e=>console.error(e));
-db.collection('coupons').onSnapshot(s=>{
-  coupons=s.docs.map(d=>({id:d.id,...d.data()}));
-  if(activePage()==='adminPage'&&isAdmin)renderAdminCoupons();
-},e=>console.error(e));
+  refreshView();renderCart();if(cur&&$('pOv').classList.contains('active'))openProduct(cur.id,true);
+  if(activePage()==='adminPage'&&admin())renderAdminProducts();
+},e=>{console.error(e);fbErr(e,true)});
 
 function listenUser(){
   unsubs.forEach(u=>u());unsubs=[];
+  coupons=[];
   if(!user)return;
-  const ref=db.collection('users').doc(user.uid);
-  unsubs.push(ref.onSnapshot(d=>{isAdmin=user.email===ADMIN_EMAIL||d.data()?.role==='admin';updateNav()}));
+  const ref=db.collection('users').doc(user.uid),er=e=>{console.error(e);fbErr(e,true)};
+  unsubs.push(db.collection('coupons').onSnapshot(s=>{
+    coupons=s.docs.map(d=>({id:d.id,...d.data()}));
+    if(activePage()==='adminPage'&&admin())renderAdminCoupons();
+  },er));
+  unsubs.push(ref.onSnapshot(d=>{roleAdmin=d.data()?.role==='admin';updateNav()},er));
   unsubs.push(db.collection('orders').where('userId','==',user.uid).onSnapshot(s=>{
     orders=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
     if(activePage()==='ordersPage')renderOrders();
-  },e=>console.error(e)));
+  },er));
   unsubs.push(ref.collection('cart').onSnapshot(s=>{
     cart=s.docs.map(d=>({id:d.id,qty:d.data().qty||1}));updateCartBadge();renderCart();
-  }));
+  },er));
   unsubs.push(ref.collection('wishlist').onSnapshot(s=>{
     wishlist=s.docs.map(d=>d.id);updateNav();refreshView();updateModalWish();
-  }));
+  },er));
 }
 
 // ───────── AUTH ─────────
@@ -449,8 +473,8 @@ auth.onAuthStateChanged(async u=>{
     try{
       const ref=db.collection('users').doc(u.uid),snap=await ref.get();
       if(!snap.exists)await ref.set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()});
-    }catch(e){console.error(e)}
-  }else{cart=[];wishlist=[];orders=[];isAdmin=false;applied=null;updateCartBadge();
+    }catch(e){console.error(e);fbErr(e,true)}
+  }else{cart=[];wishlist=[];orders=[];roleAdmin=false;applied=null;updateCartBadge();
     if(['adminPage','ordersPage','profilePage'].includes(activePage()))showPage('home')}
   listenUser();updateNav();refreshView();
 });
@@ -459,24 +483,26 @@ auth.getRedirectResult().catch(e=>toast(authError(e),'error'));
 async function doLogin(){
   const email=$('lEmail').value.trim().toLowerCase(),pass=$('lPass').value;
   if(!email||!pass)return setMsg('lMsg','Vul alle velden in','error');
-  $('lBtn').disabled=true;
+  $('lBtn').disabled=true;setMsg('lMsg','Bezig met inloggen...');
   try{
     const c=await auth.signInWithEmailAndPassword(email,pass);
     setMsg('lMsg','');$('lPass').value='';toast('Ingelogd ✓','success');
-    showPage(c.user.email===ADMIN_EMAIL?'admin':'home');
+    if(c.user.email===ADMIN_EMAIL&&!c.user.emailVerified)toast('Verifieer je e-mail om admin-rechten te krijgen (zie Mijn profiel)','error');
+    user=c.user;showPage(admin()?'admin':'home');
   }catch(e){setMsg('lMsg',authError(e),'error')}
   $('lBtn').disabled=false;
 }
 async function doRegister(){
   const name=$('rName').value.trim(),email=$('rEmail').value.trim().toLowerCase(),pass=$('rPass').value;
   if(!name||!email||pass.length<6)return setMsg('rMsg','Vul alle velden in (wachtwoord min. 6 tekens)','error');
-  $('rBtn').disabled=true;
+  $('rBtn').disabled=true;setMsg('rMsg','Account aanmaken...');
   try{
     const c=await auth.createUserWithEmailAndPassword(email,pass);
     await c.user.updateProfile({displayName:name});
+    c.user.sendEmailVerification().catch(()=>{});
     await db.collection('users').doc(c.user.uid).set({email,name,role:'user',createdAt:new Date()},{merge:true});
-    updateNav();setMsg('rMsg','');toast('Account aangemaakt ✓','success');showPage('home');
-  }catch(e){setMsg('rMsg',authError(e),'error')}
+    updateNav();setMsg('rMsg','');toast('Account aangemaakt ✓ Check je mail om je adres te verifiëren','success');showPage('home');
+  }catch(e){setMsg('rMsg',authError(e)||fbErr(e),'error')}
   $('rBtn').disabled=false;
 }
 async function loginWithGoogle(){
@@ -484,8 +510,8 @@ async function loginWithGoogle(){
     const {user:u}=await auth.signInWithPopup(gProvider);
     const ref=db.collection('users').doc(u.uid);
     if(!(await ref.get()).exists)await ref.set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()});
-    toast('Welkom '+(u.displayName||'')+' ✓','success');
-    showPage(u.email===ADMIN_EMAIL?'admin':'home');
+    user=u;toast('Welkom '+(u.displayName||'')+' ✓','success');
+    showPage(admin()?'admin':'home');
   }catch(e){
     if(e.code==='auth/popup-blocked')return auth.signInWithRedirect(gProvider);
     if(['auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(e.code))return;
@@ -498,19 +524,24 @@ async function resetPassword(){
   try{await auth.sendPasswordResetEmail(email);toast('Reset-mail verstuurd ✓','success')}catch(e){toast(authError(e),'error')}
 }
 async function logout(){await auth.signOut();showPage('home');toast('Uitgelogd')}
+async function resendVerify(){try{await user.sendEmailVerification();toast('Verificatiemail verstuurd ✓','success')}catch(e){toast(authError(e),'error')}}
+async function checkVerified(){
+  try{await user.reload();user=auth.currentUser;await user.getIdToken(true);updateNav();renderProfile();
+    toast(user.emailVerified?'E-mail geverifieerd ✓':'Nog niet geverifieerd',user.emailVerified?'success':'error')}catch(e){toast(authError(e),'error')}
+}
 
 // ───────── NAV / PAGES ─────────
 const activePage=()=>document.querySelector('.page.active')?.id;
 function updateNav(){
   $('guest').style.display=user?'none':'flex';
   $('userBtn').style.display=user?'inline-block':'none';
-  $('adminLink').style.display=isAdmin?'block':'none';
+  $('adminLink').style.display=admin()?'block':'none';
   if(user)$('userBtn').textContent=(user.displayName||user.email.split('@')[0])+' ▾';
   $('wbadge').innerHTML=wishlist.length?`<span class="badge">${wishlist.length}</span>`:'';
 }
 function showPage(name){
-  if(['orders','profile','wishlist'].includes(name)&&!user&&name!=='wishlist'){toast('Log eerst in','error');name='login'}
-  if(name==='admin'&&!isAdmin){name=user?'home':'login'}
+  if((name==='orders'||name==='profile')&&!user){toast('Log eerst in','error');name='login'}
+  if(name==='admin'&&!admin()){toast(user?'Geen admin-rechten (is je e-mail geverifieerd?)':'Log eerst in','error');name=user?'home':'login'}
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   $(name+'Page').classList.add('active');
   document.querySelectorAll('.nl').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
@@ -534,22 +565,23 @@ addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeCart();clo
 // ───────── PRODUCT RENDER ─────────
 function card(p){
   const sale=p.salePrice&&p.salePrice<p.price,out=(p.stock||0)<=0,w=wishlist.includes(p.id);
-  return `<div class="card" onclick="openProduct('${p.id}')">
-  <div class="imgw"><img src="${esc(p.image||PH)}" alt="${esc(p.title)}" loading="lazy" onerror="this.src=PH">
+  return `<div class="card" onclick="openProduct('${esc(p.id)}')">
+  <div class="imgw"><img src="${esc(imgOk(p.image))}" alt="${esc(p.title)}" loading="lazy">
   ${out?'<div class="bd out">Uitverkocht</div>':sale?`<div class="bd">-${Math.round((1-p.salePrice/p.price)*100)}%</div>`:''}
-  <button class="wish" onclick="event.stopPropagation();toggleWish('${p.id}')">${w?'❤️':'🤍'}</button></div>
+  <button class="wish" onclick="event.stopPropagation();toggleWish('${esc(p.id)}')">${w?'❤️':'🤍'}</button></div>
   <div class="info"><div class="cat">${esc(p.category)}</div><div class="pname">${esc(p.title)}</div>
   <div class="price">${sale?`<s>${eur(p.price)}</s>`:''}${eur(pp(p))}</div>
-  <button class="add" ${out?'disabled':''} onclick="event.stopPropagation();addToCart('${p.id}',1)">${out?'Uitverkocht':'+ Winkelwagen'}</button></div></div>`;
+  <button class="add" ${out?'disabled':''} onclick="event.stopPropagation();addToCart('${esc(p.id)}',1)">${out?'Uitverkocht':'+ Winkelwagen'}</button></div></div>`;
 }
 function renderHome(){
   $('stP').textContent=products.length;$('stW').textContent=wishlist.length;
   $('homeGrid').innerHTML=products.length?products.slice(0,6).map(card).join(''):'<div class="empty" style="background:var(--s)">Nog geen producten</div>';
 }
+function setCat(c){catFilter=c;renderShop()}
 function renderShop(){
   const q=$('sSearch').value.toLowerCase(),sort=$('sSort').value;
   const cats=[...new Set(products.map(p=>p.category).filter(Boolean))];
-  $('chips').innerHTML=['',...cats].map(c=>`<button class="chip ${c===catFilter?'active':''}" onclick="catFilter='${esc(c).replace(/'/g,"\\'")}';renderShop()">${c?esc(c):'Alles'}</button>`).join('');
+  $('chips').innerHTML=['',...cats].map(c=>`<button class="chip ${c===catFilter?'active':''}" data-c="${esc(c)}" onclick="setCat(this.dataset.c)">${c?esc(c):'Alles'}</button>`).join('');
   let l=products.filter(p=>(!catFilter||p.category===catFilter)&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
   if(sort==='low')l.sort((a,b)=>pp(a)-pp(b));
   if(sort==='high')l.sort((a,b)=>pp(b)-pp(a));
@@ -564,27 +596,28 @@ function renderWishlist(){
 function renderOrders(){
   $('ordersList').innerHTML=orders.length?orders.map(o=>orderCard(o,false)).join(''):'<div class="empty">Nog geen bestellingen</div>';
 }
-function orderCard(o,admin){
+function orderCard(o,adm){
   const d=o.createdAt?.toDate?o.createdAt.toDate().toLocaleDateString('nl-NL'):'';
-  const stl={pending:'⏳ In afwachting',completed:'✓ Betaald',shipped:'📦 Verzonden'}[o.status]||o.status;
-  return `<div class="oc"><div class="h"><div><div class="oid">#${o.id.slice(0,8).toUpperCase()}</div>${admin?`<div style="color:var(--m)">${esc(o.userName)} · ${esc(o.userEmail)}</div>`:''}</div>
-  ${admin?`<select onchange="setOrderStatus('${o.id}',this.value)" style="background:var(--s);color:var(--t);border:1px solid var(--b);padding:.3rem">${['pending','completed','shipped'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}</select>`:`<div class="st">${stl}</div>`}</div>
+  const stl={pending:'⏳ In afwachting',completed:'✓ Betaald',shipped:'📦 Verzonden'}[o.status]||esc(o.status);
+  return `<div class="oc"><div class="h"><div><div class="oid">#${esc(o.id.slice(0,8).toUpperCase())}</div>${adm?`<div style="color:var(--m)">${esc(o.userName)} · ${esc(o.userEmail)}</div>`:''}</div>
+  ${adm?`<select onchange="setOrderStatus('${esc(o.id)}',this.value)" style="background:var(--s);color:var(--t);border:1px solid var(--b);padding:.3rem">${['pending','completed','shipped'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}</select>`:`<div class="st">${stl}</div>`}</div>
   <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><span><b style="color:var(--g)">Totaal:</b> ${eur(o.total||0)}</span><span>${d}</span></div>
-  ${admin?`<div style="margin-top:.5rem"><b style="color:var(--g)">Tel:</b> ${esc(o.phone)} · <b style="color:var(--g)">Adres:</b> ${esc(o.address)}</div>`:''}
-  ${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${i.qty}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`;
+  ${adm?`<div style="margin-top:.5rem"><b style="color:var(--g)">Tel:</b> ${esc(o.phone)} · <b style="color:var(--g)">Adres:</b> ${esc(o.address)}${o.paypalOrderId?` · <b style="color:var(--g)">PayPal:</b> ${esc(o.paypalOrderId)}`:''}</div>`:''}
+  ${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`;
 }
 function renderProfile(){
   if(!user)return;
   $('pfName').textContent=user.displayName||user.email.split('@')[0];
-  $('pfEmail').textContent=user.email;
+  $('pfEmail').textContent=user.email+(user.emailVerified?' ✓':' (niet geverifieerd)');
   $('pfWish').textContent=wishlist.length+' product'+(wishlist.length===1?'':'en');
-  $('pfRole').textContent=isAdmin?'Admin':'Klant';
+  $('pfRole').textContent=admin()?'Admin':'Klant';
+  $('pfVerify').innerHTML=user.emailVerified?'':'<div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn sm" onclick="resendVerify()">Verificatiemail sturen</button><button class="btn sm" onclick="checkVerified()">Ik heb geverifieerd</button></div>';
 }
 
 // ───────── PRODUCT MODAL ─────────
 function openProduct(id,keep){
   const p=products.find(x=>x.id===id);if(!p)return;cur=p;
-  $('mImg').src=p.image||PH;$('mCat').textContent=p.category||'';$('mTitle').textContent=p.title;
+  $('mImg').src=imgOk(p.image);$('mCat').textContent=p.category||'';$('mTitle').textContent=p.title;
   const sale=p.salePrice&&p.salePrice<p.price;
   $('mPrice').innerHTML=(sale?`<s style="font-size:1rem;color:var(--m)">${eur(p.price)}</s> `:'')+eur(pp(p));
   $('mDesc').textContent=p.desc||'';
@@ -598,14 +631,13 @@ function openProduct(id,keep){
 function closeModal(){$('pOv').classList.remove('active')}
 function chQty(d){const i=$('mQty'),max=cur?.stock||1;i.value=Math.min(max,Math.max(1,(parseInt(i.value)||1)+d))}
 function updateModalWish(){if(cur)$('mWish').textContent=wishlist.includes(cur.id)?'❤️ Verwijder van verlanglijst':'🤍 Op verlanglijst'}
-
 async function toggleWish(id){
   if(!user){toast('Log in om favorieten op te slaan','error');return showPage('login')}
   const ref=db.collection('users').doc(user.uid).collection('wishlist').doc(id);
   try{
     if(wishlist.includes(id)){await ref.delete();toast('Verwijderd van verlanglijst')}
     else{await ref.set({addedAt:new Date()});toast('Toegevoegd aan verlanglijst ♡','success')}
-  }catch(e){toast('Fout: '+e.message,'error')}
+  }catch(e){toast('Fout: '+fbErr(e,true),'error')}
 }
 
 // ───────── CART ─────────
@@ -624,10 +656,10 @@ function openCart(){$('cartOv').classList.add('active');renderCart()}
 function closeCart(){$('cartOv').classList.remove('active')}
 function renderCart(){
   const {L,sub,disc,ship,total}=calc();
-  $('cartItems').innerHTML=L.length?L.map(l=>`<div class="ci"><img src="${esc(l.p.image||PH)}" onerror="this.src=PH" alt="">
+  $('cartItems').innerHTML=L.length?L.map(l=>`<div class="ci"><img src="${esc(imgOk(l.p.image))}" alt="">
    <div style="flex:1"><div class="nm">${esc(l.p.title)}</div><div class="pr">${eur(l.price)}</div>
-   <div class="q"><button onclick="changeCart('${l.id}',-1)">−</button><span style="min-width:24px;text-align:center">${l.qty}</span><button onclick="changeCart('${l.id}',1)">+</button></div></div>
-   <button onclick="removeCart('${l.id}')" style="background:none;border:none;color:#e07a68;align-self:flex-start">✕</button></div>`).join('')
+   <div class="q"><button onclick="changeCart('${esc(l.id)}',-1)">−</button><span style="min-width:24px;text-align:center">${l.qty}</span><button onclick="changeCart('${esc(l.id)}',1)">+</button></div></div>
+   <button onclick="removeCart('${esc(l.id)}')" style="background:none;border:none;color:#e07a68;align-self:flex-start">✕</button></div>`).join('')
    :'<div class="empty"><div style="font-size:3rem;opacity:.5">🛒</div>Uw winkelwagen is leeg</div>';
   $('sub').textContent=eur(sub);$('ship').textContent=ship?eur(ship):'GRATIS';$('tot').textContent=eur(total);
   $('discRow').style.display=applied?'flex':'none';$('disc').textContent='-'+eur(disc);
@@ -640,19 +672,20 @@ async function addToCart(id,qty=1,fromModal){
   try{
     await db.collection('users').doc(user.uid).collection('cart').doc(id).set({qty:FV.increment(qty)},{merge:true});
     toast(`${qty}× "${p.title}" toegevoegd 🛒`,'success');if(fromModal)closeModal();
-  }catch(e){toast('Fout: '+e.message,'error')}
+  }catch(e){toast('Fout: '+fbErr(e,true),'error')}
 }
 async function changeCart(id,d){
   const c=cart.find(x=>x.id===id),p=products.find(x=>x.id===id);if(!c||!p)return;
   const n=c.qty+d;
   if(n<=0)return removeCart(id);
   if(n>p.stock)return toast(`Maximaal ${p.stock} stuks beschikbaar`,'error');
-  await db.collection('users').doc(user.uid).collection('cart').doc(id).update({qty:n});
+  try{await db.collection('users').doc(user.uid).collection('cart').doc(id).update({qty:n})}catch(e){toast(fbErr(e,true),'error')}
 }
-async function removeCart(id){await db.collection('users').doc(user.uid).collection('cart').doc(id).delete()}
+async function removeCart(id){try{await db.collection('users').doc(user.uid).collection('cart').doc(id).delete()}catch(e){toast(fbErr(e,true),'error')}}
 function applyCoupon(){
   const code=$('couponIn').value.trim().toUpperCase();
   if(!code)return setMsg('couponMsg','Voer een code in','error');
+  if(!user)return setMsg('couponMsg','Log eerst in','error');
   const c=coupons.find(x=>x.code===code&&(x.uses||0)<x.maxUses);
   if(!c){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}
   else{applied=c;setMsg('couponMsg',`✓ ${c.discount}% korting toegepast`,'success')}
@@ -678,7 +711,7 @@ function finalizeCheckout(){
   if(!/^\S+@\S+\.\S+$/.test(email))return setMsg('coMsg','Ongeldig e-mailadres','error');
   if(!/^(31|0)[1-9]\d{8}$/.test(phone.replace(/\D/g,'')))return setMsg('coMsg','Ongeldig Nederlands telefoonnummer','error');
   if(!/^\d{4}\s?[A-Z]{2}$/i.test(postal))return setMsg('coMsg','Ongeldige postcode (1234AB)','error');
-  if(typeof paypal==='undefined')return setMsg('coMsg','PayPal kon niet laden. Controleer je verbinding / adblocker.','error');
+  if(typeof paypal==='undefined')return setMsg('coMsg','PayPal kon niet laden. Controleer je verbinding of adblocker.','error');
   const {L,sub,disc,ship,total}=calc();
   if(!L.length)return setMsg('coMsg','Winkelwagen is leeg','error');
   if(L.some(l=>l.qty>(l.p.stock||0)))return setMsg('coMsg','Een product is niet meer in de gewenste hoeveelheid beschikbaar','error');
@@ -692,17 +725,20 @@ function finalizeCheckout(){
       discount:{currency_code:'EUR',value:disc.toFixed(2)}}},
       items:data.items.map(i=>({name:i.title.slice(0,127),quantity:String(i.qty),unit_amount:{currency_code:'EUR',value:i.price.toFixed(2)}}))}]}),
     onApprove:async(d,a)=>{
+      let det;
+      try{det=await a.order.capture()}catch(e){return setMsg('coMsg','Betaling mislukt: '+e.message,'error')}
       try{
-        const det=await a.order.capture();
         await db.collection('orders').add({...data,status:'completed',paypalOrderId:det.id,createdAt:FV.serverTimestamp()});
-        try{
-          if(applied)await db.collection('coupons').doc(applied.id).update({uses:FV.increment(1)});
-          for(const i of data.items)await db.collection('products').doc(i.id).update({stock:FV.increment(-i.qty)});
-        }catch(e){console.warn('Voorraad/coupon niet bijgewerkt (Firestore-regels):',e.message)}
-        const b=db.batch();cart.forEach(c=>b.delete(db.collection('users').doc(user.uid).collection('cart').doc(c.id)));await b.commit();
-        applied=null;$('couponIn').value='';setMsg('couponMsg','');
-        closeCheckout();toast('✅ Betaling gelukt! Bedankt voor uw bestelling.','success');showPage('orders');
-      }catch(e){setMsg('coMsg','Betaling ontvangen maar opslaan mislukte: '+e.message+'. Neem contact met ons op.','error')}
+      }catch(e){
+        return setMsg('coMsg',`Betaling is ontvangen (PayPal-ID ${det.id}) maar de bestelling kon niet worden opgeslagen: ${fbErr(e,true)}. Neem contact met ons op met dit ID.`,'error');
+      }
+      try{
+        if(applied)await db.collection('coupons').doc(applied.id).update({uses:FV.increment(1)});
+        for(const i of data.items)await db.collection('products').doc(i.id).update({stock:FV.increment(-i.qty)});
+      }catch(e){console.warn('Voorraad/coupon niet bijgewerkt:',e.message)}
+      try{const b=db.batch();cart.forEach(c=>b.delete(db.collection('users').doc(user.uid).collection('cart').doc(c.id)));await b.commit()}catch(e){console.warn(e)}
+      applied=null;$('couponIn').value='';setMsg('couponMsg','');
+      closeCheckout();toast('✅ Betaling gelukt! Bedankt voor uw bestelling.','success');showPage('orders');
     },
     onCancel:()=>{toast('Betaling geannuleerd');$('coBtn').style.display='block';$('paypalBox').innerHTML=''},
     onError:()=>{toast('❌ Betaling mislukt. Probeer opnieuw.','error');$('coBtn').style.display='block'}
@@ -716,50 +752,53 @@ async function sendContact(){
   try{
     await db.collection('messages').add({name,email,message,createdAt:FV.serverTimestamp()});
     setMsg('cInfo','✓ Bericht verstuurd, bedankt!','success');$('cName').value=$('cEmail').value=$('cMsg').value='';
-  }catch(e){setMsg('cInfo','Versturen mislukt: '+e.message,'error')}
+  }catch(e){setMsg('cInfo','Versturen mislukt: '+fbErr(e,true),'error')}
 }
 
 // ───────── ADMIN ─────────
 document.querySelectorAll('#adminTabs .tab').forEach(b=>b.onclick=()=>{
+  if(!admin())return;
   document.querySelectorAll('#adminTabs .tab').forEach(x=>x.classList.toggle('active',x===b));
   document.querySelectorAll('.tc').forEach(x=>x.classList.remove('active'));
   $('tab-'+b.dataset.tab).classList.add('active');
   ({products:renderAdminProducts,coupons:renderAdminCoupons,users:renderAdminUsers,orders:renderAdminOrders,messages:renderAdminMessages})[b.dataset.tab]();
 });
 function compress(file,max=700){return new Promise((res,rej)=>{
+  if(!file.type.startsWith('image/'))return rej(new Error('Alleen afbeeldingen toegestaan'));
   const r=new FileReader();r.onerror=rej;
-  r.onload=e=>{const i=new Image();i.onerror=rej;i.onload=()=>{
+  r.onload=e=>{const i=new Image();i.onerror=()=>rej(new Error('Ongeldige afbeelding'));i.onload=()=>{
     const k=Math.min(1,max/Math.max(i.width,i.height)),cv=document.createElement('canvas');
     cv.width=Math.round(i.width*k);cv.height=Math.round(i.height*k);
     cv.getContext('2d').drawImage(i,0,0,cv.width,cv.height);res(cv.toDataURL('image/jpeg',.8))};i.src=e.target.result};
   r.readAsDataURL(file)})}
 async function adminAddProduct(){
+  if(!admin())return setMsg('aMsg','Geen admin-rechten','error');
   const title=$('aTitle').value.trim(),price=parseFloat($('aPrice').value),sale=parseFloat($('aSale').value)||null;
   if(!title||!(price>0))return setMsg('aMsg','Vul minimaal naam en prijs in','error');
-  $('aBtn').disabled=true;
+  $('aBtn').disabled=true;setMsg('aMsg','Bezig...');
   try{
     const f=$('aImg').files[0];
     const image=f?await compress(f):PH;
     await db.collection('products').add({title,category:$('aCat').value.trim()||'Overig',price,salePrice:sale&&sale<price?sale:null,
-      stock:parseInt($('aStock').value)||0,desc:$('aDesc').value.trim(),image,createdAt:FV.serverTimestamp()});
+      stock:Math.max(0,parseInt($('aStock').value)||0),desc:$('aDesc').value.trim(),image,createdAt:FV.serverTimestamp()});
     ['aTitle','aCat','aPrice','aSale','aStock','aDesc','aImg'].forEach(i=>$(i).value='');
     setMsg('aMsg','✓ Product toegevoegd','success');toast('Product toegevoegd ✓','success');
-  }catch(e){setMsg('aMsg','Fout: '+e.message,'error')}
+  }catch(e){setMsg('aMsg','Fout: '+fbErr(e,true),'error')}
   $('aBtn').disabled=false;
 }
 function renderAdminProducts(){
-  $('adminProducts').innerHTML=products.length?products.map(p=>`<div class="ar"><img src="${esc(p.image||PH)}" onerror="this.src=PH" alt="">
+  $('adminProducts').innerHTML=products.length?products.map(p=>`<div class="ar"><img src="${esc(imgOk(p.image))}" alt="">
    <div><b style="color:var(--c)">${esc(p.title)}</b><br><span style="color:var(--m)">${eur(pp(p))} · voorraad: ${p.stock||0}</span></div>
-   <div style="display:flex;gap:.4rem;flex-direction:column"><button class="btn sm" onclick="editStock('${p.id}')">Voorraad</button><button class="btn sm red" onclick="delDoc('products','${p.id}')">Verwijder</button></div></div>`).join(''):'<div class="empty">Geen producten</div>';
+   <div style="display:flex;gap:.4rem;flex-direction:column"><button class="btn sm" onclick="editStock('${esc(p.id)}')">Voorraad</button><button class="btn sm red" onclick="delDoc('products','${esc(p.id)}')">Verwijder</button></div></div>`).join(''):'<div class="empty">Geen producten</div>';
 }
 async function editStock(id){
   const p=products.find(x=>x.id===id),v=prompt('Nieuwe voorraad:',p.stock||0);
   if(v===null||isNaN(parseInt(v)))return;
-  try{await db.collection('products').doc(id).update({stock:Math.max(0,parseInt(v))});toast('Voorraad bijgewerkt','success')}catch(e){toast(e.message,'error')}
+  try{await db.collection('products').doc(id).update({stock:Math.max(0,parseInt(v))});toast('Voorraad bijgewerkt','success')}catch(e){toast(fbErr(e,true),'error')}
 }
 async function delDoc(col,id){
   if(!confirm('Weet je het zeker?'))return;
-  try{await db.collection(col).doc(id).delete();toast('Verwijderd');if(col==='messages')renderAdminMessages()}catch(e){toast('Fout: '+e.message,'error')}
+  try{await db.collection(col).doc(id).delete();toast('Verwijderd');if(col==='messages')renderAdminMessages()}catch(e){toast('Fout: '+fbErr(e,true),'error')}
 }
 async function adminAddCoupon(){
   const code=$('kCode').value.trim().toUpperCase(),discount=parseInt($('kDisc').value),maxUses=parseInt($('kMax').value);
@@ -767,40 +806,40 @@ async function adminAddCoupon(){
   try{
     await db.collection('coupons').add({code,discount,maxUses,uses:0,createdAt:new Date()});
     $('kCode').value=$('kDisc').value=$('kMax').value='';setMsg('kMsg','✓ Coupon toegevoegd','success');
-  }catch(e){setMsg('kMsg','Fout: '+e.message,'error')}
+  }catch(e){setMsg('kMsg','Fout: '+fbErr(e,true),'error')}
 }
 function renderAdminCoupons(){
-  $('adminCoupons').innerHTML=coupons.length?coupons.map(c=>`<div class="ar n"><div><b style="color:var(--c)">${esc(c.code)}</b><br><span style="color:var(--m)">${c.discount}% · ${c.uses||0}/${c.maxUses} gebruikt</span></div>
-   <button class="btn sm red" onclick="delDoc('coupons','${c.id}')">Verwijder</button></div>`).join(''):'<div class="empty">Geen coupons</div>';
+  $('adminCoupons').innerHTML=coupons.length?coupons.map(c=>`<div class="ar n"><div><b style="color:var(--c)">${esc(c.code)}</b><br><span style="color:var(--m)">${esc(c.discount)}% · ${c.uses||0}/${esc(c.maxUses)} gebruikt</span></div>
+   <button class="btn sm red" onclick="delDoc('coupons','${esc(c.id)}')">Verwijder</button></div>`).join(''):'<div class="empty">Geen coupons</div>';
 }
 async function renderAdminUsers(){
   try{
     const s=await db.collection('users').get();
     $('adminUsers').innerHTML=s.docs.map(d=>{const u=d.data();return `<div class="ar n"><div><b style="color:var(--c)">${esc(u.name||u.email)}</b><br><span style="color:var(--m)">${esc(u.email)}</span><br><span style="color:var(--g);font-size:.75rem">${u.role==='admin'?'👑 Admin':'Klant'}</span></div>
-     ${u.role!=='admin'?`<button class="btn sm" onclick="makeAdmin('${d.id}')">Make admin</button>`:''}</div>`}).join('');
-  }catch(e){$('adminUsers').innerHTML='<div class="empty">Geen toegang: '+esc(e.message)+'</div>'}
+     ${u.role!=='admin'?`<button class="btn sm" onclick="makeAdmin('${esc(d.id)}')">Make admin</button>`:''}</div>`}).join('');
+  }catch(e){$('adminUsers').innerHTML='<div class="empty">Geen toegang: '+esc(fbErr(e,true))+'</div>'}
 }
 async function makeAdmin(id){
   if(!confirm('Deze gebruiker admin maken?'))return;
-  try{await db.collection('users').doc(id).update({role:'admin'});toast('Gebruiker is nu admin','success');renderAdminUsers()}catch(e){toast(e.message,'error')}
+  try{await db.collection('users').doc(id).update({role:'admin'});toast('Gebruiker is nu admin','success');renderAdminUsers()}catch(e){toast(fbErr(e,true),'error')}
 }
 async function renderAdminOrders(){
   try{
     const s=await db.collection('orders').get();
     const all=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
     $('adminOrders').innerHTML=all.length?all.map(o=>orderCard(o,true)).join(''):'<div class="empty">Nog geen bestellingen</div>';
-  }catch(e){$('adminOrders').innerHTML='<div class="empty">Geen toegang: '+esc(e.message)+'</div>'}
+  }catch(e){$('adminOrders').innerHTML='<div class="empty">Geen toegang: '+esc(fbErr(e,true))+'</div>'}
 }
 async function setOrderStatus(id,status){
-  try{await db.collection('orders').doc(id).update({status});toast('Status bijgewerkt','success')}catch(e){toast(e.message,'error')}
+  try{await db.collection('orders').doc(id).update({status});toast('Status bijgewerkt','success')}catch(e){toast(fbErr(e,true),'error')}
 }
 async function renderAdminMessages(){
   try{
     const s=await db.collection('messages').get();
     const all=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
     $('adminMessages').innerHTML=all.length?all.map(m=>`<div class="ar n"><div><b style="color:var(--c)">${esc(m.name)}</b> · <span style="color:var(--m)">${esc(m.email)}</span><p style="margin-top:.4rem;line-height:1.5">${esc(m.message)}</p></div>
-     <button class="btn sm red" onclick="delDoc('messages','${m.id}')">Verwijder</button></div>`).join(''):'<div class="empty">Geen berichten</div>';
-  }catch(e){$('adminMessages').innerHTML='<div class="empty">Geen toegang: '+esc(e.message)+'</div>'}
+     <button class="btn sm red" onclick="delDoc('messages','${esc(m.id)}')">Verwijder</button></div>`).join(''):'<div class="empty">Geen berichten</div>';
+  }catch(e){$('adminMessages').innerHTML='<div class="empty">Geen toegang: '+esc(fbErr(e,true))+'</div>'}
 }
 
 renderHome();
