@@ -383,7 +383,7 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
-// ───────── DIAGNOSE (toont echte foutoorzaken) ─────────
+// ───────── DIAGNOSE ─────────
 function diag(html){const d=$('diag');d.style.display='block';d.innerHTML='<button onclick="this.parentNode.style.display=\'none\'">×</button>'+html}
 window.addEventListener('error',e=>diag('⚠️ Scriptfout: '+esc(e.message)));
 window.addEventListener('unhandledrejection',e=>fbErr(e.reason,true));
@@ -394,7 +394,7 @@ let shown=false;
 function fbErr(e,banner){
   const code=e?.code||'',msg=e?.message||String(e);
   if(code==='permission-denied'||/insufficient permissions/i.test(msg)){
-    if(banner&&!shown){shown=true;diag('⚠️ <b>Firestore blokkeert dit (geen rechten).</b> Plak de Firestore-regels uit de handleiding in Firebase Console → Firestore Database → Rules → Publish. Zorg dat je bent ingelogd en (voor admin) dat je e-mail geverifieerd is.')}
+    if(banner&&!shown){shown=true;diag('⚠️ <b>Firestore blokkeert dit (geen rechten).</b> Controleer de Firestore-regels in Firebase Console → Firestore Database → Rules. Zorg dat je bent ingelogd en (voor admin) dat je e-mail geverifieerd is.')}
     return 'Geen rechten (Firestore-regels / niet ingelogd)';
   }
   if(code==='failed-precondition')return 'Database niet klaar of index ontbreekt';
@@ -412,6 +412,8 @@ firebase.initializeApp({
   appId:"1:846711763840:web:67c360a26f0d741f7d4765"
 });
 const auth=firebase.auth(),db=firebase.firestore(),FV=firebase.firestore.FieldValue;
+// Snelle verbinding: valt automatisch terug op long-polling als WebChannel vastloopt
+db.settings({experimentalAutoDetectLongPolling:true,merge:true});
 auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(console.error));
 const gProvider=new firebase.auth.GoogleAuthProvider();
 const ADMIN_EMAIL="elmouchania@gmail.com";
@@ -438,21 +440,22 @@ function authError(e){return({
 }[e.code]||(e.code?e.code+': ':'')+e.message)}
 
 // ───────── LISTENERS ─────────
-db.collection('products').onSnapshot(s=>{
-  products=s.docs.map(d=>({id:d.id,...d.data()}));
-  refreshView();renderCart();if(cur&&$('pOv').classList.contains('active'))openProduct(cur.id,true);
-  if(activePage()==='adminPage'&&admin())renderAdminProducts();
-},e=>{console.error(e);fbErr(e,true)});
+// Producten: publiek leesbaar, herstart zichzelf bij een fout (bv. na inloggen)
+let unsubP=null,pRetry=null;
+function listenProducts(){
+  unsubP&&unsubP();clearTimeout(pRetry);
+  unsubP=db.collection('products').onSnapshot(s=>{
+    products=s.docs.map(d=>({id:d.id,...d.data()}));
+    refreshView();renderCart();if(cur&&$('pOv').classList.contains('active'))openProduct(cur.id,true);
+    if(activePage()==='adminPage'&&admin())renderAdminProducts();
+  },e=>{console.error(e);fbErr(e,true);pRetry=setTimeout(listenProducts,5000)});
+}
+listenProducts();
 
 function listenUser(){
   unsubs.forEach(u=>u());unsubs=[];
-  coupons=[];
   if(!user)return;
   const ref=db.collection('users').doc(user.uid),er=e=>{console.error(e);fbErr(e,true)};
-  unsubs.push(db.collection('coupons').onSnapshot(s=>{
-    coupons=s.docs.map(d=>({id:d.id,...d.data()}));
-    if(activePage()==='adminPage'&&admin())renderAdminCoupons();
-  },er));
   unsubs.push(ref.onSnapshot(d=>{roleAdmin=d.data()?.role==='admin';updateNav()},er));
   unsubs.push(db.collection('orders').where('userId','==',user.uid).onSnapshot(s=>{
     orders=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
@@ -466,16 +469,17 @@ function listenUser(){
   },er));
 }
 
-// ───────── AUTH ─────────
-auth.onAuthStateChanged(async u=>{
+// ───────── AUTH (niet blokkerend) ─────────
+auth.onAuthStateChanged(u=>{
   user=u;
   if(u){
-    try{
-      const ref=db.collection('users').doc(u.uid),snap=await ref.get();
-      if(!snap.exists)await ref.set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()});
-    }catch(e){console.error(e);fbErr(e,true)}
-  }else{cart=[];wishlist=[];orders=[];roleAdmin=false;applied=null;updateCartBadge();
-    if(['adminPage','ordersPage','profilePage'].includes(activePage()))showPage('home')}
+    const ref=db.collection('users').doc(u.uid);
+    ref.get().then(s=>{if(!s.exists)return ref.set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()})})
+      .catch(e=>{console.error(e);fbErr(e,true)});
+  }else{
+    cart=[];wishlist=[];orders=[];coupons=[];roleAdmin=false;applied=null;updateCartBadge();
+    if(['adminPage','ordersPage','profilePage'].includes(activePage()))showPage('home');
+  }
   listenUser();updateNav();refreshView();
 });
 auth.getRedirectResult().catch(e=>toast(authError(e),'error'));
@@ -508,8 +512,6 @@ async function doRegister(){
 async function loginWithGoogle(){
   try{
     const {user:u}=await auth.signInWithPopup(gProvider);
-    const ref=db.collection('users').doc(u.uid);
-    if(!(await ref.get()).exists)await ref.set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()});
     user=u;toast('Welkom '+(u.displayName||'')+' ✓','success');
     showPage(admin()?'admin':'home');
   }catch(e){
@@ -682,13 +684,18 @@ async function changeCart(id,d){
   try{await db.collection('users').doc(user.uid).collection('cart').doc(id).update({qty:n})}catch(e){toast(fbErr(e,true),'error')}
 }
 async function removeCart(id){try{await db.collection('users').doc(user.uid).collection('cart').doc(id).delete()}catch(e){toast(fbErr(e,true),'error')}}
-function applyCoupon(){
+
+// Coupon: opzoeken per code (document-ID), geen lijst van alle coupons meer in de browser
+async function applyCoupon(){
   const code=$('couponIn').value.trim().toUpperCase();
   if(!code)return setMsg('couponMsg','Voer een code in','error');
   if(!user)return setMsg('couponMsg','Log eerst in','error');
-  const c=coupons.find(x=>x.code===code&&(x.uses||0)<x.maxUses);
-  if(!c){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}
-  else{applied=c;setMsg('couponMsg',`✓ ${c.discount}% korting toegepast`,'success')}
+  try{
+    const d=await db.collection('coupons').doc(code).get();
+    const c=d.exists?{id:d.id,...d.data()}:null;
+    if(!c||(c.uses||0)>=c.maxUses){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}
+    else{applied=c;setMsg('couponMsg',`✓ ${c.discount}% korting toegepast`,'success')}
+  }catch(e){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}
   renderCart();
 }
 
@@ -763,13 +770,13 @@ document.querySelectorAll('#adminTabs .tab').forEach(b=>b.onclick=()=>{
   $('tab-'+b.dataset.tab).classList.add('active');
   ({products:renderAdminProducts,coupons:renderAdminCoupons,users:renderAdminUsers,orders:renderAdminOrders,messages:renderAdminMessages})[b.dataset.tab]();
 });
-function compress(file,max=700){return new Promise((res,rej)=>{
+function compress(file,max=600){return new Promise((res,rej)=>{
   if(!file.type.startsWith('image/'))return rej(new Error('Alleen afbeeldingen toegestaan'));
   const r=new FileReader();r.onerror=rej;
   r.onload=e=>{const i=new Image();i.onerror=()=>rej(new Error('Ongeldige afbeelding'));i.onload=()=>{
     const k=Math.min(1,max/Math.max(i.width,i.height)),cv=document.createElement('canvas');
     cv.width=Math.round(i.width*k);cv.height=Math.round(i.height*k);
-    cv.getContext('2d').drawImage(i,0,0,cv.width,cv.height);res(cv.toDataURL('image/jpeg',.8))};i.src=e.target.result};
+    cv.getContext('2d').drawImage(i,0,0,cv.width,cv.height);res(cv.toDataURL('image/jpeg',.7))};i.src=e.target.result};
   r.readAsDataURL(file)})}
 async function adminAddProduct(){
   if(!admin())return setMsg('aMsg','Geen admin-rechten','error');
@@ -798,19 +805,22 @@ async function editStock(id){
 }
 async function delDoc(col,id){
   if(!confirm('Weet je het zeker?'))return;
-  try{await db.collection(col).doc(id).delete();toast('Verwijderd');if(col==='messages')renderAdminMessages()}catch(e){toast('Fout: '+fbErr(e,true),'error')}
+  try{await db.collection(col).doc(id).delete();toast('Verwijderd');if(col==='messages')renderAdminMessages();if(col==='coupons')renderAdminCoupons()}catch(e){toast('Fout: '+fbErr(e,true),'error')}
 }
 async function adminAddCoupon(){
   const code=$('kCode').value.trim().toUpperCase(),discount=parseInt($('kDisc').value),maxUses=parseInt($('kMax').value);
-  if(!code||!(discount>=1&&discount<=100)||!(maxUses>=1))return setMsg('kMsg','Vul alle velden correct in','error');
+  if(!/^[A-Z0-9_-]{2,30}$/.test(code)||!(discount>=1&&discount<=100)||!(maxUses>=1))return setMsg('kMsg','Code: letters/cijfers, korting 1-100, max gebruik ≥1','error');
   try{
-    await db.collection('coupons').add({code,discount,maxUses,uses:0,createdAt:new Date()});
-    $('kCode').value=$('kDisc').value=$('kMax').value='';setMsg('kMsg','✓ Coupon toegevoegd','success');
+    await db.collection('coupons').doc(code).set({code,discount,maxUses,uses:0,createdAt:new Date()});
+    $('kCode').value=$('kDisc').value=$('kMax').value='';setMsg('kMsg','✓ Coupon toegevoegd','success');renderAdminCoupons();
   }catch(e){setMsg('kMsg','Fout: '+fbErr(e,true),'error')}
 }
-function renderAdminCoupons(){
-  $('adminCoupons').innerHTML=coupons.length?coupons.map(c=>`<div class="ar n"><div><b style="color:var(--c)">${esc(c.code)}</b><br><span style="color:var(--m)">${esc(c.discount)}% · ${c.uses||0}/${esc(c.maxUses)} gebruikt</span></div>
-   <button class="btn sm red" onclick="delDoc('coupons','${esc(c.id)}')">Verwijder</button></div>`).join(''):'<div class="empty">Geen coupons</div>';
+async function renderAdminCoupons(){
+  try{
+    const s=await db.collection('coupons').get();coupons=s.docs.map(d=>({id:d.id,...d.data()}));
+    $('adminCoupons').innerHTML=coupons.length?coupons.map(c=>`<div class="ar n"><div><b style="color:var(--c)">${esc(c.code)}</b><br><span style="color:var(--m)">${esc(c.discount)}% · ${c.uses||0}/${esc(c.maxUses)} gebruikt</span></div>
+     <button class="btn sm red" onclick="delDoc('coupons','${esc(c.id)}')">Verwijder</button></div>`).join(''):'<div class="empty">Geen coupons</div>';
+  }catch(e){$('adminCoupons').innerHTML='<div class="empty">Geen toegang: '+esc(fbErr(e,true))+'</div>'}
 }
 async function renderAdminUsers(){
   try{
