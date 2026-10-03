@@ -213,7 +213,7 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
 
 <section id="shopPage" class="page"><div class="wrap">
  <h1 style="font-size:clamp(2rem,5vw,3rem);margin-bottom:1.3rem">Winkel</h1>
- <div class="bar"><input id="sS" type="search" placeholder="Zoek een product" aria-label="Zoek producten"><select id="sO" aria-label="Sorteren"><option value="">Sorteren</option><option value="low">Prijs, laag naar hoog</option><option value="high">Prijs, hoog naar laag</option><option value="new">Nieuwste eerst</option></select><label style="display:flex;align-items:center;gap:.4rem;font-size:.92rem"><input type="checkbox" id="sStock" style="width:auto;min-height:0"> Alleen op voorraad</label></div>
+ <div class="bar"><input id="sS" type="search" placeholder="Zoek een product" aria-label="Zoek producten"><select id="sO" aria-label="Sorteren"><option value="">Sorteren</option><option value="low">Prijs, laag naar hoog</option><option value="high">Prijs, hoog naar laag</option><option value="new">Nieuwste eerst</option></select><input id="sMax" type="number" min="0" inputmode="numeric" placeholder="Max. prijs in €" aria-label="Maximale prijs" style="width:140px"><label style="display:flex;align-items:center;gap:.4rem;font-size:.92rem"><input type="checkbox" id="sStock" style="width:auto;min-height:0"> Alleen op voorraad</label></div>
  <div class="chips" id="chips" role="group" aria-label="Categorieën"></div><div class="grid" id="shopGrid"></div></div></section>
 
 <section id="wishlistPage" class="page"><div class="wrap"><h1 style="font-size:2.5rem;margin-bottom:1.3rem">Verlanglijst</h1><div id="wishC"></div></div></section>
@@ -301,7 +301,7 @@ document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.p
 $('burger').onclick=()=>{const s=$('nav').classList.toggle('show');$('burger').setAttribute('aria-expanded',s)};
 document.addEventListener('click',()=>$('um').classList.remove('show'));
 addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
-$('sS').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,200)};$('sO').onchange=renderShop;$('sStock').onchange=renderShop;
+$('sS').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,200)};$('sO').onchange=renderShop;$('sStock').onchange=renderShop;$('sMax').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,300)};
 
 // Data
 function listenProducts(){db.collection('products').onSnapshot(s=>{products=s.docs.map(d=>({id:d.id,...d.data()}));loaded=true;view();renderCart();if(cur&&$('pOv').classList.contains('on'))openProduct(cur.id,true);if(page()==='adminPage'&&tab==='products')adm()},e=>{console.error(e);setTimeout(listenProducts,5000)})}
@@ -324,8 +324,8 @@ function listenUser(){
 }
 auth.onAuthStateChanged(u=>{
  user=u;
- if(u)uref().get().then(s=>{if(!s.exists)return uref().set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()})}).catch(console.error);
- else{cart=[];wishlist=[];orders=[];roleAdmin=false;applied=null;badge();if(['ordersPage','adminPage','profilePage'].includes(page()))go('home')}
+ if(u)mergeGC();if(u)uref().get().then(s=>{if(!s.exists)return uref().set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()})}).catch(console.error);
+ else{wishlist=[];orders=[];roleAdmin=false;applied=null;setGC(GC());if(['ordersPage','adminPage','profilePage'].includes(page()))go('home')}
  listenUser();nav();view();
 });
 auth.getRedirectResult().catch(e=>toast(authErr(e),'error'));
@@ -365,7 +365,7 @@ function renderHome(){recent();$('homeGrid').innerHTML=!loaded?none('Een moment.
 window.setCat=c=>{cat=c;renderShop()};
 function renderShop(){const q=$('sS').value.toLowerCase(),so=$('sO').value,cats=[...new Set(products.map(p=>p.category).filter(Boolean))];
  $('chips').innerHTML=['',...cats].map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${esc(c)}" onclick="setCat(this.dataset.c)">${c?esc(c):'Alles'}</button>`).join('');
- let l=products.filter(p=>(!cat||p.category===cat)&&(!$('sStock').checked||(p.stock||0)>0)&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
+ let l=products.filter(p=>(!cat||p.category===cat)&&(!$('sStock').checked||(p.stock||0)>0)&&(!(parseFloat($('sMax').value)>0)||pp(p)<=parseFloat($('sMax').value))&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
  if(so==='low')l.sort((a,b)=>pp(a)-pp(b));if(so==='high')l.sort((a,b)=>pp(b)-pp(a));if(so==='new')l.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
  $('shopGrid').innerHTML=!loaded?none('Een moment...'):l.length?l.map(card).join(''):none('Hier hebben we niets voor gevonden. Probeer een andere zoekterm.')}
 function renderWish(){if(!user){$('wishC').innerHTML=none('Log in om je verlanglijst te zien<br><br><button class="btn" onclick="go(\'login\')">Inloggen</button>');return}
@@ -373,7 +373,7 @@ function renderWish(){if(!user){$('wishC').innerHTML=none('Log in om je verlangl
 const STAT={pending:'In afwachting',completed:'Betaald',shipped:'Verzonden'};
 function orderCard(o,adm){return `<div class="oc"><div class="h"><b>#${esc(o.id.slice(0,8).toUpperCase())}</b>${adm?`<select style="width:auto;min-height:36px" onchange="setStatus('${esc(o.id)}',this.value)">${Object.keys(STAT).map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${STAT[s]}</option>`).join('')}</select>`:`<span>${esc(STAT[o.status]||o.status)}</span>`}</div>
  ${adm?`<div>${esc(o.userName)}, ${esc(o.userEmail)}, ${esc(o.phone)}<br>${esc(o.address)}${o.paypalOrderId?`<br>PayPal: ${esc(o.paypalOrderId)}`:''}</div>`:''}
- <div>Totaal <b>${eur(o.total||0)}</b> op ${dt(o)}</div>${o.tracking?`<div>Track en trace: <b>${esc(o.tracking)}</b></div>`:''}${adm?`<button class="btn sm o" style="margin:.4rem 0" onclick="setTrack('${esc(o.id)}')">Track en trace invullen</button>`:''}${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`}
+ <div>Totaal <b>${eur(o.total||0)}</b> op ${dt(o)}</div>${o.tracking?`<div>Track en trace: <b>${esc(o.tracking)}</b></div>`:''}${adm?`<button class="btn sm o" style="margin:.4rem 0" onclick="setTrack('${esc(o.id)}')">Track en trace invullen</button><button class="btn sm o" style="margin:.4rem 0 .4rem .4rem" onclick="slip('${esc(o.id)}')">Pakbon printen</button>`:''}${!adm?`<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn sm o" onclick="reorder('${esc(o.id)}')">Opnieuw bestellen</button>${ret(o)?`<button class="btn sm o" onclick="returnReq('${esc(o.id)}')">Retour aanvragen</button>`:''}</div>`:''}${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`}
 function renderOrders(){$('ordL').innerHTML=orders.length?orders.map(o=>orderCard(o,false)).join(''):none('Je hebt nog niets besteld.')}
 const RV=()=>{try{return JSON.parse(localStorage.getItem('mrv')||'[]')}catch(e){return[]}};
 function rv(id){try{localStorage.setItem('mrv',JSON.stringify([id,...RV().filter(x=>x!==id)].slice(0,6)))}catch(e){}}
@@ -404,15 +404,18 @@ function renderCart(){const{L,G,sub,disc,ship,total}=calc();
  $('sub').textContent=eur(sub);$('ship').textContent=ship?eur(ship):'Gratis';$('tot').textContent=eur(total);
  $('discRow').hidden=!applied;$('disc').textContent='-'+eur(disc);
  $('prog').style.width=Math.min(100,sub/50*100)+'%';$('shipMsg').textContent=!L.length?'':sub>=50?'Je bestelling wordt gratis verzonden.':`Nog ${eur(50-sub)} voor gratis verzending`}
-window.addToCart=async(id,qty=1,fromModal)=>{if(!user){toast('Log in om te bestellen','error');return go('login')}
+window.addToCart=async(id,qty=1,fromModal)=>{
  const p=products.find(x=>x.id===id);if(!p||(p.stock||0)<=0)return;const have=cart.find(c=>c.id===id)?.qty||0;
  if(have+qty>p.stock)return toast(`Er zijn er maar ${p.stock} beschikbaar`,'error');
- try{await uref().collection('cart').doc(id).set({qty:FV.increment(qty)},{merge:true});badge(true);if(fromModal)closeAll();
+ try{if(user)await uref().collection('cart').doc(id).set({qty:FV.increment(qty)},{merge:true});else{const g=GC();g[id]=(g[id]||0)+qty;setGC(g)}badge(true);if(fromModal)closeAll();
   toast(`${p.title} zit in je winkelwagen`,'success',{l:'Bekijken',f:openCart})}catch(e){toast(fbErr(e),'error')}};
 window.changeCart=async(id,d)=>{const c=cart.find(x=>x.id===id),p=products.find(x=>x.id===id);if(!c||!p)return;const n=c.qty+d;
  if(n<=0)return removeCart(id);if(n>p.stock)return toast(`Er zijn er maar ${p.stock} beschikbaar`,'error');
- try{await uref().collection('cart').doc(id).update({qty:n})}catch(e){toast(fbErr(e),'error')}};
-window.removeCart=async id=>{try{await uref().collection('cart').doc(id).delete()}catch(e){toast(fbErr(e),'error')}};
+ try{if(user)await uref().collection('cart').doc(id).update({qty:n});else{const g=GC();g[id]=n;setGC(g)}}catch(e){toast(fbErr(e),'error')}};
+const GC=()=>{try{return JSON.parse(localStorage.getItem('mgc')||'{}')}catch(e){return{}}};
+const setGC=o=>{try{localStorage.setItem('mgc',JSON.stringify(o))}catch(e){}cart=Object.entries(o).map(([id,qty])=>({id,qty}));badge();renderCart()};
+function mergeGC(){const g=GC();if(!Object.keys(g).length)return;const b=db.batch();for(const[id,q]of Object.entries(g))b.set(uref().collection('cart').doc(id),{qty:FV.increment(q)},{merge:true});b.commit().then(()=>{try{localStorage.removeItem('mgc')}catch(e){}}).catch(console.warn)}
+window.removeCart=async id=>{try{if(user)await uref().collection('cart').doc(id).delete();else{const g=GC();delete g[id];setGC(g)}}catch(e){toast(fbErr(e),'error')}};
 window.applyCoupon=async()=>{const code=$('couponIn').value.trim().toUpperCase();if(!code)return setMsg('couponMsg','Vul eerst een code in','error');if(!user)return setMsg('couponMsg','Log eerst in','error');
  try{const d=await db.collection('coupons').doc(code).get(),c=d.exists?{id:d.id,...d.data()}:null;
   if(!c||(c.uses||0)>=c.maxUses){applied=null;setMsg('couponMsg','Deze code bestaat niet of is op','error')}else{applied=c;setMsg('couponMsg',`${c.discount}% korting is toegepast`,'success')}}
@@ -487,6 +490,12 @@ window.editProd=async id=>{const p=products.find(x=>x.id===id),pr=prompt('Nieuwe
  try{await db.collection('products').doc(id).update({price,stock:Math.max(0,stock)});toast('Opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
 window.del=async(c,id)=>{if(!confirm('Weet je zeker dat je dit wilt verwijderen?'))return;try{await db.collection(c).doc(id).delete();toast('Verwijderd');adm()}catch(e){toast(fbErr(e),'error')}};
 window.appr=async id=>{try{await db.collection('reviews').doc(id).update({approved:true});toast('Review staat online','success');adm()}catch(e){toast(fbErr(e),'error')}};
+const ret=o=>o.createdAt?.toDate&&Date.now()-o.createdAt.toDate().getTime()<30*864e5;
+window.reorder=async id=>{const o=orders.find(x=>x.id===id);if(!o)return;for(const i of o.items)await addToCart(i.id,i.qty);openCart()};
+window.returnReq=async id=>{const o=orders.find(x=>x.id===id);if(!o||!confirm('Retour aanvragen voor deze bestelling?'))return;
+ try{await db.collection('messages').add({name:o.userName,email:o.userEmail,message:'Retourverzoek voor bestelling #'+id.slice(0,8).toUpperCase()+' ('+id+')',createdAt:FV.serverTimestamp()});toast('Je retourverzoek is binnen, we mailen je de uitleg','success')}catch(e){toast(fbErr(e),'error')}};
+window.slip=id=>{const o=(window._ao||[]).find(x=>x.id===id);if(!o)return;const w=open('','_blank');if(!w)return toast('Sta pop-ups toe om de pakbon te printen','error');
+ w.document.write(`<title>Pakbon</title><body style="font-family:sans-serif;max-width:600px;margin:2rem auto"><h2>Pakbon #${esc(id.slice(0,8).toUpperCase())}</h2><p><b>${esc(o.userName)}</b><br>${esc(o.address)}<br>${esc(o.phone)}</p><ul>${(o.items||[]).map(i=>`<li>${esc(i.qty)} × ${esc(i.title)}</li>`).join('')}</ul><script>print()<\/script>`);w.document.close()};
 window.setTrack=async id=>{const t=prompt('Track en trace code:');if(!t||!t.trim())return;try{await db.collection('orders').doc(id).update({tracking:t.trim(),status:'shipped'});toast('Opgeslagen, status staat nu op verzonden','success');adm()}catch(e){toast(fbErr(e),'error')}};
 window.exportCsv=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',rows=[['Bestelling','Datum','Naam','E-mail','Telefoon','Adres','Producten','Totaal','Status'],...(window._ao||[]).map(o=>[o.id,dt(o),o.userName,o.userEmail,o.phone,o.address,(o.items||[]).map(i=>i.qty+'x '+i.title).join('; '),o.total,o.status])];
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='bestellingen.csv';a.click()};
