@@ -2,883 +2,440 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MAISON — Premium Store</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-<script src="https://www.paypal.com/sdk/js?client-id=AdsXWwkuDjZhYtu-fK0gTcThYzPgzLHZmK9BkBCnH1cmMCvB2zsg1Gsy74hppUTiKcsORmtqWnV2Cdck&currency=EUR"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MAISON — Premium webshop | Gratis verzending vanaf €50</title>
+<meta name="description" content="MAISON: handgeselecteerde premium stukken. Gratis verzending vanaf €50, 30 dagen retour en veilig betalen met PayPal.">
+<meta property="og:title" content="MAISON — Premium webshop"><meta property="og:type" content="website">
+<meta name="theme-color" content="#1c1917">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#fbf9f6;--s:#fff;--e:#f1ede6;--b:rgba(0,0,0,.1);--g:#9a7b4f;--gb:#7d6238;--btn:#1c1c1c;--c:#1a1a1a;--t:#2b2b2b;--m:#7a756d;--r:#9B4B3C;--ok:#3f7a5f;--ser:'Cormorant Garamond',Georgia,serif;--san:'Outfit',sans-serif}
-html{scroll-behavior:smooth}
-body{font-family:var(--san);background:var(--bg);color:var(--t);overflow-x:hidden}
-button{font-family:inherit;cursor:pointer}
-input,select,textarea{font-family:inherit}
-#diag{display:none;background:#6b2217;color:#fff;padding:.8rem 1rem;font-size:.8rem;line-height:1.5;position:sticky;top:0;z-index:100000}
-#diag button{float:right;background:none;border:none;color:#fff;font-size:1.2rem}
-.topbar{background:var(--btn);color:#e9e2d6;font-size:.62rem;font-weight:500;letter-spacing:3px;text-align:center;padding:9px;text-transform:uppercase}
-nav{position:sticky;top:0;z-index:1000;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:.5rem;padding:.9rem 2.5rem;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--b)}
-.logo{font-family:var(--ser);font-size:1.7rem;font-weight:400;letter-spacing:6px;color:var(--c);cursor:pointer;line-height:1}
-.logo span{color:var(--c)}
-.logo small{display:block;font-family:var(--san);font-size:.45rem;letter-spacing:3px;text-transform:uppercase;color:var(--m);margin-top:5px;font-weight:400}
-.nav-links{display:flex;gap:.2rem}
-.nl{background:none;border:none;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);padding:.5rem .9rem;white-space:nowrap;border-bottom:1px solid transparent}
-.nl:hover,.nl.active{color:var(--c);border-bottom-color:var(--g)}
-.nav-right{display:flex;align-items:center;gap:.5rem;position:relative}
-.pill{display:inline-flex;align-items:center;font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:.5rem 1.1rem;border-radius:40px;border:1px solid rgba(0,0,0,.18);background:none;color:var(--c)}
-.pill:hover{border-color:var(--g);color:var(--g)}
-.pill.gold{background:var(--btn);border-color:var(--btn);color:#fff}
-.badge{background:var(--r);color:#fff;border-radius:50%;font-size:.6rem;padding:1px 6px;margin-left:4px}
-.menu{position:absolute;top:46px;right:0;background:#fff;border:1px solid var(--b);border-radius:6px;min-width:170px;display:none;z-index:1100;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.12)}
-.menu.show{display:block}
-.menu button{display:block;width:100%;text-align:left;padding:.75rem 1.1rem;font-size:.78rem;color:var(--t);background:none;border:none}
-.menu button:hover{background:var(--e);color:var(--g)}
-.btn{font-size:.68rem;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;background:var(--btn);color:#fff;border:none;padding:1rem 2rem;transition:.2s}
-.btn:hover{background:#000}
-.btn:disabled{opacity:.5}
-.btn.full{width:100%}
-.btn.sm{padding:.55rem 1rem;font-size:.6rem;letter-spacing:1.5px}
-.btn.red{background:var(--r);color:#fff}
-.page{display:none}.page.active{display:block}
-.hero{min-height:62vh;display:flex;align-items:center;justify-content:flex-start;text-align:left;padding:3rem 8%;color:#fff;background:radial-gradient(ellipse 50% 90% at 85% 40%,rgba(214,186,140,.35),transparent 70%),linear-gradient(100deg,#2a2018 0%,#46372a 55%,#7d6a52 100%)}
-.tag{font-size:.65rem;letter-spacing:5px;text-transform:uppercase;color:#e8d3a8;display:block;margin-bottom:1.2rem}
-.hero h1{font-family:var(--ser);font-size:clamp(2.8rem,7vw,5.2rem);font-weight:400;color:#fff;line-height:1;margin-bottom:1.2rem}
-.hero em{font-style:normal;color:inherit}
-.hero p{color:rgba(255,255,255,.85);max-width:380px;margin:0 0 2rem;line-height:1.7;font-size:.95rem}
-.hero .btn{background:#fff;color:var(--btn)}
-.hero .btn:hover{background:var(--e)}
-.stats{display:none}
-.features{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;padding:1.4rem 8%;background:#f5f1ea;border-bottom:1px solid var(--b);font-size:.75rem;color:var(--m);line-height:1.5}
-.features b{display:block;color:var(--c);font-weight:600;font-size:.78rem}
-.features div{display:flex;align-items:center;gap:.8rem}
-.features i{font-style:normal;font-size:1.3rem}
-.section{padding:4rem 2.5rem;max-width:1400px;margin:0 auto}
-#homePage .section{text-align:center}
-.eyebrow{font-size:.62rem;letter-spacing:5px;text-transform:uppercase;color:var(--m);margin-bottom:.6rem}
-.title{font-family:var(--ser);font-size:clamp(1.9rem,4vw,2.8rem);font-weight:400;color:var(--c);margin-bottom:2rem}
-#homePage .title::after{content:'';display:block;width:40px;height:1px;background:var(--g);margin:.8rem auto 0}
-.banner{background:linear-gradient(100deg,#2a2018,#5b4a3a);color:#fff;padding:2.5rem;border-radius:4px;margin-bottom:2rem}
-.banner h2{font-family:var(--ser);font-size:clamp(2rem,4vw,3rem);font-weight:400;margin-bottom:.4rem}
-.banner p{font-size:.85rem;opacity:.8}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.5rem;text-align:left}
-.card{background:transparent;cursor:pointer}
-.imgw{aspect-ratio:1/1.1;overflow:hidden;position:relative;background:var(--e);border-radius:2px}
-.imgw img{width:100%;height:100%;object-fit:cover;transition:transform .6s}
-.card:hover img{transform:scale(1.04)}
-.bd{position:absolute;top:12px;left:12px;font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;background:var(--r);color:#fff}
-.bd.out{background:#777;color:#fff}
-.wish{display:flex;align-items:center;justify-content:center;position:absolute;top:10px;right:10px;width:34px;height:34px;background:rgba(255,255,255,.9);border:none;border-radius:50%;font-size:.95rem}
-.info{padding:.9rem 0 0}
-.cat{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--m)}
-.pname{font-family:var(--san);font-size:.92rem;font-weight:500;color:var(--c);margin:4px 0}
-.price{font-family:var(--san);font-size:.95rem;font-weight:600;color:var(--c)}
-.price s{font-size:.8rem;font-weight:400;color:var(--m);margin-right:6px}
-.add{width:100%;padding:.8rem;font-size:.62rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;background:var(--btn);border:none;color:#fff;margin-top:.8rem}
-.add:hover:not(:disabled){background:var(--g)}
-.add:disabled{opacity:.4}
-#mWish{background:none;color:var(--m);border:1px solid rgba(0,0,0,.2)}
-#mWish:hover{background:none;color:var(--g);border:1px solid var(--g)}
-.bar{display:flex;gap:.7rem;flex-wrap:wrap;margin-bottom:1.2rem}
-.bar input,.bar select,.fld input,.fld select,.fld textarea{background:#fff;border:1px solid rgba(0,0,0,.15);color:var(--t);padding:.75rem;outline:none;font-size:.9rem;width:100%;border-radius:2px}
-.bar input{flex:1;min-width:180px;width:auto}.bar select{width:auto}
-.fld input:focus,.fld textarea:focus,.bar input:focus{border-color:var(--g)}
-.chips{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem}
-.chip{background:#fff;border:1px solid rgba(0,0,0,.15);color:var(--m);padding:.4rem 1rem;border-radius:30px;font-size:.7rem}
-.chip.active{background:var(--btn);border-color:var(--btn);color:#fff}
-.fld{margin-bottom:1rem}
-.fld label{display:block;font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--m);margin-bottom:5px}
-.box{background:#fff;border:1px solid var(--b);padding:2rem;max-width:460px;margin:0 auto;border-radius:4px;box-shadow:0 8px 30px rgba(0,0,0,.05)}
-.box h2{font-family:var(--ser);font-size:2.2rem;font-weight:400;color:var(--c);margin-bottom:.4rem}
-.box p.sub{font-size:.8rem;color:var(--m);margin-bottom:1.5rem}
-.msg{font-size:.78rem;margin-top:.7rem;min-height:1rem}
-.msg.error{color:#b5442f}.msg.success{color:#3f7a5f}
-.link{color:var(--g);cursor:pointer;text-decoration:underline;font-size:.8rem}
-.center{text-align:center;margin-top:1rem;font-size:.8rem;color:var(--m)}
-.gbtn{background:#fff;border:1px solid #dadce0;border-radius:40px;padding:.7rem;width:100%;font-size:.8rem;color:#333;display:flex;align-items:center;justify-content:center;gap:10px;margin-top:.8rem}
-.ov{display:none;position:fixed;inset:0;z-index:10000;background:rgba(20,16,12,.55);backdrop-filter:blur(4px);overflow-y:auto}
-.ov.active{display:flex}
-.modal{background:#fff;border:1px solid var(--b);margin:auto;width:92%;max-width:1000px;padding:1.5rem;position:relative;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;border-radius:4px}
-.modal.one{grid-template-columns:1fr;max-width:640px}
-.x{position:absolute;top:.6rem;right:1rem;background:none;border:none;color:var(--m);font-size:2rem;line-height:1;z-index:2}
-.x:hover{color:var(--g)}
-.mimg{background:var(--e);display:flex;align-items:center;justify-content:center;min-height:300px}
-.mimg img{max-width:100%;max-height:440px;object-fit:contain}
-.modal h2{font-family:var(--ser);font-size:2rem;font-weight:400;color:var(--c)}
-.qty{display:flex;align-items:center;margin:1.2rem 0}
-.qty button{width:36px;height:36px;background:var(--e);border:1px solid var(--b);color:var(--c);font-size:1.1rem}
-.qty input{width:52px;height:36px;text-align:center;background:#fff;border:1px solid var(--b);border-left:0;border-right:0;color:var(--c)}
-.drawer{margin-left:auto;background:#fff;border-left:1px solid var(--b);width:420px;max-width:100%;min-height:100%;display:flex;flex-direction:column}
-.dh{padding:1.2rem 1.5rem;border-bottom:1px solid var(--b);display:flex;justify-content:space-between;align-items:center}
-.dh h2{font-family:var(--ser);font-size:1.6rem;font-weight:400;color:var(--c)}
-.dh .x{position:static}
-.ditems{flex:1;overflow-y:auto;padding:1rem}
-.ci{display:flex;gap:.9rem;padding:.8rem;background:var(--e);margin-bottom:.5rem;border-radius:4px}
-.ci img{width:70px;height:70px;object-fit:cover;border-radius:3px}
-.ci .nm{color:var(--c);font-size:.85rem}.ci .pr{color:var(--c);font-size:.8rem;margin:.2rem 0 .4rem;font-weight:600}
-.ci .q{display:flex;align-items:center;gap:.4rem}
-.ci .q button{width:24px;height:24px;border:none;background:#fff;color:var(--t);border-radius:2px}
-.dfoot{padding:1.2rem 1.5rem;border-top:1px solid var(--b);background:var(--bg)}
-.row{display:flex;justify-content:space-between;font-size:.82rem;margin-bottom:.4rem}
-.row.tot{font-size:1.1rem;font-weight:600;color:var(--c);padding-top:.5rem;border-top:1px solid var(--b)}
+:root{--bg:#faf8f5;--s:#fff;--e:#f1ede6;--b:#e4ded4;--ink:#1c1917;--t:#3a3631;--m:#6b655c;--g:#8a6a3b;--red:#a33a2a;--ok:#2f6b4f;--ser:'Cormorant Garamond',Georgia,serif;--san:'Outfit',system-ui,sans-serif;--sh:0 8px 30px rgba(28,25,23,.08)}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--san);background:var(--bg);color:var(--t);line-height:1.6;overflow-x:hidden;font-size:16px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+img{display:block;max-width:100%}
+:focus-visible{outline:3px solid var(--g);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:var(--ink);color:#fff;padding:.8rem 1rem;z-index:99999}.skip:focus{left:0}
+.topbar{background:var(--ink);color:#eee6d8;font-size:.78rem;text-align:center;padding:.5rem 1rem}
+header{position:sticky;top:0;z-index:1000;background:rgba(255,255,255,.95);backdrop-filter:blur(14px);border-bottom:1px solid var(--b)}
+.hd{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:1rem;padding:.7rem 1.25rem;min-height:68px}
+.logo{font-family:var(--ser);font-size:1.8rem;letter-spacing:.35em;color:var(--ink);background:none;border:0;font-weight:500}
+.nav{display:flex;gap:.25rem;margin-left:1.5rem}
+.nav button{background:none;border:0;padding:.6rem .9rem;min-height:44px;font-size:.85rem;color:var(--m);border-bottom:2px solid transparent}
+.nav button:hover,.nav button.on{color:var(--ink);border-bottom-color:var(--g)}
+.acts{margin-left:auto;display:flex;gap:.5rem;align-items:center;position:relative}
+.ib{min-height:44px;min-width:44px;border-radius:99px;border:1px solid var(--b);background:#fff;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:0 1rem;font-size:.85rem;font-weight:500;transition:.2s}
+.ib:hover{border-color:var(--g)}
+.ib.cart{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ib.cart:hover{background:#000}
+.cnt{background:var(--g);color:#fff;border-radius:99px;font-size:.72rem;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.bump{animation:bump .4s}@keyframes bump{50%{transform:scale(1.4)}}
+.burger{display:none}
+.umenu{position:absolute;top:52px;right:0;background:#fff;border:1px solid var(--b);border-radius:10px;box-shadow:var(--sh);min-width:180px;display:none;overflow:hidden}
+.umenu.show{display:block}.umenu button{display:block;width:100%;text-align:left;background:none;border:0;padding:.85rem 1rem;min-height:44px}.umenu button:hover{background:var(--e)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;min-height:48px;padding:.8rem 1.6rem;border-radius:99px;border:1px solid var(--ink);background:var(--ink);color:#fff;font-weight:600;font-size:.88rem;letter-spacing:.04em;transition:.2s}
+.btn:hover:not(:disabled){background:#000;transform:translateY(-1px);box-shadow:var(--sh)}
+.btn:active{transform:none}.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.o{background:transparent;color:var(--ink)}.btn.o:hover:not(:disabled){background:var(--e)}
+.btn.w{background:#fff;color:var(--ink);border-color:#fff}.btn.full{width:100%}.btn.sm{min-height:44px;padding:.5rem 1.1rem}
+.page{display:none}.page.on{display:block}
+.wrap{max-width:1280px;margin:0 auto;padding:3.5rem 1.25rem}
+.hero{background:radial-gradient(60% 90% at 90% 30%,rgba(214,186,140,.35),transparent 70%),linear-gradient(110deg,#221b15,#4a3b2d 60%,#7d6a52);color:#fff}
+.hero .wrap{padding:5rem 1.25rem 5.5rem;max-width:1280px}
+.eyebrow{font-size:.72rem;letter-spacing:.25em;text-transform:uppercase;color:var(--g);font-weight:600;margin-bottom:.6rem}
+.hero .eyebrow{color:#e8d3a8}
+h1,h2,h3{font-family:var(--ser);font-weight:500;color:var(--ink);line-height:1.1}
+.hero h1{color:#fff;font-size:clamp(2.8rem,8vw,5.4rem);margin-bottom:1rem;max-width:11ch}
+.hero p{max-width:440px;color:rgba(255,255,255,.88);margin-bottom:2rem}
+.hero .cta{display:flex;gap:.8rem;flex-wrap:wrap}.hero .btn.o{color:#fff;border-color:rgba(255,255,255,.6)}.hero .btn.o:hover{background:rgba(255,255,255,.12)}
+h2{font-size:clamp(1.9rem,4vw,2.7rem);margin-bottom:1.8rem}
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.trust div{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:1rem 1.1rem;font-size:.82rem;color:var(--m)}
+.trust b{display:block;color:var(--ink);font-size:.9rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.5rem}
+.card{background:var(--s);border:1px solid var(--b);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:.25s}
+.card:hover{box-shadow:var(--sh);transform:translateY(-3px)}
+.imgw{position:relative;aspect-ratio:1/1;background:var(--e);overflow:hidden;border:0;padding:0;width:100%;display:block}
+.imgw img{width:100%;height:100%;object-fit:cover;transition:transform .5s}.card:hover .imgw img{transform:scale(1.04)}
+.bd{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:.7rem;font-weight:600;padding:3px 10px;border-radius:99px}.bd.out{background:#57534e}
+.wish{position:absolute;top:8px;right:8px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}
+.info{padding:1rem;display:flex;flex-direction:column;gap:.25rem;flex:1}
+.cat{font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;color:var(--m)}
+.pn{font-weight:500;color:var(--ink);font-size:.98rem;background:none;border:0;text-align:left;padding:0}
+.pr{font-weight:600;color:var(--ink);margin:.2rem 0 .7rem}.pr s{color:var(--m);font-weight:400;font-size:.85rem;margin-right:.4rem}.pr .new{color:var(--red)}
+.info .btn{margin-top:auto}
+.bar{display:flex;gap:.7rem;flex-wrap:wrap;margin-bottom:1rem}
+.bar input,.bar select,.fld input,.fld textarea{background:#fff;border:1px solid #cfc8bc;border-radius:10px;padding:.8rem 1rem;min-height:48px;width:100%}
+.bar input{flex:1;min-width:200px;width:auto}.bar select{width:auto;border:1px solid #cfc8bc;border-radius:10px;padding:.8rem;background:#fff;min-height:48px}
+.chips{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.5rem;margin-bottom:1.5rem}
+.chip{white-space:nowrap;min-height:44px;padding:.4rem 1.1rem;border-radius:99px;border:1px solid #cfc8bc;background:#fff;font-size:.85rem}.chip[aria-pressed=true]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.fld{margin-bottom:.9rem}.fld label{display:block;font-size:.8rem;font-weight:500;margin-bottom:4px;color:var(--m)}
+.box{background:#fff;border:1px solid var(--b);border-radius:16px;padding:2rem;max-width:460px;margin:0 auto;box-shadow:var(--sh)}
+.box h1{font-size:2.2rem;margin-bottom:.3rem}.sub{color:var(--m);margin-bottom:1.3rem;font-size:.9rem}
+.msg{font-size:.85rem;min-height:1.2rem;margin-top:.6rem}.msg.error{color:var(--red)}.msg.success{color:var(--ok)}
+.lk{background:none;border:0;color:var(--g);text-decoration:underline;min-height:44px;padding:0 .3rem}
+.ctr{text-align:center;margin-top:.5rem;font-size:.88rem;color:var(--m)}
+.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}
+.rv{background:var(--s);border:1px solid var(--b);border-radius:14px;padding:1.4rem}.rv .st{color:var(--g);letter-spacing:2px}.rv p{margin:.6rem 0;font-size:.92rem}.rv small{color:var(--m)}
+.info2{display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem}.info2 div{background:var(--e);border-radius:14px;padding:1.5rem}.info2 h3{font-size:1.5rem;margin-bottom:.4rem}.info2 p{font-size:.9rem}
+details{background:var(--s);border:1px solid var(--b);border-radius:12px;margin-bottom:.6rem}
+summary{cursor:pointer;padding:1rem 1.2rem;font-weight:500;color:var(--ink);min-height:48px;list-style:none;display:flex;justify-content:space-between}summary::after{content:'+';color:var(--g);font-size:1.3rem}details[open] summary::after{content:'−'}
+details p{padding:0 1.2rem 1.1rem;font-size:.92rem}
+.ov{display:none;position:fixed;inset:0;z-index:10000;background:rgba(20,16,12,.55);overflow-y:auto}.ov.on{display:flex}
+.modal{background:#fff;border-radius:16px;margin:auto;width:calc(100% - 2rem);max-width:920px;padding:1.5rem;position:relative;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.modal.one{grid-template-columns:1fr;max-width:620px}
+.x{position:absolute;top:.4rem;right:.5rem;width:44px;height:44px;border:0;background:none;font-size:1.8rem;line-height:1;z-index:2}
+.mimg{background:var(--e);border-radius:12px;aspect-ratio:1/1;overflow:hidden}.mimg img{width:100%;height:100%;object-fit:cover}
+.qty{display:flex;margin:1rem 0}.qty button,.qty input{width:44px;height:44px;border:1px solid var(--b);background:#fff;text-align:center}.qty input{border-left:0;border-right:0}
+.drawer{margin-left:auto;background:#fff;width:430px;max-width:100%;min-height:100%;display:flex;flex-direction:column}
+.dh{padding:1rem 1.2rem;border-bottom:1px solid var(--b);display:flex;justify-content:space-between;align-items:center}.dh h2{margin:0;font-size:1.7rem}.dh .x{position:static}
+.ditems{flex:1;overflow-y:auto;padding:1rem}.dfoot{padding:1rem 1.2rem;border-top:1px solid var(--b);background:var(--bg)}
+.ci{display:flex;gap:.8rem;padding:.7rem;background:var(--e);border-radius:10px;margin-bottom:.5rem}.ci img{width:72px;height:72px;object-fit:cover;border-radius:8px}
+.ci .q{display:flex;align-items:center;gap:.3rem;margin-top:.3rem}.ci .q button{width:36px;height:36px;border:0;background:#fff;border-radius:6px}
+.rm{background:none;border:0;color:var(--red);width:44px;height:44px;font-size:1.3rem;align-self:flex-start}
+.row{display:flex;justify-content:space-between;font-size:.9rem;margin-bottom:.35rem}.row.tot{font-size:1.15rem;font-weight:600;color:var(--ink);border-top:1px solid var(--b);padding-top:.5rem}
+.prog{height:6px;background:var(--b);border-radius:9px;overflow:hidden;margin:.3rem 0 .8rem}.prog i{display:block;height:100%;background:var(--g);transition:width .4s}
 .empty{text-align:center;padding:3rem 1rem;color:var(--m)}
-.oc{background:#fff;border:1px solid var(--b);padding:1.2rem;margin-bottom:1rem;border-radius:4px;font-size:.82rem}
-.oc .h{display:flex;justify-content:space-between;gap:1rem;margin-bottom:.8rem;padding-bottom:.8rem;border-bottom:1px solid var(--b);flex-wrap:wrap}
-.oid{font-family:var(--ser);font-size:1.2rem;color:var(--c)}
-.st{font-size:.7rem;padding:.25rem .8rem;border-radius:20px;background:#efe6d3;color:var(--gb)}
-.oi{display:flex;justify-content:space-between;background:var(--e);padding:.6rem;margin-top:.4rem;border-radius:3px}
-.tabs{display:flex;gap:.3rem;margin-bottom:1.5rem;border-bottom:1px solid var(--b);overflow-x:auto}
-.tab{background:none;border:none;border-bottom:2px solid transparent;color:var(--m);padding:.7rem 1.1rem;font-size:.8rem;white-space:nowrap}
-.tab.active{color:var(--c);border-bottom-color:var(--btn)}
-.tc{display:none}.tc.active{display:block}
-.form2{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1rem}
-.form2 .fld{margin:0}
-.ar{display:grid;grid-template-columns:70px 1fr auto;gap:1rem;align-items:center;background:#fff;border:1px solid var(--b);padding:.8rem;margin-bottom:.6rem;border-radius:4px;font-size:.82rem}
-.ar img{width:70px;height:70px;object-fit:cover;border-radius:3px}
-.ar.n{grid-template-columns:1fr auto}
-.toasts{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:.5rem;align-items:center;pointer-events:none;width:92%}
-.toast{background:var(--btn);border-left:3px solid var(--g);color:#fff;padding:.75rem 1.3rem;font-size:.8rem;border-radius:3px;box-shadow:0 8px 24px rgba(0,0,0,.2);animation:ti .3s,to .3s 3.6s forwards}
-.toast.error{border-left-color:#d9604b}.toast.success{border-left-color:#5fae8a}
-@keyframes ti{from{opacity:0;transform:translateY(14px)}}
-@keyframes to{to{opacity:0}}
-footer{background:var(--btn);padding:3rem 2.5rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;font-size:.75rem;color:#b9b2a6}
-footer .logo{font-size:1.5rem;color:#fff}
-footer .logo span{color:#fff}
-footer .logo small{color:#b9b2a6}
-@media(max-width:800px){
-nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
-.section{padding:2.5rem 1rem}.modal{grid-template-columns:1fr}.form2{grid-template-columns:1fr}
-.grid{grid-template-columns:repeat(2,1fr);gap:1rem}.logo{font-size:1.4rem;letter-spacing:4px}
-.features{grid-template-columns:1fr 1fr;padding:1.2rem 1rem}
-.hero{padding:3rem 1.5rem;min-height:55vh}
-.pname{font-size:.85rem}.hide-m{display:none}
+.oc{background:#fff;border:1px solid var(--b);border-radius:12px;padding:1.1rem;margin-bottom:1rem;font-size:.9rem}.oc .h{display:flex;justify-content:space-between;margin-bottom:.6rem}
+.oi{display:flex;justify-content:space-between;background:var(--e);padding:.5rem .7rem;border-radius:8px;margin-top:.3rem}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.toasts{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:.5rem;width:calc(100% - 2rem);max-width:420px;pointer-events:none}
+.toast{pointer-events:auto;background:var(--ink);color:#fff;border-left:4px solid var(--g);padding:.8rem 1rem;border-radius:10px;box-shadow:var(--sh);font-size:.9rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;animation:ti .3s}
+.toast.error{border-left-color:#e0705c}.toast.success{border-left-color:#5fae8a}.toast button{background:none;border:0;color:#e8d3a8;font-weight:600;min-height:44px;white-space:nowrap}
+@keyframes ti{from{opacity:0;transform:translateY(12px)}}
+footer{background:var(--ink);color:#b9b2a6;font-size:.88rem}footer .wrap{padding:2.5rem 1.25rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.5rem}footer .logo{color:#fff;font-size:1.4rem;padding:0}footer a{color:#e8d3a8}
+#diag{display:none;background:#6b2217;color:#fff;padding:.8rem 1rem;font-size:.85rem}
+@media(max-width:860px){
+.burger{display:inline-flex}.nav{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;border-bottom:1px solid var(--b);flex-direction:column;margin:0;padding:.5rem 1rem}.nav.show{display:flex}.nav button{text-align:left}
+.logo{font-size:1.4rem}.trust{grid-template-columns:1fr 1fr}.reviews,.info2{grid-template-columns:1fr}.wrap{padding:2.5rem 1rem}.hero .wrap{padding:3.5rem 1rem}
+.grid{grid-template-columns:repeat(2,1fr);gap:.9rem}.modal{grid-template-columns:1fr}.form2{grid-template-columns:1fr}.hd{padding:.5rem 1rem}.hide-m{display:none}.info{padding:.8rem}
 }
-@media(max-width:420px){.features{grid-template-columns:1fr}}
+@media(max-width:400px){.trust{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.fld select{background:#fff;border:1px solid #cfc8bc;border-radius:10px;padding:.8rem;min-height:48px;width:100%}
 </style>
 </head>
 <body>
-<div id="diag"></div>
-<div class="toasts" id="toasts"></div>
-<div class="topbar">Gratis verzending vanaf €50 • 30 dagen retour • Premium kwaliteit</div>
+<a class="skip" href="#main">Naar inhoud</a>
+<div id="diag" role="alert"></div>
+<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<div class="topbar">Gratis verzending vanaf €50 · 30 dagen retour · Veilig betalen met PayPal</div>
 
-<nav>
-  <div class="logo" onclick="showPage('home')">MAISON<span>.</span><small>Premium Store</small></div>
-  <div class="nav-links">
-    <button class="nl active" data-page="home">Home</button>
-    <button class="nl" data-page="shop">Shop</button>
-    <button class="nl" data-page="wishlist">Wishlist<span id="wbadge"></span></button>
-    <button class="nl" data-page="contact">Contact</button>
-    <button class="nl" data-page="admin" id="adminLink" style="display:none">Admin</button>
-  </div>
-  <div class="nav-right">
-    <button class="pill" onclick="openCart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><path d="M3 4h2l2.5 11h10L20 7H6"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg><span class="badge" id="cbadge" style="display:none">0</span></button>
-    <span id="guest" style="display:flex;gap:.4rem">
-      <button class="pill" onclick="showPage('login')">Inloggen</button>
-      <button class="pill gold hide-m" onclick="showPage('register')">Registreren</button>
-    </span>
-    <button class="pill" id="userBtn" style="display:none" onclick="event.stopPropagation();document.getElementById('umenu').classList.toggle('show')"></button>
-    <div class="menu" id="umenu">
-      <button onclick="showPage('profile')">Mijn profiel</button>
-      <button onclick="showPage('orders')">Bestellingen</button>
-      <button onclick="showPage('wishlist')">Verlanglijst</button>
-      <button onclick="logout()">Uitloggen</button>
-    </div>
-  </div>
-</nav>
-
-<!-- CART -->
-<div class="ov" id="cartOv" onclick="if(event.target===this)closeCart()">
-  <div class="drawer">
-    <div class="dh"><h2>Winkelwagen</h2><button class="x" onclick="closeCart()">×</button></div>
-    <div class="ditems" id="cartItems"></div>
-    <div class="dfoot">
-      <div style="display:flex;gap:.5rem;margin-bottom:.4rem">
-        <div class="fld" style="flex:1;margin:0"><input id="couponIn" placeholder="Couponcode" style="padding:.6rem" maxlength="30"></div>
-        <button class="btn sm" onclick="applyCoupon()">Toepassen</button>
-      </div>
-      <div class="msg" id="couponMsg" style="margin:0 0 .6rem"></div>
-      <div class="row"><span>Subtotaal</span><span id="sub">€0,00</span></div>
-      <div class="row" id="discRow" style="display:none"><span>Korting</span><span id="disc" style="color:#3f7a5f"></span></div>
-      <div class="row"><span>Verzending</span><span id="ship"></span></div>
-      <div class="row tot"><span>Totaal</span><span id="tot">€0,00</span></div>
-      <button class="btn full" style="margin-top:1rem" onclick="startCheckout()">Naar checkout</button>
-    </div>
+<header>
+<div class="hd">
+  <button class="ib burger" aria-label="Menu openen" aria-expanded="false" aria-controls="nav" id="burger">☰</button>
+  <button class="logo" onclick="go('home')" aria-label="MAISON, naar home">MAISON</button>
+  <nav class="nav" id="nav" aria-label="Hoofdmenu">
+    <button data-p="home">Home</button><button data-p="shop">Shop</button><button data-p="wishlist">Verlanglijst <span class="cnt" id="wb" hidden>0</span></button><button data-p="contact">Contact</button>
+  </nav>
+  <div class="acts">
+    <span id="guest"><button class="ib" onclick="go('login')">Inloggen</button></span>
+    <button class="ib" id="ub" hidden aria-haspopup="true" onclick="event.stopPropagation();$('um').classList.toggle('show')"></button>
+    <div class="umenu" id="um"><button onclick="go('orders')">Bestellingen</button><button onclick="go('wishlist')">Verlanglijst</button><button onclick="logout()">Uitloggen</button></div>
+    <button class="ib cart" onclick="openCart()" aria-label="Winkelwagen openen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 4h2l2.5 11h10L20 7H6"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg><span class="hide-m">Winkelwagen</span><span class="cnt" id="cb" hidden>0</span></button>
   </div>
 </div>
+</header>
 
-<!-- CHECKOUT -->
-<div class="ov" id="coOv" onclick="if(event.target===this)closeCheckout()">
-  <div class="modal one">
-    <button class="x" onclick="closeCheckout()">×</button>
-    <div>
-      <h2 style="margin-bottom:1rem">Checkout</h2>
-      <div class="form2">
-        <div>
-          <div class="eyebrow">Gegevens</div>
-          <div class="fld"><input id="coName" placeholder="Volledige naam" autocomplete="name" maxlength="100"></div>
-          <div class="fld"><input id="coEmail" type="email" placeholder="E-mailadres" autocomplete="email" maxlength="120"></div>
-          <div class="fld"><input id="coPhone" type="tel" placeholder="Telefoon (06...)" autocomplete="tel" maxlength="20"></div>
-        </div>
-        <div>
-          <div class="eyebrow">Afleveradres</div>
-          <div class="fld"><input id="coStreet" placeholder="Straat en huisnummer" autocomplete="street-address" maxlength="120"></div>
-          <div class="fld"><input id="coPostal" placeholder="Postcode (1234AB)" autocomplete="postal-code" maxlength="8"></div>
-          <div class="fld"><input id="coCity" placeholder="Stad" autocomplete="address-level2" maxlength="60"></div>
-        </div>
-      </div>
-      <div class="row tot"><span>Te betalen</span><span id="coTotal"></span></div>
-      <div class="msg" id="coMsg"></div>
-      <button class="btn full" id="coBtn" onclick="finalizeCheckout()">Doorgaan naar betalen</button>
-      <div id="paypalBox" style="margin-top:1rem"></div>
-    </div>
+<div class="ov" id="cartOv" role="dialog" aria-modal="true" aria-label="Winkelwagen" onclick="if(event.target===this)closeAll()">
+ <div class="drawer">
+  <div class="dh"><h2>Winkelwagen</h2><button class="x" onclick="closeAll()" aria-label="Sluiten">×</button></div>
+  <div class="ditems" id="cartItems"></div>
+  <div class="dfoot">
+   <div id="shipMsg" style="font-size:.82rem"></div><div class="prog"><i id="prog"></i></div>
+   <div style="display:flex;gap:.5rem"><div class="fld" style="flex:1;margin:0"><input id="couponIn" placeholder="Couponcode" aria-label="Couponcode" maxlength="30"></div><button class="btn o sm" onclick="applyCoupon()">Toepassen</button></div>
+   <div class="msg" id="couponMsg"></div>
+   <div class="row"><span>Subtotaal</span><span id="sub"></span></div>
+   <div class="row" id="discRow" hidden><span>Korting</span><span id="disc" style="color:var(--ok)"></span></div>
+   <div class="row"><span>Verzending</span><span id="ship"></span></div>
+   <div class="row tot"><span>Totaal</span><span id="tot"></span></div>
+   <button class="btn full" style="margin-top:.8rem" onclick="startCheckout()">Afrekenen</button>
   </div>
+ </div>
 </div>
 
-<!-- PRODUCT MODAL -->
-<div class="ov" id="pOv" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <button class="x" onclick="closeModal()">×</button>
-    <div class="mimg"><img id="mImg" alt=""></div>
-    <div>
-      <div class="cat" id="mCat"></div>
-      <h2 id="mTitle"></h2>
-      <div class="price" id="mPrice" style="font-size:1.7rem;margin:.8rem 0"></div>
-      <p id="mDesc" style="color:var(--m);line-height:1.7;font-size:.88rem"></p>
-      <div id="mStock" style="font-size:.75rem;margin-top:1rem"></div>
-      <div class="qty"><button onclick="chQty(-1)">−</button><input id="mQty" type="number" value="1" min="1"><button onclick="chQty(1)">+</button></div>
-      <button class="btn full" id="mAdd" onclick="addToCart(cur.id,parseInt(document.getElementById('mQty').value)||1,true)">+ In winkelwagen</button>
-      <button class="add" id="mWish" onclick="toggleWish(cur.id)"></button>
-    </div>
+<div class="ov" id="coOv" role="dialog" aria-modal="true" aria-label="Afrekenen" onclick="if(event.target===this)closeAll()">
+ <div class="modal one"><button class="x" onclick="closeAll()" aria-label="Sluiten">×</button>
+  <div><h2>Afrekenen</h2>
+   <div class="form2"><div>
+    <div class="fld"><label for="coName">Volledige naam</label><input id="coName" autocomplete="name" maxlength="100"></div>
+    <div class="fld"><label for="coEmail">E-mailadres</label><input id="coEmail" type="email" autocomplete="email" maxlength="120"></div>
+    <div class="fld"><label for="coPhone">Telefoon</label><input id="coPhone" type="tel" placeholder="06..." autocomplete="tel" maxlength="20"></div></div><div>
+    <div class="fld"><label for="coStreet">Straat en huisnummer</label><input id="coStreet" autocomplete="street-address" maxlength="120"></div>
+    <div class="fld"><label for="coPostal">Postcode</label><input id="coPostal" placeholder="1234AB" autocomplete="postal-code" maxlength="8"></div>
+    <div class="fld"><label for="coCity">Stad</label><input id="coCity" autocomplete="address-level2" maxlength="60"></div></div></div>
+   <div class="row tot"><span>Te betalen</span><span id="coTotal"></span></div>
+   <div class="msg" id="coMsg"></div>
+   <button class="btn full" id="coBtn" onclick="finalizeCheckout()">Doorgaan naar betalen</button>
+   <div id="pp" style="margin-top:1rem"></div>
   </div>
+ </div>
 </div>
 
-<!-- HOME -->
-<div id="homePage" class="page active">
-  <div class="hero"><div>
-    <div class="tag">MAISON.</div>
-    <h1>Tijdloze<br><em>Elegantie</em></h1>
-    <p>Handgeselecteerde premium stukken voor een stijlvolle en moderne levensstijl.</p>
-    <button class="btn" onclick="showPage('shop')">Ontdek de collectie →</button>
-    <div class="stats">
-      <div><div class="n" id="stP">0</div><div class="l">Producten</div></div>
-      <div><div class="n" id="stW">0</div><div class="l">Favorieten</div></div>
-    </div>
-  </div></div>
-  <div class="features">
-    <div><span><b>Gratis verzending</b>vanaf €50</span></div>
-    <div><span><b>30 dagen retour</b>zonder gedoe</span></div>
-    <div><span><b>Veilig betalen</b>met PayPal</span></div>
-    <div><span><b>Premium kwaliteit</b>voor een lange levensduur</span></div>
+<div class="ov" id="pOv" role="dialog" aria-modal="true" aria-labelledby="mTitle" onclick="if(event.target===this)closeAll()">
+ <div class="modal"><button class="x" onclick="closeAll()" aria-label="Sluiten">×</button>
+  <div class="mimg"><img id="mImg" alt="" width="460" height="460"></div>
+  <div><div class="cat" id="mCat"></div><h2 id="mTitle" style="margin:.3rem 0"></h2>
+   <div class="pr" id="mPrice" style="font-size:1.6rem"></div><p id="mDesc"></p><div id="mStock" style="font-size:.85rem;margin-top:.8rem"></div>
+   <div class="qty"><button onclick="chQty(-1)" aria-label="Minder">−</button><input id="mQty" type="number" value="1" min="1" aria-label="Aantal"><button onclick="chQty(1)" aria-label="Meer">+</button></div>
+   <button class="btn full" id="mAdd" onclick="addToCart(cur.id,parseInt($('mQty').value)||1,true)">Toevoegen aan winkelwagen</button>
+   <button class="btn o full" id="mWish" style="margin-top:.6rem" onclick="toggleWish(cur.id)"></button>
   </div>
-  <div class="section">
-    <div class="eyebrow">Onze favorieten</div><h2 class="title">Populaire producten</h2>
-    <div class="grid" id="homeGrid"></div>
-  </div>
+ </div>
 </div>
 
-<!-- SHOP -->
-<div id="shopPage" class="page"><div class="section">
-  <div class="banner"><h2>Onze Collectie</h2><p>Ontdek onze zorgvuldig geselecteerde premium stukken.</p></div>
-  <div class="bar">
-    <input id="sSearch" placeholder="Zoek producten..." oninput="renderShop()">
-    <select id="sSort" onchange="renderShop()">
-      <option value="">Sorteren</option><option value="low">Prijs: laag → hoog</option>
-      <option value="high">Prijs: hoog → laag</option><option value="new">Nieuwste</option>
-    </select>
-  </div>
-  <div class="chips" id="chips"></div>
-  <div class="grid" id="shopGrid"></div>
-</div></div>
+<main id="main">
+<section id="homePage" class="page on">
+ <div class="hero"><div class="wrap">
+  <div class="eyebrow">MAISON Premium Store</div>
+  <h1>Tijdloze elegantie</h1>
+  <p>Handgeselecteerde premium stukken voor een stijlvolle en moderne levensstijl. Gratis verzending vanaf €50.</p>
+  <div class="cta"><button class="btn w" onclick="go('shop')">Shop nu →</button><button class="btn o" onclick="$('faq').scrollIntoView()">Hoe het werkt</button></div>
+ </div></div>
+ <div class="wrap" style="padding-bottom:0"><div class="trust">
+  <div><b>Gratis verzending</b>vanaf €50</div><div><b>30 dagen retour</b>zonder gedoe</div><div><b>Veilig betalen</b>met PayPal</div><div><b>Klantenservice</b>reactie binnen 24 uur</div></div></div>
+ <div class="wrap"><div class="eyebrow">Onze favorieten</div><h2>Populaire producten</h2><div class="grid" id="homeGrid"></div>
+  <div style="text-align:center;margin-top:2rem"><button class="btn o" onclick="go('shop')">Bekijk alle producten</button></div></div>
+ <div class="wrap" style="padding-top:0"><div class="eyebrow">Reviews</div><h2>Wat klanten zeggen</h2>
+  <p class="sub" id="rvAvg"></p><div class="reviews" id="rvList"></div>
+  <details style="margin-top:1.5rem;max-width:620px"><summary>Schrijf een review</summary><div style="padding:0 1.2rem 1.2rem">
+   <div class="fld"><label for="rvRate">Beoordeling</label><select id="rvRate"><option value="5">★★★★★ (5)</option><option value="4">★★★★☆ (4)</option><option value="3">★★★☆☆ (3)</option><option value="2">★★☆☆☆ (2)</option><option value="1">★☆☆☆☆ (1)</option></select></div>
+   <div class="fld"><label for="rvText">Je ervaring</label><textarea id="rvText" rows="3" maxlength="500"></textarea></div>
+   <button class="btn" onclick="sendReview()">Review versturen</button><div class="msg" id="rvMsg"></div>
+   <p style="font-size:.8rem;color:var(--m)">Alleen klanten met een bestelling kunnen een review plaatsen. Reviews verschijnen na controle.</p></div></details></div>
+ <div class="wrap" style="padding-top:0"><h2>Verzending, retour &amp; betalen</h2>
+  <div class="info2">
+   <div><h3>Snelle verzending</h3><p>Bestellingen worden zo snel mogelijk verzonden. Gratis vanaf €50, anders €5,99.</p></div>
+   <div><h3>30 dagen retour</h3><p>Niet tevreden? Stuur je bestelling binnen 30 dagen terug via onze klantenservice.</p></div>
+   <div><h3>Veilig betalen</h3><p>Betalen gaat via PayPal. Wij zien of bewaren je betaalgegevens niet.</p></div></div></div>
+ <div class="wrap" style="padding-top:0;max-width:820px" id="faq"><h2>Veelgestelde vragen</h2>
+  <details><summary>Wat zijn de verzendkosten?</summary><p>Verzending is gratis vanaf €50. Daaronder betaal je €5,99.</p></details>
+  <details><summary>Kan ik mijn bestelling retourneren?</summary><p>Ja, binnen 30 dagen. Neem contact met ons op via het contactformulier.</p></details>
+  <details><summary>Hoe kan ik betalen?</summary><p>Via PayPal, veilig en beschermd.</p></details>
+  <details><summary>Hoe gebruik ik een couponcode?</summary><p>Vul de code in de winkelwagen in en kies "Toepassen". De korting zie je direct.</p></details>
+  <p style="padding:1rem 0 0">Nog een vraag? <button class="lk" onclick="go('contact')">Neem contact op</button></p></div>
+</section>
 
-<!-- WISHLIST -->
-<div id="wishlistPage" class="page"><div class="section">
-  <div class="eyebrow">Favorieten</div><h2 class="title">Verlanglijst</h2>
-  <div id="wishContent"></div>
-</div></div>
+<section id="shopPage" class="page"><div class="wrap">
+ <div class="eyebrow">Collectie</div><h1 style="font-size:clamp(2rem,5vw,3rem);margin-bottom:1.5rem">Shop</h1>
+ <div class="bar"><input id="sS" type="search" placeholder="Zoek producten..." aria-label="Zoek producten"><select id="sO" aria-label="Sorteren"><option value="">Sorteren</option><option value="low">Prijs: laag → hoog</option><option value="high">Prijs: hoog → laag</option><option value="new">Nieuwste</option></select></div>
+ <div class="chips" id="chips" role="group" aria-label="Categorieën"></div><div class="grid" id="shopGrid"></div></div></section>
 
-<!-- ORDERS -->
-<div id="ordersPage" class="page"><div class="section">
-  <div class="eyebrow">Historie</div><h2 class="title">Bestellingen</h2>
-  <div id="ordersList"></div>
-</div></div>
+<section id="wishlistPage" class="page"><div class="wrap"><h1 style="font-size:2.6rem;margin-bottom:1.5rem">Verlanglijst</h1><div id="wishC"></div></div></section>
+<section id="ordersPage" class="page"><div class="wrap"><h1 style="font-size:2.6rem;margin-bottom:1.5rem">Bestellingen</h1><div id="ordL"></div></div></section>
 
-<!-- CONTACT -->
-<div id="contactPage" class="page"><div class="section">
-  <div class="eyebrow">Contact</div><h2 class="title">Vragen of feedback?</h2>
-  <div class="box" style="max-width:600px">
-    <div class="fld"><label>Naam</label><input id="cName" maxlength="100"></div>
-    <div class="fld"><label>E-mail</label><input id="cEmail" type="email" maxlength="120"></div>
-    <div class="fld"><label>Bericht</label><textarea id="cMsg" rows="5" maxlength="2000"></textarea></div>
-    <button class="btn full" onclick="sendContact()">Verstuur bericht</button>
-    <div class="msg" id="cInfo"></div>
-  </div>
-</div></div>
+<section id="contactPage" class="page"><div class="wrap"><div class="box" style="max-width:600px"><h1>Contact</h1><p class="sub">Vragen of feedback? We reageren binnen 24 uur.</p>
+ <div class="fld"><label for="cName">Naam</label><input id="cName" autocomplete="name" maxlength="100"></div>
+ <div class="fld"><label for="cEmail">E-mail</label><input id="cEmail" type="email" autocomplete="email" maxlength="120"></div>
+ <div class="fld"><label for="cMsg">Bericht</label><textarea id="cMsg" rows="5" maxlength="2000"></textarea></div>
+ <button class="btn full" onclick="sendContact()">Verstuur bericht</button><div class="msg" id="cInfo"></div></div></div></section>
 
-<!-- LOGIN -->
-<div id="loginPage" class="page"><div class="section"><div class="box">
-  <h2>Welkom terug</h2><p class="sub">Log in op uw MAISON account</p>
-  <div class="fld"><label>E-mail</label><input id="lEmail" type="email" autocomplete="email" onkeydown="if(event.key==='Enter')doLogin()"></div>
-  <div class="fld"><label>Wachtwoord</label><input id="lPass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
-  <button class="btn full" id="lBtn" onclick="doLogin()">Inloggen</button>
-  <div class="msg" id="lMsg"></div>
-  <div class="center"><a class="link" onclick="resetPassword()">Wachtwoord vergeten?</a></div>
-  <button class="gbtn" onclick="loginWithGoogle()"><svg width="18" height="18" viewBox="0 0 18 18"><path fill="#EA4335" d="M9 3.5c1.5 0 2.8.5 3.7 1.6l2.7-2.7C13.9.6 11.7 0 9 0 5.5 0 2.4 2 1.2 4.8l3.1 2.4C5.1 5.2 6.9 3.5 9 3.5z"/><path fill="#34A853" d="M17.6 9.2c0-.6-.1-1.2-.2-1.8H9v3.5h4.8c-.2 1.1-.8 2.1-1.8 2.7l2.8 2.2c1.6-1.5 2.8-3.7 2.8-6.6z"/><path fill="#4A90E2" d="M4 10.2a5.4 5.4 0 0 1 0-3.5L.8 4.3A9 9 0 0 0 0 9c0 1.5.3 2.8 1 4.1l3-2.9z"/><path fill="#FBBC05" d="M9 18c2.4 0 4.5-.8 6-2.2l-2.8-2.2c-.8.5-1.8.8-3.2.8-2.1 0-3.9-1.7-4.6-4L.8 13.9C2.1 16.8 5.1 18 9 18z"/></svg>Doorgaan met Google</button>
-  <div class="center">Geen account? <a class="link" onclick="showPage('register')">Registreer hier</a></div>
-</div></div></div>
+<section id="loginPage" class="page"><div class="wrap"><div class="box"><h1>Welkom terug</h1><p class="sub">Log in op je MAISON account</p>
+ <div class="fld"><label for="lEmail">E-mail</label><input id="lEmail" type="email" autocomplete="email"></div>
+ <div class="fld"><label for="lPass">Wachtwoord</label><input id="lPass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+ <button class="btn full" id="lBtn" onclick="doLogin()">Inloggen</button><div class="msg" id="lMsg"></div>
+ <div class="ctr"><button class="lk" onclick="resetPassword()">Wachtwoord vergeten?</button></div>
+ <button class="btn o full" onclick="loginWithGoogle()">Doorgaan met Google</button>
+ <div class="ctr">Geen account? <button class="lk" onclick="go('register')">Registreer hier</button></div></div></div></section>
 
-<!-- REGISTER -->
-<div id="registerPage" class="page"><div class="section"><div class="box">
-  <h2>Word lid</h2><p class="sub">Maak een MAISON account aan.</p>
-  <div class="fld"><label>Naam</label><input id="rName" autocomplete="name" maxlength="100"></div>
-  <div class="fld"><label>E-mail</label><input id="rEmail" type="email" autocomplete="email"></div>
-  <div class="fld"><label>Wachtwoord</label><input id="rPass" type="password" placeholder="Minimaal 6 tekens" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"></div>
-  <button class="btn full" id="rBtn" onclick="doRegister()">Account aanmaken</button>
-  <div class="msg" id="rMsg"></div>
-  <button class="gbtn" onclick="loginWithGoogle()">Doorgaan met Google</button>
-  <div class="center">Al een account? <a class="link" onclick="showPage('login')">Inloggen</a></div>
-</div></div></div>
+<section id="registerPage" class="page"><div class="wrap"><div class="box"><h1>Word lid</h1><p class="sub">Maak een MAISON account aan.</p>
+ <div class="fld"><label for="rName">Naam</label><input id="rName" autocomplete="name" maxlength="100"></div>
+ <div class="fld"><label for="rEmail">E-mail</label><input id="rEmail" type="email" autocomplete="email"></div>
+ <div class="fld"><label for="rPass">Wachtwoord (min. 6 tekens)</label><input id="rPass" type="password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"></div>
+ <button class="btn full" id="rBtn" onclick="doRegister()">Account aanmaken</button><div class="msg" id="rMsg"></div>
+ <button class="btn o full" onclick="loginWithGoogle()">Doorgaan met Google</button>
+ <div class="ctr">Al een account? <button class="lk" onclick="go('login')">Inloggen</button></div></div></div></section>
+</main>
 
-<!-- PROFILE -->
-<div id="profilePage" class="page"><div class="section">
-  <div class="eyebrow">Account</div><h2 class="title">Mijn profiel</h2>
-  <div class="box" style="margin:0">
-    <div class="fld"><label>Naam</label><div id="pfName" style="color:var(--c)"></div></div>
-    <div class="fld"><label>E-mail</label><div id="pfEmail" style="color:var(--c)"></div></div>
-    <div class="fld"><label>Verlanglijst</label><div id="pfWish" style="color:var(--c)"></div></div>
-    <div class="fld"><label>Status</label><div id="pfRole" style="color:var(--g)"></div></div>
-    <div id="pfVerify"></div>
-  </div>
-</div></div>
-
-<!-- ADMIN -->
-<div id="adminPage" class="page"><div class="section">
-  <h2 class="title">Admin panel</h2>
-  <div class="tabs" id="adminTabs">
-    <button class="tab active" data-tab="products">Producten</button>
-    <button class="tab" data-tab="coupons">Coupons</button>
-    <button class="tab" data-tab="users">Gebruikers</button>
-    <button class="tab" data-tab="orders">Bestellingen</button>
-    <button class="tab" data-tab="messages">Berichten</button>
-  </div>
-  <div id="tab-products" class="tc active">
-    <div class="box" style="max-width:none;margin-bottom:2rem">
-      <h3 style="color:var(--g);font-family:var(--ser);font-size:1.5rem;margin-bottom:1rem">Product toevoegen</h3>
-      <div class="form2">
-        <div class="fld"><input id="aTitle" placeholder="Naam" maxlength="120"></div>
-        <div class="fld"><input id="aCat" placeholder="Categorie" maxlength="60"></div>
-        <div class="fld"><input id="aPrice" type="number" step="0.01" min="0" placeholder="Prijs (€)"></div>
-        <div class="fld"><input id="aSale" type="number" step="0.01" min="0" placeholder="Actieprijs (€)"></div>
-        <div class="fld"><input id="aStock" type="number" min="0" placeholder="Voorraad"></div>
-        <div class="fld"><input id="aImg" type="file" accept="image/*"></div>
-        <div class="fld" style="grid-column:1/-1"><textarea id="aDesc" rows="2" placeholder="Beschrijving" maxlength="1500"></textarea></div>
-      </div>
-      <button class="btn full" id="aBtn" onclick="adminAddProduct()">+ Product toevoegen</button>
-      <div class="msg" id="aMsg"></div>
-    </div>
-    <div id="adminProducts"></div>
-  </div>
-  <div id="tab-coupons" class="tc">
-    <div class="box" style="max-width:none;margin-bottom:2rem">
-      <div class="form2" style="grid-template-columns:repeat(3,1fr)">
-        <div class="fld"><input id="kCode" placeholder="CODE" style="text-transform:uppercase" maxlength="30"></div>
-        <div class="fld"><input id="kDisc" type="number" min="1" max="100" placeholder="Korting %"></div>
-        <div class="fld"><input id="kMax" type="number" min="1" placeholder="Max. gebruik"></div>
-      </div>
-      <button class="btn full" onclick="adminAddCoupon()">+ Coupon toevoegen</button>
-      <div class="msg" id="kMsg"></div>
-    </div>
-    <div id="adminCoupons"></div>
-  </div>
-  <div id="tab-users" class="tc"><div id="adminUsers"></div></div>
-  <div id="tab-orders" class="tc"><div id="adminOrders"></div></div>
-  <div id="tab-messages" class="tc"><div id="adminMessages"></div></div>
-</div></div>
-
-<footer>
-  <div><div class="logo">MAISON<span>.</span><small>Premium Store</small></div><p style="margin-top:.6rem;max-width:260px;line-height:1.7">Premium store voor tijdloze elegantie.</p></div>
-  <div>© MAISON — Alle rechten voorbehouden<br><br>Veilig betalen via PayPal</div>
-</footer>
+<footer><div class="wrap"><div><div class="logo">MAISON</div><p style="margin-top:.5rem;max-width:280px">Premium store voor tijdloze elegantie.</p></div>
+<div>© MAISON — Alle rechten voorbehouden<br>Veilig betalen via PayPal<br><button class="lk" style="color:#e8d3a8" onclick="go('contact')">Klantenservice</button></div></div></footer>
 
 <script>
 const $=id=>document.getElementById(id);
-const HEART=f=>`<svg width="16" height="16" viewBox="0 0 24 24" fill="${f?'#b5442f':'none'}" stroke="${f?'#b5442f':'#1a1a1a'}" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-
-// ───────── DIAGNOSE ─────────
-function diag(html){const d=$('diag');d.style.display='block';d.innerHTML='<button onclick="this.parentNode.style.display=\'none\'">×</button>'+html}
-window.addEventListener('error',e=>diag('Scriptfout: '+esc(e.message)));
-window.addEventListener('unhandledrejection',e=>fbErr(e.reason,true));
-if(location.protocol==='file:')diag('Je opent de site als lokaal bestand (file://). Inloggen, Google-login en Firebase werken dan niet goed. Host de site (Firebase Hosting, Netlify, GitHub Pages) of draai <code>npx serve</code> en open <b>http://localhost</b>.');
-if(typeof firebase==='undefined'){diag('Firebase kon niet laden (internet, adblocker of firewall). Zonder Firebase werkt niets.');throw new Error('Firebase ontbreekt')}
-
-let shown=false;
-function fbErr(e,banner){
-  const code=e?.code||'',msg=e?.message||String(e);
-  if(code==='permission-denied'||/insufficient permissions/i.test(msg)){
-    if(banner&&!shown){shown=true;diag('<b>Firestore blokkeert dit (geen rechten).</b> Controleer de Firestore-regels in Firebase Console → Firestore Database → Rules. Zorg dat je bent ingelogd en (voor admin) dat je e-mail geverifieerd is.')}
-    return 'Geen rechten (Firestore-regels / niet ingelogd)';
-  }
-  if(code==='failed-precondition')return 'Database niet klaar of index ontbreekt';
-  if(code==='unavailable')return 'Geen verbinding met database';
-  return msg;
-}
-
-// ───────── FIREBASE ─────────
-firebase.initializeApp({
-  apiKey:"AIzaSyCz-EYcHMVG20tX0z-jbEVUVM8b4NC7VcM",
-  authDomain:"shop-2eab0.firebaseapp.com",
-  projectId:"shop-2eab0",
-  storageBucket:"shop-2eab0.firebasestorage.app",
-  messagingSenderId:"846711763840",
-  appId:"1:846711763840:web:67c360a26f0d741f7d4765"
-});
+const PH="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%25' height='100%25' fill='%23f1ede6'/><text x='50%25' y='50%25' fill='%238a6a3b' font-size='20' text-anchor='middle'>MAISON</text></svg>";
+const HEART=f=>`<svg width="18" height="18" viewBox="0 0 24 24" fill="${f?'#a33a2a':'none'}" stroke="${f?'#a33a2a':'#1c1917'}" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>`;
+function diag(h){const d=$('diag');d.style.display='block';d.innerHTML=h}
+addEventListener('error',e=>console.error(e.message));
+function boot(){
+if(typeof firebase==='undefined'){diag('Firebase kon niet laden (internet of adblocker). Zonder Firebase werkt de shop niet.');return}
+if(location.protocol==='file:')diag('Host de site (bijv. GitHub Pages) of draai <code>npx serve</code>; inloggen werkt niet via file://.');
+firebase.initializeApp({apiKey:"AIzaSyCz-EYcHMVG20tX0z-jbEVUVM8b4NC7VcM",authDomain:"shop-2eab0.firebaseapp.com",projectId:"shop-2eab0",storageBucket:"shop-2eab0.firebasestorage.app",messagingSenderId:"846711763840",appId:"1:846711763840:web:67c360a26f0d741f7d4765"});
 const auth=firebase.auth(),db=firebase.firestore(),FV=firebase.firestore.FieldValue;
-// Snelle verbinding: valt automatisch terug op long-polling als WebChannel vastloopt
 db.settings({experimentalAutoDetectLongPolling:true,merge:true});
-auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>auth.setPersistence(firebase.auth.Auth.Persistence.SESSION).catch(console.error));
-const gProvider=new firebase.auth.GoogleAuthProvider();
-const ADMIN_EMAIL="elmouchania@gmail.com";
-const PH="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='530'><rect width='100%25' height='100%25' fill='%23f1ede6'/><text x='50%25' y='50%25' fill='%239a7b4f' font-size='20' text-anchor='middle'>MAISON</text></svg>";
-
-// ───────── STATE ─────────
-let loaded=false,user=null,roleAdmin=false,products=[],coupons=[],orders=[],cart=[],wishlist=[],cur=null,applied=null,catFilter='',unsubs=[];
-const admin=()=>!!user&&((user.email===ADMIN_EMAIL&&user.emailVerified)||roleAdmin);
-const r2=n=>Math.round(n*100)/100;
-const eur=n=>'€'+Number(n).toFixed(2).replace('.',',');
-const pp=p=>p.salePrice&&p.salePrice<p.price?p.salePrice:p.price;
+const gP=new firebase.auth.GoogleAuthProvider();
+let loaded=false,user=null,products=[],orders=[],cart=[],wishlist=[],cur=null,applied=null,cat='',unsubs=[],tmr;
+const r2=n=>Math.round(n*100)/100,eur=n=>'€'+Number(n).toFixed(2).replace('.',','),pp=p=>p.salePrice&&p.salePrice<p.price?p.salePrice:p.price;
 const imgOk=u=>typeof u==='string'&&/^(data:image\/|https:\/\/)/.test(u)?u:PH;
-function toast(m,t=''){const d=document.createElement('div');d.className='toast '+t;d.textContent=m;$('toasts').appendChild(d);setTimeout(()=>d.remove(),4200)}
+const page=()=>document.querySelector('.page.on')?.id;
+const uref=()=>db.collection('users').doc(user.uid);
+function fbErr(e){const c=e?.code||'';if(c==='permission-denied')return 'Geen rechten (niet ingelogd of Firestore-regels)';if(c==='unavailable')return 'Geen verbinding met database';return e?.message||String(e)}
+function toast(m,t='',act){const d=document.createElement('div');d.className='toast '+t;const s=document.createElement('span');s.textContent=m;d.appendChild(s);
+ if(act){const b=document.createElement('button');b.textContent=act.l;b.onclick=()=>{act.f();d.remove()};d.appendChild(b)}
+ $('toasts').appendChild(d);setTimeout(()=>d.remove(),4500)}
 function setMsg(id,t,c){const e=$(id);e.textContent=t;e.className='msg '+(c||'')}
-function authError(e){return({
- 'auth/invalid-credential':'Onjuist e-mailadres of wachtwoord','auth/wrong-password':'Onjuist wachtwoord',
- 'auth/user-not-found':'Account niet gevonden','auth/email-already-in-use':'E-mailadres is al in gebruik',
- 'auth/invalid-email':'Ongeldig e-mailadres','auth/weak-password':'Wachtwoord te zwak (min. 6 tekens)',
- 'auth/too-many-requests':'Te veel pogingen, probeer later opnieuw','auth/network-request-failed':'Geen internetverbinding',
- 'auth/unauthorized-domain':'Dit domein staat niet in Firebase → Authentication → Settings → Authorized domains',
- 'auth/operation-not-allowed':'Deze loginmethode staat uit in Firebase → Authentication → Sign-in method',
- 'auth/configuration-not-found':'Authentication is niet ingeschakeld in Firebase Console',
- 'auth/api-key-not-valid.-please-pass-a-valid-api-key.':'Ongeldige Firebase API-sleutel'
-}[e.code]||(e.code?e.code+': ':'')+e.message)}
+function authErr(e){return({'auth/invalid-credential':'Onjuist e-mailadres of wachtwoord','auth/email-already-in-use':'E-mailadres is al in gebruik','auth/invalid-email':'Ongeldig e-mailadres','auth/weak-password':'Wachtwoord te zwak (min. 6 tekens)','auth/too-many-requests':'Te veel pogingen, probeer later opnieuw','auth/network-request-failed':'Geen internetverbinding','auth/unauthorized-domain':'Dit domein staat niet bij Firebase → Authentication → Authorized domains'}[e.code]||e.message)}
 
-// ───────── LISTENERS ─────────
-// Producten: publiek leesbaar, herstart zichzelf bij een fout (bv. na inloggen)
-let unsubP=null,pRetry=null;
-function listenProducts(){
-  unsubP&&unsubP();clearTimeout(pRetry);
-  unsubP=db.collection('products').onSnapshot(s=>{
-    products=s.docs.map(d=>({id:d.id,...d.data()}));loaded=true;
-    refreshView();renderCart();if(cur&&$('pOv').classList.contains('active'))openProduct(cur.id,true);
-    if(activePage()==='adminPage'&&admin())renderAdminProducts();
-  },e=>{console.error(e);fbErr(e,true);pRetry=setTimeout(listenProducts,5000)});
-}
+// Navigatie
+window.go=function(n){
+ if((n==='orders')&&!user){toast('Log eerst in','error');n='login'}
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));$(n+'Page').classList.add('on');
+ document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===n));
+ closeAll();$('nav').classList.remove('show');$('burger').setAttribute('aria-expanded','false');$('um').classList.remove('show');
+ view();if(n==='orders')renderOrders();scrollTo({top:0,behavior:'smooth'});
+};
+function view(){const p=page();if(p==='homePage')renderHome();if(p==='shopPage')renderShop();if(p==='wishlistPage')renderWish()}
+function closeAll(){['cartOv','coOv','pOv'].forEach(i=>$(i).classList.remove('on'));document.body.style.overflow=''}
+window.closeAll=closeAll;
+function openOv(id){$(id).classList.add('on');document.body.style.overflow='hidden';setTimeout(()=>$(id).querySelector('.x')?.focus(),50)}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
+$('burger').onclick=()=>{const s=$('nav').classList.toggle('show');$('burger').setAttribute('aria-expanded',s)};
+document.addEventListener('click',()=>$('um').classList.remove('show'));
+addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
+$('sS').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,200)};$('sO').onchange=renderShop;
+
+// Data
+function listenProducts(){db.collection('products').onSnapshot(s=>{products=s.docs.map(d=>({id:d.id,...d.data()}));loaded=true;view();renderCart();if(cur&&$('pOv').classList.contains('on'))openProduct(cur.id,true)},e=>{console.error(e);setTimeout(listenProducts,5000)})}
 listenProducts();
-
+let reviews=[];
+db.collection('reviews').where('approved','==',true).onSnapshot(q=>{reviews=q.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,6);renderReviews()},e=>console.error(e));
+function renderReviews(){const n=reviews.length,st=r=>'★'.repeat(r)+'☆'.repeat(5-r);
+ $('rvAvg').textContent=n?`Gemiddeld ${(reviews.reduce((s,r)=>s+r.rating,0)/n).toFixed(1).replace('.',',')} van 5 (${n} review${n===1?'':'s'})`:'';
+ $('rvList').innerHTML=n?reviews.map(r=>`<article class="rv"><div class="st" aria-label="${r.rating} van 5 sterren">${st(r.rating)}</div><p>${esc(r.text)}</p><small>— ${esc(r.name)}</small></article>`).join(''):'<p class="sub" style="grid-column:1/-1">Nog geen reviews. Heb je besteld? Deel als eerste je ervaring.</p>'}
+window.sendReview=async()=>{if(!user){toast('Log in om een review te plaatsen','error');return go('login')}
+ if(!orders.length)return setMsg('rvMsg','Alleen klanten met een bestelling kunnen een review plaatsen','error');
+ const rating=parseInt($('rvRate').value),text=$('rvText').value.trim();if(!(rating>=1&&rating<=5)||text.length<5)return setMsg('rvMsg','Schrijf minimaal een korte tekst','error');
+ try{await db.collection('reviews').doc(user.uid).set({userId:user.uid,name:(user.displayName||'Klant').split(' ')[0],rating,text,approved:false,createdAt:FV.serverTimestamp()});
+  $('rvText').value='';setMsg('rvMsg','Bedankt! Je review verschijnt na controle.','success')}catch(e){setMsg('rvMsg','Versturen mislukt: '+fbErr(e),'error')}};
 function listenUser(){
-  unsubs.forEach(u=>u());unsubs=[];
-  if(!user)return;
-  const ref=db.collection('users').doc(user.uid),er=e=>{console.error(e);fbErr(e,true)};
-  unsubs.push(ref.onSnapshot(d=>{roleAdmin=d.data()?.role==='admin';updateNav()},er));
-  unsubs.push(db.collection('orders').where('userId','==',user.uid).onSnapshot(s=>{
-    orders=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-    if(activePage()==='ordersPage')renderOrders();
-  },er));
-  unsubs.push(ref.collection('cart').onSnapshot(s=>{
-    cart=s.docs.map(d=>({id:d.id,qty:d.data().qty||1}));updateCartBadge();renderCart();
-  },er));
-  unsubs.push(ref.collection('wishlist').onSnapshot(s=>{
-    wishlist=s.docs.map(d=>d.id);updateNav();refreshView();updateModalWish();
-  },er));
+ unsubs.forEach(u=>u());unsubs=[];if(!user)return;const er=e=>console.error(e);
+ unsubs.push(db.collection('orders').where('userId','==',user.uid).onSnapshot(s=>{orders=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));if(page()==='ordersPage')renderOrders()},er));
+ unsubs.push(uref().collection('cart').onSnapshot(s=>{cart=s.docs.map(d=>({id:d.id,qty:d.data().qty||1}));badge();renderCart()},er));
+ unsubs.push(uref().collection('wishlist').onSnapshot(s=>{wishlist=s.docs.map(d=>d.id);nav();view();wishBtn()},er));
 }
-
-// ───────── AUTH (niet blokkerend) ─────────
 auth.onAuthStateChanged(u=>{
-  user=u;
-  if(u){
-    const ref=db.collection('users').doc(u.uid);
-    ref.get().then(s=>{if(!s.exists)return ref.set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()})})
-      .catch(e=>{console.error(e);fbErr(e,true)});
-  }else{
-    cart=[];wishlist=[];orders=[];coupons=[];roleAdmin=false;applied=null;updateCartBadge();
-    if(['adminPage','ordersPage','profilePage'].includes(activePage()))showPage('home');
-  }
-  listenUser();updateNav();refreshView();
+ user=u;
+ if(u)uref().get().then(s=>{if(!s.exists)return uref().set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()})}).catch(console.error);
+ else{cart=[];wishlist=[];orders=[];applied=null;badge();if(['ordersPage'].includes(page()))go('home')}
+ listenUser();nav();view();
 });
-auth.getRedirectResult().catch(e=>toast(authError(e),'error'));
+auth.getRedirectResult().catch(e=>toast(authErr(e),'error'));
+function nav(){$('guest').hidden=!!user;$('ub').hidden=!user;if(user)$('ub').textContent=(user.displayName||user.email.split('@')[0])+' ▾';$('wb').hidden=!wishlist.length;$('wb').textContent=wishlist.length}
+function badge(bump){const n=cart.reduce((s,c)=>s+c.qty,0),b=$('cb');b.textContent=n;b.hidden=!n;if(bump){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
 
-async function doLogin(){
-  const email=$('lEmail').value.trim().toLowerCase(),pass=$('lPass').value;
-  if(!email||!pass)return setMsg('lMsg','Vul alle velden in','error');
-  $('lBtn').disabled=true;setMsg('lMsg','Bezig met inloggen...');
-  try{
-    const c=await auth.signInWithEmailAndPassword(email,pass);
-    setMsg('lMsg','');$('lPass').value='';toast('Ingelogd','success');
-    if(c.user.email===ADMIN_EMAIL&&!c.user.emailVerified)toast('Verifieer je e-mail om admin-rechten te krijgen (zie Mijn profiel)','error');
-    user=c.user;showPage(admin()?'admin':'home');
-  }catch(e){setMsg('lMsg',authError(e),'error')}
-  $('lBtn').disabled=false;
-}
-async function doRegister(){
-  const name=$('rName').value.trim(),email=$('rEmail').value.trim().toLowerCase(),pass=$('rPass').value;
-  if(!name||!email||pass.length<6)return setMsg('rMsg','Vul alle velden in (wachtwoord min. 6 tekens)','error');
-  $('rBtn').disabled=true;setMsg('rMsg','Account aanmaken...');
-  try{
-    const c=await auth.createUserWithEmailAndPassword(email,pass);
-    await c.user.updateProfile({displayName:name});
-    c.user.sendEmailVerification().catch(()=>{});
-    await db.collection('users').doc(c.user.uid).set({email,name,role:'user',createdAt:new Date()},{merge:true});
-    updateNav();setMsg('rMsg','');toast('Account aangemaakt  Check je mail om je adres te verifiëren','success');showPage('home');
-  }catch(e){setMsg('rMsg',authError(e)||fbErr(e),'error')}
-  $('rBtn').disabled=false;
-}
-async function loginWithGoogle(){
-  try{
-    const {user:u}=await auth.signInWithPopup(gProvider);
-    user=u;toast('Welkom '+(u.displayName||'')+' ','success');
-    showPage(admin()?'admin':'home');
-  }catch(e){
-    if(e.code==='auth/popup-blocked')return auth.signInWithRedirect(gProvider);
-    if(['auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(e.code))return;
-    toast('Google login mislukt: '+authError(e),'error');
-  }
-}
-async function resetPassword(){
-  const email=$('lEmail').value.trim();
-  if(!email)return toast('Vul eerst je e-mailadres in','error');
-  try{await auth.sendPasswordResetEmail(email);toast('Reset-mail verstuurd ','success')}catch(e){toast(authError(e),'error')}
-}
-async function logout(){await auth.signOut();showPage('home');toast('Uitgelogd')}
-async function resendVerify(){try{await user.sendEmailVerification();toast('Verificatiemail verstuurd ','success')}catch(e){toast(authError(e),'error')}}
-async function checkVerified(){
-  try{await user.reload();user=auth.currentUser;await user.getIdToken(true);updateNav();renderProfile();
-    toast(user.emailVerified?'E-mail geverifieerd':'Nog niet geverifieerd',user.emailVerified?'success':'error')}catch(e){toast(authError(e),'error')}
-}
+// Auth
+window.doLogin=async()=>{const e=$('lEmail').value.trim().toLowerCase(),p=$('lPass').value;if(!e||!p)return setMsg('lMsg','Vul alle velden in','error');
+ $('lBtn').disabled=true;setMsg('lMsg','Bezig met inloggen...');
+ try{await auth.signInWithEmailAndPassword(e,p);setMsg('lMsg','');$('lPass').value='';toast('Ingelogd','success');go('home')}catch(x){setMsg('lMsg',authErr(x),'error')}$('lBtn').disabled=false};
+window.doRegister=async()=>{const n=$('rName').value.trim(),e=$('rEmail').value.trim().toLowerCase(),p=$('rPass').value;
+ if(!n||!e||p.length<6)return setMsg('rMsg','Vul alle velden in (wachtwoord min. 6 tekens)','error');
+ $('rBtn').disabled=true;setMsg('rMsg','Account aanmaken...');
+ try{const c=await auth.createUserWithEmailAndPassword(e,p);await c.user.updateProfile({displayName:n});c.user.sendEmailVerification().catch(()=>{});
+  await db.collection('users').doc(c.user.uid).set({email:e,name:n,role:'user',createdAt:new Date()},{merge:true});setMsg('rMsg','');toast('Account aangemaakt. Check je mail om je adres te verifiëren.','success');go('home')}catch(x){setMsg('rMsg',authErr(x),'error')}$('rBtn').disabled=false};
+window.loginWithGoogle=async()=>{try{await auth.signInWithPopup(gP);go('home')}catch(e){if(e.code==='auth/popup-blocked')return auth.signInWithRedirect(gP);if(['auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(e.code))return;toast('Google login mislukt: '+authErr(e),'error')}};
+window.resetPassword=async()=>{const e=$('lEmail').value.trim();if(!e)return toast('Vul eerst je e-mailadres in','error');try{await auth.sendPasswordResetEmail(e);toast('Reset-mail verstuurd','success')}catch(x){toast(authErr(x),'error')}};
+window.logout=async()=>{await auth.signOut();go('home');toast('Uitgelogd')};
 
-// ───────── NAV / PAGES ─────────
-const activePage=()=>document.querySelector('.page.active')?.id;
-function updateNav(){
-  $('guest').style.display=user?'none':'flex';
-  $('userBtn').style.display=user?'inline-block':'none';
-  $('adminLink').style.display=admin()?'block':'none';
-  if(user)$('userBtn').textContent=(user.displayName||user.email.split('@')[0])+' ▾';
-  $('wbadge').innerHTML=wishlist.length?`<span class="badge">${wishlist.length}</span>`:'';
-}
-function showPage(name){
-  if((name==='orders'||name==='profile')&&!user){toast('Log eerst in','error');name='login'}
-  if(name==='admin'&&!admin()){toast(user?'Geen admin-rechten (is je e-mail geverifieerd?)':'Log eerst in','error');name=user?'home':'login'}
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  $(name+'Page').classList.add('active');
-  document.querySelectorAll('.nl').forEach(b=>b.classList.toggle('active',b.dataset.page===name));
-  closeCart();closeModal();closeCheckout();$('umenu').classList.remove('show');
-  refreshView();
-  if(name==='orders')renderOrders();
-  if(name==='profile')renderProfile();
-  if(name==='admin'){renderAdminProducts();renderAdminCoupons()}
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function refreshView(){
-  const p=activePage();
-  if(p==='homePage')renderHome();
-  if(p==='shopPage')renderShop();
-  if(p==='wishlistPage')renderWishlist();
-}
-document.querySelectorAll('.nl').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
-document.addEventListener('click',()=>$('umenu').classList.remove('show'));
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeModal();closeCart();closeCheckout()}});
+// Producten
+function card(p){const sale=p.salePrice&&p.salePrice<p.price,out=(p.stock||0)<=0,w=wishlist.includes(p.id),id=esc(p.id);
+ return `<article class="card"><div style="position:relative"><button class="imgw" onclick="openProduct('${id}')" aria-label="Bekijk product ${esc(p.title)}"><img src="${esc(imgOk(p.image))}" alt="${esc(p.title)}" width="400" height="400" loading="lazy" decoding="async">${out?'<span class="bd out">Uitverkocht</span>':sale?`<span class="bd">-${Math.round((1-p.salePrice/p.price)*100)}%</span>`:''}</button>
+ <button class="wish" onclick="toggleWish('${id}')" aria-label="${w?'Verwijder van':'Voeg toe aan'} verlanglijst" aria-pressed="${w}">${HEART(w)}</button></div>
+ <div class="info"><div class="cat">${esc(p.category)}</div><button class="pn" onclick="openProduct('${id}')">${esc(p.title)}</button>
+ <div class="pr">${sale?`<s>${eur(p.price)}</s><span class="new">${eur(pp(p))}</span>`:eur(pp(p))}</div>
+ <button class="btn" ${out?'disabled':''} onclick="addToCart('${id}',1)">${out?'Uitverkocht':'Toevoegen aan winkelwagen'}</button></div></article>`}
+const none=t=>`<div class="empty">${t}</div>`;
+function renderHome(){$('homeGrid').innerHTML=!loaded?none('Laden...'):products.length?products.slice(0,6).map(card).join(''):none('Nog geen producten')}
+window.setCat=c=>{cat=c;renderShop()};
+function renderShop(){const q=$('sS').value.toLowerCase(),so=$('sO').value,cats=[...new Set(products.map(p=>p.category).filter(Boolean))];
+ $('chips').innerHTML=['',...cats].map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${esc(c)}" onclick="setCat(this.dataset.c)">${c?esc(c):'Alles'}</button>`).join('');
+ let l=products.filter(p=>(!cat||p.category===cat)&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
+ if(so==='low')l.sort((a,b)=>pp(a)-pp(b));if(so==='high')l.sort((a,b)=>pp(b)-pp(a));if(so==='new')l.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+ $('shopGrid').innerHTML=!loaded?none('Laden...'):l.length?l.map(card).join(''):none('Geen producten gevonden')}
+function renderWish(){if(!user){$('wishC').innerHTML=none('Log in om je verlanglijst te zien<br><br><button class="btn" onclick="go(\'login\')">Inloggen</button>');return}
+ const l=products.filter(p=>wishlist.includes(p.id));$('wishC').innerHTML=l.length?`<div class="grid">${l.map(card).join('')}</div>`:none('Je verlanglijst is leeg<br><br><button class="btn" onclick="go(\'shop\')">Bekijk collectie</button>')}
+function renderOrders(){const S={pending:'In afwachting',completed:'Betaald',shipped:'Verzonden'};
+ $('ordL').innerHTML=orders.length?orders.map(o=>`<div class="oc"><div class="h"><b>#${esc(o.id.slice(0,8).toUpperCase())}</b><span>${esc(S[o.status]||o.status)}</span></div>
+ <div>Totaal: <b>${eur(o.total||0)}</b> · ${o.createdAt?.toDate?o.createdAt.toDate().toLocaleDateString('nl-NL'):''}</div>${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`).join(''):none('Nog geen bestellingen')}
+window.openProduct=(id,keep)=>{const p=products.find(x=>x.id===id);if(!p)return;cur=p;
+ $('mImg').src=imgOk(p.image);$('mImg').alt=p.title;$('mCat').textContent=p.category||'';$('mTitle').textContent=p.title;
+ const sale=p.salePrice&&p.salePrice<p.price;$('mPrice').innerHTML=sale?`<s>${eur(p.price)}</s><span class="new">${eur(pp(p))}</span>`:eur(pp(p));
+ $('mDesc').textContent=p.desc||'';const s=p.stock||0;
+ $('mStock').innerHTML=s<=0?'<b style="color:var(--red)">Uitverkocht</b>':s<=5?`<b style="color:#9a5b10">Nog ${s} op voorraad</b>`:'<b style="color:var(--ok)">Op voorraad</b>';
+ $('mAdd').disabled=s<=0;if(!keep)$('mQty').value=1;wishBtn();openOv('pOv')};
+window.chQty=d=>{const i=$('mQty'),max=cur?.stock||1;i.value=Math.min(max,Math.max(1,(parseInt(i.value)||1)+d))};
+function wishBtn(){if(cur)$('mWish').textContent=wishlist.includes(cur.id)?'Verwijder van verlanglijst':'Op verlanglijst'}
+window.toggleWish=async id=>{if(!user){toast('Log in om favorieten op te slaan','error');return go('login')}
+ const ref=uref().collection('wishlist').doc(id);try{if(wishlist.includes(id)){await ref.delete();toast('Verwijderd van verlanglijst')}else{await ref.set({addedAt:new Date()});toast('Toegevoegd aan verlanglijst','success')}}catch(e){toast(fbErr(e),'error')}};
 
-// ───────── PRODUCT RENDER ─────────
-function card(p){
-  const sale=p.salePrice&&p.salePrice<p.price,out=(p.stock||0)<=0,w=wishlist.includes(p.id);
-  return `<div class="card" onclick="openProduct('${esc(p.id)}')">
-  <div class="imgw"><img src="${esc(imgOk(p.image))}" alt="${esc(p.title)}" loading="lazy">
-  ${out?'<div class="bd out">Uitverkocht</div>':sale?`<div class="bd">-${Math.round((1-p.salePrice/p.price)*100)}%</div>`:''}
-  <button class="wish" onclick="event.stopPropagation();toggleWish('${esc(p.id)}')">${HEART(w)}</button></div>
-  <div class="info"><div class="cat">${esc(p.category)}</div><div class="pname">${esc(p.title)}</div>
-  <div class="price">${sale?`<s>${eur(p.price)}</s>`:''}${eur(pp(p))}</div>
-  <button class="add" ${out?'disabled':''} onclick="event.stopPropagation();addToCart('${esc(p.id)}',1)">${out?'Uitverkocht':'+ Winkelwagen'}</button></div></div>`;
-}
-function renderHome(){
-  $('stP').textContent=products.length;$('stW').textContent=wishlist.length;
-  $('homeGrid').innerHTML=products.length?products.slice(0,6).map(card).join(''):'<div class="empty" style="background:var(--s)">Nog geen producten</div>';
-}
-function setCat(c){catFilter=c;renderShop()}
-function renderShop(){
-  const q=$('sSearch').value.toLowerCase(),sort=$('sSort').value;
-  const cats=[...new Set(products.map(p=>p.category).filter(Boolean))];
-  $('chips').innerHTML=['',...cats].map(c=>`<button class="chip ${c===catFilter?'active':''}" data-c="${esc(c)}" onclick="setCat(this.dataset.c)">${c?esc(c):'Alles'}</button>`).join('');
-  let l=products.filter(p=>(!catFilter||p.category===catFilter)&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
-  if(sort==='low')l.sort((a,b)=>pp(a)-pp(b));
-  if(sort==='high')l.sort((a,b)=>pp(b)-pp(a));
-  if(sort==='new')l.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  $('shopGrid').innerHTML=l.length?l.map(card).join(''):'<div class="empty" style="background:var(--s)">Geen producten gevonden</div>';
-}
-function renderWishlist(){
-  if(!user){$('wishContent').innerHTML='<div class="empty">Log in om je verlanglijst te zien<br><br><button class="btn" onclick="showPage(\'login\')">Inloggen</button></div>';return}
-  const l=products.filter(p=>wishlist.includes(p.id));
-  $('wishContent').innerHTML=l.length?`<div class="grid">${l.map(card).join('')}</div>`:'<div class="empty">Uw verlanglijst is leeg<br><br><button class="btn" onclick="showPage(\'shop\')">Bekijk collectie</button></div>';
-}
-function renderOrders(){
-  $('ordersList').innerHTML=orders.length?orders.map(o=>orderCard(o,false)).join(''):'<div class="empty">Nog geen bestellingen</div>';
-}
-function orderCard(o,adm){
-  const d=o.createdAt?.toDate?o.createdAt.toDate().toLocaleDateString('nl-NL'):'';
-  const stl={pending:'In afwachting',completed:'Betaald',shipped:'Verzonden'}[o.status]||esc(o.status);
-  return `<div class="oc"><div class="h"><div><div class="oid">#${esc(o.id.slice(0,8).toUpperCase())}</div>${adm?`<div style="color:var(--m)">${esc(o.userName)} · ${esc(o.userEmail)}</div>`:''}</div>
-  ${adm?`<select onchange="setOrderStatus('${esc(o.id)}',this.value)" style="background:var(--s);color:var(--t);border:1px solid var(--b);padding:.3rem">${['pending','completed','shipped'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}</select>`:`<div class="st">${stl}</div>`}</div>
-  <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><span><b style="color:var(--g)">Totaal:</b> ${eur(o.total||0)}</span><span>${d}</span></div>
-  ${adm?`<div style="margin-top:.5rem"><b style="color:var(--g)">Tel:</b> ${esc(o.phone)} · <b style="color:var(--g)">Adres:</b> ${esc(o.address)}${o.paypalOrderId?` · <b style="color:var(--g)">PayPal:</b> ${esc(o.paypalOrderId)}`:''}</div>`:''}
-  ${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`;
-}
-function renderProfile(){
-  if(!user)return;
-  $('pfName').textContent=user.displayName||user.email.split('@')[0];
-  $('pfEmail').textContent=user.email+(user.emailVerified?' (geverifieerd)':' (niet geverifieerd)');
-  $('pfWish').textContent=wishlist.length+' product'+(wishlist.length===1?'':'en');
-  $('pfRole').textContent=admin()?'Admin':'Klant';
-  $('pfVerify').innerHTML=user.emailVerified?'':'<div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn sm" onclick="resendVerify()">Verificatiemail sturen</button><button class="btn sm" onclick="checkVerified()">Ik heb geverifieerd</button></div>';
-}
-
-// ───────── PRODUCT MODAL ─────────
-function openProduct(id,keep){
-  const p=products.find(x=>x.id===id);if(!p)return;cur=p;
-  $('mImg').src=imgOk(p.image);$('mCat').textContent=p.category||'';$('mTitle').textContent=p.title;
-  const sale=p.salePrice&&p.salePrice<p.price;
-  $('mPrice').innerHTML=(sale?`<s style="font-size:1rem;color:var(--m)">${eur(p.price)}</s> `:'')+eur(pp(p));
-  $('mDesc').textContent=p.desc||'';
-  const s=p.stock||0;
-  $('mStock').innerHTML=s<=0?'<span style="color:#b5442f"> Uitverkocht</span>':s<=5?`<span style="color:#b8741f"> Nog ${s} stuks op voorraad</span>`:`<span style="color:#3f7a5f"> Op voorraad</span>`;
-  $('mAdd').disabled=s<=0;
-  if(!keep)$('mQty').value=1;
-  updateModalWish();
-  $('pOv').classList.add('active');
-}
-function closeModal(){$('pOv').classList.remove('active')}
-function chQty(d){const i=$('mQty'),max=cur?.stock||1;i.value=Math.min(max,Math.max(1,(parseInt(i.value)||1)+d))}
-function updateModalWish(){if(cur)$('mWish').textContent=wishlist.includes(cur.id)?'Verwijder van verlanglijst':'Op verlanglijst'}
-async function toggleWish(id){
-  if(!user){toast('Log in om favorieten op te slaan','error');return showPage('login')}
-  const ref=db.collection('users').doc(user.uid).collection('wishlist').doc(id);
-  try{
-    if(wishlist.includes(id)){await ref.delete();toast('Verwijderd van verlanglijst')}
-    else{await ref.set({addedAt:new Date()});toast('Toegevoegd aan verlanglijst','success')}
-  }catch(e){toast('Fout: '+fbErr(e,true),'error')}
-}
-
-// ───────── CART ─────────
+// Winkelwagen
 const allLines=()=>loaded?cart.map(c=>{const p=products.find(x=>x.id===c.id);return{...c,p,gone:!p||(p.stock||0)<=0,price:p?pp(p):0}}):[];
-const lines=()=>allLines().filter(l=>!l.gone);
-function calc(){
-  const L=lines(),sub=r2(L.reduce((s,l)=>s+l.price*l.qty,0));
-  const disc=applied?r2(sub*applied.discount/100):0;
-  const ship=L.length&&sub<50?5.99:0;
-  return{L,G:allLines().filter(l=>l.gone),sub,disc,ship,total:r2(Math.max(0,sub-disc+ship))};
-}
-function updateCartBadge(){
-  const n=cart.reduce((s,c)=>s+c.qty,0);
-  $('cbadge').textContent=n;$('cbadge').style.display=n?'inline':'none';
-}
-function openCart(){$('cartOv').classList.add('active');renderCart()}
-function closeCart(){$('cartOv').classList.remove('active')}
-function renderCart(){
-  const {L,G,sub,disc,ship,total}=calc();
-  const rm=l=>`<button onclick="removeCart('${esc(l.id)}')" style="background:none;border:none;color:#b5442f;align-self:flex-start">×</button>`;
-  const ok=L.map(l=>`<div class="ci"><img src="${esc(imgOk(l.p.image))}" alt="">
-   <div style="flex:1"><div class="nm">${esc(l.p.title)}</div><div class="pr">${eur(l.price)}</div>
-   <div class="q"><button onclick="changeCart('${esc(l.id)}',-1)">−</button><span style="min-width:24px;text-align:center">${l.qty}</span><button onclick="changeCart('${esc(l.id)}',1)">+</button></div></div>${rm(l)}</div>`).join('');
-  const gone=G.map(l=>`<div class="ci" style="opacity:.75;border:1px solid var(--r)"><img src="${esc(imgOk(l.p?.image))}" alt="" style="filter:grayscale(1)">
-   <div style="flex:1"><div class="nm">${esc(l.p?.title||'Product')}</div><div class="pr" style="color:#b5442f">Dit product is uitverkocht of niet meer beschikbaar</div></div>${rm(l)}</div>`).join('');
-  $('cartItems').innerHTML=(L.length||G.length)?ok+gone:'<div class="empty">Uw winkelwagen is leeg</div>';
-  $('sub').textContent=eur(sub);$('ship').textContent=ship?eur(ship):'GRATIS';$('tot').textContent=eur(total);
-  $('discRow').style.display=applied?'flex':'none';$('disc').textContent='-'+eur(disc);
-}
-async function addToCart(id,qty=1,fromModal){
-  if(!user){toast('Log in om te shoppen','error');return showPage('login')}
-  const p=products.find(x=>x.id===id);if(!p||(p.stock||0)<=0)return;
-  const have=cart.find(c=>c.id===id)?.qty||0;
-  if(have+qty>p.stock)return toast(`Maximaal ${p.stock} stuks beschikbaar`,'error');
-  try{
-    await db.collection('users').doc(user.uid).collection('cart').doc(id).set({qty:FV.increment(qty)},{merge:true});
-    toast(`${qty}× "${p.title}" toegevoegd `,'success');if(fromModal)closeModal();
-  }catch(e){toast('Fout: '+fbErr(e,true),'error')}
-}
-async function changeCart(id,d){
-  const c=cart.find(x=>x.id===id),p=products.find(x=>x.id===id);if(!c||!p)return;
-  const n=c.qty+d;
-  if(n<=0)return removeCart(id);
-  if(n>p.stock)return toast(`Maximaal ${p.stock} stuks beschikbaar`,'error');
-  try{await db.collection('users').doc(user.uid).collection('cart').doc(id).update({qty:n})}catch(e){toast(fbErr(e,true),'error')}
-}
-async function removeCart(id){try{await db.collection('users').doc(user.uid).collection('cart').doc(id).delete()}catch(e){toast(fbErr(e,true),'error')}}
+function calc(){const all=allLines(),L=all.filter(l=>!l.gone),sub=r2(L.reduce((s,l)=>s+l.price*l.qty,0)),disc=applied?r2(sub*applied.discount/100):0,ship=L.length&&sub<50?5.99:0;
+ return{L,G:all.filter(l=>l.gone),sub,disc,ship,total:r2(Math.max(0,sub-disc+ship))}}
+window.openCart=()=>{renderCart();openOv('cartOv')};
+function renderCart(){const{L,G,sub,disc,ship,total}=calc();
+ const rm=l=>`<button class="rm" onclick="removeCart('${esc(l.id)}')" aria-label="Verwijderen">×</button>`;
+ $('cartItems').innerHTML=(L.length||G.length)?L.map(l=>`<div class="ci"><img src="${esc(imgOk(l.p.image))}" alt="${esc(l.p.title)}" width="72" height="72"><div style="flex:1"><div>${esc(l.p.title)}</div><b>${eur(l.price)}</b>
+  <div class="q"><button onclick="changeCart('${esc(l.id)}',-1)" aria-label="Minder">−</button><span>${l.qty}</span><button onclick="changeCart('${esc(l.id)}',1)" aria-label="Meer">+</button></div></div>${rm(l)}</div>`).join('')+
+  G.map(l=>`<div class="ci" style="border:1px solid var(--red)"><div style="flex:1;color:var(--red)">${esc(l.p?.title||'Product')}: niet meer beschikbaar</div>${rm(l)}</div>`).join(''):none('Je winkelwagen is leeg<br><br><button class="btn" onclick="go(\'shop\')">Shop nu</button>');
+ $('sub').textContent=eur(sub);$('ship').textContent=ship?eur(ship):'GRATIS';$('tot').textContent=eur(total);
+ $('discRow').hidden=!applied;$('disc').textContent='-'+eur(disc);
+ $('prog').style.width=Math.min(100,sub/50*100)+'%';$('shipMsg').textContent=!L.length?'':sub>=50?'Je krijgt gratis verzending!':`Nog ${eur(50-sub)} tot gratis verzending`}
+window.addToCart=async(id,qty=1,fromModal)=>{if(!user){toast('Log in om te shoppen','error');return go('login')}
+ const p=products.find(x=>x.id===id);if(!p||(p.stock||0)<=0)return;const have=cart.find(c=>c.id===id)?.qty||0;
+ if(have+qty>p.stock)return toast(`Maximaal ${p.stock} stuks beschikbaar`,'error');
+ try{await uref().collection('cart').doc(id).set({qty:FV.increment(qty)},{merge:true});badge(true);if(fromModal)closeAll();
+  toast(`${qty}× ${p.title} toegevoegd`,'success',{l:'Bekijk',f:openCart})}catch(e){toast(fbErr(e),'error')}};
+window.changeCart=async(id,d)=>{const c=cart.find(x=>x.id===id),p=products.find(x=>x.id===id);if(!c||!p)return;const n=c.qty+d;
+ if(n<=0)return removeCart(id);if(n>p.stock)return toast(`Maximaal ${p.stock} stuks beschikbaar`,'error');
+ try{await uref().collection('cart').doc(id).update({qty:n})}catch(e){toast(fbErr(e),'error')}};
+window.removeCart=async id=>{try{await uref().collection('cart').doc(id).delete()}catch(e){toast(fbErr(e),'error')}};
+window.applyCoupon=async()=>{const code=$('couponIn').value.trim().toUpperCase();if(!code)return setMsg('couponMsg','Voer een code in','error');if(!user)return setMsg('couponMsg','Log eerst in','error');
+ try{const d=await db.collection('coupons').doc(code).get(),c=d.exists?{id:d.id,...d.data()}:null;
+  if(!c||(c.uses||0)>=c.maxUses){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}else{applied=c;setMsg('couponMsg',`${c.discount}% korting toegepast`,'success')}}
+ catch(e){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}renderCart()};
 
-// Coupon: opzoeken per code (document-ID), geen lijst van alle coupons meer in de browser
-async function applyCoupon(){
-  const code=$('couponIn').value.trim().toUpperCase();
-  if(!code)return setMsg('couponMsg','Voer een code in','error');
-  if(!user)return setMsg('couponMsg','Log eerst in','error');
-  try{
-    const d=await db.collection('coupons').doc(code).get();
-    const c=d.exists?{id:d.id,...d.data()}:null;
-    if(!c||(c.uses||0)>=c.maxUses){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}
-    else{applied=c;setMsg('couponMsg',` ${c.discount}% korting toegepast`,'success')}
-  }catch(e){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}
-  renderCart();
-}
+// Checkout (PayPal wordt pas bij afrekenen geladen)
+function loadPP(){return window.paypal?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');
+ s.src='https://www.paypal.com/sdk/js?client-id=AdsXWwkuDjZhYtu-fK0gTcThYzPgzLHZmK9BkBCnH1cmMCvB2zsg1Gsy74hppUTiKcsORmtqWnV2Cdck&currency=EUR';s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+window.startCheckout=()=>{if(!user){toast('Log in om af te rekenen','error');closeAll();return go('login')}
+ if(calc().G.length)return toast('Verwijder eerst de niet-beschikbare producten','error');if(!calc().L.length)return toast('Winkelwagen is leeg','error');
+ closeAll();if(!$('coName').value)$('coName').value=user.displayName||'';if(!$('coEmail').value)$('coEmail').value=user.email||'';
+ $('pp').innerHTML='';$('coBtn').style.display='';setMsg('coMsg','');$('coTotal').textContent=eur(calc().total);openOv('coOv')};
+window.finalizeCheckout=async()=>{const v=id=>$(id).value.trim(),name=v('coName'),email=v('coEmail'),phone=v('coPhone'),street=v('coStreet'),postal=v('coPostal'),city=v('coCity');
+ if(!name||!email||!phone||!street||!postal||!city)return setMsg('coMsg','Vul alle velden in','error');
+ if(!/^\S+@\S+\.\S+$/.test(email))return setMsg('coMsg','Ongeldig e-mailadres','error');
+ if(!/^(31|0)[1-9]\d{8}$/.test(phone.replace(/\D/g,'')))return setMsg('coMsg','Ongeldig Nederlands telefoonnummer','error');
+ if(!/^\d{4}\s?[A-Z]{2}$/i.test(postal))return setMsg('coMsg','Ongeldige postcode (1234AB)','error');
+ const{L,sub,disc,ship,total}=calc();if(!L.length)return setMsg('coMsg','Winkelwagen is leeg','error');
+ if(L.some(l=>l.qty>(l.p.stock||0)))return setMsg('coMsg','Een product is niet meer in de gewenste hoeveelheid beschikbaar','error');
+ setMsg('coMsg','PayPal laden...');$('coBtn').disabled=true;
+ try{await loadPP()}catch(e){$('coBtn').disabled=false;return setMsg('coMsg','PayPal kon niet laden. Controleer je verbinding of adblocker.','error')}
+ setMsg('coMsg','');$('coBtn').style.display='none';$('coBtn').disabled=false;$('pp').innerHTML='';
+ const data={userId:user.uid,userEmail:email,userName:name,phone,address:`${street}, ${postal.toUpperCase()} ${city}`,items:L.map(l=>({id:l.id,title:l.p.title,qty:l.qty,price:l.price})),subtotal:sub,shipping:ship,discount:disc,total,couponUsed:applied?.id||null,paymentMethod:'paypal'};
+ paypal.Buttons({
+  createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{currency_code:'EUR',value:total.toFixed(2),breakdown:{item_total:{currency_code:'EUR',value:sub.toFixed(2)},shipping:{currency_code:'EUR',value:ship.toFixed(2)},discount:{currency_code:'EUR',value:disc.toFixed(2)}}},items:data.items.map(i=>({name:i.title.slice(0,127),quantity:String(i.qty),unit_amount:{currency_code:'EUR',value:i.price.toFixed(2)}}))}]}),
+  onApprove:async(d,a)=>{let det;try{det=await a.order.capture()}catch(e){return setMsg('coMsg','Betaling mislukt: '+e.message,'error')}
+   try{await db.collection('orders').add({...data,status:'completed',paypalOrderId:det.id,createdAt:FV.serverTimestamp()})}
+   catch(e){return setMsg('coMsg',`Betaling ontvangen (PayPal-ID ${det.id}) maar de bestelling kon niet worden opgeslagen: ${fbErr(e)}. Neem contact met ons op met dit ID.`,'error')}
+   try{if(applied)await db.collection('coupons').doc(applied.id).update({uses:FV.increment(1)});for(const i of data.items)await db.collection('products').doc(i.id).update({stock:FV.increment(-i.qty)})}catch(e){console.warn(e.message)}
+   try{const b=db.batch();cart.forEach(c=>b.delete(uref().collection('cart').doc(c.id)));await b.commit()}catch(e){console.warn(e)}
+   applied=null;$('couponIn').value='';setMsg('couponMsg','');closeAll();toast('Betaling gelukt! Bedankt voor je bestelling.','success');go('orders')},
+  onCancel:()=>{toast('Betaling geannuleerd');$('coBtn').style.display='';$('pp').innerHTML=''},
+  onError:()=>{toast('Betaling mislukt. Probeer opnieuw.','error');$('coBtn').style.display=''}
+ }).render('#pp')};
 
-// ───────── CHECKOUT ─────────
-function startCheckout(){
-  if(!user){toast('Log in om af te rekenen','error');closeCart();return showPage('login')}
-  if(calc().G.length){openCart();return toast('Verwijder eerst de uitverkochte producten uit je winkelwagen','error')}
-  if(!lines().length)return toast('Winkelwagen is leeg','error');
-  closeCart();
-  if(!$('coName').value)$('coName').value=user.displayName||'';
-  if(!$('coEmail').value)$('coEmail').value=user.email||'';
-  $('paypalBox').innerHTML='';$('coBtn').style.display='block';setMsg('coMsg','');
-  $('coTotal').textContent=eur(calc().total);
-  $('coOv').classList.add('active');
-}
-function closeCheckout(){$('coOv').classList.remove('active')}
-function finalizeCheckout(){
-  const v=id=>$(id).value.trim();
-  const name=v('coName'),email=v('coEmail'),phone=v('coPhone'),street=v('coStreet'),postal=v('coPostal'),city=v('coCity');
-  if(!name||!email||!phone||!street||!postal||!city)return setMsg('coMsg','Vul alle velden in','error');
-  if(!/^\S+@\S+\.\S+$/.test(email))return setMsg('coMsg','Ongeldig e-mailadres','error');
-  if(!/^(31|0)[1-9]\d{8}$/.test(phone.replace(/\D/g,'')))return setMsg('coMsg','Ongeldig Nederlands telefoonnummer','error');
-  if(!/^\d{4}\s?[A-Z]{2}$/i.test(postal))return setMsg('coMsg','Ongeldige postcode (1234AB)','error');
-  if(typeof paypal==='undefined')return setMsg('coMsg','PayPal kon niet laden. Controleer je verbinding of adblocker.','error');
-  const {L,sub,disc,ship,total}=calc();
-  if(!L.length)return setMsg('coMsg','Winkelwagen is leeg','error');
-  if(L.some(l=>l.qty>(l.p.stock||0)))return setMsg('coMsg','Een product is niet meer in de gewenste hoeveelheid beschikbaar','error');
-  setMsg('coMsg','');$('coBtn').style.display='none';$('paypalBox').innerHTML='';
-  const data={userId:user.uid,userEmail:email,userName:name,phone,address:`${street}, ${postal.toUpperCase()} ${city}`,
-    items:L.map(l=>({id:l.id,title:l.p.title,qty:l.qty,price:l.price})),subtotal:sub,shipping:ship,discount:disc,total,
-    couponUsed:applied?.id||null,paymentMethod:'paypal'};
-  paypal.Buttons({
-    createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{currency_code:'EUR',value:total.toFixed(2),breakdown:{
-      item_total:{currency_code:'EUR',value:sub.toFixed(2)},shipping:{currency_code:'EUR',value:ship.toFixed(2)},
-      discount:{currency_code:'EUR',value:disc.toFixed(2)}}},
-      items:data.items.map(i=>({name:i.title.slice(0,127),quantity:String(i.qty),unit_amount:{currency_code:'EUR',value:i.price.toFixed(2)}}))}]}),
-    onApprove:async(d,a)=>{
-      let det;
-      try{det=await a.order.capture()}catch(e){return setMsg('coMsg','Betaling mislukt: '+e.message,'error')}
-      try{
-        await db.collection('orders').add({...data,status:'completed',paypalOrderId:det.id,createdAt:FV.serverTimestamp()});
-      }catch(e){
-        return setMsg('coMsg',`Betaling is ontvangen (PayPal-ID ${det.id}) maar de bestelling kon niet worden opgeslagen: ${fbErr(e,true)}. Neem contact met ons op met dit ID.`,'error');
-      }
-      try{
-        if(applied)await db.collection('coupons').doc(applied.id).update({uses:FV.increment(1)});
-        for(const i of data.items)await db.collection('products').doc(i.id).update({stock:FV.increment(-i.qty)});
-      }catch(e){console.warn('Voorraad/coupon niet bijgewerkt:',e.message)}
-      try{const b=db.batch();cart.forEach(c=>b.delete(db.collection('users').doc(user.uid).collection('cart').doc(c.id)));await b.commit()}catch(e){console.warn(e)}
-      applied=null;$('couponIn').value='';setMsg('couponMsg','');
-      closeCheckout();toast('Betaling gelukt! Bedankt voor uw bestelling.','success');showPage('orders');
-    },
-    onCancel:()=>{toast('Betaling geannuleerd');$('coBtn').style.display='block';$('paypalBox').innerHTML=''},
-    onError:()=>{toast('Betaling mislukt. Probeer opnieuw.','error');$('coBtn').style.display='block'}
-  }).render('#paypalBox');
-}
-
-// ───────── CONTACT ─────────
-async function sendContact(){
-  const name=$('cName').value.trim(),email=$('cEmail').value.trim(),message=$('cMsg').value.trim();
-  if(!name||!/^\S+@\S+\.\S+$/.test(email)||!message)return setMsg('cInfo','Vul alle velden correct in','error');
-  try{
-    await db.collection('messages').add({name,email,message,createdAt:FV.serverTimestamp()});
-    setMsg('cInfo','Bericht verstuurd, bedankt!','success');$('cName').value=$('cEmail').value=$('cMsg').value='';
-  }catch(e){setMsg('cInfo','Versturen mislukt: '+fbErr(e,true),'error')}
-}
-
-// ───────── ADMIN ─────────
-document.querySelectorAll('#adminTabs .tab').forEach(b=>b.onclick=()=>{
-  if(!admin())return;
-  document.querySelectorAll('#adminTabs .tab').forEach(x=>x.classList.toggle('active',x===b));
-  document.querySelectorAll('.tc').forEach(x=>x.classList.remove('active'));
-  $('tab-'+b.dataset.tab).classList.add('active');
-  ({products:renderAdminProducts,coupons:renderAdminCoupons,users:renderAdminUsers,orders:renderAdminOrders,messages:renderAdminMessages})[b.dataset.tab]();
-});
-function compress(file,max=600){return new Promise((res,rej)=>{
-  if(!file.type.startsWith('image/'))return rej(new Error('Alleen afbeeldingen toegestaan'));
-  const r=new FileReader();r.onerror=rej;
-  r.onload=e=>{const i=new Image();i.onerror=()=>rej(new Error('Ongeldige afbeelding'));i.onload=()=>{
-    const k=Math.min(1,max/Math.max(i.width,i.height)),cv=document.createElement('canvas');
-    cv.width=Math.round(i.width*k);cv.height=Math.round(i.height*k);
-    cv.getContext('2d').drawImage(i,0,0,cv.width,cv.height);res(cv.toDataURL('image/jpeg',.7))};i.src=e.target.result};
-  r.readAsDataURL(file)})}
-async function adminAddProduct(){
-  if(!admin())return setMsg('aMsg','Geen admin-rechten','error');
-  const title=$('aTitle').value.trim(),price=parseFloat($('aPrice').value),sale=parseFloat($('aSale').value)||null;
-  if(!title||!(price>0))return setMsg('aMsg','Vul minimaal naam en prijs in','error');
-  $('aBtn').disabled=true;setMsg('aMsg','Bezig...');
-  try{
-    const f=$('aImg').files[0];
-    const image=f?await compress(f):PH;
-    await db.collection('products').add({title,category:$('aCat').value.trim()||'Overig',price,salePrice:sale&&sale<price?sale:null,
-      stock:Math.max(0,parseInt($('aStock').value)||0),desc:$('aDesc').value.trim(),image,createdAt:FV.serverTimestamp()});
-    ['aTitle','aCat','aPrice','aSale','aStock','aDesc','aImg'].forEach(i=>$(i).value='');
-    setMsg('aMsg','Product toegevoegd','success');toast('Product toegevoegd ','success');
-  }catch(e){setMsg('aMsg','Fout: '+fbErr(e,true),'error')}
-  $('aBtn').disabled=false;
-}
-function renderAdminProducts(){
-  $('adminProducts').innerHTML=products.length?products.map(p=>`<div class="ar"><img src="${esc(imgOk(p.image))}" alt="">
-   <div><b style="color:var(--c)">${esc(p.title)}</b><br><span style="color:var(--m)">${eur(pp(p))} · voorraad: ${p.stock||0}</span></div>
-   <div style="display:flex;gap:.4rem;flex-direction:column"><button class="btn sm" onclick="editStock('${esc(p.id)}')">Voorraad</button><button class="btn sm red" onclick="delDoc('products','${esc(p.id)}')">Verwijder</button></div></div>`).join(''):'<div class="empty">Geen producten</div>';
-}
-async function editStock(id){
-  const p=products.find(x=>x.id===id),v=prompt('Nieuwe voorraad:',p.stock||0);
-  if(v===null||isNaN(parseInt(v)))return;
-  try{await db.collection('products').doc(id).update({stock:Math.max(0,parseInt(v))});toast('Voorraad bijgewerkt','success')}catch(e){toast(fbErr(e,true),'error')}
-}
-async function delDoc(col,id){
-  if(!confirm('Weet je het zeker?'))return;
-  try{await db.collection(col).doc(id).delete();toast('Verwijderd');if(col==='messages')renderAdminMessages();if(col==='coupons')renderAdminCoupons()}catch(e){toast('Fout: '+fbErr(e,true),'error')}
-}
-async function adminAddCoupon(){
-  const code=$('kCode').value.trim().toUpperCase(),discount=parseInt($('kDisc').value),maxUses=parseInt($('kMax').value);
-  if(!/^[A-Z0-9_-]{2,30}$/.test(code)||!(discount>=1&&discount<=100)||!(maxUses>=1))return setMsg('kMsg','Code: letters/cijfers, korting 1-100, max gebruik ≥1','error');
-  try{
-    await db.collection('coupons').doc(code).set({code,discount,maxUses,uses:0,createdAt:new Date()});
-    $('kCode').value=$('kDisc').value=$('kMax').value='';setMsg('kMsg','Coupon toegevoegd','success');renderAdminCoupons();
-  }catch(e){setMsg('kMsg','Fout: '+fbErr(e,true),'error')}
-}
-async function renderAdminCoupons(){
-  try{
-    const s=await db.collection('coupons').get();coupons=s.docs.map(d=>({id:d.id,...d.data()}));
-    $('adminCoupons').innerHTML=coupons.length?coupons.map(c=>`<div class="ar n"><div><b style="color:var(--c)">${esc(c.code)}</b><br><span style="color:var(--m)">${esc(c.discount)}% · ${c.uses||0}/${esc(c.maxUses)} gebruikt</span></div>
-     <button class="btn sm red" onclick="delDoc('coupons','${esc(c.id)}')">Verwijder</button></div>`).join(''):'<div class="empty">Geen coupons</div>';
-  }catch(e){$('adminCoupons').innerHTML='<div class="empty">Geen toegang: '+esc(fbErr(e,true))+'</div>'}
-}
-async function renderAdminUsers(){
-  try{
-    const s=await db.collection('users').get();
-    $('adminUsers').innerHTML=s.docs.map(d=>{const u=d.data();return `<div class="ar n"><div><b style="color:var(--c)">${esc(u.name||u.email)}</b><br><span style="color:var(--m)">${esc(u.email)}</span><br><span style="color:var(--g);font-size:.75rem">${u.role==='admin'?' Admin':'Klant'}</span></div>
-     ${u.role!=='admin'?`<button class="btn sm" onclick="makeAdmin('${esc(d.id)}')">Make admin</button>`:''}</div>`}).join('');
-  }catch(e){$('adminUsers').innerHTML='<div class="empty">Geen toegang: '+esc(fbErr(e,true))+'</div>'}
-}
-async function makeAdmin(id){
-  if(!confirm('Deze gebruiker admin maken?'))return;
-  try{await db.collection('users').doc(id).update({role:'admin'});toast('Gebruiker is nu admin','success');renderAdminUsers()}catch(e){toast(fbErr(e,true),'error')}
-}
-async function renderAdminOrders(){
-  try{
-    const s=await db.collection('orders').get();
-    const all=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-    $('adminOrders').innerHTML=all.length?all.map(o=>orderCard(o,true)).join(''):'<div class="empty">Nog geen bestellingen</div>';
-  }catch(e){$('adminOrders').innerHTML='<div class="empty">Geen toegang: '+esc(fbErr(e,true))+'</div>'}
-}
-async function setOrderStatus(id,status){
-  try{await db.collection('orders').doc(id).update({status});toast('Status bijgewerkt','success')}catch(e){toast(fbErr(e,true),'error')}
-}
-async function renderAdminMessages(){
-  try{
-    const s=await db.collection('messages').get();
-    const all=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-    $('adminMessages').innerHTML=all.length?all.map(m=>`<div class="ar n"><div><b style="color:var(--c)">${esc(m.name)}</b> · <span style="color:var(--m)">${esc(m.email)}</span><p style="margin-top:.4rem;line-height:1.5">${esc(m.message)}</p></div>
-     <button class="btn sm red" onclick="delDoc('messages','${esc(m.id)}')">Verwijder</button></div>`).join(''):'<div class="empty">Geen berichten</div>';
-  }catch(e){$('adminMessages').innerHTML='<div class="empty">Geen toegang: '+esc(fbErr(e,true))+'</div>'}
-}
-
+window.sendContact=async()=>{const name=$('cName').value.trim(),email=$('cEmail').value.trim(),message=$('cMsg').value.trim();
+ if(!name||!/^\S+@\S+\.\S+$/.test(email)||!message)return setMsg('cInfo','Vul alle velden correct in','error');
+ try{await db.collection('messages').add({name,email,message,createdAt:FV.serverTimestamp()});setMsg('cInfo','Bericht verstuurd, bedankt!','success');$('cName').value=$('cEmail').value=$('cMsg').value=''}catch(e){setMsg('cInfo','Versturen mislukt: '+fbErr(e),'error')}};
 renderHome();
+}
+addEventListener('load',boot);
 </script>
 </body>
 </html>
