@@ -127,7 +127,7 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
   <button class="ib" id="themeBtn" aria-label="Donker of licht thema">◐</button>
   <span id="guest"><button class="ib" onclick="go('login')">Inloggen</button></span>
   <button class="ib" id="ub" hidden aria-haspopup="true" onclick="event.stopPropagation();$('um').classList.toggle('show')"></button>
-  <div class="umenu" id="um"><button onclick="go('orders')">Mijn bestellingen</button><button onclick="go('wishlist')">Verlanglijst</button><button onclick="logout()">Uitloggen</button></div>
+  <div class="umenu" id="um"><button onclick="go('profile')">Mijn profiel</button><button onclick="go('orders')">Mijn bestellingen</button><button onclick="go('wishlist')">Verlanglijst</button><button onclick="logout()">Uitloggen</button></div>
   <button class="ib cart" onclick="openCart()" aria-label="Winkelwagen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 4h2l2.5 11h10L20 7H6"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg><span class="hide-m">Winkelwagen</span><span class="cnt" id="cb" hidden>0</span></button>
  </div>
 </div></header>
@@ -175,7 +175,7 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
    <div class="qty"><button onclick="chQty(-1)" aria-label="Minder">−</button><input id="mQty" type="number" value="1" min="1" aria-label="Aantal"><button onclick="chQty(1)" aria-label="Meer">+</button></div>
    <button class="btn full" id="mAdd" onclick="addToCart(cur.id,parseInt($('mQty').value)||1,true)">In winkelwagen</button>
    <button class="btn o full" id="mWish" style="margin-top:.6rem" onclick="toggleWish(cur.id)"></button>
-   <button class="lk" id="mShare" onclick="shareProd()">Deel dit product</button>
+   <button class="lk" id="mShare" onclick="shareProd()">Deel dit product</button><div id="mRel"></div>
   </div>
  </div>
 </div>
@@ -189,7 +189,7 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
  </div></div>
  <div class="wrap" style="padding-bottom:0"><div class="trust">
   <div><b>Gratis verzending</b>vanaf €50</div><div><b>30 dagen retour</b>zonder gedoe</div><div><b>Betalen met PayPal</b>wij zien je gegevens niet</div><div><b>Vragen?</b>antwoord binnen 24 uur</div></div></div>
- <div class="wrap"><h2>Dit vinden klanten het mooist</h2><div class="grid" id="homeGrid"></div>
+ <div class="wrap"><h2>Dit vinden klanten het mooist</h2><div class="grid" id="homeGrid"></div><div id="recent"></div>
   <div style="text-align:center;margin-top:2rem"><button class="btn o" onclick="go('shop')">Alle producten bekijken</button></div></div>
  <div class="wrap" style="padding-top:0"><h2>Wat klanten zeggen</h2>
   <p class="sub" id="rvAvg"></p><div class="reviews" id="rvList"></div>
@@ -213,7 +213,7 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
 
 <section id="shopPage" class="page"><div class="wrap">
  <h1 style="font-size:clamp(2rem,5vw,3rem);margin-bottom:1.3rem">Winkel</h1>
- <div class="bar"><input id="sS" type="search" placeholder="Zoek een product" aria-label="Zoek producten"><select id="sO" aria-label="Sorteren"><option value="">Sorteren</option><option value="low">Prijs, laag naar hoog</option><option value="high">Prijs, hoog naar laag</option><option value="new">Nieuwste eerst</option></select></div>
+ <div class="bar"><input id="sS" type="search" placeholder="Zoek een product" aria-label="Zoek producten"><select id="sO" aria-label="Sorteren"><option value="">Sorteren</option><option value="low">Prijs, laag naar hoog</option><option value="high">Prijs, hoog naar laag</option><option value="new">Nieuwste eerst</option></select><label style="display:flex;align-items:center;gap:.4rem;font-size:.92rem"><input type="checkbox" id="sStock" style="width:auto;min-height:0"> Alleen op voorraad</label></div>
  <div class="chips" id="chips" role="group" aria-label="Categorieën"></div><div class="grid" id="shopGrid"></div></div></section>
 
 <section id="wishlistPage" class="page"><div class="wrap"><h1 style="font-size:2.5rem;margin-bottom:1.3rem">Verlanglijst</h1><div id="wishC"></div></div></section>
@@ -241,13 +241,15 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
  <button class="btn o full" onclick="loginWithGoogle()">Verder met Google</button>
  <div class="ctr">Al een account? <button class="lk" onclick="go('login')">Inloggen</button></div></div></div></section>
 
+<section id="profilePage" class="page"><div class="wrap"><div class="box" style="max-width:560px"><h1>Mijn profiel</h1><div id="pfBox" style="margin-top:1rem"></div></div></div></section>
 <section id="adminPage" class="page"><div class="wrap"><h1 style="font-size:2.5rem;margin-bottom:1.3rem">Beheer</h1>
  <div class="kpis" id="kpis"></div>
- <div class="tabs" id="tabs"><button class="tab on" data-t="products">Producten</button><button class="tab" data-t="orders">Bestellingen</button><button class="tab" data-t="reviews">Reviews</button><button class="tab" data-t="coupons">Coupons</button><button class="tab" data-t="messages">Berichten</button><button class="tab" data-t="users">Gebruikers</button></div>
+ <div class="tabs" id="tabs"><button class="tab on" data-t="products">Producten</button><button class="tab" data-t="orders">Bestellingen</button><button class="tab" data-t="reviews">Reviews</button><button class="tab" data-t="coupons">Coupons</button><button class="tab" data-t="messages">Berichten</button><button class="tab" data-t="news">Nieuwsbrief</button><button class="tab" data-t="users">Gebruikers</button></div>
  <div id="aForm"></div><div id="aList"></div></div></section>
 </main>
 
 <footer><div class="wrap"><div><div class="logo">MAISON</div><p style="margin-top:.4rem;max-width:280px">Zorgvuldig uitgezocht, met de hand ingepakt.</p></div>
+<div><b style="color:#fff">Af en toe nieuws</b><p style="margin:.2rem 0 .5rem;max-width:280px">Nieuwe stukken en acties, hooguit een paar keer per maand.</p><div style="display:flex;gap:.4rem"><input id="nlE" type="email" placeholder="je@mail.nl" aria-label="E-mailadres voor de nieuwsbrief" style="background:#2a2622;color:#fff;border-color:#4a443d"><button class="btn sm" style="background:#e8d3a8;color:#1c1917;border-color:#e8d3a8" onclick="subscribe()">Aanmelden</button></div><div id="nlM" style="font-size:.85rem;min-height:1.2rem;margin-top:.3rem" role="status"></div></div>
 <div>© MAISON<br>Betalen via PayPal<br><button class="lk" onclick="go('contact')">Klantenservice</button></div></div></footer>
 
 <script>
@@ -284,22 +286,22 @@ function setMsg(id,t,c){const e=$(id);e.textContent=t;e.className='msg '+(c||'')
 function authErr(e){return({'auth/invalid-credential':'E-mailadres of wachtwoord klopt niet','auth/email-already-in-use':'Dit e-mailadres heeft al een account','auth/invalid-email':'Dit e-mailadres lijkt niet te kloppen','auth/weak-password':'Kies een wachtwoord van minimaal 6 tekens','auth/too-many-requests':'Te veel pogingen, probeer het straks opnieuw','auth/network-request-failed':'Geen internetverbinding','auth/unauthorized-domain':'Dit domein staat nog niet bij Firebase onder Authentication, Authorized domains'}[e.code]||e.message)}
 
 window.go=function(n){
- if(n==='orders'&&!user){toast('Log eerst even in','error');n='login'}
+ if((n==='orders'||n==='profile')&&!user){toast('Log eerst even in','error');n='login'}
  if(n==='admin'&&!admin()){toast(user?'Je hebt geen beheerrechten (is je e-mailadres geverifieerd?)':'Log eerst even in','error');n=user?'home':'login'}
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));$(n+'Page').classList.add('on');
  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===n));
  closeAll();$('nav').classList.remove('show');$('burger').setAttribute('aria-expanded','false');$('um').classList.remove('show');
- view();if(n==='orders')renderOrders();if(n==='admin')adm();scrollTo({top:0,behavior:'smooth'});
+ view();if(n==='orders')renderOrders();if(n==='profile')renderProfile();if(n==='admin')adm();scrollTo({top:0,behavior:'smooth'});
 };
 function view(){const p=page();if(p==='homePage')renderHome();if(p==='shopPage')renderShop();if(p==='wishlistPage')renderWish()}
-function closeAll(){['cartOv','coOv','pOv'].forEach(i=>$(i).classList.remove('on'));document.body.style.overflow=''}
+function closeAll(){['cartOv','coOv','pOv'].forEach(i=>$(i).classList.remove('on'));document.body.style.overflow='';if(location.hash.startsWith('#p-'))try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
 window.closeAll=closeAll;
 function openOv(id){$(id).classList.add('on');document.body.style.overflow='hidden';setTimeout(()=>$(id).querySelector('.x')?.focus(),50)}
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
 $('burger').onclick=()=>{const s=$('nav').classList.toggle('show');$('burger').setAttribute('aria-expanded',s)};
 document.addEventListener('click',()=>$('um').classList.remove('show'));
 addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
-$('sS').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,200)};$('sO').onchange=renderShop;
+$('sS').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,200)};$('sO').onchange=renderShop;$('sStock').onchange=renderShop;
 
 // Data
 function listenProducts(){db.collection('products').onSnapshot(s=>{products=s.docs.map(d=>({id:d.id,...d.data()}));loaded=true;view();renderCart();if(cur&&$('pOv').classList.contains('on'))openProduct(cur.id,true);if(page()==='adminPage'&&tab==='products')adm()},e=>{console.error(e);setTimeout(listenProducts,5000)})}
@@ -323,7 +325,7 @@ function listenUser(){
 auth.onAuthStateChanged(u=>{
  user=u;
  if(u)uref().get().then(s=>{if(!s.exists)return uref().set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()})}).catch(console.error);
- else{cart=[];wishlist=[];orders=[];roleAdmin=false;applied=null;badge();if(['ordersPage','adminPage'].includes(page()))go('home')}
+ else{cart=[];wishlist=[];orders=[];roleAdmin=false;applied=null;badge();if(['ordersPage','adminPage','profilePage'].includes(page()))go('home')}
  listenUser();nav();view();
 });
 auth.getRedirectResult().catch(e=>toast(authErr(e),'error'));
@@ -341,6 +343,13 @@ window.doRegister=async()=>{const n=$('rName').value.trim(),e=$('rEmail').value.
   await db.collection('users').doc(c.user.uid).set({email:e,name:n,role:'user',createdAt:new Date()},{merge:true});setMsg('rMsg','');toast('Welkom! We hebben je een mail gestuurd om je adres te bevestigen.','success');go('home')}catch(x){setMsg('rMsg',authErr(x),'error')}$('rBtn').disabled=false};
 window.loginWithGoogle=async()=>{try{await auth.signInWithPopup(gP);go('home')}catch(e){if(e.code==='auth/popup-blocked')return auth.signInWithRedirect(gP);if(['auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(e.code))return;toast('Inloggen met Google lukte niet: '+authErr(e),'error')}};
 window.resetPassword=async()=>{const e=$('lEmail').value.trim();if(!e)return toast('Vul eerst je e-mailadres in','error');try{await auth.sendPasswordResetEmail(e);toast('We hebben je een mail gestuurd om je wachtwoord te herstellen','success')}catch(x){toast(authErr(x),'error')}};
+function renderProfile(){if(!user)return;const sum=orders.reduce((s,o)=>s+(o.total||0),0);
+ $('pfBox').innerHTML=`<div class="row"><span>Naam</span><b>${esc(user.displayName||'-')}</b></div><div class="row"><span>E-mailadres</span><b>${esc(user.email)} ${user.emailVerified?'(bevestigd)':'(nog niet bevestigd)'}</b></div><div class="row"><span>Bestellingen</span><b>${orders.length}, samen ${eur(sum)}</b></div><div class="row"><span>Verlanglijst</span><b>${wishlist.length} product${wishlist.length===1?'':'en'}</b></div>${user.emailVerified?'':'<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0"><button class="btn sm" onclick="resendVerify()">Bevestigingsmail opnieuw sturen</button><button class="btn sm o" onclick="checkVerified()">Ik heb bevestigd</button></div>'}<div class="fld" style="margin-top:1.2rem"><label for="pfName">Naam wijzigen</label><div style="display:flex;gap:.5rem"><input id="pfName" value="${esc(user.displayName||'')}" maxlength="100"><button class="btn sm" onclick="saveName()">Opslaan</button></div></div>`}
+window.resendVerify=async()=>{try{await user.sendEmailVerification();toast('Mail is onderweg','success')}catch(e){toast(authErr(e),'error')}};
+window.checkVerified=async()=>{try{await user.reload();user=auth.currentUser;await user.getIdToken(true);nav();renderProfile();toast(user.emailVerified?'Je e-mailadres is bevestigd':'Nog niet bevestigd',user.emailVerified?'success':'error')}catch(e){toast(authErr(e),'error')}};
+window.saveName=async()=>{const n=$('pfName').value.trim();if(!n)return toast('Vul een naam in','error');try{await user.updateProfile({displayName:n});await uref().update({name:n});nav();renderProfile();toast('Naam opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
+window.subscribe=async()=>{const e=$('nlE').value.trim().toLowerCase(),m=$('nlM');if(!/^\S+@\S+\.\S+$/.test(e)){m.textContent='Dit e-mailadres lijkt niet te kloppen';return}
+ try{await db.collection('subscribers').doc(e).set({email:e,createdAt:FV.serverTimestamp()});m.textContent='Bedankt, je staat op de lijst.';$('nlE').value=''}catch(x){m.textContent='Aanmelden lukte niet: '+fbErr(x)}};
 window.logout=async()=>{await auth.signOut();go('home');toast('Tot de volgende keer')};
 
 // Producten
@@ -352,11 +361,11 @@ function card(p){const sale=p.salePrice&&p.salePrice<p.price,s=p.stock||0,out=s<
  <div class="pr">${sale?`<s>${eur(p.price)}</s><span class="new">${eur(pp(p))}</span>`:eur(pp(p))}</div>
  <button class="btn" ${out?'disabled':''} onclick="addToCart('${id}',1)">${out?'Uitverkocht':'In winkelwagen'}</button></div></article>`}
 const none=t=>`<div class="empty">${t}</div>`;
-function renderHome(){$('homeGrid').innerHTML=!loaded?none('Een moment...'):products.length?products.slice(0,6).map(card).join(''):none('De collectie wordt binnenkort aangevuld.')}
+function renderHome(){recent();$('homeGrid').innerHTML=!loaded?none('Een moment...'):products.length?products.slice(0,6).map(card).join(''):none('De collectie wordt binnenkort aangevuld.')}
 window.setCat=c=>{cat=c;renderShop()};
 function renderShop(){const q=$('sS').value.toLowerCase(),so=$('sO').value,cats=[...new Set(products.map(p=>p.category).filter(Boolean))];
  $('chips').innerHTML=['',...cats].map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${esc(c)}" onclick="setCat(this.dataset.c)">${c?esc(c):'Alles'}</button>`).join('');
- let l=products.filter(p=>(!cat||p.category===cat)&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
+ let l=products.filter(p=>(!cat||p.category===cat)&&(!$('sStock').checked||(p.stock||0)>0)&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
  if(so==='low')l.sort((a,b)=>pp(a)-pp(b));if(so==='high')l.sort((a,b)=>pp(b)-pp(a));if(so==='new')l.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
  $('shopGrid').innerHTML=!loaded?none('Een moment...'):l.length?l.map(card).join(''):none('Hier hebben we niets voor gevonden. Probeer een andere zoekterm.')}
 function renderWish(){if(!user){$('wishC').innerHTML=none('Log in om je verlanglijst te zien<br><br><button class="btn" onclick="go(\'login\')">Inloggen</button>');return}
@@ -364,14 +373,18 @@ function renderWish(){if(!user){$('wishC').innerHTML=none('Log in om je verlangl
 const STAT={pending:'In afwachting',completed:'Betaald',shipped:'Verzonden'};
 function orderCard(o,adm){return `<div class="oc"><div class="h"><b>#${esc(o.id.slice(0,8).toUpperCase())}</b>${adm?`<select style="width:auto;min-height:36px" onchange="setStatus('${esc(o.id)}',this.value)">${Object.keys(STAT).map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${STAT[s]}</option>`).join('')}</select>`:`<span>${esc(STAT[o.status]||o.status)}</span>`}</div>
  ${adm?`<div>${esc(o.userName)}, ${esc(o.userEmail)}, ${esc(o.phone)}<br>${esc(o.address)}${o.paypalOrderId?`<br>PayPal: ${esc(o.paypalOrderId)}`:''}</div>`:''}
- <div>Totaal <b>${eur(o.total||0)}</b> op ${dt(o)}</div>${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`}
+ <div>Totaal <b>${eur(o.total||0)}</b> op ${dt(o)}</div>${o.tracking?`<div>Track en trace: <b>${esc(o.tracking)}</b></div>`:''}${adm?`<button class="btn sm o" style="margin:.4rem 0" onclick="setTrack('${esc(o.id)}')">Track en trace invullen</button>`:''}${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`}
 function renderOrders(){$('ordL').innerHTML=orders.length?orders.map(o=>orderCard(o,false)).join(''):none('Je hebt nog niets besteld.')}
-window.openProduct=(id,keep)=>{const p=products.find(x=>x.id===id);if(!p)return;cur=p;
+const RV=()=>{try{return JSON.parse(localStorage.getItem('mrv')||'[]')}catch(e){return[]}};
+function rv(id){try{localStorage.setItem('mrv',JSON.stringify([id,...RV().filter(x=>x!==id)].slice(0,6)))}catch(e){}}
+function recent(){const l=RV().map(i=>products.find(p=>p.id===i)).filter(Boolean).slice(0,4);$('recent').innerHTML=l.length?`<h2 style="margin-top:3rem">Eerder bekeken</h2><div class="grid">${l.map(card).join('')}</div>`:''}
+function related(p){const l=products.filter(x=>x.id!==p.id&&x.category===p.category&&(x.stock||0)>0).slice(0,3);$('mRel').innerHTML=l.length?`<div class="cat" style="margin:1rem 0 .4rem">Past hier goed bij</div><div style="display:flex;gap:.5rem">${l.map(x=>`<button class="pn" style="flex:1" onclick="openProduct('${esc(x.id)}')"><img src="${esc(imgOk(x.image))}" alt="${esc(x.title)}" width="80" height="80" style="width:100%;height:auto;aspect-ratio:1;object-fit:cover;border-radius:8px"><small>${esc(x.title)}</small></button>`).join('')}</div>`:''}
+window.openProduct=(id,keep)=>{const p=products.find(x=>x.id===id);if(!p)return;cur=p;if(!keep){rv(id);try{history.replaceState(null,'','#p-'+id)}catch(e){}}
  $('mImg').src=imgOk(p.image);$('mImg').alt=p.title;$('mCat').textContent=p.category||'';$('mTitle').textContent=p.title;
  const sale=p.salePrice&&p.salePrice<p.price;$('mPrice').innerHTML=sale?`<s>${eur(p.price)}</s><span class="new">${eur(pp(p))}</span>`:eur(pp(p));
  $('mDesc').textContent=p.desc||'';const s=p.stock||0;
  $('mStock').innerHTML=s<=0?'<b style="color:var(--red)">Uitverkocht</b>':s<=5?`<b style="color:#c0771f">Nog maar ${s} op voorraad</b>`:'<b style="color:var(--ok)">Op voorraad</b>';
- $('mAdd').disabled=s<=0;if(!keep)$('mQty').value=1;wishBtn();openOv('pOv')};
+ $('mAdd').disabled=s<=0;if(!keep)$('mQty').value=1;wishBtn();related(p);openOv('pOv')};
 window.chQty=d=>{const i=$('mQty'),max=cur?.stock||1;i.value=Math.min(max,Math.max(1,(parseInt(i.value)||1)+d))};
 window.shareProd=async()=>{const d={title:cur.title,text:cur.title+' bij MAISON',url:location.href};try{if(navigator.share)await navigator.share(d);else{await navigator.clipboard.writeText(location.href);toast('Link gekopieerd','success')}}catch(e){}};
 function wishBtn(){if(cur)$('mWish').textContent=wishlist.includes(cur.id)?'Van verlanglijst halen':'Op verlanglijst zetten'}
@@ -455,12 +468,13 @@ async function adm(){if(!admin())return;const F=$('aForm'),Lh=$('aList');F.inner
    <input id="aT" placeholder="Naam" maxlength="120"><input id="aC" placeholder="Categorie" maxlength="60"><input id="aP" type="number" step="0.01" min="0" placeholder="Prijs in €"><input id="aS" type="number" step="0.01" min="0" placeholder="Actieprijs in € (optioneel)"><input id="aK" type="number" min="0" placeholder="Voorraad"><input id="aI" type="file" accept="image/*"></div>
    <textarea id="aD" rows="2" placeholder="Beschrijving" maxlength="1500" style="margin:.8rem 0"></textarea><button class="btn full" id="aB" onclick="addProd()">Product toevoegen</button><div class="msg" id="aM"></div></div>`;
    Lh.innerHTML=products.map(p=>arow(p.image,esc(p.title),`${eur(pp(p))}, voorraad ${p.stock||0}`,bt('Prijs en voorraad',`editProd('${esc(p.id)}')`)+bt('Verwijderen',`del('products','${esc(p.id)}')`,1))).join('')||none('Nog geen producten')}
-  else if(tab==='orders')Lh.innerHTML=ao.map(o=>orderCard(o,true)).join('')||none('Nog geen bestellingen');
+  else if(tab==='orders'){window._ao=ao;F.innerHTML='<button class="btn o sm" style="margin-bottom:1rem" onclick="exportCsv()">Exporteer als CSV</button>';Lh.innerHTML=ao.map(o=>orderCard(o,true)).join('')||none('Nog geen bestellingen')}
   else if(tab==='reviews'){const s=await db.collection('reviews').get();Lh.innerHTML=s.docs.map(d=>{const r=d.data();return arow('',`${esc(r.name)}, ${r.rating} van 5 ${r.approved?'(online)':'(wacht op jou)'}`,esc(r.text),(r.approved?'':bt('Goedkeuren',`appr('${d.id}')`))+bt('Verwijderen',`del('reviews','${d.id}')`,1))}).join('')||none('Nog geen reviews')}
   else if(tab==='coupons'){F.innerHTML=`<div class="box" style="max-width:none;margin-bottom:1.3rem"><div class="form2" style="grid-template-columns:repeat(3,1fr)"><input id="kC" placeholder="CODE" maxlength="30" style="text-transform:uppercase"><input id="kD" type="number" min="1" max="100" placeholder="Korting in %"><input id="kM" type="number" min="1" placeholder="Hoe vaak te gebruiken"></div><button class="btn full" style="margin-top:.8rem" onclick="addCoupon()">Coupon toevoegen</button><div class="msg" id="kMsg"></div></div>`;
    const s=await db.collection('coupons').get();Lh.innerHTML=s.docs.map(d=>{const c=d.data();return arow('',esc(d.id),`${c.discount}% korting, ${c.uses||0} van ${c.maxUses} keer gebruikt`,bt('Verwijderen',`del('coupons','${esc(d.id)}')`,1))}).join('')||none('Nog geen coupons')}
   else if(tab==='messages'){const s=await db.collection('messages').get(),a=s.docs.map(d=>({id:d.id,...d.data()})).sort((x,y)=>(y.createdAt?.seconds||0)-(x.createdAt?.seconds||0));
    Lh.innerHTML=a.map(m=>arow('',`${esc(m.name)}, <a href="mailto:${esc(m.email)}">${esc(m.email)}</a>`,esc(m.message),bt('Verwijderen',`del('messages','${esc(m.id)}')`,1))).join('')||none('Geen berichten')}
+  else if(tab==='news'){const s=await db.collection('subscribers').get();Lh.innerHTML=`<div class="ar"><div><b>${s.size} aanmeldingen</b><br><span style="color:var(--m)">${esc(s.docs.map(d=>d.id).join(', '))}</span></div></div>`}
   else{const s=await db.collection('users').get();Lh.innerHTML=s.docs.map(d=>{const u=d.data();return arow('',esc(u.name||u.email),`${esc(u.email)}, ${u.role==='admin'?'beheerder':'klant'}`,u.role==='admin'?'':bt('Beheerder maken',`mkAdmin('${d.id}')`))}).join('')}
  }catch(e){Lh.innerHTML=none('Geen toegang: '+esc(fbErr(e)))}}
 window.addProd=async()=>{const title=$('aT').value.trim(),price=parseFloat($('aP').value),sale=parseFloat($('aS').value)||null;
@@ -473,12 +487,18 @@ window.editProd=async id=>{const p=products.find(x=>x.id===id),pr=prompt('Nieuwe
  try{await db.collection('products').doc(id).update({price,stock:Math.max(0,stock)});toast('Opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
 window.del=async(c,id)=>{if(!confirm('Weet je zeker dat je dit wilt verwijderen?'))return;try{await db.collection(c).doc(id).delete();toast('Verwijderd');adm()}catch(e){toast(fbErr(e),'error')}};
 window.appr=async id=>{try{await db.collection('reviews').doc(id).update({approved:true});toast('Review staat online','success');adm()}catch(e){toast(fbErr(e),'error')}};
+window.setTrack=async id=>{const t=prompt('Track en trace code:');if(!t||!t.trim())return;try{await db.collection('orders').doc(id).update({tracking:t.trim(),status:'shipped'});toast('Opgeslagen, status staat nu op verzonden','success');adm()}catch(e){toast(fbErr(e),'error')}};
+window.exportCsv=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',rows=[['Bestelling','Datum','Naam','E-mail','Telefoon','Adres','Producten','Totaal','Status'],...(window._ao||[]).map(o=>[o.id,dt(o),o.userName,o.userEmail,o.phone,o.address,(o.items||[]).map(i=>i.qty+'x '+i.title).join('; '),o.total,o.status])];
+ const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='bestellingen.csv';a.click()};
 window.setStatus=async(id,status)=>{try{await db.collection('orders').doc(id).update({status});toast('Status aangepast','success')}catch(e){toast(fbErr(e),'error')}};
 window.mkAdmin=async id=>{if(!confirm('Deze gebruiker beheerder maken?'))return;try{await db.collection('users').doc(id).update({role:'admin'});toast('Is nu beheerder','success');adm()}catch(e){toast(fbErr(e),'error')}};
 window.addCoupon=async()=>{const code=$('kC').value.trim().toUpperCase(),discount=parseInt($('kD').value),maxUses=parseInt($('kM').value);
  if(!code||!(discount>=1&&discount<=100)||!(maxUses>=1))return setMsg('kMsg','Vul alle velden goed in','error');
  try{await db.collection('coupons').doc(code).set({code,discount,maxUses,uses:0,createdAt:new Date()});toast('Coupon toegevoegd','success');adm()}catch(e){setMsg('kMsg',fbErr(e),'error')}};
 renderHome();
+const h=location.hash;
+if(h.startsWith('#p-')){const id=h.slice(3),t=setInterval(()=>{if(products.find(p=>p.id===id)){clearInterval(t);openProduct(id)}},300);setTimeout(()=>clearInterval(t),8000)}
+else if(h.length>1&&['shop','contact','wishlist','login','register'].includes(h.slice(1)))go(h.slice(1));
 }
 addEventListener('load',boot);
 </script>
