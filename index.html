@@ -27,7 +27,7 @@ nav{position:sticky;top:0;z-index:1000;display:flex;flex-wrap:wrap;align-items:c
 .nl{background:none;border:none;font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--m);padding:.5rem .9rem;white-space:nowrap;border-bottom:1px solid transparent}
 .nl:hover,.nl.active{color:var(--c);border-bottom-color:var(--g)}
 .nav-right{display:flex;align-items:center;gap:.5rem;position:relative}
-.pill{font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:.5rem 1.1rem;border-radius:40px;border:1px solid rgba(0,0,0,.18);background:none;color:var(--c)}
+.pill{display:inline-flex;align-items:center;font-size:.65rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;padding:.5rem 1.1rem;border-radius:40px;border:1px solid rgba(0,0,0,.18);background:none;color:var(--c)}
 .pill:hover{border-color:var(--g);color:var(--g)}
 .pill.gold{background:var(--btn);border-color:var(--btn);color:#fff}
 .badge{background:var(--r);color:#fff;border-radius:50%;font-size:.6rem;padding:1px 6px;margin-left:4px}
@@ -69,7 +69,7 @@ nav{position:sticky;top:0;z-index:1000;display:flex;flex-wrap:wrap;align-items:c
 .card:hover img{transform:scale(1.04)}
 .bd{position:absolute;top:12px;left:12px;font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;background:var(--r);color:#fff}
 .bd.out{background:#777;color:#fff}
-.wish{position:absolute;top:10px;right:10px;width:34px;height:34px;background:rgba(255,255,255,.9);border:none;border-radius:50%;font-size:.95rem}
+.wish{display:flex;align-items:center;justify-content:center;position:absolute;top:10px;right:10px;width:34px;height:34px;background:rgba(255,255,255,.9);border:none;border-radius:50%;font-size:.95rem}
 .info{padding:.9rem 0 0}
 .cat{font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--m)}
 .pname{font-family:var(--san);font-size:.92rem;font-weight:500;color:var(--c);margin:4px 0}
@@ -172,7 +172,7 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
     <button class="nl" data-page="admin" id="adminLink" style="display:none">Admin</button>
   </div>
   <div class="nav-right">
-    <button class="pill" onclick="openCart()">🛒<span class="badge" id="cbadge" style="display:none">0</span></button>
+    <button class="pill" onclick="openCart()"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle"><path d="M3 4h2l2.5 11h10L20 7H6"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg><span class="badge" id="cbadge" style="display:none">0</span></button>
     <span id="guest" style="display:flex;gap:.4rem">
       <button class="pill" onclick="showPage('login')">Inloggen</button>
       <button class="pill gold hide-m" onclick="showPage('register')">Registreren</button>
@@ -266,10 +266,10 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
     </div>
   </div></div>
   <div class="features">
-    <div><i>🚚</i><span><b>Gratis verzending</b>vanaf €50</span></div>
-    <div><i>↩️</i><span><b>30 dagen retour</b>zonder gedoe</span></div>
-    <div><i>🔒</i><span><b>Veilig betalen</b>met PayPal</span></div>
-    <div><i>✦</i><span><b>Premium kwaliteit</b>voor een lange levensduur</span></div>
+    <div><span><b>Gratis verzending</b>vanaf €50</span></div>
+    <div><span><b>30 dagen retour</b>zonder gedoe</span></div>
+    <div><span><b>Veilig betalen</b>met PayPal</span></div>
+    <div><span><b>Premium kwaliteit</b>voor een lange levensduur</span></div>
   </div>
   <div class="section">
     <div class="eyebrow">Onze favorieten</div><h2 class="title">Populaire producten</h2>
@@ -355,11 +355,11 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
 <div id="adminPage" class="page"><div class="section">
   <h2 class="title">Admin panel</h2>
   <div class="tabs" id="adminTabs">
-    <button class="tab active" data-tab="products">📦 Producten</button>
-    <button class="tab" data-tab="coupons">🎟️ Coupons</button>
-    <button class="tab" data-tab="users">👥 Gebruikers</button>
-    <button class="tab" data-tab="orders">📋 Bestellingen</button>
-    <button class="tab" data-tab="messages">✉️ Berichten</button>
+    <button class="tab active" data-tab="products">Producten</button>
+    <button class="tab" data-tab="coupons">Coupons</button>
+    <button class="tab" data-tab="users">Gebruikers</button>
+    <button class="tab" data-tab="orders">Bestellingen</button>
+    <button class="tab" data-tab="messages">Berichten</button>
   </div>
   <div id="tab-products" class="tc active">
     <div class="box" style="max-width:none;margin-bottom:2rem">
@@ -397,25 +397,26 @@ nav{padding:.7rem 1rem}.nav-links{order:3;width:100%;overflow-x:auto}
 
 <footer>
   <div><div class="logo">MAISON<span>.</span><small>Premium Store</small></div><p style="margin-top:.6rem;max-width:260px;line-height:1.7">Premium store voor tijdloze elegantie.</p></div>
-  <div>© MAISON — Alle rechten voorbehouden<br><br>🔒 Veilig betalen via PayPal</div>
+  <div>© MAISON — Alle rechten voorbehouden<br><br>Veilig betalen via PayPal</div>
 </footer>
 
 <script>
 const $=id=>document.getElementById(id);
+const HEART=f=>`<svg width="16" height="16" viewBox="0 0 24 24" fill="${f?'#b5442f':'none'}" stroke="${f?'#b5442f':'#1a1a1a'}" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>`;
 const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 
 // ───────── DIAGNOSE ─────────
 function diag(html){const d=$('diag');d.style.display='block';d.innerHTML='<button onclick="this.parentNode.style.display=\'none\'">×</button>'+html}
-window.addEventListener('error',e=>diag('⚠️ Scriptfout: '+esc(e.message)));
+window.addEventListener('error',e=>diag('Scriptfout: '+esc(e.message)));
 window.addEventListener('unhandledrejection',e=>fbErr(e.reason,true));
-if(location.protocol==='file:')diag('⚠️ Je opent de site als lokaal bestand (file://). Inloggen, Google-login en Firebase werken dan niet goed. Host de site (Firebase Hosting, Netlify, GitHub Pages) of draai <code>npx serve</code> en open <b>http://localhost</b>.');
-if(typeof firebase==='undefined'){diag('⚠️ Firebase kon niet laden (internet, adblocker of firewall). Zonder Firebase werkt niets.');throw new Error('Firebase ontbreekt')}
+if(location.protocol==='file:')diag('Je opent de site als lokaal bestand (file://). Inloggen, Google-login en Firebase werken dan niet goed. Host de site (Firebase Hosting, Netlify, GitHub Pages) of draai <code>npx serve</code> en open <b>http://localhost</b>.');
+if(typeof firebase==='undefined'){diag('Firebase kon niet laden (internet, adblocker of firewall). Zonder Firebase werkt niets.');throw new Error('Firebase ontbreekt')}
 
 let shown=false;
 function fbErr(e,banner){
   const code=e?.code||'',msg=e?.message||String(e);
   if(code==='permission-denied'||/insufficient permissions/i.test(msg)){
-    if(banner&&!shown){shown=true;diag('⚠️ <b>Firestore blokkeert dit (geen rechten).</b> Controleer de Firestore-regels in Firebase Console → Firestore Database → Rules. Zorg dat je bent ingelogd en (voor admin) dat je e-mail geverifieerd is.')}
+    if(banner&&!shown){shown=true;diag('<b>Firestore blokkeert dit (geen rechten).</b> Controleer de Firestore-regels in Firebase Console → Firestore Database → Rules. Zorg dat je bent ingelogd en (voor admin) dat je e-mail geverifieerd is.')}
     return 'Geen rechten (Firestore-regels / niet ingelogd)';
   }
   if(code==='failed-precondition')return 'Database niet klaar of index ontbreekt';
@@ -511,7 +512,7 @@ async function doLogin(){
   $('lBtn').disabled=true;setMsg('lMsg','Bezig met inloggen...');
   try{
     const c=await auth.signInWithEmailAndPassword(email,pass);
-    setMsg('lMsg','');$('lPass').value='';toast('Ingelogd ✓','success');
+    setMsg('lMsg','');$('lPass').value='';toast('Ingelogd','success');
     if(c.user.email===ADMIN_EMAIL&&!c.user.emailVerified)toast('Verifieer je e-mail om admin-rechten te krijgen (zie Mijn profiel)','error');
     user=c.user;showPage(admin()?'admin':'home');
   }catch(e){setMsg('lMsg',authError(e),'error')}
@@ -526,14 +527,14 @@ async function doRegister(){
     await c.user.updateProfile({displayName:name});
     c.user.sendEmailVerification().catch(()=>{});
     await db.collection('users').doc(c.user.uid).set({email,name,role:'user',createdAt:new Date()},{merge:true});
-    updateNav();setMsg('rMsg','');toast('Account aangemaakt ✓ Check je mail om je adres te verifiëren','success');showPage('home');
+    updateNav();setMsg('rMsg','');toast('Account aangemaakt  Check je mail om je adres te verifiëren','success');showPage('home');
   }catch(e){setMsg('rMsg',authError(e)||fbErr(e),'error')}
   $('rBtn').disabled=false;
 }
 async function loginWithGoogle(){
   try{
     const {user:u}=await auth.signInWithPopup(gProvider);
-    user=u;toast('Welkom '+(u.displayName||'')+' ✓','success');
+    user=u;toast('Welkom '+(u.displayName||'')+' ','success');
     showPage(admin()?'admin':'home');
   }catch(e){
     if(e.code==='auth/popup-blocked')return auth.signInWithRedirect(gProvider);
@@ -544,13 +545,13 @@ async function loginWithGoogle(){
 async function resetPassword(){
   const email=$('lEmail').value.trim();
   if(!email)return toast('Vul eerst je e-mailadres in','error');
-  try{await auth.sendPasswordResetEmail(email);toast('Reset-mail verstuurd ✓','success')}catch(e){toast(authError(e),'error')}
+  try{await auth.sendPasswordResetEmail(email);toast('Reset-mail verstuurd ','success')}catch(e){toast(authError(e),'error')}
 }
 async function logout(){await auth.signOut();showPage('home');toast('Uitgelogd')}
-async function resendVerify(){try{await user.sendEmailVerification();toast('Verificatiemail verstuurd ✓','success')}catch(e){toast(authError(e),'error')}}
+async function resendVerify(){try{await user.sendEmailVerification();toast('Verificatiemail verstuurd ','success')}catch(e){toast(authError(e),'error')}}
 async function checkVerified(){
   try{await user.reload();user=auth.currentUser;await user.getIdToken(true);updateNav();renderProfile();
-    toast(user.emailVerified?'E-mail geverifieerd ✓':'Nog niet geverifieerd',user.emailVerified?'success':'error')}catch(e){toast(authError(e),'error')}
+    toast(user.emailVerified?'E-mail geverifieerd':'Nog niet geverifieerd',user.emailVerified?'success':'error')}catch(e){toast(authError(e),'error')}
 }
 
 // ───────── NAV / PAGES ─────────
@@ -591,7 +592,7 @@ function card(p){
   return `<div class="card" onclick="openProduct('${esc(p.id)}')">
   <div class="imgw"><img src="${esc(imgOk(p.image))}" alt="${esc(p.title)}" loading="lazy">
   ${out?'<div class="bd out">Uitverkocht</div>':sale?`<div class="bd">-${Math.round((1-p.salePrice/p.price)*100)}%</div>`:''}
-  <button class="wish" onclick="event.stopPropagation();toggleWish('${esc(p.id)}')">${w?'❤️':'🤍'}</button></div>
+  <button class="wish" onclick="event.stopPropagation();toggleWish('${esc(p.id)}')">${HEART(w)}</button></div>
   <div class="info"><div class="cat">${esc(p.category)}</div><div class="pname">${esc(p.title)}</div>
   <div class="price">${sale?`<s>${eur(p.price)}</s>`:''}${eur(pp(p))}</div>
   <button class="add" ${out?'disabled':''} onclick="event.stopPropagation();addToCart('${esc(p.id)}',1)">${out?'Uitverkocht':'+ Winkelwagen'}</button></div></div>`;
@@ -614,14 +615,14 @@ function renderShop(){
 function renderWishlist(){
   if(!user){$('wishContent').innerHTML='<div class="empty">Log in om je verlanglijst te zien<br><br><button class="btn" onclick="showPage(\'login\')">Inloggen</button></div>';return}
   const l=products.filter(p=>wishlist.includes(p.id));
-  $('wishContent').innerHTML=l.length?`<div class="grid">${l.map(card).join('')}</div>`:'<div class="empty">♡ Uw verlanglijst is leeg<br><br><button class="btn" onclick="showPage(\'shop\')">Bekijk collectie</button></div>';
+  $('wishContent').innerHTML=l.length?`<div class="grid">${l.map(card).join('')}</div>`:'<div class="empty">Uw verlanglijst is leeg<br><br><button class="btn" onclick="showPage(\'shop\')">Bekijk collectie</button></div>';
 }
 function renderOrders(){
   $('ordersList').innerHTML=orders.length?orders.map(o=>orderCard(o,false)).join(''):'<div class="empty">Nog geen bestellingen</div>';
 }
 function orderCard(o,adm){
   const d=o.createdAt?.toDate?o.createdAt.toDate().toLocaleDateString('nl-NL'):'';
-  const stl={pending:'⏳ In afwachting',completed:'✓ Betaald',shipped:'📦 Verzonden'}[o.status]||esc(o.status);
+  const stl={pending:'In afwachting',completed:'Betaald',shipped:'Verzonden'}[o.status]||esc(o.status);
   return `<div class="oc"><div class="h"><div><div class="oid">#${esc(o.id.slice(0,8).toUpperCase())}</div>${adm?`<div style="color:var(--m)">${esc(o.userName)} · ${esc(o.userEmail)}</div>`:''}</div>
   ${adm?`<select onchange="setOrderStatus('${esc(o.id)}',this.value)" style="background:var(--s);color:var(--t);border:1px solid var(--b);padding:.3rem">${['pending','completed','shipped'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}</select>`:`<div class="st">${stl}</div>`}</div>
   <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:.5rem"><span><b style="color:var(--g)">Totaal:</b> ${eur(o.total||0)}</span><span>${d}</span></div>
@@ -631,7 +632,7 @@ function orderCard(o,adm){
 function renderProfile(){
   if(!user)return;
   $('pfName').textContent=user.displayName||user.email.split('@')[0];
-  $('pfEmail').textContent=user.email+(user.emailVerified?' ✓':' (niet geverifieerd)');
+  $('pfEmail').textContent=user.email+(user.emailVerified?' (geverifieerd)':' (niet geverifieerd)');
   $('pfWish').textContent=wishlist.length+' product'+(wishlist.length===1?'':'en');
   $('pfRole').textContent=admin()?'Admin':'Klant';
   $('pfVerify').innerHTML=user.emailVerified?'':'<div style="display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn sm" onclick="resendVerify()">Verificatiemail sturen</button><button class="btn sm" onclick="checkVerified()">Ik heb geverifieerd</button></div>';
@@ -645,7 +646,7 @@ function openProduct(id,keep){
   $('mPrice').innerHTML=(sale?`<s style="font-size:1rem;color:var(--m)">${eur(p.price)}</s> `:'')+eur(pp(p));
   $('mDesc').textContent=p.desc||'';
   const s=p.stock||0;
-  $('mStock').innerHTML=s<=0?'<span style="color:#b5442f">✗ Uitverkocht</span>':s<=5?`<span style="color:#b8741f">⚠ Nog ${s} stuks op voorraad</span>`:`<span style="color:#3f7a5f">✓ Op voorraad</span>`;
+  $('mStock').innerHTML=s<=0?'<span style="color:#b5442f"> Uitverkocht</span>':s<=5?`<span style="color:#b8741f"> Nog ${s} stuks op voorraad</span>`:`<span style="color:#3f7a5f"> Op voorraad</span>`;
   $('mAdd').disabled=s<=0;
   if(!keep)$('mQty').value=1;
   updateModalWish();
@@ -653,13 +654,13 @@ function openProduct(id,keep){
 }
 function closeModal(){$('pOv').classList.remove('active')}
 function chQty(d){const i=$('mQty'),max=cur?.stock||1;i.value=Math.min(max,Math.max(1,(parseInt(i.value)||1)+d))}
-function updateModalWish(){if(cur)$('mWish').textContent=wishlist.includes(cur.id)?'❤️ Verwijder van verlanglijst':'🤍 Op verlanglijst'}
+function updateModalWish(){if(cur)$('mWish').textContent=wishlist.includes(cur.id)?'Verwijder van verlanglijst':'Op verlanglijst'}
 async function toggleWish(id){
   if(!user){toast('Log in om favorieten op te slaan','error');return showPage('login')}
   const ref=db.collection('users').doc(user.uid).collection('wishlist').doc(id);
   try{
     if(wishlist.includes(id)){await ref.delete();toast('Verwijderd van verlanglijst')}
-    else{await ref.set({addedAt:new Date()});toast('Toegevoegd aan verlanglijst ♡','success')}
+    else{await ref.set({addedAt:new Date()});toast('Toegevoegd aan verlanglijst','success')}
   }catch(e){toast('Fout: '+fbErr(e,true),'error')}
 }
 
@@ -680,13 +681,13 @@ function openCart(){$('cartOv').classList.add('active');renderCart()}
 function closeCart(){$('cartOv').classList.remove('active')}
 function renderCart(){
   const {L,G,sub,disc,ship,total}=calc();
-  const rm=l=>`<button onclick="removeCart('${esc(l.id)}')" style="background:none;border:none;color:#b5442f;align-self:flex-start">✕</button>`;
+  const rm=l=>`<button onclick="removeCart('${esc(l.id)}')" style="background:none;border:none;color:#b5442f;align-self:flex-start">×</button>`;
   const ok=L.map(l=>`<div class="ci"><img src="${esc(imgOk(l.p.image))}" alt="">
    <div style="flex:1"><div class="nm">${esc(l.p.title)}</div><div class="pr">${eur(l.price)}</div>
    <div class="q"><button onclick="changeCart('${esc(l.id)}',-1)">−</button><span style="min-width:24px;text-align:center">${l.qty}</span><button onclick="changeCart('${esc(l.id)}',1)">+</button></div></div>${rm(l)}</div>`).join('');
   const gone=G.map(l=>`<div class="ci" style="opacity:.75;border:1px solid var(--r)"><img src="${esc(imgOk(l.p?.image))}" alt="" style="filter:grayscale(1)">
    <div style="flex:1"><div class="nm">${esc(l.p?.title||'Product')}</div><div class="pr" style="color:#b5442f">Dit product is uitverkocht of niet meer beschikbaar</div></div>${rm(l)}</div>`).join('');
-  $('cartItems').innerHTML=(L.length||G.length)?ok+gone:'<div class="empty"><div style="font-size:3rem;opacity:.5">🛒</div>Uw winkelwagen is leeg</div>';
+  $('cartItems').innerHTML=(L.length||G.length)?ok+gone:'<div class="empty">Uw winkelwagen is leeg</div>';
   $('sub').textContent=eur(sub);$('ship').textContent=ship?eur(ship):'GRATIS';$('tot').textContent=eur(total);
   $('discRow').style.display=applied?'flex':'none';$('disc').textContent='-'+eur(disc);
 }
@@ -697,7 +698,7 @@ async function addToCart(id,qty=1,fromModal){
   if(have+qty>p.stock)return toast(`Maximaal ${p.stock} stuks beschikbaar`,'error');
   try{
     await db.collection('users').doc(user.uid).collection('cart').doc(id).set({qty:FV.increment(qty)},{merge:true});
-    toast(`${qty}× "${p.title}" toegevoegd 🛒`,'success');if(fromModal)closeModal();
+    toast(`${qty}× "${p.title}" toegevoegd `,'success');if(fromModal)closeModal();
   }catch(e){toast('Fout: '+fbErr(e,true),'error')}
 }
 async function changeCart(id,d){
@@ -718,7 +719,7 @@ async function applyCoupon(){
     const d=await db.collection('coupons').doc(code).get();
     const c=d.exists?{id:d.id,...d.data()}:null;
     if(!c||(c.uses||0)>=c.maxUses){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}
-    else{applied=c;setMsg('couponMsg',`✓ ${c.discount}% korting toegepast`,'success')}
+    else{applied=c;setMsg('couponMsg',` ${c.discount}% korting toegepast`,'success')}
   }catch(e){applied=null;setMsg('couponMsg','Code ongeldig of verlopen','error')}
   renderCart();
 }
@@ -770,10 +771,10 @@ function finalizeCheckout(){
       }catch(e){console.warn('Voorraad/coupon niet bijgewerkt:',e.message)}
       try{const b=db.batch();cart.forEach(c=>b.delete(db.collection('users').doc(user.uid).collection('cart').doc(c.id)));await b.commit()}catch(e){console.warn(e)}
       applied=null;$('couponIn').value='';setMsg('couponMsg','');
-      closeCheckout();toast('✅ Betaling gelukt! Bedankt voor uw bestelling.','success');showPage('orders');
+      closeCheckout();toast('Betaling gelukt! Bedankt voor uw bestelling.','success');showPage('orders');
     },
     onCancel:()=>{toast('Betaling geannuleerd');$('coBtn').style.display='block';$('paypalBox').innerHTML=''},
-    onError:()=>{toast('❌ Betaling mislukt. Probeer opnieuw.','error');$('coBtn').style.display='block'}
+    onError:()=>{toast('Betaling mislukt. Probeer opnieuw.','error');$('coBtn').style.display='block'}
   }).render('#paypalBox');
 }
 
@@ -783,7 +784,7 @@ async function sendContact(){
   if(!name||!/^\S+@\S+\.\S+$/.test(email)||!message)return setMsg('cInfo','Vul alle velden correct in','error');
   try{
     await db.collection('messages').add({name,email,message,createdAt:FV.serverTimestamp()});
-    setMsg('cInfo','✓ Bericht verstuurd, bedankt!','success');$('cName').value=$('cEmail').value=$('cMsg').value='';
+    setMsg('cInfo','Bericht verstuurd, bedankt!','success');$('cName').value=$('cEmail').value=$('cMsg').value='';
   }catch(e){setMsg('cInfo','Versturen mislukt: '+fbErr(e,true),'error')}
 }
 
@@ -814,7 +815,7 @@ async function adminAddProduct(){
     await db.collection('products').add({title,category:$('aCat').value.trim()||'Overig',price,salePrice:sale&&sale<price?sale:null,
       stock:Math.max(0,parseInt($('aStock').value)||0),desc:$('aDesc').value.trim(),image,createdAt:FV.serverTimestamp()});
     ['aTitle','aCat','aPrice','aSale','aStock','aDesc','aImg'].forEach(i=>$(i).value='');
-    setMsg('aMsg','✓ Product toegevoegd','success');toast('Product toegevoegd ✓','success');
+    setMsg('aMsg','Product toegevoegd','success');toast('Product toegevoegd ','success');
   }catch(e){setMsg('aMsg','Fout: '+fbErr(e,true),'error')}
   $('aBtn').disabled=false;
 }
@@ -837,7 +838,7 @@ async function adminAddCoupon(){
   if(!/^[A-Z0-9_-]{2,30}$/.test(code)||!(discount>=1&&discount<=100)||!(maxUses>=1))return setMsg('kMsg','Code: letters/cijfers, korting 1-100, max gebruik ≥1','error');
   try{
     await db.collection('coupons').doc(code).set({code,discount,maxUses,uses:0,createdAt:new Date()});
-    $('kCode').value=$('kDisc').value=$('kMax').value='';setMsg('kMsg','✓ Coupon toegevoegd','success');renderAdminCoupons();
+    $('kCode').value=$('kDisc').value=$('kMax').value='';setMsg('kMsg','Coupon toegevoegd','success');renderAdminCoupons();
   }catch(e){setMsg('kMsg','Fout: '+fbErr(e,true),'error')}
 }
 async function renderAdminCoupons(){
@@ -850,7 +851,7 @@ async function renderAdminCoupons(){
 async function renderAdminUsers(){
   try{
     const s=await db.collection('users').get();
-    $('adminUsers').innerHTML=s.docs.map(d=>{const u=d.data();return `<div class="ar n"><div><b style="color:var(--c)">${esc(u.name||u.email)}</b><br><span style="color:var(--m)">${esc(u.email)}</span><br><span style="color:var(--g);font-size:.75rem">${u.role==='admin'?'👑 Admin':'Klant'}</span></div>
+    $('adminUsers').innerHTML=s.docs.map(d=>{const u=d.data();return `<div class="ar n"><div><b style="color:var(--c)">${esc(u.name||u.email)}</b><br><span style="color:var(--m)">${esc(u.email)}</span><br><span style="color:var(--g);font-size:.75rem">${u.role==='admin'?' Admin':'Klant'}</span></div>
      ${u.role!=='admin'?`<button class="btn sm" onclick="makeAdmin('${esc(d.id)}')">Make admin</button>`:''}</div>`}).join('');
   }catch(e){$('adminUsers').innerHTML='<div class="empty">Geen toegang: '+esc(fbErr(e,true))+'</div>'}
 }
