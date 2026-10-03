@@ -420,7 +420,7 @@ const ADMIN_EMAIL="elmouchania@gmail.com";
 const PH="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='530'><rect width='100%25' height='100%25' fill='%23181818'/><text x='50%25' y='50%25' fill='%23D4AF37' font-size='20' text-anchor='middle'>MAISON</text></svg>";
 
 // ───────── STATE ─────────
-let user=null,roleAdmin=false,products=[],coupons=[],orders=[],cart=[],wishlist=[],cur=null,applied=null,catFilter='',unsubs=[];
+let loaded=false,user=null,roleAdmin=false,products=[],coupons=[],orders=[],cart=[],wishlist=[],cur=null,applied=null,catFilter='',unsubs=[];
 const admin=()=>!!user&&((user.email===ADMIN_EMAIL&&user.emailVerified)||roleAdmin);
 const r2=n=>Math.round(n*100)/100;
 const eur=n=>'€'+Number(n).toFixed(2).replace('.',',');
@@ -445,7 +445,7 @@ let unsubP=null,pRetry=null;
 function listenProducts(){
   unsubP&&unsubP();clearTimeout(pRetry);
   unsubP=db.collection('products').onSnapshot(s=>{
-    products=s.docs.map(d=>({id:d.id,...d.data()}));
+    products=s.docs.map(d=>({id:d.id,...d.data()}));loaded=true;
     refreshView();renderCart();if(cur&&$('pOv').classList.contains('active'))openProduct(cur.id,true);
     if(activePage()==='adminPage'&&admin())renderAdminProducts();
   },e=>{console.error(e);fbErr(e,true);pRetry=setTimeout(listenProducts,5000)});
@@ -643,12 +643,13 @@ async function toggleWish(id){
 }
 
 // ───────── CART ─────────
-const lines=()=>cart.map(c=>{const p=products.find(x=>x.id===c.id);return p?{...c,p,price:pp(p)}:null}).filter(Boolean);
+const allLines=()=>loaded?cart.map(c=>{const p=products.find(x=>x.id===c.id);return{...c,p,gone:!p||(p.stock||0)<=0,price:p?pp(p):0}}):[];
+const lines=()=>allLines().filter(l=>!l.gone);
 function calc(){
   const L=lines(),sub=r2(L.reduce((s,l)=>s+l.price*l.qty,0));
   const disc=applied?r2(sub*applied.discount/100):0;
   const ship=L.length&&sub<50?5.99:0;
-  return{L,sub,disc,ship,total:r2(Math.max(0,sub-disc+ship))};
+  return{L,G:allLines().filter(l=>l.gone),sub,disc,ship,total:r2(Math.max(0,sub-disc+ship))};
 }
 function updateCartBadge(){
   const n=cart.reduce((s,c)=>s+c.qty,0);
@@ -657,12 +658,14 @@ function updateCartBadge(){
 function openCart(){$('cartOv').classList.add('active');renderCart()}
 function closeCart(){$('cartOv').classList.remove('active')}
 function renderCart(){
-  const {L,sub,disc,ship,total}=calc();
-  $('cartItems').innerHTML=L.length?L.map(l=>`<div class="ci"><img src="${esc(imgOk(l.p.image))}" alt="">
+  const {L,G,sub,disc,ship,total}=calc();
+  const rm=l=>`<button onclick="removeCart('${esc(l.id)}')" style="background:none;border:none;color:#e07a68;align-self:flex-start">✕</button>`;
+  const ok=L.map(l=>`<div class="ci"><img src="${esc(imgOk(l.p.image))}" alt="">
    <div style="flex:1"><div class="nm">${esc(l.p.title)}</div><div class="pr">${eur(l.price)}</div>
-   <div class="q"><button onclick="changeCart('${esc(l.id)}',-1)">−</button><span style="min-width:24px;text-align:center">${l.qty}</span><button onclick="changeCart('${esc(l.id)}',1)">+</button></div></div>
-   <button onclick="removeCart('${esc(l.id)}')" style="background:none;border:none;color:#e07a68;align-self:flex-start">✕</button></div>`).join('')
-   :'<div class="empty"><div style="font-size:3rem;opacity:.5">🛒</div>Uw winkelwagen is leeg</div>';
+   <div class="q"><button onclick="changeCart('${esc(l.id)}',-1)">−</button><span style="min-width:24px;text-align:center">${l.qty}</span><button onclick="changeCart('${esc(l.id)}',1)">+</button></div></div>${rm(l)}</div>`).join('');
+  const gone=G.map(l=>`<div class="ci" style="opacity:.75;border:1px solid var(--r)"><img src="${esc(imgOk(l.p?.image))}" alt="" style="filter:grayscale(1)">
+   <div style="flex:1"><div class="nm">${esc(l.p?.title||'Product')}</div><div class="pr" style="color:#e07a68">Dit product is uitverkocht of niet meer beschikbaar</div></div>${rm(l)}</div>`).join('');
+  $('cartItems').innerHTML=(L.length||G.length)?ok+gone:'<div class="empty"><div style="font-size:3rem;opacity:.5">🛒</div>Uw winkelwagen is leeg</div>';
   $('sub').textContent=eur(sub);$('ship').textContent=ship?eur(ship):'GRATIS';$('tot').textContent=eur(total);
   $('discRow').style.display=applied?'flex':'none';$('disc').textContent='-'+eur(disc);
 }
@@ -702,6 +705,7 @@ async function applyCoupon(){
 // ───────── CHECKOUT ─────────
 function startCheckout(){
   if(!user){toast('Log in om af te rekenen','error');closeCart();return showPage('login')}
+  if(calc().G.length){openCart();return toast('Verwijder eerst de uitverkochte producten uit je winkelwagen','error')}
   if(!lines().length)return toast('Winkelwagen is leeg','error');
   closeCart();
   if(!$('coName').value)$('coName').value=user.displayName||'';
