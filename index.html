@@ -113,23 +113,24 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
 .top{position:fixed;right:1rem;bottom:1rem;z-index:900;width:44px;height:44px;border-radius:50%;border:1px solid var(--b);background:var(--s);display:none}.top.on{display:block}
 #off{display:none;background:#9a5b10;color:#fff;text-align:center;font-size:.88rem;padding:.35rem}
 .bd.new{background:var(--ok)}.mimg{cursor:zoom-in}.mimg img{transition:transform .3s}.mimg.z{cursor:zoom-out}.mimg.z img{transform:scale(1.8)}
+.skiptranslate iframe,.goog-te-banner-frame,#goog-gt-tt,.goog-tooltip{display:none!important}body{top:0!important}.goog-text-highlight{background:none!important;box-shadow:none!important}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <div id="diag" role="alert"></div>
 <div id="off" role="status">Je bent offline. Sommige functies werken pas weer met internet.</div>
-<button class="top" id="top" aria-label="Terug naar boven" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
-<div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<button class="top" id="top" aria-label="Terug naar boven" onclick="scrollTo({top:0,behavior:'smooth'})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
+<div id="gt" style="display:none"></div><div class="toasts" id="toasts" role="status" aria-live="polite"></div>
 <div class="topbar" id="tb">Gratis verzending vanaf €50 · 30 dagen retour · Betalen met PayPal</div>
 <header><div class="hd">
- <button class="ib burger" aria-label="Menu" aria-expanded="false" id="burger">☰</button>
- <button class="logo" onclick="go('home')" aria-label="MAISON, naar home">MAISON</button>
+ <button class="ib burger" aria-label="Menu" aria-expanded="false" id="burger"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+ <button class="logo" translate="no" onclick="go('home')" aria-label="MAISON, naar home">MAISON</button>
  <nav class="nav" id="nav" aria-label="Hoofdmenu">
   <button data-p="home">Home</button><button data-p="shop">Winkel</button><button data-p="wishlist">Verlanglijst <span class="cnt" id="wb" hidden>0</span></button><button data-p="contact">Contact</button><button data-p="admin" id="adminLink" hidden>Beheer</button>
  </nav>
  <div class="acts">
-  <button class="ib" id="themeBtn" aria-label="Donker of licht thema">◐</button>
+  
   <span id="guest"><button class="ib" onclick="go('login')">Inloggen</button></span>
   <button class="ib" id="ub" hidden aria-haspopup="true" onclick="event.stopPropagation();$('um').classList.toggle('show')"></button>
   <div class="umenu" id="um"><button onclick="go('profile')">Mijn profiel</button><button onclick="go('orders')">Mijn bestellingen</button><button onclick="go('wishlist')">Verlanglijst</button><button onclick="logout()">Uitloggen</button></div>
@@ -255,7 +256,7 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
 
 <footer><div class="wrap"><div><div class="logo">MAISON</div><p style="margin-top:.4rem;max-width:280px">Zorgvuldig uitgezocht, met de hand ingepakt.</p></div>
 <div><b style="color:#fff">Af en toe nieuws</b><p style="margin:.2rem 0 .5rem;max-width:280px">Nieuwe stukken en acties, hooguit een paar keer per maand.</p><div style="display:flex;gap:.4rem"><input id="nlE" type="email" placeholder="je@mail.nl" aria-label="E-mailadres voor de nieuwsbrief" style="background:#2a2622;color:#fff;border-color:#4a443d"><button class="btn sm" style="background:#e8d3a8;color:#1c1917;border-color:#e8d3a8" onclick="subscribe()">Aanmelden</button></div><div id="nlM" style="font-size:.85rem;min-height:1.2rem;margin-top:.3rem" role="status"></div></div>
-<div>© MAISON<br>Betalen via PayPal<br><button class="lk" onclick="go('contact')">Klantenservice</button></div></div></footer>
+<div>© MAISON<br>Betalen via PayPal<br><button class="lk" onclick="go('contact')">Klantenservice</button><br><button class="lk" onclick="go('profile')">Taal en thema</button></div></div></footer>
 
 <script>
 const $=id=>document.getElementById(id);
@@ -266,8 +267,7 @@ function diag(h){const d=$('diag');d.style.display='block';d.innerHTML=h}
 // Thema: onthoudt de keuze, anders volgt het je systeem
 (function(){let t;try{t=localStorage.getItem('mt')}catch(e){}
  if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
- document.documentElement.dataset.theme=t;
- $('themeBtn').onclick=()=>{const n=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=n;try{localStorage.setItem('mt',n)}catch(e){}}})();
+ document.documentElement.dataset.theme=t;})();
 
 function boot(){
 if(typeof firebase==='undefined'){diag('Firebase kon niet laden. Controleer je internetverbinding of adblocker.');return}
@@ -276,12 +276,12 @@ firebase.initializeApp({apiKey:"AIzaSyCz-EYcHMVG20tX0z-jbEVUVM8b4NC7VcM",authDom
 const auth=firebase.auth(),db=firebase.firestore(),FV=firebase.firestore.FieldValue;
 db.settings({experimentalAutoDetectLongPolling:true,merge:true});
 const gP=new firebase.auth.GoogleAuthProvider(),ADMIN_EMAIL="elmouchania@gmail.com";
-let loaded=false,user=null,roleAdmin=false,products=[],orders=[],cart=[],wishlist=[],cur=null,applied=null,cat='',unsubs=[],tmr,reviews=[],tab='products';
+let loaded=false,user=null,roleAdmin=false,roleCeo=false,products=[],orders=[],cart=[],wishlist=[],cur=null,applied=null,cat='',unsubs=[],tmr,reviews=[],tab='products';
 const r2=n=>Math.round(n*100)/100,eur=n=>'€'+Number(n).toFixed(2).replace('.',','),pp=p=>p.salePrice&&p.salePrice<p.price?p.salePrice:p.price;
 const imgOk=u=>typeof u==='string'&&/^(data:image\/|https:\/\/)/.test(u)?u:PH;
 const page=()=>document.querySelector('.page.on')?.id;
 const uref=()=>db.collection('users').doc(user.uid);
-const admin=()=>!!user&&((user.email===ADMIN_EMAIL&&user.emailVerified)||roleAdmin);
+const ceo=()=>!!user&&((user.email===ADMIN_EMAIL&&user.emailVerified)||roleCeo),admin=()=>ceo()||(!!user&&roleAdmin);
 const dt=o=>o.createdAt?.toDate?o.createdAt.toDate().toLocaleDateString('nl-NL'):'';
 function fbErr(e){const c=e?.code||'';if(c==='permission-denied')return 'Geen rechten (ben je ingelogd en kloppen de Firestore-regels?)';if(c==='unavailable')return 'Geen verbinding met de database';return e?.message||String(e)}
 function toast(m,t='',act){const d=document.createElement('div');d.className='toast '+t;const s=document.createElement('span');s.textContent=m;d.appendChild(s);
@@ -291,14 +291,14 @@ function setMsg(id,t,c){const e=$(id);e.textContent=t;e.className='msg '+(c||'')
 function authErr(e){return({'auth/invalid-credential':'E-mailadres of wachtwoord klopt niet','auth/email-already-in-use':'Dit e-mailadres heeft al een account','auth/invalid-email':'Dit e-mailadres lijkt niet te kloppen','auth/weak-password':'Kies een wachtwoord van minimaal 6 tekens','auth/too-many-requests':'Te veel pogingen, probeer het straks opnieuw','auth/network-request-failed':'Geen internetverbinding','auth/unauthorized-domain':'Dit domein staat nog niet bij Firebase onder Authentication, Authorized domains'}[e.code]||e.message)}
 
 window.go=function(n){
- if((n==='orders'||n==='profile')&&!user){toast('Log eerst even in','error');n='login'}
+ if(n==='orders'&&!user){toast('Log eerst even in','error');n='login'}
  if(n==='admin'&&!admin()){toast(user?'Je hebt geen beheerrechten (is je e-mailadres geverifieerd?)':'Log eerst even in','error');n=user?'home':'login'}
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));$(n+'Page').classList.add('on');
  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===n));
  closeAll();$('nav').classList.remove('show');$('burger').setAttribute('aria-expanded','false');$('um').classList.remove('show');
  view();if(n==='orders')renderOrders();if(n==='profile')renderProfile();if(n==='admin')adm();scrollTo({top:0,behavior:'smooth'});
 };
-function view(){const p=page();if(p==='homePage')renderHome();if(p==='shopPage')renderShop();if(p==='wishlistPage')renderWish()}
+function view(){const p=page();if(p==='homePage')renderHome();if(p==='shopPage')renderShop();if(p==='wishlistPage')renderWish();if(p==='profilePage')renderProfile()}
 function closeAll(){['cartOv','coOv','pOv'].forEach(i=>$(i).classList.remove('on'));document.body.style.overflow='';if(location.hash.startsWith('#p-'))try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
 window.closeAll=closeAll;
 function openOv(id){$(id).classList.add('on');document.body.style.overflow='hidden';setTimeout(()=>$(id).querySelector('.x')?.focus(),50)}
@@ -324,7 +324,7 @@ window.sendReview=async()=>{if(!user){toast('Log in om een review te plaatsen','
   $('rvText').value='';setMsg('rvMsg','Bedankt! Je review staat online zodra we hem gelezen hebben.','success')}catch(e){setMsg('rvMsg','Plaatsen lukt niet: '+fbErr(e),'error')}};
 function listenUser(){
  unsubs.forEach(u=>u());unsubs=[];if(!user)return;const er=e=>console.error(e);
- unsubs.push(uref().onSnapshot(d=>{if(d.data()?.banned){toast('Je account is geblokkeerd. Neem contact met ons op als je denkt dat dit niet klopt.','error');auth.signOut();return}roleAdmin=d.data()?.role==='admin';nav()},er));
+ unsubs.push(uref().onSnapshot(d=>{if(d.data()?.banned){toast('Je account is geblokkeerd. Neem contact met ons op als je denkt dat dit niet klopt.','error');auth.signOut();return}const rl=d.data()?.role;roleAdmin=rl==='admin'||rl==='ceo';roleCeo=rl==='ceo';nav()},er));
  unsubs.push(db.collection('orders').where('userId','==',user.uid).onSnapshot(s=>{orders=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));if(page()==='ordersPage')renderOrders()},er));
  unsubs.push(uref().collection('cart').onSnapshot(s=>{cart=s.docs.map(d=>({id:d.id,qty:d.data().qty||1}));badge();renderCart()},er));
  unsubs.push(uref().collection('wishlist').onSnapshot(s=>{wishlist=s.docs.map(d=>d.id);nav();view();wishBtn()},er));
@@ -332,11 +332,11 @@ function listenUser(){
 auth.onAuthStateChanged(u=>{
  user=u;
  if(u)mergeGC();if(u)uref().get().then(s=>{if(!s.exists)return uref().set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()})}).catch(console.error);
- else{wishlist=[];orders=[];roleAdmin=false;applied=null;setGC(GC());if(['ordersPage','adminPage','profilePage'].includes(page()))go('home')}
+ else{wishlist=[];orders=[];roleAdmin=false;roleCeo=false;applied=null;setGC(GC());if(['ordersPage','adminPage'].includes(page()))go('home')}
  listenUser();nav();view();
 });
 auth.getRedirectResult().catch(e=>toast(authErr(e),'error'));
-function nav(){$('guest').hidden=!!user;$('ub').hidden=!user;$('adminLink').hidden=!admin();if(user)$('ub').textContent=(user.displayName||user.email.split('@')[0])+' ▾';$('wb').hidden=!wishlist.length;$('wb').textContent=wishlist.length}
+function nav(){$('guest').hidden=!!user;$('ub').hidden=!user;$('adminLink').hidden=!admin();if(user)$('ub').textContent=(user.displayName||user.email.split('@')[0])+(ceo()?' · CEO':'')+'';$('wb').hidden=!wishlist.length;$('wb').textContent=wishlist.length}
 function badge(bump){const n=cart.reduce((s,c)=>s+c.qty,0),b=$('cb');document.title=(n?`(${n}) `:'')+T0;b.textContent=n;b.hidden=!n;if(bump){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
 
 // Auth
@@ -350,8 +350,8 @@ window.doRegister=async()=>{const n=$('rName').value.trim(),e=$('rEmail').value.
   await db.collection('users').doc(c.user.uid).set({email:e,name:n,role:'user',createdAt:new Date()},{merge:true});setMsg('rMsg','');toast('Welkom! We hebben je een mail gestuurd om je adres te bevestigen.','success');go('home')}catch(x){setMsg('rMsg',authErr(x),'error')}$('rBtn').disabled=false};
 window.loginWithGoogle=async()=>{try{await auth.signInWithPopup(gP);go('home')}catch(e){if(e.code==='auth/popup-blocked')return auth.signInWithRedirect(gP);if(['auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(e.code))return;toast('Inloggen met Google lukte niet: '+authErr(e),'error')}};
 window.resetPassword=async()=>{const e=$('lEmail').value.trim();if(!e)return toast('Vul eerst je e-mailadres in','error');try{await auth.sendPasswordResetEmail(e);toast('We hebben je een mail gestuurd om je wachtwoord te herstellen','success')}catch(x){toast(authErr(x),'error')}};
-function renderProfile(){if(!user)return;const sum=orders.reduce((s,o)=>s+(o.total||0),0);
- $('pfBox').innerHTML=`<div class="row"><span>Naam</span><b>${esc(user.displayName||'-')}</b></div><div class="row"><span>E-mailadres</span><b>${esc(user.email)} ${user.emailVerified?'(bevestigd)':'(nog niet bevestigd)'}</b></div><div class="row"><span>Bestellingen</span><b>${orders.length}, samen ${eur(sum)}</b></div><div class="row"><span>Verlanglijst</span><b>${wishlist.length} product${wishlist.length===1?'':'en'}</b></div>${user.emailVerified?'':'<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0"><button class="btn sm" onclick="resendVerify()">Bevestigingsmail opnieuw sturen</button><button class="btn sm o" onclick="checkVerified()">Ik heb bevestigd</button></div>'}<div class="fld" style="margin-top:1.2rem"><label for="pfName">Naam wijzigen</label><div style="display:flex;gap:.5rem"><input id="pfName" value="${esc(user.displayName||'')}" maxlength="100"><button class="btn sm" onclick="saveName()">Opslaan</button></div></div>`}
+function renderProfile(){const set=settingsHtml();if(!user){$('pfBox').innerHTML=`<p class="sub">Log in om je gegevens te zien. Je taal en thema kun je hier ook zonder account kiezen.</p><button class="btn" onclick="go('login')">Inloggen</button>`+set;setSet();return}const sum=orders.reduce((s,o)=>s+(o.total||0),0);
+ $('pfBox').innerHTML=`<div class="row"><span>Naam</span><b>${esc(user.displayName||'-')}</b></div><div class="row"><span>E-mailadres</span><b>${esc(user.email)} ${user.emailVerified?'(bevestigd)':'(nog niet bevestigd)'}</b></div><div class="row"><span>Rol</span><b>${ceo()?'CEO':admin()?'Beheerder':'Klant'}</b></div><div class="row"><span>Bestellingen</span><b>${orders.length}, samen ${eur(sum)}</b></div><div class="row"><span>Verlanglijst</span><b>${wishlist.length} product${wishlist.length===1?'':'en'}</b></div>${user.emailVerified?'':'<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0"><button class="btn sm" onclick="resendVerify()">Bevestigingsmail opnieuw sturen</button><button class="btn sm o" onclick="checkVerified()">Ik heb bevestigd</button></div>'}<div class="fld" style="margin-top:1.2rem"><label for="pfName">Naam wijzigen</label><div style="display:flex;gap:.5rem"><input id="pfName" value="${esc(user.displayName||'')}" maxlength="100"><button class="btn sm" onclick="saveName()">Opslaan</button></div></div>`+set;setSet()}
 window.resendVerify=async()=>{try{await user.sendEmailVerification();toast('Mail is onderweg','success')}catch(e){toast(authErr(e),'error')}};
 window.checkVerified=async()=>{try{await user.reload();user=auth.currentUser;await user.getIdToken(true);nav();renderProfile();toast(user.emailVerified?'Je e-mailadres is bevestigd':'Nog niet bevestigd',user.emailVerified?'success':'error')}catch(e){toast(authErr(e),'error')}};
 window.saveName=async()=>{const n=$('pfName').value.trim();if(!n)return toast('Vul een naam in','error');try{await user.updateProfile({displayName:n});await uref().update({name:n});nav();renderProfile();toast('Naam opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
@@ -527,12 +527,12 @@ window.printO=id=>{const o=orders.find(x=>x.id===id);if(!o)return;const w=open('
 let lim=12;
 window.moreP=()=>{lim+=12;renderShop()};
 window.uList=()=>{const q=($('uQ')?.value||'').toLowerCase().trim(),r=$('uR')?.value||'',all=window._au||[],l=all.filter(u=>(!r||(r==='banned'?u.banned:(u.role||'user')===r))&&(!q||[u.name,u.email].some(x=>(x||'').toLowerCase().includes(q))));
- $('aList').innerHTML=`<p class="sub">${l.length} van ${all.length} gebruikers</p>`+(l.map(u=>arow('',esc(u.name||u.email),`${esc(u.email)}, ${u.role==='admin'?'beheerder':'klant'}${u.banned?`, GEBLOKKEERD${u.banReason?' ('+esc(u.banReason)+')':''}`:''}`,(u.role==='admin'?bt('Beheerder weghalen',`rmAdmin('${esc(u.id)}')`):bt('Beheerder maken',`mkAdmin('${esc(u.id)}')`))+(u.role!=='admin'&&u.id!==user.uid?(u.banned?bt('Unban',`banUser('${esc(u.id)}',false)`):bt('Ban',`banUser('${esc(u.id)}',true)`,1)):''))).join('')||none('Geen gebruikers gevonden'))};
-window.banUser=async(id,b)=>{if(id===user.uid)return;let r='';
+ $('aList').innerHTML=`<p class="sub">${l.length} van ${all.length} gebruikers</p>`+(l.map(u=>arow('',esc(u.name||u.email),`${esc(u.email)}, ${isCeoU(u)?'CEO':u.role==='admin'?'beheerder':'klant'}${u.banned?`, GEBLOKKEERD${u.banReason?' ('+esc(u.banReason)+')':''}`:''}`,(!ceo()||isCeoU(u)?'':u.role==='admin'?bt('Beheerder weghalen',`rmAdmin('${esc(u.id)}')`):bt('Beheerder maken',`mkAdmin('${esc(u.id)}')`))+(ceo()&&u.role!=='admin'&&!isCeoU(u)&&u.id!==user.uid?(u.banned?bt('Unban',`banUser('${esc(u.id)}',false)`):bt('Ban',`banUser('${esc(u.id)}',true)`,1)):''))).join('')||none('Geen gebruikers gevonden'))};
+window.banUser=async(id,b)=>{if(!ceo()||id===user.uid)return toast('Alleen de CEO kan gebruikers blokkeren','error');let r='';
  if(b){r=prompt('Reden voor de ban (alleen zichtbaar voor beheerders, mag leeg):','');if(r===null)return}else if(!confirm('Blokkade opheffen?'))return;
  try{await db.collection('users').doc(id).update(b?{banned:true,banReason:r.trim(),bannedAt:new Date()}:{banned:false,banReason:''});
   const u=(window._au||[]).find(x=>x.id===id);if(u){u.banned=b;u.banReason=b?r.trim():''}uList();toast(b?'Gebruiker is geblokkeerd':'Blokkade is opgeheven','success')}catch(e){toast(fbErr(e),'error')}};
-window.rmAdmin=async id=>{if(id===user.uid)return toast('Je kunt jezelf niet als beheerder weghalen','error');if(!confirm('Beheerdersrechten weghalen?'))return;try{await db.collection('users').doc(id).update({role:'user'});toast('Rechten weggehaald','success');adm()}catch(e){toast(fbErr(e),'error')}};
+window.rmAdmin=async id=>{if(!ceo())return toast('Alleen de CEO kan dit','error');if(id===user.uid)return toast('Je kunt jezelf niet als beheerder weghalen','error');if(!confirm('Beheerdersrechten weghalen?'))return;try{await db.collection('users').doc(id).update({role:'user'});toast('Rechten weggehaald','success');adm()}catch(e){toast(fbErr(e),'error')}};
 window.usersCsv=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',rows=[['Naam','E-mail','Rol'],...(window._au||[]).map(u=>[u.name,u.email,u.role])],a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='gebruikers.csv';a.click()};
 window.pList=()=>{const q=($('pQ')?.value||'').toLowerCase().trim(),so=$('pS')?.value||'',l=(window._ap||[]).filter(p=>!q||[p.title,p.category].some(x=>(x||'').toLowerCase().includes(q)));
  if(so==='stock')l.sort((a,b)=>(a.stock||0)-(b.stock||0));if(so==='az')l.sort((a,b)=>String(a.title).localeCompare(b.title,'nl'));
@@ -541,11 +541,19 @@ window.hideProd=async id=>{const p=(window._ap||[]).find(x=>x.id===id);if(!p)ret
 window.copyEm=async()=>{try{await navigator.clipboard.writeText(window._em||'');toast('Gekopieerd','success')}catch(e){toast('Kopiëren lukte niet','error')}};
 window.clearCart=async()=>{if(!cart.length||!confirm('Winkelwagen helemaal leegmaken?'))return;if(user){try{const b=db.batch();cart.forEach(c=>b.delete(uref().collection('cart').doc(c.id)));await b.commit()}catch(e){toast(fbErr(e),'error')}}else setGC({})};
 window.wishClear=async()=>{if(!confirm('Verlanglijst leegmaken?'))return;try{const b=db.batch();wishlist.forEach(id=>b.delete(uref().collection('wishlist').doc(id)));await b.commit();toast('Verlanglijst is leeg')}catch(e){toast(fbErr(e),'error')}};
+const isCeoU=u=>u.role==='ceo'||u.email===ADMIN_EMAIL;
+function loadGT(){if(document.getElementById('gts'))return;window.gtInit=()=>new google.translate.TranslateElement({pageLanguage:'nl',includedLanguages:'nl,en,de,fr,es,pt,it,tr,ar,pl,ru,zh-CN',autoDisplay:false},'gt');const sc=document.createElement('script');sc.id='gts';sc.src='https://translate.google.com/translate_a/element.js?cb=gtInit';document.head.appendChild(sc)}
+window.setLang=c=>{try{localStorage.setItem('mlang',c)}catch(e){}const gone='googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';
+ if(c==='nl'){document.cookie=gone;document.cookie=gone+';domain='+location.hostname}else document.cookie='googtrans=/nl/'+c+';path=/';location.reload()};
+const settingsHtml=()=>`<h2 style="font-size:1.6rem;margin:1.6rem 0 .8rem">Instellingen</h2><div class="fld"><label for="langSel">Taal</label><select id="langSel" onchange="setLang(this.value)" translate="no"><option value="nl">Nederlands</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="it">Italiano</option><option value="tr">Türkçe</option><option value="ar">العربية</option><option value="pl">Polski</option><option value="ru">Русский</option><option value="zh-CN">中文</option></select></div><p class="sub">De site wordt automatisch vertaald met Google Translate. Dat kan foutjes bevatten. Je bestelling, prijzen en gegevens blijven hetzelfde.</p><div class="fld"><label for="thSel">Thema</label><select id="thSel" onchange="setTheme(this.value)"><option value="light">Licht</option><option value="dark">Donker</option></select></div>`;
+function setSet(){let l='nl';try{l=localStorage.getItem('mlang')||'nl'}catch(e){}$('langSel').value=l;$('thSel').value=document.documentElement.dataset.theme}
+window.setTheme=t=>{document.documentElement.dataset.theme=t;try{localStorage.setItem('mt',t)}catch(e){}};
+{let l='nl';try{l=localStorage.getItem('mlang')||'nl'}catch(e){}if(l!=='nl'){loadGT();document.documentElement.dir=l==='ar'?'rtl':'ltr'}}
 window.setTrack=async id=>{const t=prompt('Track en trace code:');if(!t||!t.trim())return;try{await db.collection('orders').doc(id).update({tracking:t.trim(),status:'shipped'});toast('Opgeslagen, status staat nu op verzonden','success');adm()}catch(e){toast(fbErr(e),'error')}};
 window.exportCsv=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',rows=[['Bestelling','Datum','Naam','E-mail','Telefoon','Adres','Producten','Totaal','Status'],...(window._ao||[]).map(o=>[o.id,dt(o),o.userName,o.userEmail,o.phone,o.address,(o.items||[]).map(i=>i.qty+'x '+i.title).join('; '),o.total,o.status])];
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='bestellingen.csv';a.click()};
 window.setStatus=async(id,status)=>{try{await db.collection('orders').doc(id).update({status});toast('Status aangepast','success')}catch(e){toast(fbErr(e),'error')}};
-window.mkAdmin=async id=>{if(!confirm('Deze gebruiker beheerder maken?'))return;try{await db.collection('users').doc(id).update({role:'admin'});toast('Is nu beheerder','success');adm()}catch(e){toast(fbErr(e),'error')}};
+window.mkAdmin=async id=>{if(!ceo())return toast('Alleen de CEO kan dit','error');if(!confirm('Deze gebruiker beheerder maken?'))return;try{await db.collection('users').doc(id).update({role:'admin'});toast('Is nu beheerder','success');adm()}catch(e){toast(fbErr(e),'error')}};
 window.addCoupon=async()=>{const code=$('kC').value.trim().toUpperCase(),discount=parseInt($('kD').value),maxUses=parseInt($('kM').value);
  if(!code||!(discount>=1&&discount<=100)||!(maxUses>=1))return setMsg('kMsg','Vul alle velden goed in','error');
  try{await db.collection('coupons').doc(code).set({code,discount,maxUses,uses:0,createdAt:new Date()});toast('Coupon toegevoegd','success');adm()}catch(e){setMsg('kMsg',fbErr(e),'error')}};
