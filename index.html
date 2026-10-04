@@ -110,13 +110,18 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
 .burger{display:inline-flex}.nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--s);border-bottom:1px solid var(--b);flex-direction:column;margin:0;padding:.5rem 1rem}.nav.show{display:flex}.nav button{text-align:left}
 .logo{font-size:1.35rem}.trust,.kpis{grid-template-columns:1fr 1fr}.reviews,.info2{grid-template-columns:1fr}.wrap{padding:2rem 1rem}.hero .wrap{padding:3.5rem 1rem}
 .grid{grid-template-columns:repeat(2,1fr);gap:.8rem}.modal,.form2{grid-template-columns:1fr}.hide-m{display:none}.ar{flex-wrap:wrap}}
+.top{position:fixed;right:1rem;bottom:1rem;z-index:900;width:44px;height:44px;border-radius:50%;border:1px solid var(--b);background:var(--s);display:none}.top.on{display:block}
+#off{display:none;background:#9a5b10;color:#fff;text-align:center;font-size:.88rem;padding:.35rem}
+.bd.new{background:var(--ok)}.mimg{cursor:zoom-in}.mimg img{transition:transform .3s}.mimg.z{cursor:zoom-out}.mimg.z img{transform:scale(1.8)}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
 <div id="diag" role="alert"></div>
+<div id="off" role="status">Je bent offline. Sommige functies werken pas weer met internet.</div>
+<button class="top" id="top" aria-label="Terug naar boven" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
 <div class="toasts" id="toasts" role="status" aria-live="polite"></div>
-<div class="topbar">Gratis verzending vanaf €50 · 30 dagen retour · Betalen met PayPal</div>
+<div class="topbar" id="tb">Gratis verzending vanaf €50 · 30 dagen retour · Betalen met PayPal</div>
 <header><div class="hd">
  <button class="ib burger" aria-label="Menu" aria-expanded="false" id="burger">☰</button>
  <button class="logo" onclick="go('home')" aria-label="MAISON, naar home">MAISON</button>
@@ -169,7 +174,7 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
 
 <div class="ov" id="pOv" role="dialog" aria-modal="true" aria-labelledby="mTitle" onclick="if(event.target===this)closeAll()">
  <div class="modal"><button class="x" onclick="closeAll()" aria-label="Sluiten">×</button>
-  <div class="mimg"><img id="mImg" alt="" width="460" height="460"></div>
+  <div class="mimg" id="mZ" onclick="this.classList.toggle('z')"><img id="mImg" alt="" width="460" height="460"></div>
   <div><div class="cat" id="mCat"></div><h2 id="mTitle" style="margin:.3rem 0"></h2>
    <div class="pr" id="mPrice" style="font-size:1.6rem"></div><p id="mDesc"></p><div id="mStock" style="font-size:.9rem;margin-top:.8rem"></div>
    <div class="qty"><button onclick="chQty(-1)" aria-label="Minder">−</button><input id="mQty" type="number" value="1" min="1" aria-label="Aantal"><button onclick="chQty(1)" aria-label="Meer">+</button></div>
@@ -213,7 +218,7 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
 
 <section id="shopPage" class="page"><div class="wrap">
  <h1 style="font-size:clamp(2rem,5vw,3rem);margin-bottom:1.3rem">Winkel</h1>
- <div class="bar"><input id="sS" type="search" placeholder="Zoek een product" aria-label="Zoek producten"><select id="sO" aria-label="Sorteren"><option value="">Sorteren</option><option value="low">Prijs, laag naar hoog</option><option value="high">Prijs, hoog naar laag</option><option value="new">Nieuwste eerst</option></select><input id="sMax" type="number" min="0" inputmode="numeric" placeholder="Max. prijs in €" aria-label="Maximale prijs" style="width:140px"><label style="display:flex;align-items:center;gap:.4rem;font-size:.92rem"><input type="checkbox" id="sStock" style="width:auto;min-height:0"> Alleen op voorraad</label></div>
+ <div class="bar"><input id="sS" type="search" placeholder="Zoek een product" aria-label="Zoek producten"><select id="sO" aria-label="Sorteren"><option value="">Sorteren</option><option value="low">Prijs, laag naar hoog</option><option value="high">Prijs, hoog naar laag</option><option value="new">Nieuwste eerst</option></select><input id="sMax" type="number" min="0" inputmode="numeric" placeholder="Max. prijs in €" aria-label="Maximale prijs" style="width:140px"><label style="display:flex;align-items:center;gap:.4rem;font-size:.92rem"><input type="checkbox" id="sStock" style="width:auto;min-height:0"> Alleen op voorraad</label><label style="display:flex;align-items:center;gap:.4rem;font-size:.92rem"><input type="checkbox" id="sSale" style="width:auto;min-height:0"> Alleen aanbiedingen</label></div><div id="sCount" class="sub" role="status"></div>
  <div class="chips" id="chips" role="group" aria-label="Categorieën"></div><div class="grid" id="shopGrid"></div></div></section>
 
 <section id="wishlistPage" class="page"><div class="wrap"><h1 style="font-size:2.5rem;margin-bottom:1.3rem">Verlanglijst</h1><div id="wishC"></div></div></section>
@@ -244,7 +249,7 @@ footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2re
 <section id="profilePage" class="page"><div class="wrap"><div class="box" style="max-width:560px"><h1>Mijn profiel</h1><div id="pfBox" style="margin-top:1rem"></div></div></div></section>
 <section id="adminPage" class="page"><div class="wrap"><h1 style="font-size:2.5rem;margin-bottom:1.3rem">Beheer</h1>
  <div class="kpis" id="kpis"></div>
- <div class="tabs" id="tabs"><button class="tab on" data-t="products">Producten</button><button class="tab" data-t="orders">Bestellingen</button><button class="tab" data-t="reviews">Reviews</button><button class="tab" data-t="coupons">Coupons</button><button class="tab" data-t="messages">Berichten</button><button class="tab" data-t="news">Nieuwsbrief</button><button class="tab" data-t="users">Gebruikers</button></div>
+ <div class="tabs" id="tabs"><button class="tab on" data-t="products">Producten</button><button class="tab" data-t="orders">Bestellingen</button><button class="tab" data-t="reviews">Reviews</button><button class="tab" data-t="coupons">Coupons</button><button class="tab" data-t="messages">Berichten</button><button class="tab" data-t="set">Banner</button><button class="tab" data-t="news">Nieuwsbrief</button><button class="tab" data-t="users">Gebruikers</button></div>
  <div id="aForm"></div><div id="aList"></div></div></section>
 </main>
 
@@ -300,8 +305,10 @@ function openOv(id){$(id).classList.add('on');document.body.style.overflow='hidd
 document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
 $('burger').onclick=()=>{const s=$('nav').classList.toggle('show');$('burger').setAttribute('aria-expanded',s)};
 document.addEventListener('click',()=>$('um').classList.remove('show'));
-addEventListener('keydown',e=>{if(e.key==='Escape')closeAll()});
-$('sS').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,200)};$('sO').onchange=renderShop;$('sStock').onchange=renderShop;$('sMax').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,300)};
+addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();go('shop');setTimeout(()=>$('sS').focus(),50)}});
+addEventListener('scroll',()=>$('top').classList.toggle('on',scrollY>600),{passive:true});
+const offl=()=>{$('off').style.display=navigator.onLine?'none':'block'};addEventListener('online',offl);addEventListener('offline',offl);offl();
+$('sS').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,200)};$('sO').onchange=renderShop;$('sStock').onchange=$('sSale').onchange=renderShop;$('sMax').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,300)};
 
 // Data
 function listenProducts(){db.collection('products').onSnapshot(s=>{products=s.docs.map(d=>({id:d.id,...d.data()}));loaded=true;view();renderCart();if(cur&&$('pOv').classList.contains('on'))openProduct(cur.id,true);if(page()==='adminPage'&&tab==='products')adm()},e=>{console.error(e);setTimeout(listenProducts,5000)})}
@@ -330,7 +337,7 @@ auth.onAuthStateChanged(u=>{
 });
 auth.getRedirectResult().catch(e=>toast(authErr(e),'error'));
 function nav(){$('guest').hidden=!!user;$('ub').hidden=!user;$('adminLink').hidden=!admin();if(user)$('ub').textContent=(user.displayName||user.email.split('@')[0])+' ▾';$('wb').hidden=!wishlist.length;$('wb').textContent=wishlist.length}
-function badge(bump){const n=cart.reduce((s,c)=>s+c.qty,0),b=$('cb');b.textContent=n;b.hidden=!n;if(bump){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
+function badge(bump){const n=cart.reduce((s,c)=>s+c.qty,0),b=$('cb');document.title=(n?`(${n}) `:'')+T0;b.textContent=n;b.hidden=!n;if(bump){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
 
 // Auth
 window.doLogin=async()=>{const e=$('lEmail').value.trim().toLowerCase(),p=$('lPass').value;if(!e||!p)return setMsg('lMsg','Vul je e-mailadres en wachtwoord in','error');
@@ -354,7 +361,7 @@ window.logout=async()=>{await auth.signOut();go('home');toast('Tot de volgende k
 
 // Producten
 function card(p){const sale=p.salePrice&&p.salePrice<p.price,s=p.stock||0,out=s<=0,w=wishlist.includes(p.id),id=esc(p.id);
- const badge=out?'<span class="bd out">Uitverkocht</span>':sale?`<span class="bd">-${Math.round((1-p.salePrice/p.price)*100)}%</span>`:s<=3?`<span class="bd low">Nog ${s}</span>`:'';
+ const badge=out?'<span class="bd out">Uitverkocht</span>':sale?`<span class="bd">-${Math.round((1-p.salePrice/p.price)*100)}%</span>`:s<=3?`<span class="bd low">Nog ${s}</span>`:isNew(p)?'<span class="bd new">Nieuw</span>':'';
  return `<article class="card"><div style="position:relative"><button class="imgw" onclick="openProduct('${id}')" aria-label="Bekijk ${esc(p.title)}"><img src="${esc(imgOk(p.image))}" alt="${esc(p.title)}" width="400" height="400" loading="lazy" decoding="async">${badge}</button>
  <button class="wish" onclick="toggleWish('${id}')" aria-label="${w?'Haal van':'Zet op'} verlanglijst" aria-pressed="${w}">${HEART(w)}</button></div>
  <div class="info"><div class="cat">${esc(p.category)}</div><button class="pn" onclick="openProduct('${id}')">${esc(p.title)}</button>
@@ -364,16 +371,16 @@ const none=t=>`<div class="empty">${t}</div>`;
 function renderHome(){recent();$('homeGrid').innerHTML=!loaded?none('Een moment...'):products.length?products.slice(0,6).map(card).join(''):none('De collectie wordt binnenkort aangevuld.')}
 window.setCat=c=>{cat=c;renderShop()};
 function renderShop(){const q=$('sS').value.toLowerCase(),so=$('sO').value,cats=[...new Set(products.map(p=>p.category).filter(Boolean))];
- $('chips').innerHTML=['',...cats].map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${esc(c)}" onclick="setCat(this.dataset.c)">${c?esc(c):'Alles'}</button>`).join('');
- let l=products.filter(p=>(!cat||p.category===cat)&&(!$('sStock').checked||(p.stock||0)>0)&&(!(parseFloat($('sMax').value)>0)||pp(p)<=parseFloat($('sMax').value))&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
+ $('chips').innerHTML=['',...cats].map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${esc(c)}" onclick="setCat(this.dataset.c)">${c?esc(c):'Alles'} (${c?products.filter(p=>p.category===c).length:products.length})</button>`).join('');
+ let l=products.filter(p=>(!cat||p.category===cat)&&(!$('sStock').checked||(p.stock||0)>0)&&(!$('sSale').checked||(p.salePrice&&p.salePrice<p.price))&&(!(parseFloat($('sMax').value)>0)||pp(p)<=parseFloat($('sMax').value))&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
  if(so==='low')l.sort((a,b)=>pp(a)-pp(b));if(so==='high')l.sort((a,b)=>pp(b)-pp(a));if(so==='new')l.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
- $('shopGrid').innerHTML=!loaded?none('Een moment...'):l.length?l.map(card).join(''):none('Hier hebben we niets voor gevonden. Probeer een andere zoekterm.')}
+ $('shopGrid').innerHTML=!loaded?none('Een moment...'):l.length?l.map(card).join(''):none('Hier hebben we niets voor gevonden.<br><br><button class="btn o sm" onclick="resetF()">Filters wissen</button>');$('sCount').textContent=loaded?`${l.length} van ${products.length} producten`:''}
 function renderWish(){if(!user){$('wishC').innerHTML=none('Log in om je verlanglijst te zien<br><br><button class="btn" onclick="go(\'login\')">Inloggen</button>');return}
- const l=products.filter(p=>wishlist.includes(p.id));$('wishC').innerHTML=l.length?`<div class="grid">${l.map(card).join('')}</div>`:none('Je verlanglijst is nog leeg. Tik op het hartje bij een product om het te bewaren.<br><br><button class="btn" onclick="go(\'shop\')">Naar de winkel</button>')}
+ const l=products.filter(p=>wishlist.includes(p.id));$('wishC').innerHTML=l.length?`<button class="btn o sm" style="margin-bottom:1rem" onclick="wishAll()">Alles in winkelwagen</button><div class="grid">${l.map(card).join('')}</div>`:none('Je verlanglijst is nog leeg. Tik op het hartje bij een product om het te bewaren.<br><br><button class="btn" onclick="go(\'shop\')">Naar de winkel</button>')}
 const STAT={pending:'In afwachting',completed:'Betaald',shipped:'Verzonden'};
 function orderCard(o,adm){return `<div class="oc"><div class="h"><b>#${esc(o.id.slice(0,8).toUpperCase())}</b>${adm?`<select style="width:auto;min-height:36px" onchange="setStatus('${esc(o.id)}',this.value)">${Object.keys(STAT).map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${STAT[s]}</option>`).join('')}</select>`:`<span>${esc(STAT[o.status]||o.status)}</span>`}</div>
  ${adm?`<div>${esc(o.userName)}, ${esc(o.userEmail)}, ${esc(o.phone)}<br>${esc(o.address)}${o.paypalOrderId?`<br>PayPal: ${esc(o.paypalOrderId)}`:''}</div>`:''}
- <div>Totaal <b>${eur(o.total||0)}</b> op ${dt(o)}</div>${o.tracking?`<div>Track en trace: <b>${esc(o.tracking)}</b></div>`:''}${adm?`<button class="btn sm o" style="margin:.4rem 0" onclick="setTrack('${esc(o.id)}')">Track en trace invullen</button><button class="btn sm o" style="margin:.4rem 0 .4rem .4rem" onclick="slip('${esc(o.id)}')">Pakbon printen</button>`:''}${!adm?`<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn sm o" onclick="reorder('${esc(o.id)}')">Opnieuw bestellen</button>${ret(o)?`<button class="btn sm o" onclick="returnReq('${esc(o.id)}')">Retour aanvragen</button>`:''}</div>`:''}${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`}
+ <div>Totaal <b>${eur(o.total||0)}</b> op ${dt(o)}</div>${o.tracking?`<div>Track en trace: <b>${esc(o.tracking)}</b></div>`:''}${adm?`<button class="btn sm o" style="margin:.4rem 0" onclick="setTrack('${esc(o.id)}')">Track en trace invullen</button><button class="btn sm o" style="margin:.4rem 0 .4rem .4rem" onclick="slip('${esc(o.id)}')">Pakbon printen</button>`:''}${!adm?`<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn sm o" onclick="reorder('${esc(o.id)}')">Opnieuw bestellen</button><button class="btn sm o" onclick="printO('${esc(o.id)}')">Bestelling printen</button>${ret(o)?`<button class="btn sm o" onclick="returnReq('${esc(o.id)}')">Retour aanvragen</button>`:''}</div>`:''}${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`}
 function renderOrders(){$('ordL').innerHTML=orders.length?orders.map(o=>orderCard(o,false)).join(''):none('Je hebt nog niets besteld.')}
 const RV=()=>{try{return JSON.parse(localStorage.getItem('mrv')||'[]')}catch(e){return[]}};
 function rv(id){try{localStorage.setItem('mrv',JSON.stringify([id,...RV().filter(x=>x!==id)].slice(0,6)))}catch(e){}}
@@ -384,7 +391,7 @@ window.openProduct=(id,keep)=>{const p=products.find(x=>x.id===id);if(!p)return;
  const sale=p.salePrice&&p.salePrice<p.price;$('mPrice').innerHTML=sale?`<s>${eur(p.price)}</s><span class="new">${eur(pp(p))}</span>`:eur(pp(p));
  $('mDesc').textContent=p.desc||'';const s=p.stock||0;
  $('mStock').innerHTML=s<=0?'<b style="color:var(--red)">Uitverkocht</b>':s<=5?`<b style="color:#c0771f">Nog maar ${s} op voorraad</b>`:'<b style="color:var(--ok)">Op voorraad</b>';
- $('mAdd').disabled=s<=0;if(!keep)$('mQty').value=1;wishBtn();related(p);openOv('pOv')};
+ $('mAdd').disabled=s<=0;if(!keep)$('mQty').value=1;wishBtn();related(p);$('mZ').classList.remove('z');openOv('pOv')};
 window.chQty=d=>{const i=$('mQty'),max=cur?.stock||1;i.value=Math.min(max,Math.max(1,(parseInt(i.value)||1)+d))};
 window.shareProd=async()=>{const d={title:cur.title,text:cur.title+' bij MAISON',url:location.href};try{if(navigator.share)await navigator.share(d);else{await navigator.clipboard.writeText(location.href);toast('Link gekopieerd','success')}}catch(e){}};
 function wishBtn(){if(cur)$('mWish').textContent=wishlist.includes(cur.id)?'Van verlanglijst halen':'Op verlanglijst zetten'}
@@ -399,7 +406,7 @@ window.openCart=()=>{renderCart();openOv('cartOv')};
 function renderCart(){const{L,G,sub,disc,ship,total}=calc();
  const rm=l=>`<button class="rm" onclick="removeCart('${esc(l.id)}')" aria-label="Verwijderen">×</button>`;
  $('cartItems').innerHTML=(L.length||G.length)?L.map(l=>`<div class="ci"><img src="${esc(imgOk(l.p.image))}" alt="${esc(l.p.title)}" width="70" height="70"><div style="flex:1"><div>${esc(l.p.title)}</div><b>${eur(l.price)}</b>
-  <div class="q"><button onclick="changeCart('${esc(l.id)}',-1)" aria-label="Minder">−</button><span>${l.qty}</span><button onclick="changeCart('${esc(l.id)}',1)" aria-label="Meer">+</button></div></div>${rm(l)}</div>`).join('')+
+  <div class="q"><button onclick="changeCart('${esc(l.id)}',-1)" aria-label="Minder">−</button><span>${l.qty}</span><button onclick="changeCart('${esc(l.id)}',1)" aria-label="Meer">+</button></div><button class="lk" style="font-size:.85rem;min-height:32px;padding:0" onclick="saveLater('${esc(l.id)}')">Bewaar voor later</button></div>${rm(l)}</div>`).join('')+
   G.map(l=>`<div class="ci" style="border:1px solid var(--red)"><div style="flex:1;color:var(--red)">${esc(l.p?.title||'Product')} is helaas niet meer beschikbaar</div>${rm(l)}</div>`).join(''):none('Je winkelwagen is leeg.<br><br><button class="btn" onclick="go(\'shop\')">Naar de winkel</button>');
  $('sub').textContent=eur(sub);$('ship').textContent=ship?eur(ship):'Gratis';$('tot').textContent=eur(total);
  $('discRow').hidden=!applied;$('disc').textContent='-'+eur(disc);
@@ -427,6 +434,7 @@ function loadPP(){return window.paypal?Promise.resolve():new Promise((ok,no)=>{c
 window.startCheckout=()=>{if(!user){toast('Log in om af te rekenen','error');closeAll();return go('login')}
  if(calc().G.length)return toast('Haal eerst de producten weg die niet meer beschikbaar zijn','error');if(!calc().L.length)return toast('Je winkelwagen is leeg','error');
  closeAll();if(!$('coName').value)$('coName').value=user.displayName||'';if(!$('coEmail').value)$('coEmail').value=user.email||'';
+ try{const a=JSON.parse(localStorage.getItem('mad')||'{}');for(const k in a)if($(k)&&!$(k).value)$(k).value=a[k]}catch(e){}
  $('pp').innerHTML='';$('coBtn').style.display='';setMsg('coMsg','');$('coTotal').textContent=eur(calc().total);$('coBtn').textContent=calc().total<=0?'Bestelling plaatsen (gratis)':'Verder naar betalen';openOv('coOv')};
 window.finalizeCheckout=async()=>{const v=id=>$(id).value.trim(),name=v('coName'),email=v('coEmail'),phone=v('coPhone'),street=v('coStreet'),postal=v('coPostal'),city=v('coCity');
  if(!name||!email||!phone||!street||!postal||!city)return setMsg('coMsg','Vul alle velden in','error');
@@ -435,6 +443,7 @@ window.finalizeCheckout=async()=>{const v=id=>$(id).value.trim(),name=v('coName'
  if(!/^\d{4}\s?[A-Z]{2}$/i.test(postal))return setMsg('coMsg','Postcode graag als 1234 AB','error');
  const{L,sub,disc,ship,total}=calc();if(!L.length)return setMsg('coMsg','Je winkelwagen is leeg','error');
  if(L.some(l=>l.qty>(l.p.stock||0)))return setMsg('coMsg','Van een product is niet genoeg meer op voorraad','error');
+ try{localStorage.setItem('mad',JSON.stringify({coPhone:phone,coStreet:street,coPostal:postal,coCity:city}))}catch(e){}
  if(total<=0)return freeOrder({name,email,phone,street,postal,city,L,sub,disc,ship});
  setMsg('coMsg','PayPal wordt geladen...');$('coBtn').disabled=true;
  try{await loadPP()}catch(e){$('coBtn').disabled=false;return setMsg('coMsg','PayPal kon niet laden. Controleer je verbinding of adblocker.','error')}
@@ -478,13 +487,14 @@ async function adm(){if(!admin())return;const F=$('aForm'),Lh=$('aList');F.inner
   if(tab==='products'){F.innerHTML=`<div class="box" style="max-width:none;margin-bottom:1.3rem"><h3 style="margin-bottom:.8rem">Product toevoegen</h3><div class="form2">
    <input id="aT" placeholder="Naam" maxlength="120"><input id="aC" placeholder="Categorie" maxlength="60"><input id="aP" type="number" step="0.01" min="0" placeholder="Prijs in €"><input id="aS" type="number" step="0.01" min="0" placeholder="Actieprijs in € (optioneel)"><input id="aK" type="number" min="0" placeholder="Voorraad"><input id="aI" type="file" accept="image/*"></div>
    <textarea id="aD" rows="2" placeholder="Beschrijving" maxlength="1500" style="margin:.8rem 0"></textarea><button class="btn full" id="aB" onclick="addProd()">Product toevoegen</button><div class="msg" id="aM"></div></div>`;
-   Lh.innerHTML=products.map(p=>arow(p.image,esc(p.title),`${eur(pp(p))}, voorraad ${p.stock||0}`,bt('Prijs en voorraad',`editProd('${esc(p.id)}')`)+bt('Verwijderen',`del('products','${esc(p.id)}')`,1))).join('')||none('Nog geen producten')}
-  else if(tab==='orders'){window._ao=ao;F.innerHTML='<button class="btn o sm" style="margin-bottom:1rem" onclick="exportCsv()">Exporteer als CSV</button>';Lh.innerHTML=ao.map(o=>orderCard(o,true)).join('')||none('Nog geen bestellingen')}
+   Lh.innerHTML=products.map(p=>arow(p.image,esc(p.title),`${eur(pp(p))}, voorraad ${p.stock||0}`,bt('Prijs, actie en voorraad',`editProd('${esc(p.id)}')`)+bt('Dupliceren',`dupProd('${esc(p.id)}')`)+bt('Verwijderen',`del('products','${esc(p.id)}')`,1))).join('')||none('Nog geen producten')}
+  else if(tab==='orders'){window._ao=ao;F.innerHTML='<button class="btn o sm" style="margin-bottom:1rem" onclick="exportCsv()">Exporteer als CSV</button><select id="oF" onchange="filterOrd()" aria-label="Filter op status" style="width:auto;min-height:40px;margin-left:.5rem"><option value="">Alle statussen</option><option value="pending">In afwachting</option><option value="completed">Betaald</option><option value="shipped">Verzonden</option></select>';Lh.innerHTML=ao.map(o=>orderCard(o,true)).join('')||none('Nog geen bestellingen')}
   else if(tab==='reviews'){const s=await db.collection('reviews').get();Lh.innerHTML=s.docs.map(d=>{const r=d.data();return arow('',`${esc(r.name)}, ${r.rating} van 5 ${r.approved?'(online)':'(wacht op jou)'}`,esc(r.text),(r.approved?'':bt('Goedkeuren',`appr('${d.id}')`))+bt('Verwijderen',`del('reviews','${d.id}')`,1))}).join('')||none('Nog geen reviews')}
   else if(tab==='coupons'){F.innerHTML=`<div class="box" style="max-width:none;margin-bottom:1.3rem"><div class="form2" style="grid-template-columns:repeat(3,1fr)"><input id="kC" placeholder="CODE" maxlength="30" style="text-transform:uppercase"><input id="kD" type="number" min="1" max="100" placeholder="Korting in %"><input id="kM" type="number" min="1" placeholder="Hoe vaak te gebruiken"></div><button class="btn full" style="margin-top:.8rem" onclick="addCoupon()">Coupon toevoegen</button><div class="msg" id="kMsg"></div></div>`;
    const s=await db.collection('coupons').get();Lh.innerHTML=s.docs.map(d=>{const c=d.data();return arow('',esc(d.id),`${c.discount}% korting, ${c.uses||0} van ${c.maxUses} keer gebruikt`,bt('Verwijderen',`del('coupons','${esc(d.id)}')`,1))}).join('')||none('Nog geen coupons')}
   else if(tab==='messages'){const s=await db.collection('messages').get(),a=s.docs.map(d=>({id:d.id,...d.data()})).sort((x,y)=>(y.createdAt?.seconds||0)-(x.createdAt?.seconds||0));
    Lh.innerHTML=a.map(m=>arow('',`${esc(m.name)}, <a href="mailto:${esc(m.email)}">${esc(m.email)}</a>`,esc(m.message),bt('Verwijderen',`del('messages','${esc(m.id)}')`,1))).join('')||none('Geen berichten')}
+  else if(tab==='set'){F.innerHTML=`<div class="box" style="max-width:none"><div class="fld"><label for="bnT">Tekst in de balk bovenaan de site (leeg laten voor de standaardtekst)</label><input id="bnT" maxlength="140" value="${esc($('tb').textContent===TB0?'':$('tb').textContent)}"></div><button class="btn" onclick="saveBanner()">Opslaan</button></div>`;Lh.innerHTML=''}
   else if(tab==='news'){const s=await db.collection('subscribers').get();Lh.innerHTML=`<div class="ar"><div><b>${s.size} aanmeldingen</b><br><span style="color:var(--m)">${esc(s.docs.map(d=>d.id).join(', '))}</span></div></div>`}
   else{const s=await db.collection('users').get();Lh.innerHTML=s.docs.map(d=>{const u=d.data();return arow('',esc(u.name||u.email),`${esc(u.email)}, ${u.role==='admin'?'beheerder':'klant'}`,u.role==='admin'?'':bt('Beheerder maken',`mkAdmin('${d.id}')`))}).join('')}
  }catch(e){Lh.innerHTML=none('Geen toegang: '+esc(fbErr(e)))}}
@@ -493,9 +503,9 @@ window.addProd=async()=>{const title=$('aT').value.trim(),price=parseFloat($('aP
  try{const f=$('aI').files[0],image=f?await compress(f):PH;
   await db.collection('products').add({title,category:$('aC').value.trim()||'Overig',price,salePrice:sale&&sale<price?sale:null,stock:Math.max(0,parseInt($('aK').value)||0),desc:$('aD').value.trim(),image,createdAt:FV.serverTimestamp()});
   toast('Product toegevoegd','success');adm()}catch(e){setMsg('aM',fbErr(e),'error');$('aB').disabled=false}};
-window.editProd=async id=>{const p=products.find(x=>x.id===id),pr=prompt('Nieuwe prijs in €:',p.price);if(pr===null)return;const sk=prompt('Nieuwe voorraad:',p.stock||0);if(sk===null)return;
+window.editProd=async id=>{const p=products.find(x=>x.id===id),pr=prompt('Nieuwe prijs in €:',p.price);if(pr===null)return;const sk=prompt('Nieuwe voorraad:',p.stock||0);if(sk===null)return;const sl=prompt('Actieprijs in € (leeg laten voor geen actie):',p.salePrice||'');if(sl===null)return;const sp=parseFloat(String(sl).replace(',','.'));
  const price=parseFloat(String(pr).replace(',','.')),stock=parseInt(sk);if(!(price>0)||isNaN(stock))return toast('Prijs of voorraad klopt niet','error');
- try{await db.collection('products').doc(id).update({price,stock:Math.max(0,stock)});toast('Opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
+ try{await db.collection('products').doc(id).update({price,stock:Math.max(0,stock),salePrice:sp>0&&sp<price?sp:null});toast('Opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
 window.del=async(c,id)=>{if(!confirm('Weet je zeker dat je dit wilt verwijderen?'))return;try{await db.collection(c).doc(id).delete();toast('Verwijderd');adm()}catch(e){toast(fbErr(e),'error')}};
 window.appr=async id=>{try{await db.collection('reviews').doc(id).update({approved:true});toast('Review staat online','success');adm()}catch(e){toast(fbErr(e),'error')}};
 const ret=o=>o.createdAt?.toDate&&Date.now()-o.createdAt.toDate().getTime()<30*864e5;
@@ -504,6 +514,16 @@ window.returnReq=async id=>{const o=orders.find(x=>x.id===id);if(!o||!confirm('R
  try{await db.collection('messages').add({name:o.userName,email:o.userEmail,message:'Retourverzoek voor bestelling #'+id.slice(0,8).toUpperCase()+' ('+id+')',createdAt:FV.serverTimestamp()});toast('Je retourverzoek is binnen, we mailen je de uitleg','success')}catch(e){toast(fbErr(e),'error')}};
 window.slip=id=>{const o=(window._ao||[]).find(x=>x.id===id);if(!o)return;const w=open('','_blank');if(!w)return toast('Sta pop-ups toe om de pakbon te printen','error');
  w.document.write(`<title>Pakbon</title><body style="font-family:sans-serif;max-width:600px;margin:2rem auto"><h2>Pakbon #${esc(id.slice(0,8).toUpperCase())}</h2><p><b>${esc(o.userName)}</b><br>${esc(o.address)}<br>${esc(o.phone)}</p><ul>${(o.items||[]).map(i=>`<li>${esc(i.qty)} × ${esc(i.title)}</li>`).join('')}</ul><script>print()<\/script>`);w.document.close()};
+const T0=document.title,TB0=$('tb').textContent,isNew=p=>p.createdAt?.seconds&&Date.now()/1000-p.createdAt.seconds<14*864e5;
+db.collection('settings').doc('site').onSnapshot(d=>{$('tb').textContent=d.data()?.banner||TB0},()=>{});
+window.resetF=()=>{cat='';['sS','sMax'].forEach(i=>$(i).value='');$('sO').value='';$('sStock').checked=$('sSale').checked=false;renderShop()};
+window.wishAll=async()=>{for(const p of products.filter(p=>wishlist.includes(p.id)&&(p.stock||0)>0))await addToCart(p.id,1);openCart()};
+window.saveLater=async id=>{if(!user){toast('Log in om je verlanglijst te gebruiken','error');return go('login')}try{await uref().collection('wishlist').doc(id).set({addedAt:new Date()});await removeCart(id);toast('Op je verlanglijst gezet','success')}catch(e){toast(fbErr(e),'error')}};
+window.filterOrd=()=>{const s=$('oF').value,l=(window._ao||[]).filter(o=>!s||o.status===s);$('aList').innerHTML=l.map(o=>orderCard(o,true)).join('')||none('Geen bestellingen met deze status')};
+window.dupProd=async id=>{const p=products.find(x=>x.id===id);if(!p)return;const{id:_,...d}=p;try{await db.collection('products').add({...d,title:p.title+' (kopie)',createdAt:FV.serverTimestamp()});toast('Product gedupliceerd','success');adm()}catch(e){toast(fbErr(e),'error')}};
+window.saveBanner=async()=>{try{await db.collection('settings').doc('site').set({banner:$('bnT').value.trim()});toast('Banner opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
+window.printO=id=>{const o=orders.find(x=>x.id===id);if(!o)return;const w=open('','_blank');if(!w)return toast('Sta pop-ups toe om te printen','error');
+ w.document.write(`<title>Bestelling</title><body style="font-family:sans-serif;max-width:600px;margin:2rem auto"><h2>Bestelling #${esc(id.slice(0,8).toUpperCase())}</h2><p>${dt(o)}<br>${esc(o.address)}</p><ul>${(o.items||[]).map(i=>`<li>${esc(i.qty)} × ${esc(i.title)}: ${eur(i.price*i.qty)}</li>`).join('')}</ul><p>Verzending: ${eur(o.shipping||0)}<br>Korting: ${eur(o.discount||0)}<br><b>Totaal: ${eur(o.total||0)}</b></p><script>print()<\/script>`);w.document.close()};
 window.setTrack=async id=>{const t=prompt('Track en trace code:');if(!t||!t.trim())return;try{await db.collection('orders').doc(id).update({tracking:t.trim(),status:'shipped'});toast('Opgeslagen, status staat nu op verzonden','success');adm()}catch(e){toast(fbErr(e),'error')}};
 window.exportCsv=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',rows=[['Bestelling','Datum','Naam','E-mail','Telefoon','Adres','Producten','Totaal','Status'],...(window._ao||[]).map(o=>[o.id,dt(o),o.userName,o.userEmail,o.phone,o.address,(o.items||[]).map(i=>i.qty+'x '+i.title).join('; '),o.total,o.status])];
  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='bestellingen.csv';a.click()};
