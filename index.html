@@ -2,590 +2,307 @@
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>MAISON | Zorgvuldig uitgezocht, gratis verzending vanaf €50</title>
-<meta name="description" content="MAISON: zorgvuldig uitgezochte stukken voor thuis en onderweg. Gratis verzending vanaf €50, 30 dagen retour, betalen met PayPal.">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>MAISON | Zorgvuldig uitgezocht</title>
+<meta name="description" content="MAISON: zorgvuldig uitgezochte stukken. Gratis verzending vanaf €50, 30 dagen retour, betalen met PayPal.">
 <meta name="theme-color" content="#1c1917">
-<meta property="og:title" content="MAISON | Zorgvuldig uitgezocht"><meta property="og:description" content="Zorgvuldig uitgezochte stukken. Gratis verzending vanaf €50, 30 dagen retour."><meta property="og:type" content="website"><meta name="twitter:card" content="summary">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.gstatic.com https://www.paypal.com https://apis.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.paypal.com https://*.firebaseapp.com; frame-src https://*.paypal.com https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js" defer></script>
-<link rel="preconnect" href="https://translate.google.com"><link rel="preconnect" href="https://translate.googleapis.com"><link rel="preconnect" href="https://www.gstatic.com" crossorigin>
-<script>
-window.gtInit=function(){var go=function(){new google.translate.TranslateElement({pageLanguage:'nl',includedLanguages:'nl,en,de,fr,es,pt,it,tr,ar,pl,ru,zh-CN',autoDisplay:false},'gt')};document.getElementById('gt')?go():document.addEventListener('DOMContentLoaded',go)};
-window.loadGT=function(){if(document.getElementById('gts'))return;var s=document.createElement('script');s.id='gts';s.async=true;s.src='https://translate.google.com/translate_a/element.js?cb=gtInit';document.head.appendChild(s)};
-try{var L=localStorage.getItem('mlang');if(L&&L!=='nl'){document.documentElement.dir=L==='ar'?'rtl':'ltr';loadGT()}}catch(e){}
-</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#faf8f5;--s:#fff;--e:#f1ede6;--b:#e4ded4;--ink:#1c1917;--t:#3a3631;--m:#6b655c;--g:#8a6a3b;--red:#a33a2a;--ok:#2f6b4f;--inv:#fff;--ser:'Cormorant Garamond',Georgia,serif;--san:'Outfit',system-ui,sans-serif;--sh:0 6px 24px rgba(0,0,0,.08)}
-[data-theme=dark]{--bg:#12100e;--s:#1b1815;--e:#25211d;--b:#38332d;--ink:#f3ece1;--t:#d9d1c4;--m:#a1998c;--g:#d4b06a;--red:#e58470;--ok:#7fb59f;--inv:#14110e;--sh:0 6px 24px rgba(0,0,0,.5)}
-html{scroll-behavior:smooth}
-body{font-family:var(--san);background:var(--bg);color:var(--t);line-height:1.6;overflow-x:hidden}
+:root{--bg:#f7f4ef;--s:#fff;--e:#eee8de;--b:#e0d8ca;--ink:#1c1917;--t:#3a3631;--m:#6b655c;--g:#9a7632;--red:#a33a2a;--ok:#2f6b4f;--inv:#fff;--ser:'Cormorant Garamond',Georgia,serif;--san:'Outfit',system-ui,sans-serif;--sh:0 1px 2px rgba(28,25,23,.05),0 10px 30px rgba(28,25,23,.07);--sh2:0 20px 44px rgba(28,25,23,.16);--ease:cubic-bezier(.22,.8,.3,1)}
+[data-theme=dark]{--bg:#0f0d0b;--s:#1a1714;--e:#24201c;--b:#332e28;--ink:#f3ece1;--t:#d9d1c4;--m:#a1998c;--g:#d9b873;--red:#e58470;--ok:#7fb59f;--inv:#14110e;--sh:0 10px 30px rgba(0,0,0,.45)}
+body{font-family:var(--san);background:var(--bg);color:var(--t);line-height:1.6;overflow-x:hidden;-webkit-font-smoothing:antialiased}
 button,input,select,textarea{font:inherit;color:inherit}button{cursor:pointer}img{display:block;max-width:100%}
 :focus-visible{outline:3px solid var(--g);outline-offset:2px}
-.topbar{background:var(--ink);color:var(--inv);font-size:.8rem;text-align:center;padding:.45rem 1rem}
-header{position:sticky;top:0;z-index:1000;background:var(--s);border-bottom:1px solid var(--b)}
-.hd{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:.8rem;padding:.6rem 1.2rem;min-height:66px}
-.logo{font-family:var(--ser);font-size:1.7rem;letter-spacing:.3em;color:var(--ink);background:none;border:0;font-weight:500}
-.nav{display:flex;gap:.2rem;margin-left:1.2rem}
-.nav button{background:none;border:0;padding:.5rem .8rem;min-height:44px;font-size:.9rem;color:var(--m);border-bottom:2px solid transparent}
-.nav button:hover,.nav button.on{color:var(--ink);border-bottom-color:var(--g)}
-.acts{margin-left:auto;display:flex;gap:.4rem;align-items:center;position:relative}
-.ib{min-height:44px;min-width:44px;border-radius:99px;border:1px solid var(--b);background:var(--s);display:inline-flex;align-items:center;justify-content:center;gap:.4rem;padding:0 .9rem;font-size:.88rem}
-.ib:hover{border-color:var(--g)}.ib.cart{background:var(--ink);color:var(--inv);border-color:var(--ink)}
-.cnt{background:var(--g);color:var(--inv);border-radius:99px;font-size:.72rem;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
-.bump{animation:bump .4s}@keyframes bump{50%{transform:scale(1.4)}}
-.burger{display:none}
-.umenu{position:absolute;top:52px;right:0;background:var(--s);border:1px solid var(--b);border-radius:10px;box-shadow:var(--sh);min-width:180px;display:none;overflow:hidden}
-.umenu.show{display:block}.umenu button{display:block;width:100%;text-align:left;background:none;border:0;padding:.8rem 1rem;min-height:44px}.umenu button:hover{background:var(--e)}
-.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:.7rem 1.5rem;border-radius:99px;border:1px solid var(--ink);background:var(--ink);color:var(--inv);font-weight:600;font-size:.92rem;transition:.2s}
-.btn:hover:not(:disabled){opacity:.88}.btn:disabled{opacity:.45;cursor:not-allowed}
-.btn.o{background:transparent;color:var(--ink)}.btn.full{width:100%}.btn.sm{min-height:40px;padding:.4rem 1rem;font-size:.82rem}.btn.red{background:var(--red);border-color:var(--red);color:#fff}
-.page{display:none}.page.on{display:block}
-.wrap{max-width:1240px;margin:0 auto;padding:3rem 1.2rem}
-.hero{background:linear-gradient(110deg,#221b15,#4a3b2d 60%,#7d6a52);color:#fff}
-.hero .wrap{padding:5rem 1.2rem}
-h1,h2,h3{font-family:var(--ser);font-weight:500;color:var(--ink);line-height:1.1}
-.hero h1{color:#fff;font-size:clamp(2.6rem,7vw,4.8rem);margin-bottom:1rem;max-width:13ch}
-.hero p{max-width:440px;color:rgba(255,255,255,.88);margin-bottom:1.8rem}
-.hero .btn{background:#fff;color:#1c1917;border-color:#fff}.hero .btn.o{background:none;color:#fff;border-color:rgba(255,255,255,.6)}
-.cta{display:flex;gap:.7rem;flex-wrap:wrap}
+h1,h2,h3{font-family:var(--ser);font-weight:500;color:var(--ink);line-height:1.1;letter-spacing:-.01em}
 h2{font-size:clamp(1.8rem,4vw,2.5rem);margin-bottom:1.5rem}
-.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem}
-.trust div{background:var(--s);border:1px solid var(--b);border-radius:8px;padding:.9rem 1rem;font-size:.85rem;color:var(--m)}.trust b{display:block;color:var(--ink)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.3rem}
-.card{background:var(--s);border:1px solid var(--b);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
-.card:hover{box-shadow:var(--sh)}
-.imgw{position:relative;aspect-ratio:1/1;background:var(--e);overflow:hidden;border:0;padding:0;width:100%;display:block}
-.imgw img{width:100%;height:100%;object-fit:cover}
-.bd{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:.72rem;font-weight:600;padding:2px 9px;border-radius:99px}.bd.out{background:#57534e}.bd.low{background:#9a5b10}
+.topbar{background:var(--ink);color:var(--inv);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;text-align:center;padding:.55rem 1rem}
+header{position:sticky;top:0;z-index:50;background:color-mix(in srgb,var(--s) 86%,transparent);backdrop-filter:blur(14px);border-bottom:1px solid var(--b)}
+.hd{max-width:1240px;margin:0 auto;display:flex;align-items:center;gap:.6rem;padding:.5rem 1.2rem;min-height:64px}
+.logo{font-family:var(--ser);font-size:1.55rem;letter-spacing:.42em;color:var(--ink);background:none;border:0}
+.nav{display:flex;gap:.2rem;margin-left:1rem}
+.nav button{background:none;border:0;padding:.5rem .8rem;min-height:44px;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;color:var(--m);border-bottom:1px solid transparent}
+.nav button:hover,.nav button.on{color:var(--ink);border-bottom-color:var(--g)}
+.acts{margin-left:auto;display:flex;gap:.4rem}
+.ib{min-height:44px;min-width:44px;border-radius:99px;border:1px solid var(--b);background:var(--s);padding:0 .9rem;font-size:.88rem;display:inline-flex;align-items:center;justify-content:center;gap:.4rem}
+.ib.cart{background:var(--ink);color:var(--inv);border-color:var(--ink)}
+.cnt{background:var(--g);color:var(--inv);border-radius:99px;font-size:.72rem;min-width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center;padding:0 5px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:.7rem 1.5rem;border-radius:99px;border:1px solid var(--ink);background:var(--ink);color:var(--inv);font-weight:600;font-size:.82rem;letter-spacing:.06em;text-transform:uppercase;transition:transform .25s var(--ease),box-shadow .25s}
+.btn:hover:not(:disabled){transform:translateY(-1px);box-shadow:var(--sh)}.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.o{background:transparent;color:var(--ink)}.btn.full{width:100%}.btn.sm{min-height:38px;padding:.3rem 1rem;font-size:.75rem}.btn.red{background:var(--red);border-color:var(--red);color:#fff}
+.wrap{max-width:1240px;margin:0 auto;padding:3rem 1.2rem}
+.hero{background:radial-gradient(1000px 400px at 85% -10%,rgba(217,184,115,.3),transparent 60%),linear-gradient(115deg,#17120e,#3b2f23 62%,#6f5c43);color:#fff}
+.hero .wrap{padding:6.5rem 1.2rem 6rem}
+.hero h1{color:#fff;font-weight:400;font-size:clamp(2.8rem,8vw,5.4rem);line-height:1.02;max-width:12ch;margin-bottom:1rem;animation:rise .9s var(--ease) both}
+.hero p{max-width:470px;color:rgba(255,255,255,.88);margin-bottom:1.8rem}
+.hero .btn{background:#fff;color:#1c1917;border-color:#fff}.hero .btn.o{background:none;color:#fff;border-color:rgba(255,255,255,.6)}
+.cta{display:flex;gap:.7rem;flex-wrap:wrap}@keyframes rise{from{opacity:0;transform:translateY(18px)}}
+.trust,.three{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem}.three{grid-template-columns:repeat(3,1fr)}
+.trust div,.three div,.rv{background:var(--s);border-radius:14px;box-shadow:var(--sh);padding:1.1rem 1.2rem;font-size:.9rem;color:var(--m)}
+.trust b,.three b{display:block;font-family:var(--ser);font-size:1.3rem;font-weight:500;color:var(--ink)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1.5rem}
+.card{background:var(--s);border-radius:14px;box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column;transition:transform .4s var(--ease),box-shadow .4s}
+.card:hover{transform:translateY(-4px);box-shadow:var(--sh2)}
+.imgw{position:relative;aspect-ratio:4/5;background:var(--e);overflow:hidden;border:0;padding:0;width:100%;display:block}
+.imgw img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}.card:hover .imgw img{transform:scale(1.06)}
+.bd{position:absolute;top:10px;left:10px;background:var(--red);color:#fff;font-size:.7rem;font-weight:600;padding:2px 9px;border-radius:99px}.bd.out{background:#57534e}.bd.low{background:#9a5b10}
 .wish{position:absolute;top:8px;right:8px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.92);display:flex;align-items:center;justify-content:center}
-.info{padding:.9rem 1rem 1rem;display:flex;flex-direction:column;gap:.2rem;flex:1}
-.cat{font-size:.78rem;color:var(--m)}
-.pn{font-weight:500;color:var(--ink);background:none;border:0;text-align:left;padding:0}
-.pr{font-weight:600;color:var(--ink);margin:.2rem 0 .7rem}.pr s{color:var(--m);font-weight:400;font-size:.85rem;margin-right:.4rem}.pr .new{color:var(--red)}
+.info{padding:1.1rem 1.2rem 1.3rem;display:flex;flex-direction:column;gap:.2rem;flex:1}
+.cat{text-transform:uppercase;letter-spacing:.12em;font-size:.68rem;color:var(--m)}
+.pn{font-family:var(--ser);font-size:1.3rem;line-height:1.2;color:var(--ink);background:none;border:0;text-align:left;padding:0}
+.pr{font-weight:600;color:var(--ink);margin:.2rem 0 .8rem}.pr s{color:var(--m);font-weight:400;font-size:.85rem;margin-right:.4rem}.pr .n{color:var(--red)}
 .info .btn{margin-top:auto}
-.bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem}
-input,select,textarea{background:var(--s);border:1px solid var(--b);border-radius:8px;padding:.7rem .9rem;min-height:46px;width:100%}
-.bar input{flex:1;min-width:200px;width:auto}.bar select{width:auto}
+input,select,textarea{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:.7rem .9rem;min-height:46px;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--g);outline:0;box-shadow:0 0 0 3px color-mix(in srgb,var(--g) 22%,transparent)}
+.bar{display:flex;gap:.6rem;flex-wrap:wrap;margin-bottom:1rem}.bar input{flex:1;min-width:180px;width:auto}.bar select{width:auto}
 .chips{display:flex;gap:.5rem;overflow-x:auto;padding-bottom:.5rem;margin-bottom:1.3rem}
 .chip{white-space:nowrap;min-height:42px;padding:.3rem 1.1rem;border-radius:99px;border:1px solid var(--b);background:var(--s);font-size:.88rem}.chip[aria-pressed=true]{background:var(--ink);color:var(--inv);border-color:var(--ink)}
 .fld{margin-bottom:.9rem}.fld label{display:block;font-size:.85rem;margin-bottom:3px;color:var(--m)}
-.box{background:var(--s);border:1px solid var(--b);border-radius:12px;padding:2rem;max-width:460px;margin:0 auto;box-shadow:var(--sh)}
-.box h1{font-size:2.1rem;margin-bottom:.3rem}.sub{color:var(--m);margin-bottom:1.2rem;font-size:.92rem}
-.msg{font-size:.88rem;min-height:1.2rem;margin-top:.5rem}.msg.error{color:var(--red)}.msg.success{color:var(--ok)}
-.lk{background:none;border:0;color:var(--g);text-decoration:underline;min-height:44px;padding:0 .3rem}
-.ctr{text-align:center;margin-top:.5rem;font-size:.9rem;color:var(--m)}
-.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
-.rv{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:1.2rem}.rv .st{color:var(--g);letter-spacing:2px}.rv p{margin:.5rem 0}.rv small{color:var(--m)}
-.info2{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.info2 div{background:var(--e);border-radius:10px;padding:1.4rem}.info2 h3{font-size:1.4rem;margin-bottom:.3rem}.info2 p{font-size:.92rem}
-details{background:var(--s);border:1px solid var(--b);border-radius:10px;margin-bottom:.5rem}
-summary{cursor:pointer;padding:.9rem 1.1rem;font-weight:500;color:var(--ink);min-height:46px;list-style:none;display:flex;justify-content:space-between}summary::after{content:'+';color:var(--g);font-size:1.3rem}details[open] summary::after{content:'−'}
-details p{padding:0 1.1rem 1rem;font-size:.95rem}
-.ov{display:none;position:fixed;inset:0;z-index:10000;background:rgba(15,12,9,.6);overflow-y:auto}.ov.on{display:flex}
-.modal{background:var(--s);border-radius:12px;margin:auto;width:calc(100% - 2rem);max-width:900px;padding:1.5rem;position:relative;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
-.modal.one{grid-template-columns:1fr;max-width:620px}
-.x{position:absolute;top:.4rem;right:.5rem;width:44px;height:44px;border:0;background:none;font-size:1.8rem;line-height:1;z-index:2}
-.mimg{background:var(--e);border-radius:10px;aspect-ratio:1/1;overflow:hidden}.mimg img{width:100%;height:100%;object-fit:cover}
-.qty{display:flex;margin:1rem 0}.qty button,.qty input{width:44px;height:44px;border:1px solid var(--b);background:var(--s);text-align:center;border-radius:0;padding:0}
-.drawer{margin-left:auto;background:var(--s);width:420px;max-width:100%;min-height:100%;display:flex;flex-direction:column}
+.box{background:var(--s);border-radius:18px;padding:2rem;max-width:460px;margin:0 auto;box-shadow:var(--sh2)}.box h1{font-size:2.1rem;margin-bottom:.3rem}
+.sub{color:var(--m);margin-bottom:1.2rem;font-size:.92rem}.msg{font-size:.88rem;min-height:1.2rem;margin-top:.5rem}.msg.error{color:var(--red)}.msg.success{color:var(--ok)}
+.lk{background:none;border:0;color:var(--g);text-decoration:underline;min-height:44px;padding:0 .3rem}.ctr{text-align:center;margin-top:.5rem;font-size:.9rem;color:var(--m)}
+.reviews{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.rv .st{color:var(--g);letter-spacing:2px}.rv p{margin:.5rem 0}
+details{background:var(--s);border-radius:14px;margin-bottom:.5rem;box-shadow:var(--sh)}summary{cursor:pointer;padding:.9rem 1.1rem;font-weight:500;color:var(--ink);list-style:none;display:flex;justify-content:space-between}summary::after{content:'+';color:var(--g);font-size:1.3rem}details[open] summary::after{content:'−'}details p{padding:0 1.1rem 1rem}
+#ov{display:none;position:fixed;inset:0;z-index:100;background:rgba(15,12,9,.6);backdrop-filter:blur(5px);overflow-y:auto}#ov.on{display:flex}
+.modal{background:var(--s);border-radius:18px;margin:auto;width:calc(100% - 2rem);max-width:880px;padding:1.5rem;position:relative;display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;animation:rise .4s var(--ease)}.modal.one{grid-template-columns:1fr;max-width:600px}
+.x{position:absolute;top:.4rem;right:.5rem;width:44px;height:44px;border:0;background:none;font-size:1.8rem;z-index:2}
+.mimg{background:var(--e);border-radius:12px;aspect-ratio:1/1;overflow:hidden}.mimg img{width:100%;height:100%;object-fit:cover}
+.qty{display:flex;margin:1rem 0}.qty button,.qty input{width:44px;height:44px;border:1px solid var(--b);background:var(--s);text-align:center;border-radius:0;padding:0;min-height:0}
+.drawer{margin-left:auto;background:var(--s);width:420px;max-width:100%;min-height:100%;display:flex;flex-direction:column;animation:slide .4s var(--ease)}@keyframes slide{from{transform:translateX(100%)}}
 .dh{padding:1rem 1.2rem;border-bottom:1px solid var(--b);display:flex;justify-content:space-between;align-items:center}.dh h2{margin:0;font-size:1.6rem}.dh .x{position:static}
 .ditems{flex:1;overflow-y:auto;padding:1rem}.dfoot{padding:1rem 1.2rem;border-top:1px solid var(--b);background:var(--bg)}
-.ci{display:flex;gap:.8rem;padding:.7rem;background:var(--e);border-radius:8px;margin-bottom:.5rem}.ci img{width:70px;height:70px;object-fit:cover;border-radius:6px}
-.ci .q{display:flex;align-items:center;gap:.4rem;margin-top:.3rem}.ci .q button{width:34px;height:34px;border:0;background:var(--s);border-radius:6px}
+.ci{display:flex;gap:.8rem;padding:.7rem;background:var(--e);border-radius:12px;margin-bottom:.5rem}.ci img{width:70px;height:70px;object-fit:cover;border-radius:8px}
+.q{display:flex;align-items:center;gap:.4rem;margin-top:.3rem}.q button{width:34px;height:34px;border:0;background:var(--s);border-radius:6px}
 .rm{background:none;border:0;color:var(--red);width:44px;height:44px;font-size:1.3rem;align-self:flex-start}
 .row{display:flex;justify-content:space-between;font-size:.92rem;margin-bottom:.3rem}.row.tot{font-size:1.15rem;font-weight:600;color:var(--ink);border-top:1px solid var(--b);padding-top:.5rem}
-.prog{height:6px;background:var(--b);border-radius:9px;overflow:hidden;margin:.3rem 0 .8rem}.prog i{display:block;height:100%;background:var(--g);transition:width .4s}
-.empty{text-align:center;padding:3rem 1rem;color:var(--m)}
-.oc{background:var(--s);border:1px solid var(--b);border-radius:10px;padding:1rem;margin-bottom:.8rem;font-size:.92rem}.oc .h{display:flex;justify-content:space-between;gap:1rem;margin-bottom:.5rem;flex-wrap:wrap}
+.prog{height:5px;background:var(--b);border-radius:9px;overflow:hidden;margin:.3rem 0 .8rem}.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--g),#d9b873);transition:width .4s}
+.empty{text-align:center;padding:3rem 1rem;color:var(--m);grid-column:1/-1}
+.oc,.ar{background:var(--s);border-radius:14px;box-shadow:var(--sh);padding:1rem;margin-bottom:.8rem;font-size:.92rem}.oc .h{display:flex;justify-content:space-between;gap:1rem;margin-bottom:.5rem;flex-wrap:wrap}
 .oi{display:flex;justify-content:space-between;background:var(--e);padding:.4rem .7rem;border-radius:6px;margin-top:.3rem}
-.form2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.tabs{display:flex;gap:.3rem;margin-bottom:1.3rem;border-bottom:1px solid var(--b);overflow-x:auto}
-.tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--m);padding:.7rem 1rem;white-space:nowrap}.tab.on{color:var(--ink);border-bottom-color:var(--g)}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1.3rem}.kpis div{background:var(--e);border-radius:10px;padding:.9rem 1rem;font-size:.85rem;color:var(--m)}.kpis b{display:block;font-family:var(--ser);font-size:1.7rem;color:var(--ink)}
-.ar{display:flex;gap:.8rem;align-items:center;background:var(--s);border:1px solid var(--b);padding:.7rem;margin-bottom:.5rem;border-radius:10px;font-size:.9rem}
-.ar img{width:56px;height:56px;object-fit:cover;border-radius:6px}.ar>div:nth-child(2){flex:1}.ar .bt{display:flex;gap:.4rem;flex-wrap:wrap}
-.toasts{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:99999;display:flex;flex-direction:column;gap:.5rem;width:calc(100% - 2rem);max-width:420px;pointer-events:none}
-.toast{pointer-events:auto;background:var(--ink);color:var(--inv);border-left:4px solid var(--g);padding:.75rem 1rem;border-radius:8px;box-shadow:var(--sh);font-size:.92rem;display:flex;justify-content:space-between;align-items:center;gap:1rem}
-.toast.error{border-left-color:#e0705c}.toast.success{border-left-color:#5fae8a}.toast button{background:none;border:0;color:inherit;font-weight:600;min-height:44px;text-decoration:underline}
-footer{background:#1c1917;color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2rem 1.2rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.2rem}footer .logo{color:#fff;font-size:1.3rem;padding:0}footer .lk{color:#e8d3a8}
-#diag{display:none;background:#6b2217;color:#fff;padding:.8rem 1rem;font-size:.88rem}
-@media(max-width:860px){
-.burger{display:inline-flex}.nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--s);border-bottom:1px solid var(--b);flex-direction:column;margin:0;padding:.5rem 1rem}.nav.show{display:flex}.nav button{text-align:left}
-.logo{font-size:1.35rem}.trust,.kpis{grid-template-columns:1fr 1fr}.reviews,.info2{grid-template-columns:1fr}.wrap{padding:2rem 1rem}.hero .wrap{padding:3.5rem 1rem}
-.grid{grid-template-columns:repeat(2,1fr);gap:.8rem}.modal,.form2{grid-template-columns:1fr}.hide-m{display:none}.ar{flex-wrap:wrap}}
-.top{position:fixed;right:1rem;bottom:1rem;z-index:900;width:44px;height:44px;border-radius:50%;border:1px solid var(--b);background:var(--s);display:none}.top.on{display:block}
-#off{display:none;background:#9a5b10;color:#fff;text-align:center;font-size:.88rem;padding:.35rem}
-.bd.new{background:var(--ok)}.mimg{cursor:zoom-in}.mimg img{transition:transform .3s}.mimg.z{cursor:zoom-out}.mimg.z img{transform:scale(1.8)}
-.skiptranslate iframe,.goog-te-banner-frame,#goog-gt-tt,.goog-tooltip{display:none!important}body{top:0!important}.goog-text-highlight{background:none!important;box-shadow:none!important}
-.card.sk{min-height:300px;background:linear-gradient(90deg,var(--e),var(--s),var(--e));background-size:200% 100%;animation:shim 1.3s infinite}@keyframes shim{to{background-position:-200% 0}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.ar{display:flex;gap:.8rem;align-items:center;flex-wrap:wrap}.ar img{width:56px;height:56px;object-fit:cover;border-radius:8px}.ar>div:nth-child(2){flex:1;min-width:160px}.ar input{width:96px;min-height:38px;padding:.3rem .5rem}.bt{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.form2{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.tabs{display:flex;gap:.3rem;margin-bottom:1.3rem;border-bottom:1px solid var(--b);overflow-x:auto}.tab{background:none;border:0;border-bottom:2px solid transparent;color:var(--m);padding:.7rem 1rem;white-space:nowrap}.tab.on{color:var(--ink);border-bottom-color:var(--g);font-weight:600}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1.3rem}.kpis div{background:var(--s);box-shadow:var(--sh);border-radius:14px;padding:.9rem 1rem;font-size:.85rem;color:var(--m)}.kpis b{display:block;font-family:var(--ser);font-size:1.7rem;color:var(--ink)}
+#toasts{position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:.5rem;width:calc(100% - 2rem);max-width:420px;pointer-events:none}
+.toast{pointer-events:auto;background:var(--ink);color:var(--inv);border-left:4px solid var(--g);padding:.75rem 1rem;border-radius:12px;box-shadow:var(--sh2);font-size:.92rem;animation:rise .35s var(--ease)}.toast.error{border-left-color:#e0705c}.toast.success{border-left-color:#5fae8a}
+footer{background:linear-gradient(180deg,#1c1917,#110e0c);color:#b9b2a6;font-size:.9rem}footer .wrap{padding:2rem 1.2rem;display:flex;justify-content:space-between;flex-wrap:wrap;gap:1.2rem}footer .logo{color:#fff;font-size:1.3rem;padding:0}footer .lk{color:#e8d3a8}
+.sk{min-height:300px;background:linear-gradient(90deg,var(--e),var(--s),var(--e));background-size:200% 100%;animation:shim 1.3s infinite}@keyframes shim{to{background-position:-200% 0}}
+.burger{display:none}
+@media(max-width:860px){.burger{display:inline-flex}.nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--s);flex-direction:column;margin:0;padding:.5rem 1rem;border-bottom:1px solid var(--b)}.nav.show{display:flex}.nav button{text-align:left}
+.trust,.kpis{grid-template-columns:1fr 1fr}.reviews,.three,.modal,.form2{grid-template-columns:1fr}.grid{grid-template-columns:repeat(2,1fr);gap:.9rem}.imgw{aspect-ratio:1/1}.pn{font-size:1.1rem}.hide-m{display:none}.hero .wrap{padding:4.5rem 1rem 4rem}.wrap{padding:2rem 1rem}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div id="diag" role="alert"></div>
-<noscript><div style="background:#6b2217;color:#fff;padding:.8rem 1rem">Deze webshop heeft JavaScript nodig. Zet JavaScript aan in je browser om te kunnen bestellen.</div></noscript>
-<div id="off" role="status">Je bent offline. Sommige functies werken pas weer met internet.</div>
-<button class="top" id="top" aria-label="Terug naar boven" onclick="scrollTo({top:0,behavior:'smooth'})"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 15l6-6 6 6"/></svg></button>
-<div id="gt" style="display:none"></div><div class="toasts" id="toasts" role="status" aria-live="polite"></div>
+<noscript><p style="padding:1rem;background:#6b2217;color:#fff">Deze webshop heeft JavaScript nodig.</p></noscript>
 <div class="topbar" id="tb">Gratis verzending vanaf €50 · 30 dagen retour · Betalen met PayPal</div>
 <header><div class="hd">
- <button class="ib burger" aria-label="Menu" aria-expanded="false" id="burger"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
- <button class="logo" translate="no" onclick="go('home')" aria-label="MAISON, naar home">MAISON</button>
- <nav class="nav" id="nav" aria-label="Hoofdmenu">
-  <button data-p="home">Home</button><button data-p="shop">Winkel</button><button data-p="wishlist">Verlanglijst <span class="cnt" id="wb" hidden>0</span></button><button data-p="contact">Contact</button><button data-p="admin" id="adminLink" hidden>Beheer</button>
- </nav>
- <div class="acts">
-  
-  <span id="guest"><button class="ib" onclick="go('login')">Inloggen</button></span>
-  <button class="ib" id="ub" hidden aria-haspopup="true" onclick="event.stopPropagation();$('um').classList.toggle('show')"></button>
-  <div class="umenu" id="um"><button onclick="go('profile')">Mijn profiel</button><button onclick="go('orders')">Mijn bestellingen</button><button onclick="go('wishlist')">Verlanglijst</button><button onclick="logout()">Uitloggen</button></div>
-  <button class="ib cart" onclick="openCart()" aria-label="Winkelwagen"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 4h2l2.5 11h10L20 7H6"/><circle cx="9" cy="20" r="1.5"/><circle cx="17" cy="20" r="1.5"/></svg><span class="hide-m">Winkelwagen</span><span class="cnt" id="cb" hidden aria-live="polite">0</span></button>
- </div>
+ <button class="ib burger" data-a="burger" aria-label="Menu">☰</button>
+ <button class="logo" data-a="go" data-id="home" aria-label="MAISON, naar home">MAISON</button>
+ <nav class="nav" id="nav" aria-label="Hoofdmenu"></nav>
+ <div class="acts" id="acts"></div>
 </div></header>
-
-<div class="ov" id="cartOv" role="dialog" aria-modal="true" aria-label="Winkelwagen" onclick="if(event.target===this)closeAll()">
- <div class="drawer">
-  <div class="dh"><h2>Winkelwagen</h2><button class="x" onclick="closeAll()" aria-label="Sluiten">×</button></div>
-  <div class="ditems" id="cartItems"></div>
-  <div class="dfoot">
-   <div id="shipMsg" style="font-size:.85rem"></div><div class="prog"><i id="prog"></i></div>
-   <div style="display:flex;gap:.5rem"><input id="couponIn" placeholder="Couponcode" aria-label="Couponcode" maxlength="30"><button class="btn o sm" onclick="applyCoupon()">Toepassen</button></div>
-   <div class="msg" id="couponMsg"></div>
-   <div class="row"><span>Subtotaal</span><span id="sub"></span></div>
-   <div class="row" id="discRow" hidden><span>Korting</span><span id="disc" style="color:var(--ok)"></span></div>
-   <div class="row"><span>Verzending</span><span id="ship"></span></div>
-   <div class="row tot"><span>Totaal</span><span id="tot"></span></div>
-   <button class="btn full" style="margin-top:.8rem" onclick="startCheckout()">Afrekenen</button><div style="text-align:center"><button class="lk" onclick="clearCart()">Winkelwagen legen</button></div>
-  </div>
- </div>
-</div>
-
-<div class="ov" id="coOv" role="dialog" aria-modal="true" aria-label="Afrekenen" onclick="if(event.target===this)closeAll()">
- <div class="modal one"><button class="x" onclick="closeAll()" aria-label="Sluiten">×</button>
-  <div><h2>Afrekenen</h2>
-   <div class="form2"><div>
-    <div class="fld"><label for="coName">Naam</label><input id="coName" autocomplete="name" maxlength="100"></div>
-    <div class="fld"><label for="coEmail">E-mailadres</label><input id="coEmail" type="email" autocomplete="email" maxlength="120"></div>
-    <div class="fld"><label for="coPhone">Telefoon</label><input id="coPhone" type="tel" placeholder="06 12345678" autocomplete="tel" maxlength="20"></div></div><div>
-    <div class="fld"><label for="coStreet">Straat en huisnummer</label><input id="coStreet" autocomplete="street-address" maxlength="120"></div>
-    <div class="fld"><label for="coPostal">Postcode</label><input id="coPostal" placeholder="1234 AB" autocomplete="postal-code" maxlength="8"></div>
-    <div class="fld"><label for="coCity">Woonplaats</label><input id="coCity" autocomplete="address-level2" maxlength="60"></div></div></div>
-   <div class="row tot"><span>Te betalen</span><span id="coTotal"></span></div>
-   <div class="msg" id="coMsg"></div>
-   <button class="btn full" id="coBtn" onclick="finalizeCheckout()">Verder naar betalen</button>
-   <div id="pp" style="margin-top:1rem"></div>
-  </div>
- </div>
-</div>
-
-<div class="ov" id="pOv" role="dialog" aria-modal="true" aria-labelledby="mTitle" onclick="if(event.target===this)closeAll()">
- <div class="modal"><button class="x" onclick="closeAll()" aria-label="Sluiten">×</button>
-  <div class="mimg" id="mZ" onclick="this.classList.toggle('z')"><img id="mImg" alt="" width="460" height="460"></div>
-  <div><div class="cat" id="mCat"></div><h2 id="mTitle" style="margin:.3rem 0"></h2>
-   <div class="pr" id="mPrice" style="font-size:1.6rem"></div><p id="mDesc"></p><div id="mStock" style="font-size:.9rem;margin-top:.8rem"></div>
-   <div class="qty"><button onclick="chQty(-1)" aria-label="Minder">−</button><input id="mQty" type="number" value="1" min="1" aria-label="Aantal"><button onclick="chQty(1)" aria-label="Meer">+</button></div>
-   <button class="btn full" id="mAdd" onclick="addToCart(cur.id,parseInt($('mQty').value)||1,true)">In winkelwagen</button>
-   <button class="btn o full" id="mWish" style="margin-top:.6rem" onclick="toggleWish(cur.id)"></button>
-   <button class="lk" id="mShare" onclick="shareProd()">Deel dit product</button><div id="mRel"></div>
-  </div>
- </div>
-</div>
-
-<main id="main">
-<section id="homePage" class="page on">
- <div class="hero"><div class="wrap">
-  <h1>Spullen die je jaren blijft gebruiken</h1>
-  <p>Wij kiezen elk stuk zelf uit en sturen alleen wat we ook zelf zouden kopen. Vanaf €50 betaal je geen verzendkosten.</p>
-  <div class="cta"><button class="btn" onclick="go('shop')">Naar de winkel</button><button class="btn o" onclick="$('faq').scrollIntoView()">Hoe werkt bestellen?</button></div>
- </div></div>
- <div class="wrap" style="padding-bottom:0"><div class="trust">
-  <div><b>Gratis verzending</b>vanaf €50</div><div><b>30 dagen retour</b>zonder gedoe</div><div><b>Betalen met PayPal</b>wij zien je gegevens niet</div><div><b>Vragen?</b>antwoord binnen 24 uur</div></div></div>
- <div class="wrap"><h2>Dit vinden klanten het mooist</h2><div class="grid" id="homeGrid"></div><div id="recent"></div>
-  <div style="text-align:center;margin-top:2rem"><button class="btn o" onclick="go('shop')">Alle producten bekijken</button></div></div>
- <div class="wrap" style="padding-top:0"><h2>Wat klanten zeggen</h2>
-  <p class="sub" id="rvAvg"></p><div class="reviews" id="rvList"></div>
-  <details style="margin-top:1.3rem;max-width:620px"><summary>Zelf een review schrijven</summary><div style="padding:0 1.1rem 1.1rem">
-   <div class="fld"><label for="rvRate">Cijfer</label><select id="rvRate"><option value="5">5 sterren</option><option value="4">4 sterren</option><option value="3">3 sterren</option><option value="2">2 sterren</option><option value="1">1 ster</option></select></div>
-   <div class="fld"><label for="rvText">Hoe bevalt je bestelling?</label><textarea id="rvText" rows="3" maxlength="500"></textarea></div>
-   <button class="btn" onclick="sendReview()">Review plaatsen</button><div class="msg" id="rvMsg"></div>
-   <p style="font-size:.85rem;color:var(--m)">Alleen klanten met een bestelling kunnen reageren. We lezen elke review eerst even door.</p></div></details></div>
- <div class="wrap" style="padding-top:0"><h2>Verzending, retour en betalen</h2>
-  <div class="info2">
-   <div><h3>Verzending</h3><p>We versturen zo snel mogelijk. Vanaf €50 gratis, daaronder €5,99.</p></div>
-   <div><h3>Retour</h3><p>Past het niet? Binnen 30 dagen stuur je het terug, laat het ons even weten via het contactformulier.</p></div>
-   <div><h3>Betalen</h3><p>Je rekent af via PayPal. Je betaalgegevens komen nooit bij ons terecht.</p></div></div></div>
- <div class="wrap" style="padding-top:0;max-width:820px" id="faq"><h2>Veelgestelde vragen</h2>
-  <details><summary>Wat kost verzending?</summary><p>Niets vanaf €50. Bestel je voor minder, dan is het €5,99.</p></details>
-  <details><summary>Hoe stuur ik iets terug?</summary><p>Neem binnen 30 dagen contact met ons op, dan sturen we je uitleg.</p></details>
-  <details><summary>Waar kan ik mee betalen?</summary><p>Met PayPal, dus ook met je bankrekening of creditcard via PayPal.</p></details>
-  <details><summary>Waar vul ik een couponcode in?</summary><p>In de winkelwagen, onder het overzicht. De korting zie je meteen.</p></details>
-  <p style="padding:1rem 0 0">Staat je vraag er niet bij? <button class="lk" onclick="go('contact')">Stuur ons een bericht</button></p></div>
-</section>
-
-<section id="shopPage" class="page"><div class="wrap">
- <h1 style="font-size:clamp(2rem,5vw,3rem);margin-bottom:1.3rem">Winkel</h1>
- <div class="bar"><input id="sS" type="search" placeholder="Zoek een product" aria-label="Zoek producten"><select id="sO" aria-label="Sorteren"><option value="">Sorteren</option><option value="low">Prijs, laag naar hoog</option><option value="high">Prijs, hoog naar laag</option><option value="new">Nieuwste eerst</option><option value="az">Naam A tot Z</option><option value="disc">Grootste korting</option></select><input id="sMax" type="number" min="0" inputmode="numeric" placeholder="Max. prijs in €" aria-label="Maximale prijs" style="width:140px"><label style="display:flex;align-items:center;gap:.4rem;font-size:.92rem"><input type="checkbox" id="sStock" style="width:auto;min-height:0"> Alleen op voorraad</label><label style="display:flex;align-items:center;gap:.4rem;font-size:.92rem"><input type="checkbox" id="sSale" style="width:auto;min-height:0"> Alleen aanbiedingen</label></div><div id="sCount" class="sub" role="status"></div>
- <div class="chips" id="chips" role="group" aria-label="Categorieën"></div><div class="grid" id="shopGrid"></div></div></section>
-
-<section id="wishlistPage" class="page"><div class="wrap"><h1 style="font-size:2.5rem;margin-bottom:1.3rem">Verlanglijst</h1><div id="wishC"></div></div></section>
-<section id="ordersPage" class="page"><div class="wrap"><h1 style="font-size:2.5rem;margin-bottom:1.3rem">Mijn bestellingen</h1><div id="ordL"></div></div></section>
-
-<section id="contactPage" class="page"><div class="wrap"><div class="box" style="max-width:600px"><h1>Contact</h1><p class="sub">Vraag of opmerking? We antwoorden binnen 24 uur.</p>
- <div class="fld"><label for="cName">Naam</label><input id="cName" autocomplete="name" maxlength="100"></div>
- <div class="fld"><label for="cEmail">E-mailadres</label><input id="cEmail" type="email" autocomplete="email" maxlength="120"></div>
- <div class="fld"><label for="cMsg">Bericht</label><textarea id="cMsg" rows="5" maxlength="2000"></textarea></div>
- <button class="btn full" onclick="sendContact()">Bericht versturen</button><div class="msg" id="cInfo"></div></div></div></section>
-
-<section id="loginPage" class="page"><div class="wrap"><div class="box"><h1>Welkom terug</h1><p class="sub">Log in om je winkelwagen en bestellingen te zien.</p>
- <div class="fld"><label for="lEmail">E-mailadres</label><input id="lEmail" type="email" autocomplete="email"></div>
- <div class="fld"><label for="lPass">Wachtwoord</label><input id="lPass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
- <button class="btn full" id="lBtn" onclick="doLogin()">Inloggen</button><div class="msg" id="lMsg"></div>
- <div class="ctr"><button class="lk" onclick="resetPassword()">Wachtwoord vergeten?</button></div>
- <button class="btn o full" onclick="loginWithGoogle()">Verder met Google</button>
- <div class="ctr">Nog geen account? <button class="lk" onclick="go('register')">Maak er een aan</button></div></div></div></section>
-
-<section id="registerPage" class="page"><div class="wrap"><div class="box"><h1>Account maken</h1><p class="sub">Dan staat je winkelwagen op al je apparaten klaar.</p>
- <div class="fld"><label for="rName">Naam</label><input id="rName" autocomplete="name" maxlength="100"></div>
- <div class="fld"><label for="rEmail">E-mailadres</label><input id="rEmail" type="email" autocomplete="email"></div>
- <div class="fld"><label for="rPass">Wachtwoord (minimaal 6 tekens)</label><input id="rPass" type="password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doRegister()"></div>
- <button class="btn full" id="rBtn" onclick="doRegister()">Account aanmaken</button><div class="msg" id="rMsg"></div>
- <button class="btn o full" onclick="loginWithGoogle()">Verder met Google</button>
- <div class="ctr">Al een account? <button class="lk" onclick="go('login')">Inloggen</button></div></div></div></section>
-
-<section id="profilePage" class="page"><div class="wrap"><div class="box" style="max-width:560px"><h1>Mijn profiel</h1><div id="pfBox" style="margin-top:1rem"></div></div></div></section>
-<section id="adminPage" class="page"><div class="wrap"><h1 style="font-size:2.5rem;margin-bottom:1.3rem">Beheer</h1>
- <div class="kpis" id="kpis"></div>
- <div class="tabs" id="tabs"><button class="tab on" data-t="products">Producten</button><button class="tab" data-t="orders">Bestellingen</button><button class="tab" data-t="reviews">Reviews</button><button class="tab" data-t="coupons">Coupons</button><button class="tab" data-t="messages">Berichten</button><button class="tab" data-t="set">Banner</button><button class="tab" data-t="news">Nieuwsbrief</button><button class="tab" data-t="users">Gebruikers</button></div>
- <div id="aForm"></div><div id="aList"></div></div></section>
-</main>
-
+<main id="app"></main>
 <footer><div class="wrap"><div><div class="logo">MAISON</div><p style="margin-top:.4rem;max-width:280px">Zorgvuldig uitgezocht, met de hand ingepakt.</p></div>
-<div><b style="color:#fff">Af en toe nieuws</b><p style="margin:.2rem 0 .5rem;max-width:280px">Nieuwe stukken en acties, hooguit een paar keer per maand.</p><div style="display:flex;gap:.4rem"><input id="nlE" type="email" placeholder="je@mail.nl" aria-label="E-mailadres voor de nieuwsbrief" style="background:#2a2622;color:#fff;border-color:#4a443d"><button class="btn sm" style="background:#e8d3a8;color:#1c1917;border-color:#e8d3a8" onclick="subscribe()">Aanmelden</button></div><div id="nlM" style="font-size:.85rem;min-height:1.2rem;margin-top:.3rem" role="status"></div></div>
-<div>© MAISON<br>Betalen via PayPal<br><button class="lk" onclick="go('contact')">Klantenservice</button><br><button class="lk" onclick="go('profile')">Taal en thema</button></div></div></footer>
+<div><b style="color:#fff">Af en toe nieuws</b><div style="display:flex;gap:.4rem;margin-top:.5rem"><input id="nlE" type="email" placeholder="je@mail.nl" aria-label="E-mailadres" maxlength="120" style="background:#2a2622;color:#fff;border-color:#4a443d"><button class="btn sm" style="background:#e8d3a8;color:#1c1917;border-color:#e8d3a8" data-a="sub">Aanmelden</button></div><div id="nlM" style="font-size:.85rem;margin-top:.3rem" role="status"></div></div>
+<div>© MAISON<br><button class="lk" data-a="go" data-id="contact">Klantenservice</button> <button class="lk" data-a="theme">Thema wisselen</button></div></div></footer>
+<div id="ov" role="dialog" aria-modal="true"></div><div id="toasts" role="status" aria-live="polite"></div>
 
 <script>
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-const PH="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%25' height='100%25' fill='%23f1ede6'/><text x='50%25' y='50%25' fill='%238a6a3b' font-size='20' text-anchor='middle'>MAISON</text></svg>";
+const $=(s,r=document)=>r.querySelector(s),esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const eur=n=>'€'+Number(n).toFixed(2).replace('.',','),r2=n=>Math.round(n*100)/100;
+const PH="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='400' height='400'><rect width='100%25' height='100%25' fill='%23eee8de'/><text x='50%25' y='50%25' fill='%239a7632' font-size='20' text-anchor='middle'>MAISON</text></svg>";
+const img=u=>typeof u==='string'&&/^(data:image\/(png|jpe?g|webp|gif);|https:\/\/)/.test(u)?u:PH;
+try{const t=localStorage.getItem('mt')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');document.documentElement.dataset.theme=t}catch(e){}
 const HEART=f=>`<svg width="18" height="18" viewBox="0 0 24 24" fill="${f?'#a33a2a':'none'}" stroke="${f?'#a33a2a':'#1c1917'}" stroke-width="2" aria-hidden="true"><path d="M12 21s-7-4.5-9.5-9A5.5 5.5 0 0 1 12 6a5.5 5.5 0 0 1 9.5 6c-2.5 4.5-9.5 9-9.5 9z"/></svg>`;
-function diag(h){const d=$('diag');d.style.display='block';d.innerHTML=h}
-// Thema: onthoudt de keuze, anders volgt het je systeem
-(function(){let t;try{t=localStorage.getItem('mt')}catch(e){}
- if(!t)t=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
- document.documentElement.dataset.theme=t;})();
 
 function boot(){
-if(typeof firebase==='undefined'){diag('Firebase kon niet laden. Controleer je internetverbinding of adblocker.');return}
-if(location.protocol==='file:')diag('Open de site via een server (bijvoorbeeld <code>npx serve</code> of Firebase Hosting), inloggen werkt niet via file://.');
+if(typeof firebase==='undefined'){$('#app').innerHTML='<div class="wrap"><p>Firebase kon niet laden. Controleer je verbinding of adblocker.</p></div>';return}
 firebase.initializeApp({apiKey:"AIzaSyCz-EYcHMVG20tX0z-jbEVUVM8b4NC7VcM",authDomain:"shop-2eab0.firebaseapp.com",projectId:"shop-2eab0",storageBucket:"shop-2eab0.firebasestorage.app",messagingSenderId:"846711763840",appId:"1:846711763840:web:67c360a26f0d741f7d4765"});
 const auth=firebase.auth(),db=firebase.firestore(),FV=firebase.firestore.FieldValue;
 db.settings({experimentalAutoDetectLongPolling:true,merge:true});
-const gP=new firebase.auth.GoogleAuthProvider(),ADMIN_EMAIL="elmouchania@gmail.com";
-let loaded=false,user=null,roleAdmin=false,roleCeo=false,products=[],orders=[],cart=[],wishlist=[],cur=null,applied=null,cat='',unsubs=[],tmr,reviews=[],tab='products';
-const r2=n=>Math.round(n*100)/100,eur=n=>'€'+Number(n).toFixed(2).replace('.',','),pp=p=>p.salePrice&&p.salePrice<p.price?p.salePrice:p.price;
-const imgOk=u=>typeof u==='string'&&/^(data:image\/|https:\/\/)/.test(u)?u:PH;
-const page=()=>document.querySelector('.page.on')?.id;
-const uref=()=>db.collection('users').doc(user.uid);
-const ceo=()=>!!user&&((user.email===ADMIN_EMAIL&&user.emailVerified)||roleCeo),admin=()=>ceo()||(!!user&&roleAdmin);
-const dt=o=>o.createdAt?.toDate?o.createdAt.toDate().toLocaleDateString('nl-NL'):'';
-function fbErr(e){const c=e?.code||'';if(c==='permission-denied')return 'Geen rechten (ben je ingelogd en kloppen de Firestore-regels?)';if(c==='unavailable')return 'Geen verbinding met de database';return e?.message||String(e)}
-function toast(m,t='',act){const d=document.createElement('div');d.className='toast '+t;const s=document.createElement('span');s.textContent=m;d.appendChild(s);
- if(act){const b=document.createElement('button');b.textContent=act.l;b.onclick=()=>{act.f();d.remove()};d.appendChild(b)}
- $('toasts').appendChild(d);setTimeout(()=>d.remove(),4500)}
-function setMsg(id,t,c){const e=$(id);e.textContent=t;e.className='msg '+(c||'')}
-function authErr(e){return({'auth/invalid-credential':'E-mailadres of wachtwoord klopt niet','auth/email-already-in-use':'Dit e-mailadres heeft al een account','auth/invalid-email':'Dit e-mailadres lijkt niet te kloppen','auth/weak-password':'Kies een wachtwoord van minimaal 6 tekens','auth/too-many-requests':'Te veel pogingen, probeer het straks opnieuw','auth/network-request-failed':'Geen internetverbinding','auth/unauthorized-domain':'Dit domein staat nog niet bij Firebase onder Authentication, Authorized domains'}[e.code]||e.message)}
-
-window.go=function(n){
- if(n==='orders'&&!user){toast('Log eerst even in','error');n='login'}
- if(n==='admin'&&!admin()){toast(user?'Je hebt geen beheerrechten (is je e-mailadres geverifieerd?)':'Log eerst even in','error');n=user?'home':'login'}
- document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'));$(n+'Page').classList.add('on');
- document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('on',b.dataset.p===n));
- closeAll();$('nav').classList.remove('show');$('burger').setAttribute('aria-expanded','false');$('um').classList.remove('show');
- view();if(n==='orders')renderOrders();if(n==='profile')renderProfile();if(n==='admin')adm();scrollTo({top:0,behavior:'smooth'});
-};
-function view(){const p=page();if(p==='homePage')renderHome();if(p==='shopPage')renderShop();if(p==='wishlistPage')renderWish();if(p==='profilePage')renderProfile()}
-function closeAll(){const was=document.querySelector('.ov.on');['cartOv','coOv','pOv'].forEach(i=>$(i).classList.remove('on'));if(was&&lastF&&lastF.focus)try{lastF.focus({preventScroll:true})}catch(e){}document.body.style.overflow='';if(location.hash.startsWith('#p-'))try{history.replaceState(null,'',location.pathname+location.search)}catch(e){}}
-window.closeAll=closeAll;
-let lastF=null;
-function openOv(id){lastF=document.activeElement;$(id).classList.add('on');document.body.style.overflow='hidden';setTimeout(()=>$(id).querySelector('.x')?.focus(),50)}
-document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.p));
-$('burger').onclick=()=>{const s=$('nav').classList.toggle('show');$('burger').setAttribute('aria-expanded',s)};
-document.addEventListener('click',()=>$('um').classList.remove('show'));
-addEventListener('keydown',e=>{if(e.key==='Escape')closeAll();if(e.key==='/'&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){e.preventDefault();go('shop');setTimeout(()=>$('sS').focus(),50)}});
-addEventListener('scroll',()=>$('top').classList.toggle('on',scrollY>600),{passive:true});
-const offl=()=>{$('off').style.display=navigator.onLine?'none':'block'};addEventListener('online',offl);addEventListener('offline',offl);offl();
-$('sS').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,200)};$('sO').onchange=renderShop;$('sStock').onchange=$('sSale').onchange=renderShop;$('sMax').oninput=()=>{clearTimeout(tmr);tmr=setTimeout(renderShop,300)};
-
-// Data
-function listenProducts(){db.collection('products').onSnapshot(s=>{window._ap=s.docs.map(d=>({id:d.id,...d.data()}));products=window._ap.filter(p=>!p.hidden);loaded=true;jsonld();view();renderCart();if(cur&&$('pOv').classList.contains('on'))openProduct(cur.id,true);if(page()==='adminPage'&&tab==='products')adm()},e=>{console.error(e);setTimeout(listenProducts,5000)})}
-listenProducts();
-db.collection('reviews').where('approved','==',true).onSnapshot(q=>{reviews=q.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,6);renderReviews()},e=>console.error(e));
-function renderReviews(){const n=reviews.length,st=r=>'★'.repeat(r)+'☆'.repeat(5-r);
- $('rvAvg').textContent=n?`Gemiddeld ${(reviews.reduce((s,r)=>s+r.rating,0)/n).toFixed(1).replace('.',',')} uit ${n} review${n===1?'':'s'}`:'';
- $('rvList').innerHTML=n?reviews.map(r=>`<article class="rv"><div class="st" aria-label="${r.rating} van 5 sterren">${st(r.rating)}</div><p>${esc(r.text)}</p><small>${esc(r.name)}</small></article>`).join(''):'<p class="sub" style="grid-column:1/-1">Er zijn nog geen reviews. Heb je al besteld? Vertel dan als eerste wat je ervan vindt.</p>'}
-window.sendReview=async()=>{if(!user){toast('Log in om een review te plaatsen','error');return go('login')}
- if(!orders.length)return setMsg('rvMsg','Alleen klanten met een bestelling kunnen een review plaatsen','error');
- const rating=parseInt($('rvRate').value),text=$('rvText').value.trim();if(text.length<5)return setMsg('rvMsg','Schrijf er minstens een korte zin bij','error');
- try{await db.collection('reviews').doc(user.uid).set({userId:user.uid,name:(user.displayName||'Klant').split(' ')[0],rating,text,approved:false,createdAt:FV.serverTimestamp()});
-  $('rvText').value='';setMsg('rvMsg','Bedankt! Je review staat online zodra we hem gelezen hebben.','success')}catch(e){setMsg('rvMsg','Plaatsen lukt niet: '+fbErr(e),'error')}};
-function listenUser(){
- unsubs.forEach(u=>u());unsubs=[];if(!user)return;const er=e=>console.error(e);
- unsubs.push(uref().onSnapshot(d=>{if(d.data()?.banned){toast('Je account is geblokkeerd. Neem contact met ons op als je denkt dat dit niet klopt.','error');auth.signOut();return}const rl=d.data()?.role;roleAdmin=rl==='admin'||rl==='ceo';roleCeo=rl==='ceo';nav()},er));
- unsubs.push(db.collection('orders').where('userId','==',user.uid).onSnapshot(s=>{orders=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));if(page()==='ordersPage')renderOrders()},er));
- unsubs.push(uref().collection('cart').onSnapshot(s=>{cart=s.docs.map(d=>({id:d.id,qty:d.data().qty||1}));badge();renderCart()},er));
- unsubs.push(uref().collection('wishlist').onSnapshot(s=>{wishlist=s.docs.map(d=>d.id);nav();view();wishBtn()},er));
-}
-auth.onAuthStateChanged(u=>{
- user=u;
- if(u)mergeGC();if(u)uref().get().then(s=>{if(!s.exists)return uref().set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()})}).catch(console.error);
- else{wishlist=[];orders=[];roleAdmin=false;roleCeo=false;applied=null;setGC(GC());if(['ordersPage','adminPage'].includes(page()))go('home')}
- listenUser();nav();view();
-});
-auth.getRedirectResult().catch(e=>toast(authErr(e),'error'));
-function nav(){$('guest').hidden=!!user;$('ub').hidden=!user;$('adminLink').hidden=!admin();if(user)$('ub').textContent=(user.displayName||user.email.split('@')[0])+(ceo()?' · CEO':'')+'';$('wb').hidden=!wishlist.length;$('wb').textContent=wishlist.length}
-function badge(bump){const n=cart.reduce((s,c)=>s+c.qty,0),b=$('cb');document.title=(n?`(${n}) `:'')+T0;b.textContent=n;b.hidden=!n;if(bump){b.classList.remove('bump');void b.offsetWidth;b.classList.add('bump')}}
-
-// Auth
-window.doLogin=async()=>{const e=$('lEmail').value.trim().toLowerCase(),p=$('lPass').value;if(!e||!p)return setMsg('lMsg','Vul je e-mailadres en wachtwoord in','error');
- $('lBtn').disabled=true;setMsg('lMsg','Even geduld...');
- try{const c=await auth.signInWithEmailAndPassword(e,p);setMsg('lMsg','');$('lPass').value='';user=c.user;toast('Je bent ingelogd','success');go('home')}catch(x){setMsg('lMsg',authErr(x),'error')}$('lBtn').disabled=false};
-window.doRegister=async()=>{const n=$('rName').value.trim(),e=$('rEmail').value.trim().toLowerCase(),p=$('rPass').value;
- if(!n||!e||p.length<6)return setMsg('rMsg','Vul alles in (wachtwoord minimaal 6 tekens)','error');
- $('rBtn').disabled=true;setMsg('rMsg','Account wordt aangemaakt...');
- try{const c=await auth.createUserWithEmailAndPassword(e,p);await c.user.updateProfile({displayName:n});c.user.sendEmailVerification().catch(()=>{});
-  await db.collection('users').doc(c.user.uid).set({email:e,name:n,role:'user',createdAt:new Date()},{merge:true});setMsg('rMsg','');toast('Welkom! We hebben je een mail gestuurd om je adres te bevestigen.','success');go('home')}catch(x){setMsg('rMsg',authErr(x),'error')}$('rBtn').disabled=false};
-window.loginWithGoogle=async()=>{try{await auth.signInWithPopup(gP);go('home')}catch(e){if(e.code==='auth/popup-blocked')return auth.signInWithRedirect(gP);if(['auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(e.code))return;toast('Inloggen met Google lukte niet: '+authErr(e),'error')}};
-window.resetPassword=async()=>{const e=$('lEmail').value.trim();if(!e)return toast('Vul eerst je e-mailadres in','error');try{await auth.sendPasswordResetEmail(e);toast('We hebben je een mail gestuurd om je wachtwoord te herstellen','success')}catch(x){toast(authErr(x),'error')}};
-function renderProfile(){const set=settingsHtml();if(!user){$('pfBox').innerHTML=`<p class="sub">Log in om je gegevens te zien. Je taal en thema kun je hier ook zonder account kiezen.</p><button class="btn" onclick="go('login')">Inloggen</button>`+set;setSet();return}const sum=orders.reduce((s,o)=>s+(o.total||0),0);
- $('pfBox').innerHTML=`<div class="row"><span>Naam</span><b>${esc(user.displayName||'-')}</b></div><div class="row"><span>E-mailadres</span><b>${esc(user.email)} ${user.emailVerified?'(bevestigd)':'(nog niet bevestigd)'}</b></div><div class="row"><span>Rol</span><b>${ceo()?'CEO':admin()?'Beheerder':'Klant'}</b></div><div class="row"><span>Bestellingen</span><b>${orders.length}, samen ${eur(sum)}</b></div><div class="row"><span>Verlanglijst</span><b>${wishlist.length} product${wishlist.length===1?'':'en'}</b></div>${user.emailVerified?'':'<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin:.8rem 0"><button class="btn sm" onclick="resendVerify()">Bevestigingsmail opnieuw sturen</button><button class="btn sm o" onclick="checkVerified()">Ik heb bevestigd</button></div>'}<div class="fld" style="margin-top:1.2rem"><label for="pfName">Naam wijzigen</label><div style="display:flex;gap:.5rem"><input id="pfName" value="${esc(user.displayName||'')}" maxlength="100"><button class="btn sm" onclick="saveName()">Opslaan</button></div></div>`+set;setSet()}
-window.resendVerify=async()=>{try{await user.sendEmailVerification();toast('Mail is onderweg','success')}catch(e){toast(authErr(e),'error')}};
-window.checkVerified=async()=>{try{await user.reload();user=auth.currentUser;await user.getIdToken(true);nav();renderProfile();toast(user.emailVerified?'Je e-mailadres is bevestigd':'Nog niet bevestigd',user.emailVerified?'success':'error')}catch(e){toast(authErr(e),'error')}};
-window.saveName=async()=>{const n=$('pfName').value.trim();if(!n)return toast('Vul een naam in','error');try{await user.updateProfile({displayName:n});await uref().update({name:n});nav();renderProfile();toast('Naam opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
-window.subscribe=async()=>{const e=$('nlE').value.trim().toLowerCase(),m=$('nlM');if(!/^\S+@\S+\.\S+$/.test(e)){m.textContent='Dit e-mailadres lijkt niet te kloppen';return}
- try{await db.collection('subscribers').doc(e).set({email:e,createdAt:FV.serverTimestamp()});m.textContent='Bedankt, je staat op de lijst.';$('nlE').value=''}catch(x){m.textContent='Aanmelden lukte niet: '+fbErr(x)}};
-window.logout=async()=>{await auth.signOut();go('home');toast('Tot de volgende keer')};
-
-// Producten
-function card(p){const sale=p.salePrice&&p.salePrice<p.price,s=p.stock||0,out=s<=0,w=wishlist.includes(p.id),id=esc(p.id);
- const badge=out?'<span class="bd out">Uitverkocht</span>':sale?`<span class="bd">-${Math.round((1-p.salePrice/p.price)*100)}%</span>`:s<=3?`<span class="bd low">Nog ${s}</span>`:isNew(p)?'<span class="bd new">Nieuw</span>':'';
- return `<article class="card"><div style="position:relative"><button class="imgw" onclick="openProduct('${id}')" aria-label="Bekijk ${esc(p.title)}"><img src="${esc(imgOk(p.image))}" alt="${esc(p.title)}" width="400" height="400" loading="lazy" decoding="async">${badge}</button>
- <button class="wish" onclick="toggleWish('${id}')" aria-label="${w?'Haal van':'Zet op'} verlanglijst" aria-pressed="${w}">${HEART(w)}</button></div>
- <div class="info"><div class="cat">${esc(p.category)}</div><button class="pn" onclick="openProduct('${id}')">${esc(p.title)}</button>
- <div class="pr">${sale?`<s>${eur(p.price)}</s><span class="new">${eur(pp(p))}</span>`:eur(pp(p))}</div>
- <button class="btn" ${out?'disabled':''} onclick="addToCart('${id}',1)">${out?'Uitverkocht':'In winkelwagen'}</button></div></article>`}
-const none=t=>`<div class="empty">${t}</div>`;
-function renderHome(){recent();$('homeGrid').innerHTML=!loaded?SK():products.length?products.slice(0,6).map(card).join(''):none('De collectie wordt binnenkort aangevuld.')}
-window.setCat=c=>{cat=c;lim=12;renderShop()};
-function renderShop(){const q=$('sS').value.toLowerCase(),so=$('sO').value,cats=[...new Set(products.map(p=>p.category).filter(Boolean))];
- $('chips').innerHTML=['',...cats].map(c=>`<button class="chip" aria-pressed="${c===cat}" data-c="${esc(c)}" onclick="setCat(this.dataset.c)">${c?esc(c):'Alles'} (${c?products.filter(p=>p.category===c).length:products.length})</button>`).join('');
- let l=products.filter(p=>(!cat||p.category===cat)&&(!$('sStock').checked||(p.stock||0)>0)&&(!$('sSale').checked||(p.salePrice&&p.salePrice<p.price))&&(!(parseFloat($('sMax').value)>0)||pp(p)<=parseFloat($('sMax').value))&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
- if(so==='az')l.sort((a,b)=>String(a.title).localeCompare(b.title,'nl'));if(so==='disc')l.sort((a,b)=>(b.salePrice?1-b.salePrice/b.price:0)-(a.salePrice?1-a.salePrice/a.price:0));if(so==='low')l.sort((a,b)=>pp(a)-pp(b));if(so==='high')l.sort((a,b)=>pp(b)-pp(a));if(so==='new')l.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
- $('shopGrid').innerHTML=!loaded?SK():l.length?l.slice(0,lim).map(card).join('')+(l.length>lim?'<div style="grid-column:1/-1;text-align:center"><button class="btn o" onclick="moreP()">Meer laden</button></div>':''):none('Hier hebben we niets voor gevonden.<br><br><button class="btn o sm" onclick="resetF()">Filters wissen</button>');$('sCount').textContent=loaded?`${l.length} van ${products.length} producten`:''}
-function renderWish(){if(!user){$('wishC').innerHTML=none('Log in om je verlanglijst te zien<br><br><button class="btn" onclick="go(\'login\')">Inloggen</button>');return}
- const l=products.filter(p=>wishlist.includes(p.id));$('wishC').innerHTML=l.length?`<button class="btn o sm" style="margin-bottom:1rem" onclick="wishAll()">Alles in winkelwagen</button><button class="btn o sm" style="margin:0 0 1rem .5rem" onclick="wishClear()">Verlanglijst leegmaken</button><div class="grid">${l.map(card).join('')}</div>`:none('Je verlanglijst is nog leeg. Tik op het hartje bij een product om het te bewaren.<br><br><button class="btn" onclick="go(\'shop\')">Naar de winkel</button>')}
-const STAT={pending:'In afwachting',completed:'Betaald',shipped:'Verzonden',cancelled:'Geannuleerd'};
-function orderCard(o,adm){return `<div class="oc"><div class="h"><b>#${esc(o.id.slice(0,8).toUpperCase())}</b>${adm?`<select style="width:auto;min-height:36px" onchange="setStatus('${esc(o.id)}',this.value)">${Object.keys(STAT).map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${STAT[s]}</option>`).join('')}</select>`:`<span>${esc(STAT[o.status]||o.status)}</span>`}</div>
- ${adm?`<div>${esc(o.userName)}, ${esc(o.userEmail)}, ${esc(o.phone)}<br>${esc(o.address)}${o.paypalOrderId?`<br>PayPal: ${esc(o.paypalOrderId)}`:''}</div>`:''}
- <div>Totaal <b>${eur(o.total||0)}</b> op ${dt(o)}</div>${o.tracking?`<div>Track en trace: <b>${esc(o.tracking)}</b></div>`:''}${adm?`<button class="btn sm o" style="margin:.4rem 0" onclick="setTrack('${esc(o.id)}')">Track en trace invullen</button><button class="btn sm o" style="margin:.4rem 0 .4rem .4rem" onclick="slip('${esc(o.id)}')">Pakbon printen</button>`:''}${!adm?`<div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem"><button class="btn sm o" onclick="reorder('${esc(o.id)}')">Opnieuw bestellen</button><button class="btn sm o" onclick="printO('${esc(o.id)}')">Bestelling printen</button>${ret(o)?`<button class="btn sm o" onclick="returnReq('${esc(o.id)}')">Retour aanvragen</button>`:''}</div>`:''}${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${esc(i.qty)}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`}
-function renderOrders(){$('ordL').innerHTML=orders.length?orders.map(o=>orderCard(o,false)).join(''):none('Je hebt nog niets besteld.')}
-const RV=()=>{try{return JSON.parse(localStorage.getItem('mrv')||'[]')}catch(e){return[]}};
-function rv(id){try{localStorage.setItem('mrv',JSON.stringify([id,...RV().filter(x=>x!==id)].slice(0,6)))}catch(e){}}
-function recent(){const l=RV().map(i=>products.find(p=>p.id===i)).filter(Boolean).slice(0,4);$('recent').innerHTML=l.length?`<h2 style="margin-top:3rem">Eerder bekeken</h2><div class="grid">${l.map(card).join('')}</div>`:''}
-function related(p){const l=products.filter(x=>x.id!==p.id&&x.category===p.category&&(x.stock||0)>0).slice(0,3);$('mRel').innerHTML=l.length?`<div class="cat" style="margin:1rem 0 .4rem">Past hier goed bij</div><div style="display:flex;gap:.5rem">${l.map(x=>`<button class="pn" style="flex:1" onclick="openProduct('${esc(x.id)}')"><img src="${esc(imgOk(x.image))}" alt="${esc(x.title)}" width="80" height="80" style="width:100%;height:auto;aspect-ratio:1;object-fit:cover;border-radius:8px"><small>${esc(x.title)}</small></button>`).join('')}</div>`:''}
-window.openProduct=(id,keep)=>{const p=products.find(x=>x.id===id);if(!p)return;cur=p;if(!keep){rv(id);try{history.replaceState(null,'','#p-'+id)}catch(e){}}
- $('mImg').src=imgOk(p.image);$('mImg').alt=p.title;$('mCat').textContent=p.category||'';$('mTitle').textContent=p.title;
- const sale=p.salePrice&&p.salePrice<p.price;$('mPrice').innerHTML=sale?`<s>${eur(p.price)}</s><span class="new">${eur(pp(p))}</span>`:eur(pp(p));
- $('mDesc').textContent=p.desc||'';const s=p.stock||0;
- $('mStock').innerHTML=s<=0?'<b style="color:var(--red)">Uitverkocht</b>':s<=5?`<b style="color:#c0771f">Nog maar ${s} op voorraad</b>`:'<b style="color:var(--ok)">Op voorraad</b>';
- $('mAdd').disabled=s<=0;if(!keep)$('mQty').value=1;wishBtn();related(p);$('mZ').classList.remove('z');{const n=cart.find(c=>c.id===id)?.qty;if(n)$('mStock').innerHTML+=` · ${n} in je winkelwagen`}openOv('pOv')};
-window.chQty=d=>{const i=$('mQty'),max=cur?.stock||1;i.value=Math.min(max,Math.max(1,(parseInt(i.value)||1)+d))};
-window.shareProd=async()=>{const d={title:cur.title,text:cur.title+' bij MAISON',url:location.href};try{if(navigator.share)await navigator.share(d);else{await navigator.clipboard.writeText(location.href);toast('Link gekopieerd','success')}}catch(e){}};
-function wishBtn(){if(cur)$('mWish').textContent=wishlist.includes(cur.id)?'Van verlanglijst halen':'Op verlanglijst zetten'}
-window.toggleWish=async id=>{if(!user){toast('Log in om favorieten te bewaren','error');return go('login')}
- const ref=uref().collection('wishlist').doc(id);try{if(wishlist.includes(id)){await ref.delete();toast('Van je verlanglijst gehaald')}else{await ref.set({addedAt:new Date()});toast('Op je verlanglijst gezet','success')}}catch(e){toast(fbErr(e),'error')}};
-
-// Winkelwagen
-const allLines=()=>loaded?cart.map(c=>{const p=products.find(x=>x.id===c.id);return{...c,p,gone:!p||(p.stock||0)<=0,price:p?pp(p):0}}):[];
-function calc(){const all=allLines(),L=all.filter(l=>!l.gone),sub=r2(L.reduce((s,l)=>s+l.price*l.qty,0)),disc=applied?r2(sub*applied.discount/100):0,ship=L.length&&sub<50?5.99:0;
- return{L,G:all.filter(l=>l.gone),sub,disc,ship,total:r2(Math.max(0,sub-disc+ship))}}
-window.openCart=()=>{renderCart();openOv('cartOv')};
-function renderCart(){const{L,G,sub,disc,ship,total}=calc();
- const rm=l=>`<button class="rm" onclick="removeCart('${esc(l.id)}')" aria-label="Verwijderen">×</button>`;
- $('cartItems').innerHTML=(L.length||G.length)?L.map(l=>`<div class="ci"><img src="${esc(imgOk(l.p.image))}" alt="${esc(l.p.title)}" width="70" height="70"><div style="flex:1"><div>${esc(l.p.title)}</div><b>${eur(l.price)}</b>
-  <div class="q"><button onclick="changeCart('${esc(l.id)}',-1)" aria-label="Minder">−</button><span>${l.qty}</span><button onclick="changeCart('${esc(l.id)}',1)" aria-label="Meer">+</button></div><button class="lk" style="font-size:.85rem;min-height:32px;padding:0" onclick="saveLater('${esc(l.id)}')">Bewaar voor later</button></div>${rm(l)}</div>`).join('')+
-  G.map(l=>`<div class="ci" style="border:1px solid var(--red)"><div style="flex:1;color:var(--red)">${esc(l.p?.title||'Product')} is helaas niet meer beschikbaar</div>${rm(l)}</div>`).join(''):none('Je winkelwagen is leeg.<br><br><button class="btn" onclick="go(\'shop\')">Naar de winkel</button>');
- $('sub').textContent=eur(sub);$('ship').textContent=ship?eur(ship):'Gratis';$('tot').textContent=eur(total);
- $('discRow').hidden=!applied;$('disc').textContent='-'+eur(disc);
- $('prog').style.width=Math.min(100,sub/50*100)+'%';{const sv=r2(L.reduce((t,l)=>t+(l.p.salePrice&&l.p.salePrice<l.p.price?(l.p.price-l.p.salePrice)*l.qty:0),0));$('shipMsg').textContent=!L.length?'':(sub>=50?'Je bestelling wordt gratis verzonden.':`Nog ${eur(50-sub)} voor gratis verzending`)+(sv>0?` Je bespaart ${eur(sv)} met de aanbiedingen.`:'')}}
-window.addToCart=async(id,qty=1,fromModal)=>{
- const p=products.find(x=>x.id===id);if(!p||(p.stock||0)<=0)return;const have=cart.find(c=>c.id===id)?.qty||0;
- if(have+qty>p.stock)return toast(`Er zijn er maar ${p.stock} beschikbaar`,'error');
- try{if(user)await uref().collection('cart').doc(id).set({qty:FV.increment(qty)},{merge:true});else{const g=GC();g[id]=(g[id]||0)+qty;setGC(g)}badge(true);if(fromModal)closeAll();
-  toast(`${p.title} zit in je winkelwagen`,'success',{l:'Bekijken',f:openCart})}catch(e){toast(fbErr(e),'error')}};
-window.changeCart=async(id,d)=>{const c=cart.find(x=>x.id===id),p=products.find(x=>x.id===id);if(!c||!p)return;const n=c.qty+d;
- if(n<=0)return removeCart(id);if(n>p.stock)return toast(`Er zijn er maar ${p.stock} beschikbaar`,'error');
- try{if(user)await uref().collection('cart').doc(id).update({qty:n});else{const g=GC();g[id]=n;setGC(g)}}catch(e){toast(fbErr(e),'error')}};
+const ADMIN="elmouchania@gmail.com",gP=new firebase.auth.GoogleAuthProvider();
+const S={user:null,role:'user',prods:[],cart:[],wish:[],orders:[],reviews:[],route:'home',mode:'login',cat:'',q:'',sort:'',max:'',stock:false,sale:false,lim:12,coupon:null,tab:'products',loaded:false,cur:null};
+const ceo=()=>!!S.user&&((S.user.email===ADMIN&&S.user.emailVerified)||S.role==='ceo'),admin=()=>ceo()||(!!S.user&&S.role==='admin');
+const pp=p=>p.salePrice&&p.salePrice<p.price?p.salePrice:p.price,uref=()=>db.collection('users').doc(S.user.uid);
+const fe=e=>e?.code==='permission-denied'?'Geen rechten voor deze actie':(e?.message||String(e));
 const GC=()=>{try{return JSON.parse(localStorage.getItem('mgc')||'{}')}catch(e){return{}}};
-const setGC=o=>{try{localStorage.setItem('mgc',JSON.stringify(o))}catch(e){}cart=Object.entries(o).map(([id,qty])=>({id,qty}));badge();renderCart()};
-function mergeGC(){const g=GC();if(!Object.keys(g).length)return;const b=db.batch();for(const[id,q]of Object.entries(g))b.set(uref().collection('cart').doc(id),{qty:FV.increment(q)},{merge:true});b.commit().then(()=>{try{localStorage.removeItem('mgc')}catch(e){}}).catch(console.warn)}
-window.removeCart=async id=>{try{if(user)await uref().collection('cart').doc(id).delete();else{const g=GC();delete g[id];setGC(g)}}catch(e){toast(fbErr(e),'error')}};
-window.applyCoupon=async()=>{const code=$('couponIn').value.trim().toUpperCase();if(!code)return setMsg('couponMsg','Vul eerst een code in','error');if(!user)return setMsg('couponMsg','Log eerst in','error');
- try{const d=await db.collection('coupons').doc(code).get(),c=d.exists?{id:d.id,...d.data()}:null;
-  if(!c||(c.uses||0)>=c.maxUses){applied=null;setMsg('couponMsg','Deze code bestaat niet of is op','error')}else{applied=c;setMsg('couponMsg',`${c.discount}% korting is toegepast`,'success')}}
- catch(e){applied=null;setMsg('couponMsg','Deze code bestaat niet of is op','error')}renderCart()};
+const setGC=o=>{try{localStorage.setItem('mgc',JSON.stringify(o))}catch(e){}S.cart=Object.entries(o).map(([id,qty])=>({id,qty}));refresh()};
+const STAT={completed:'Betaald',shipped:'Verzonden',cancelled:'Geannuleerd'};
+let unsubs=[],tmr;
+function toast(m,t=''){const d=document.createElement('div');d.className='toast '+t;d.textContent=m;$('#toasts').appendChild(d);setTimeout(()=>d.remove(),4000)}
+const msg=(id,t,c)=>{const e=$('#'+id);if(e){e.textContent=t;e.className='msg '+(c||'')}};
+const val=id=>($('#'+id)?.value||'').trim();
+const authErr=e=>({'auth/invalid-credential':'E-mailadres of wachtwoord klopt niet','auth/email-already-in-use':'Dit e-mailadres heeft al een account','auth/invalid-email':'Dit e-mailadres lijkt niet te kloppen','auth/weak-password':'Kies een wachtwoord van minimaal 8 tekens','auth/too-many-requests':'Te veel pogingen, probeer het straks opnieuw','auth/network-request-failed':'Geen internetverbinding'}[e.code]||'Er ging iets mis, probeer het opnieuw');
 
-// Afrekenen (PayPal laadt pas hier)
-function loadPP(){return window.paypal?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');
- s.src='https://www.paypal.com/sdk/js?client-id=AdsXWwkuDjZhYtu-fK0gTcThYzPgzLHZmK9BkBCnH1cmMCvB2zsg1Gsy74hppUTiKcsORmtqWnV2Cdck&currency=EUR';s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
-window.startCheckout=()=>{if(!user){toast('Log in om af te rekenen','error');closeAll();return go('login')}
- if(calc().G.length)return toast('Haal eerst de producten weg die niet meer beschikbaar zijn','error');if(!calc().L.length)return toast('Je winkelwagen is leeg','error');
- closeAll();if(!$('coName').value)$('coName').value=user.displayName||'';if(!$('coEmail').value)$('coEmail').value=user.email||'';
- try{const a=JSON.parse(localStorage.getItem('mad')||'{}');for(const k in a)if($(k)&&!$(k).value)$(k).value=a[k]}catch(e){}
- $('pp').innerHTML='';$('coBtn').style.display='';setMsg('coMsg','');$('coTotal').textContent=eur(calc().total);$('coBtn').textContent=calc().total<=0?'Bestelling plaatsen (gratis)':'Verder naar betalen';openOv('coOv')};
-window.finalizeCheckout=async()=>{const v=id=>$(id).value.trim(),name=v('coName'),email=v('coEmail'),phone=v('coPhone'),street=v('coStreet'),postal=v('coPostal'),city=v('coCity');
- if(!name||!email||!phone||!street||!postal||!city)return setMsg('coMsg','Vul alle velden in','error');
- if(!/^\S+@\S+\.\S+$/.test(email))return setMsg('coMsg','Dit e-mailadres lijkt niet te kloppen','error');
- if(!/^(31|0)[1-9]\d{8}$/.test(phone.replace(/\D/g,'')))return setMsg('coMsg','Vul een Nederlands telefoonnummer in, bijvoorbeeld 06 12345678','error');
- if(!/^\d{4}\s?[A-Z]{2}$/i.test(postal))return setMsg('coMsg','Postcode graag als 1234 AB','error');
- const{L,sub,disc,ship,total}=calc();if(!L.length)return setMsg('coMsg','Je winkelwagen is leeg','error');
- if(L.some(l=>l.qty>(l.p.stock||0)))return setMsg('coMsg','Van een product is niet genoeg meer op voorraad','error');
- try{localStorage.setItem('mad',JSON.stringify({coPhone:phone,coStreet:street,coPostal:postal,coCity:city}))}catch(e){}
- if(total<=0)return freeOrder({name,email,phone,street,postal,city,L,sub,disc,ship});
- setMsg('coMsg','PayPal wordt geladen...');$('coBtn').disabled=true;
- try{await loadPP()}catch(e){$('coBtn').disabled=false;return setMsg('coMsg','PayPal kon niet laden. Controleer je verbinding of adblocker.','error')}
- setMsg('coMsg','');$('coBtn').style.display='none';$('coBtn').disabled=false;$('pp').innerHTML='';
- const data={userId:user.uid,userEmail:email,userName:name,phone,address:`${street}, ${postal.toUpperCase()} ${city}`,items:L.map(l=>({id:l.id,title:l.p.title,qty:l.qty,price:l.price})),subtotal:sub,shipping:ship,discount:disc,total,couponUsed:applied?.id||null,paymentMethod:'paypal'};
- paypal.Buttons({
-  createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{currency_code:'EUR',value:total.toFixed(2),breakdown:{item_total:{currency_code:'EUR',value:sub.toFixed(2)},shipping:{currency_code:'EUR',value:ship.toFixed(2)},discount:{currency_code:'EUR',value:disc.toFixed(2)}}},items:data.items.map(i=>({name:i.title.slice(0,127),quantity:String(i.qty),unit_amount:{currency_code:'EUR',value:i.price.toFixed(2)}}))}]}),
-  onApprove:async(d,a)=>{let det;try{det=await a.order.capture()}catch(e){return setMsg('coMsg','De betaling is niet gelukt: '+e.message,'error')}
-   try{await db.collection('orders').add({...data,status:'completed',paypalOrderId:det.id,createdAt:FV.serverTimestamp()})}
-   catch(e){return setMsg('coMsg',`Je betaling is binnen (PayPal-ID ${det.id}), maar we konden je bestelling niet opslaan: ${fbErr(e)}. Mail ons met dit ID, dan lossen we het op.`,'error')}
-   try{if(applied)await db.collection('coupons').doc(applied.id).update({uses:FV.increment(1)});for(const i of data.items)await db.collection('products').doc(i.id).update({stock:FV.increment(-i.qty)})}catch(e){console.warn(e.message)}
-   try{const b=db.batch();cart.forEach(c=>b.delete(uref().collection('cart').doc(c.id)));await b.commit()}catch(e){console.warn(e)}
-   applied=null;$('couponIn').value='';setMsg('couponMsg','');closeAll();toast('Bedankt voor je bestelling!','success');go('orders')},
-  onCancel:()=>{toast('Betaling geannuleerd');$('coBtn').style.display='';$('pp').innerHTML=''},
-  onError:()=>{toast('Betalen lukte niet. Probeer het nog eens.','error');$('coBtn').style.display=''}
- }).render('#pp')};
+// ---------- Data ----------
+db.collection('products').onSnapshot(s=>{S.all=s.docs.map(d=>({id:d.id,...d.data()}));S.prods=S.all.filter(p=>!p.hidden);S.loaded=true;refresh();if($('#ov').classList.contains('on')&&S.ovk==='cart')cartUI()},e=>console.error(e));
+db.collection('reviews').where('approved','==',true).onSnapshot(q=>{S.reviews=q.docs.map(d=>d.data()).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0)).slice(0,6);if(S.route==='home')refresh()},e=>console.error(e));
+db.collection('settings').doc('site').onSnapshot(d=>{if(d.data()?.banner)$('#tb').textContent=d.data().banner},()=>{});
+function listen(){unsubs.forEach(u=>u());unsubs=[];if(!S.user)return;const er=e=>console.error(e);
+ unsubs.push(uref().onSnapshot(d=>{const x=d.data()||{};if(x.banned){toast('Je account is geblokkeerd.','error');auth.signOut();return}S.role=x.role||'user';head()},er));
+ unsubs.push(db.collection('orders').where('userId','==',S.user.uid).onSnapshot(s=>{S.orders=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));if(S.route==='orders')refresh()},er));
+ unsubs.push(uref().collection('cart').onSnapshot(s=>{S.cart=s.docs.map(d=>({id:d.id,qty:d.data().qty||1}));refresh()},er));
+ unsubs.push(uref().collection('wishlist').onSnapshot(s=>{S.wish=s.docs.map(d=>d.id);refresh()},er))}
+auth.onAuthStateChanged(async u=>{S.user=u;
+ if(u){const g=GC();if(Object.keys(g).length){const b=db.batch();for(const[id,q]of Object.entries(g))b.set(db.collection('users').doc(u.uid).collection('cart').doc(id),{qty:FV.increment(q)},{merge:true});b.commit().then(()=>localStorage.removeItem('mgc')).catch(console.warn)}
+  try{const r=uref();if(!(await r.get()).exists)await r.set({email:u.email,name:u.displayName||'',role:'user',createdAt:new Date()})}catch(e){console.warn(e)}}
+ else{S.wish=[];S.orders=[];S.role='user';S.coupon=null;S.cart=Object.entries(GC()).map(([id,qty])=>({id,qty}));if(['orders','admin'].includes(S.route))S.route='home'}
+ listen();head();refresh()});
+auth.getRedirectResult().catch(e=>toast(authErr(e),'error'));
 
-async function freeOrder(x){$('coBtn').disabled=true;setMsg('coMsg','Bestelling wordt geplaatst...');
- const items=x.L.map(l=>({id:l.id,title:l.p.title,qty:l.qty,price:l.price}));
- try{await db.collection('orders').add({userId:user.uid,userEmail:x.email,userName:x.name,phone:x.phone,address:`${x.street}, ${x.postal.toUpperCase()} ${x.city}`,items,subtotal:x.sub,shipping:x.ship,discount:x.disc,total:0,couponUsed:applied?.id||null,paymentMethod:'gratis',status:'completed',createdAt:FV.serverTimestamp()})}
- catch(e){$('coBtn').disabled=false;return setMsg('coMsg','Bestellen lukte niet: '+fbErr(e),'error')}
- try{if(applied)await db.collection('coupons').doc(applied.id).update({uses:FV.increment(1)});for(const i of items)await db.collection('products').doc(i.id).update({stock:FV.increment(-i.qty)})}catch(e){console.warn(e.message)}
- try{const b=db.batch();cart.forEach(c=>b.delete(uref().collection('cart').doc(c.id)));await b.commit()}catch(e){console.warn(e)}
- $('coBtn').disabled=false;applied=null;$('couponIn').value='';setMsg('couponMsg','');closeAll();toast('Bedankt, je bestelling is geplaatst. Je hoeft niets te betalen.','success');go('orders')}
-window.sendContact=async()=>{const name=$('cName').value.trim(),email=$('cEmail').value.trim(),message=$('cMsg').value.trim();
- if(!name||!/^\S+@\S+\.\S+$/.test(email)||!message)return setMsg('cInfo','Vul je naam, een geldig e-mailadres en je bericht in','error');
- try{await db.collection('messages').add({name,email,message,createdAt:FV.serverTimestamp()});setMsg('cInfo','Bedankt, we hebben je bericht ontvangen.','success');$('cName').value=$('cEmail').value=$('cMsg').value=''}catch(e){setMsg('cInfo','Versturen lukte niet: '+fbErr(e),'error')}};
+// ---------- Navigatie ----------
+function head(){const n=S.cart.reduce((s,c)=>s+c.qty,0);document.title=(n?`(${n}) `:'')+'MAISON | Zorgvuldig uitgezocht';
+ $('#nav').innerHTML=[['home','Home'],['shop','Winkel'],['wishlist','Verlanglijst'+(S.wish.length?` <span class="cnt">${S.wish.length}</span>`:'')],['contact','Contact']].concat(admin()?[['admin','Beheer']]:[]).map(([k,l])=>`<button data-a="go" data-id="${k}" class="${S.route===k?'on':''}">${l}</button>`).join('');
+ $('#acts').innerHTML=(S.user?`<button class="ib" data-a="go" data-id="profile">${esc(S.user.displayName||S.user.email.split('@')[0])}${ceo()?' · CEO':''}</button><button class="ib hide-m" data-a="go" data-id="orders">Bestellingen</button>`:`<button class="ib" data-a="go" data-id="login">Inloggen</button>`)+`<button class="ib cart" data-a="cart" aria-label="Winkelwagen">🛒 <span class="hide-m">Winkelwagen</span>${n?`<span class="cnt">${n}</span>`:''}</button>`}
+function go(r){if(['orders','profile'].includes(r)&&!S.user){toast('Log eerst even in','error');r='login'}
+ if(r==='admin'&&!admin()){toast('Je hebt geen beheerrechten (is je e-mailadres geverifieerd?)','error');r=S.user?'home':'login'}
+ S.route=r;closeOv();$('#nav').classList.remove('show');render();scrollTo({top:0,behavior:'smooth'})}
+function refresh(){head();if(S.route==='shop'&&$('#grid')){shopGrid();return}if(S.route==='admin'||S.route==='login'||S.route==='contact')return;render()}
+function render(){head();const P={home,shop,wishlist,orders,contact,login,profile,admin:admin_};$('#app').innerHTML=(P[S.route]||home)();if(S.route==='shop')shopGrid();if(S.route==='admin')adm()}
 
-// Beheer
-const compress=(f,max=700)=>new Promise((res,rej)=>{if(!f.type.startsWith('image/'))return rej(new Error('Kies een afbeelding'));
- const r=new FileReader();r.onerror=rej;r.onload=e=>{const i=new Image();i.onerror=()=>rej(new Error('Afbeelding is ongeldig'));i.onload=()=>{
-  const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);
-  c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.8))};i.src=e.target.result};r.readAsDataURL(f)});
-document.querySelectorAll('#tabs .tab').forEach(b=>b.onclick=()=>{tab=b.dataset.t;document.querySelectorAll('#tabs .tab').forEach(x=>x.classList.toggle('on',x===b));adm()});
-const arow=(img,title,sub,btns)=>`<div class="ar">${img?`<img src="${esc(imgOk(img))}" alt="">`:''}<div><b>${title}</b><br><span style="color:var(--m)">${sub}</span></div><div class="bt">${btns||''}</div></div>`;
-const bt=(t,f,red)=>`<button class="btn sm ${red?'red':'o'}" onclick="${f}">${t}</button>`;
-async function adm(){if(!admin())return;const F=$('aForm'),Lh=$('aList');F.innerHTML='';Lh.innerHTML=none('Laden...');
- try{
-  const [os]=await Promise.all([db.collection('orders').get()]),ao=os.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  $('kpis').innerHTML=`<div><b>${eur(ao.reduce((s,o)=>s+(o.total||0),0))}</b>omzet</div><div><b>${ao.length}</b>bestellingen</div><div><b>${ao.filter(o=>o.status==='completed').length}</b>nog te verzenden</div><div><b>${products.filter(p=>(p.stock||0)<=3).length}</b>bijna of helemaal op</div>`;
-  if(tab==='products'){F.innerHTML=`<div class="box" style="max-width:none;margin-bottom:1.3rem"><h3 style="margin-bottom:.8rem">Product toevoegen</h3><div class="form2">
-   <input id="aT" placeholder="Naam" maxlength="120"><input id="aC" placeholder="Categorie" maxlength="60"><input id="aP" type="number" step="0.01" min="0" placeholder="Prijs in €"><input id="aS" type="number" step="0.01" min="0" placeholder="Actieprijs in € (optioneel)"><input id="aK" type="number" min="0" placeholder="Voorraad"><input id="aI" type="file" accept="image/*"></div>
-   <textarea id="aD" rows="2" placeholder="Beschrijving" maxlength="1500" style="margin:.8rem 0"></textarea><button class="btn full" id="aB" onclick="addProd()">Product toevoegen</button><div class="msg" id="aM"></div></div><div class="bar"><input id="pQ" type="search" placeholder="Zoek in producten" aria-label="Zoek producten" oninput="pList()"><select id="pS" onchange="pList()" aria-label="Sorteren"><option value="">Volgorde van toevoegen</option><option value="stock">Voorraad, laag eerst</option><option value="az">Naam A tot Z</option></select></div>`;
-   pList()}
-  else if(tab==='orders'){window._ao=ao;F.innerHTML='<button class="btn o sm" style="margin-bottom:1rem" onclick="exportCsv()">Exporteer als CSV</button><input id="oQ" type="search" placeholder="Zoek op naam, e-mail of bestelnummer" aria-label="Zoek bestellingen" oninput="filterOrd()" style="width:260px;min-height:40px;margin-left:.5rem"><select id="oF" onchange="filterOrd()" aria-label="Filter op status" style="width:auto;min-height:40px;margin-left:.5rem"><option value="">Alle statussen</option><option value="pending">In afwachting</option><option value="completed">Betaald</option><option value="shipped">Verzonden</option><option value="cancelled">Geannuleerd</option></select>';Lh.innerHTML=ao.map(o=>orderCard(o,true)).join('')||none('Nog geen bestellingen')}
-  else if(tab==='reviews'){const s=await db.collection('reviews').get();Lh.innerHTML=s.docs.map(d=>{const r=d.data();return arow('',`${esc(r.name)}, ${r.rating} van 5 ${r.approved?'(online)':'(wacht op jou)'}`,esc(r.text),(r.approved?'':bt('Goedkeuren',`appr('${d.id}')`))+bt('Verwijderen',`del('reviews','${d.id}')`,1))}).join('')||none('Nog geen reviews')}
-  else if(tab==='coupons'){F.innerHTML=`<div class="box" style="max-width:none;margin-bottom:1.3rem"><div class="form2" style="grid-template-columns:repeat(3,1fr)"><input id="kC" placeholder="CODE" maxlength="30" style="text-transform:uppercase"><input id="kD" type="number" min="1" max="100" placeholder="Korting in %"><input id="kM" type="number" min="1" placeholder="Hoe vaak te gebruiken"></div><button class="btn full" style="margin-top:.8rem" onclick="addCoupon()">Coupon toevoegen</button><div class="msg" id="kMsg"></div></div>`;
-   const s=await db.collection('coupons').get();Lh.innerHTML=s.docs.map(d=>{const c=d.data();return arow('',esc(d.id),`${c.discount}% korting, ${c.uses||0} van ${c.maxUses} keer gebruikt`,bt('Verwijderen',`del('coupons','${esc(d.id)}')`,1))}).join('')||none('Nog geen coupons')}
-  else if(tab==='messages'){const s=await db.collection('messages').get(),a=s.docs.map(d=>({id:d.id,...d.data()})).sort((x,y)=>(y.createdAt?.seconds||0)-(x.createdAt?.seconds||0));
-   Lh.innerHTML=a.map(m=>arow('',`${esc(m.name)}, <a href="mailto:${esc(m.email)}">${esc(m.email)}</a>`,esc(m.message),bt('Verwijderen',`del('messages','${esc(m.id)}')`,1))).join('')||none('Geen berichten')}
-  else if(tab==='set'){F.innerHTML=`<div class="box" style="max-width:none"><div class="fld"><label for="bnT">Tekst in de balk bovenaan de site (leeg laten voor de standaardtekst)</label><input id="bnT" maxlength="140" value="${esc($('tb').textContent===TB0?'':$('tb').textContent)}"></div><button class="btn" onclick="saveBanner()">Opslaan</button></div>`;Lh.innerHTML=''}
-  else if(tab==='news'){const s=await db.collection('subscribers').get();window._em=s.docs.map(d=>d.id).join(', ');F.innerHTML='<button class="btn o sm" style="margin-bottom:1rem" onclick="copyEm()">E-mailadressen kopiëren</button>';Lh.innerHTML=`<div class="ar"><div><b>${s.size} aanmeldingen</b><br><span style="color:var(--m)">${esc(s.docs.map(d=>d.id).join(', '))}</span></div></div>`}
-  else{const s=await db.collection('users').get();window._au=s.docs.map(d=>({id:d.id,...d.data()}));F.innerHTML=`<div class="bar"><input id="uQ" type="search" placeholder="Zoek op naam of e-mailadres" aria-label="Zoek gebruikers" oninput="uList()"><select id="uR" onchange="uList()" aria-label="Rol"><option value="">Alle rollen</option><option value="admin">Beheerders</option><option value="user">Klanten</option><option value="banned">Geblokkeerd</option></select><button class="btn o sm" onclick="usersCsv()">Exporteer als CSV</button></div>`;uList()}
- }catch(e){Lh.innerHTML=none('Geen toegang: '+esc(fbErr(e)))}}
-window.addProd=async()=>{const title=$('aT').value.trim(),price=parseFloat($('aP').value),sale=parseFloat($('aS').value)||null;
- if(!title||!(price>0))return setMsg('aM','Vul minstens een naam en een prijs in','error');$('aB').disabled=true;setMsg('aM','Bezig...');
- try{const f=$('aI').files[0],image=f?await compress(f):PH;
-  await db.collection('products').add({title,category:$('aC').value.trim()||'Overig',price,salePrice:sale&&sale<price?sale:null,stock:Math.max(0,parseInt($('aK').value)||0),desc:$('aD').value.trim(),image,createdAt:FV.serverTimestamp()});
-  toast('Product toegevoegd','success');adm()}catch(e){setMsg('aM',fbErr(e),'error');$('aB').disabled=false}};
-window.editProd=async id=>{const p=(window._ap||[]).find(x=>x.id===id),pr=await ask('Nieuwe prijs in €:',p.price);if(pr===null)return;const sk=await ask('Nieuwe voorraad:',p.stock||0);if(sk===null)return;const sl=await ask('Actieprijs in € (leeg laten voor geen actie):',p.salePrice||'');if(sl===null)return;const sp=parseFloat(String(sl).replace(',','.'));
- const price=parseFloat(String(pr).replace(',','.')),stock=parseInt(sk);if(!(price>0)||isNaN(stock))return toast('Prijs of voorraad klopt niet','error');
- try{await db.collection('products').doc(id).update({price,stock:Math.max(0,stock),salePrice:sp>0&&sp<price?sp:null});toast('Opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
-window.del=async(c,id)=>{if(!await sure('Weet je zeker dat je dit wilt verwijderen?'))return;try{await db.collection(c).doc(id).delete();toast('Verwijderd');adm()}catch(e){toast(fbErr(e),'error')}};
-window.appr=async id=>{try{await db.collection('reviews').doc(id).update({approved:true});toast('Review staat online','success');adm()}catch(e){toast(fbErr(e),'error')}};
-const ret=o=>o.createdAt?.toDate&&Date.now()-o.createdAt.toDate().getTime()<30*864e5;
-window.reorder=async id=>{const o=orders.find(x=>x.id===id);if(!o)return;for(const i of o.items)await addToCart(i.id,i.qty);openCart()};
-window.returnReq=async id=>{const o=orders.find(x=>x.id===id);if(!o||!await sure('Retour aanvragen voor deze bestelling?'))return;
- try{await db.collection('messages').add({name:o.userName,email:o.userEmail,message:'Retourverzoek voor bestelling #'+id.slice(0,8).toUpperCase()+' ('+id+')',createdAt:FV.serverTimestamp()});toast('Je retourverzoek is binnen, we mailen je de uitleg','success')}catch(e){toast(fbErr(e),'error')}};
-window.slip=id=>{const o=(window._ao||[]).find(x=>x.id===id);if(!o)return;const w=open('','_blank');if(!w)return toast('Sta pop-ups toe om de pakbon te printen','error');
- w.document.write(`<title>Pakbon</title><body style="font-family:sans-serif;max-width:600px;margin:2rem auto"><h2>Pakbon #${esc(id.slice(0,8).toUpperCase())}</h2><p><b>${esc(o.userName)}</b><br>${esc(o.address)}<br>${esc(o.phone)}</p><ul>${(o.items||[]).map(i=>`<li>${esc(i.qty)} × ${esc(i.title)}</li>`).join('')}</ul><script>print()<\/script>`);w.document.close()};
-const T0=document.title,TB0=$('tb').textContent,isNew=p=>p.createdAt?.seconds&&Date.now()/1000-p.createdAt.seconds<14*864e5;
-db.collection('settings').doc('site').onSnapshot(d=>{$('tb').textContent=d.data()?.banner||TB0},()=>{});
-window.resetF=()=>{cat='';lim=12;['sS','sMax'].forEach(i=>$(i).value='');$('sO').value='';$('sStock').checked=$('sSale').checked=false;renderShop()};
-window.wishAll=async()=>{for(const p of products.filter(p=>wishlist.includes(p.id)&&(p.stock||0)>0))await addToCart(p.id,1);openCart()};
-window.saveLater=async id=>{if(!user){toast('Log in om je verlanglijst te gebruiken','error');return go('login')}try{await uref().collection('wishlist').doc(id).set({addedAt:new Date()});await removeCart(id);toast('Op je verlanglijst gezet','success')}catch(e){toast(fbErr(e),'error')}};
-window.filterOrd=()=>{const s=$('oF').value,q=($('oQ')?.value||'').toLowerCase().trim(),l=(window._ao||[]).filter(o=>(!s||o.status===s)&&(!q||[o.userName,o.userEmail,o.id,o.phone].some(x=>(x||'').toLowerCase().includes(q))));$('aList').innerHTML=l.map(o=>orderCard(o,true)).join('')||none('Geen bestellingen met deze status')};
-window.dupProd=async id=>{const p=(window._ap||[]).find(x=>x.id===id);if(!p)return;const{id:_,...d}=p;try{await db.collection('products').add({...d,title:p.title+' (kopie)',createdAt:FV.serverTimestamp()});toast('Product gedupliceerd','success');adm()}catch(e){toast(fbErr(e),'error')}};
-window.saveBanner=async()=>{try{await db.collection('settings').doc('site').set({banner:$('bnT').value.trim()});toast('Banner opgeslagen','success')}catch(e){toast(fbErr(e),'error')}};
-window.printO=id=>{const o=orders.find(x=>x.id===id);if(!o)return;const w=open('','_blank');if(!w)return toast('Sta pop-ups toe om te printen','error');
- w.document.write(`<title>Bestelling</title><body style="font-family:sans-serif;max-width:600px;margin:2rem auto"><h2>Bestelling #${esc(id.slice(0,8).toUpperCase())}</h2><p>${dt(o)}<br>${esc(o.address)}</p><ul>${(o.items||[]).map(i=>`<li>${esc(i.qty)} × ${esc(i.title)}: ${eur(i.price*i.qty)}</li>`).join('')}</ul><p>Verzending: ${eur(o.shipping||0)}<br>Korting: ${eur(o.discount||0)}<br><b>Totaal: ${eur(o.total||0)}</b></p><script>print()<\/script>`);w.document.close()};
-let lim=12;
-window.moreP=()=>{lim+=12;renderShop()};
-window.uList=()=>{const q=($('uQ')?.value||'').toLowerCase().trim(),r=$('uR')?.value||'',all=window._au||[],l=all.filter(u=>(!r||(r==='banned'?u.banned:(u.role||'user')===r))&&(!q||[u.name,u.email].some(x=>(x||'').toLowerCase().includes(q))));
- $('aList').innerHTML=`<p class="sub">${l.length} van ${all.length} gebruikers</p>`+(l.map(u=>arow('',esc(u.name||u.email),`${esc(u.email)}, ${isCeoU(u)?'CEO':u.role==='admin'?'beheerder':'klant'}${u.banned?`, GEBLOKKEERD${u.banReason?' ('+esc(u.banReason)+')':''}`:''}`,(!ceo()||isCeoU(u)?'':u.role==='admin'?bt('Beheerder weghalen',`rmAdmin('${esc(u.id)}')`):bt('Beheerder maken',`mkAdmin('${esc(u.id)}')`))+(ceo()&&u.role!=='admin'&&!isCeoU(u)&&u.id!==user.uid?(u.banned?bt('Unban',`banUser('${esc(u.id)}',false)`):bt('Ban',`banUser('${esc(u.id)}',true)`,1)):''))).join('')||none('Geen gebruikers gevonden'))};
-window.banUser=async(id,b)=>{if(!ceo()||id===user.uid)return toast('Alleen de CEO kan gebruikers blokkeren','error');let r='';
- if(b){r=await ask('Reden voor de ban (alleen zichtbaar voor beheerders, mag leeg):','');if(r===null)return}else if(!await sure('Blokkade opheffen?'))return;
- try{await db.collection('users').doc(id).update(b?{banned:true,banReason:r.trim(),bannedAt:new Date()}:{banned:false,banReason:''});
-  const u=(window._au||[]).find(x=>x.id===id);if(u){u.banned=b;u.banReason=b?r.trim():''}uList();toast(b?'Gebruiker is geblokkeerd':'Blokkade is opgeheven','success')}catch(e){toast(fbErr(e),'error')}};
-window.rmAdmin=async id=>{if(!ceo())return toast('Alleen de CEO kan dit','error');if(id===user.uid)return toast('Je kunt jezelf niet als beheerder weghalen','error');if(!await sure('Beheerdersrechten weghalen?'))return;try{await db.collection('users').doc(id).update({role:'user'});toast('Rechten weggehaald','success');adm()}catch(e){toast(fbErr(e),'error')}};
-window.usersCsv=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',rows=[['Naam','E-mail','Rol'],...(window._au||[]).map(u=>[u.name,u.email,u.role])],a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='gebruikers.csv';a.click()};
-window.pList=()=>{const q=($('pQ')?.value||'').toLowerCase().trim(),so=$('pS')?.value||'',l=(window._ap||[]).filter(p=>!q||[p.title,p.category].some(x=>(x||'').toLowerCase().includes(q)));
- if(so==='stock')l.sort((a,b)=>(a.stock||0)-(b.stock||0));if(so==='az')l.sort((a,b)=>String(a.title).localeCompare(b.title,'nl'));
- $('aList').innerHTML=l.map(p=>arow(p.image,esc(p.title),`${eur(pp(p))}, voorraad ${p.stock||0}${p.hidden?', verborgen':''}`,bt('Prijs, actie en voorraad',`editProd('${esc(p.id)}')`)+bt(p.hidden?'Tonen':'Verbergen',`hideProd('${esc(p.id)}')`)+bt('Dupliceren',`dupProd('${esc(p.id)}')`)+bt('Verwijderen',`del('products','${esc(p.id)}')`,1))).join('')||none('Geen producten gevonden')};
-window.hideProd=async id=>{const p=(window._ap||[]).find(x=>x.id===id);if(!p)return;try{await db.collection('products').doc(id).update({hidden:!p.hidden});toast(p.hidden?'Product is weer zichtbaar':'Product is verborgen','success')}catch(e){toast(fbErr(e),'error')}};
-window.copyEm=async()=>{try{await navigator.clipboard.writeText(window._em||'');toast('Gekopieerd','success')}catch(e){toast('Kopiëren lukte niet','error')}};
-window.clearCart=async()=>{if(!cart.length||!await sure('Winkelwagen helemaal leegmaken?'))return;if(user){try{const b=db.batch();cart.forEach(c=>b.delete(uref().collection('cart').doc(c.id)));await b.commit()}catch(e){toast(fbErr(e),'error')}}else setGC({})};
-window.wishClear=async()=>{if(!await sure('Verlanglijst leegmaken?'))return;try{const b=db.batch();wishlist.forEach(id=>b.delete(uref().collection('wishlist').doc(id)));await b.commit();toast('Verlanglijst is leeg')}catch(e){toast(fbErr(e),'error')}};
-const isCeoU=u=>u.role==='ceo'||u.email===ADMIN_EMAIL;
-window.setLang=c=>{try{localStorage.setItem('mlang',c)}catch(e){}
- if(c==='nl'){const gone='googtrans=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/';document.cookie=gone;document.cookie=gone+';domain='+location.hostname;location.reload();return}
- document.cookie='googtrans=/nl/'+c+';path=/';document.documentElement.dir=c==='ar'?'rtl':'ltr';toast('Bezig met vertalen...');
- const apply=()=>{const sel=document.querySelector('.goog-te-combo');if(!sel)return false;sel.value=c;sel.dispatchEvent(new Event('change'));return true};
- if(apply())return;loadGT();const t=setInterval(()=>{if(apply())clearInterval(t)},150);setTimeout(()=>clearInterval(t),15000)};
-const settingsHtml=()=>`<h2 style="font-size:1.6rem;margin:1.6rem 0 .8rem">Instellingen</h2><div class="fld"><label for="langSel">Taal</label><select id="langSel" onchange="setLang(this.value)" translate="no"><option value="nl">Nederlands</option><option value="en">English</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option><option value="pt">Português</option><option value="it">Italiano</option><option value="tr">Türkçe</option><option value="ar">العربية</option><option value="pl">Polski</option><option value="ru">Русский</option><option value="zh-CN">中文</option></select></div><p class="sub">De site wordt automatisch vertaald met Google Translate. Dat kan foutjes bevatten. Je bestelling, prijzen en gegevens blijven hetzelfde.</p><div class="fld"><label for="thSel">Thema</label><select id="thSel" onchange="setTheme(this.value)"><option value="light">Licht</option><option value="dark">Donker</option></select></div>`;
-function setSet(){loadGT();let l='nl';try{l=localStorage.getItem('mlang')||'nl'}catch(e){}$('langSel').value=l;$('thSel').value=document.documentElement.dataset.theme}
-window.setTheme=t=>{document.documentElement.dataset.theme=t;try{localStorage.setItem('mt',t)}catch(e){}};
-const SK=()=>'<div class="card sk"></div>'.repeat(6);
-function dlg(msg,inp,def){return new Promise(res=>{const o=document.createElement('div');o.className='ov on';o.style.zIndex=20000;o.setAttribute('role','dialog');o.setAttribute('aria-modal','true');
- o.innerHTML=`<div class="modal one" style="max-width:420px"><div><p style="margin-bottom:1rem">${esc(msg)}</p>${inp?'<input id="dlgI" aria-label="Invoer">':''}<div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem"><button class="btn o sm" id="dlgN">Annuleren</button><button class="btn sm" id="dlgY">OK</button></div></div></div>`;
- document.body.appendChild(o);const i=o.querySelector('#dlgI');if(i)i.value=def??'';(i||o.querySelector('#dlgY')).focus();
- const end=v=>{o.remove();res(v)};o.querySelector('#dlgY').onclick=()=>end(inp?i.value:true);o.querySelector('#dlgN').onclick=()=>end(inp?null:false);
- o.onkeydown=e=>{if(e.key==='Escape'){e.stopPropagation();end(inp?null:false)}if(e.key==='Enter'&&inp)end(i.value)}})}
-const ask=(m,d)=>dlg(m,1,d),sure=m=>dlg(m,0);
-document.addEventListener('keydown',e=>{if(e.key!=='Tab')return;const o=[...document.querySelectorAll('.ov.on')].pop();if(!o)return;
- const f=[...o.querySelectorAll('button,input,select,textarea,a[href]')].filter(x=>!x.disabled&&x.offsetParent!==null);if(!f.length)return;const a=document.activeElement;
- if(e.shiftKey&&(a===f[0]||!o.contains(a))){e.preventDefault();f[f.length-1].focus()}else if(!e.shiftKey&&(a===f[f.length-1]||!o.contains(a))){e.preventDefault();f[0].focus()}});
-function jsonld(){let e=document.getElementById('ld');if(!e){e=document.createElement('script');e.type='application/ld+json';e.id='ld';document.head.appendChild(e)}
- e.textContent=JSON.stringify({'@context':'https://schema.org','@graph':products.slice(0,50).map(p=>({'@type':'Product',name:p.title,description:p.desc||p.title,category:p.category,image:/^https:/.test(p.image||'')?p.image:undefined,offers:{'@type':'Offer',priceCurrency:'EUR',price:pp(p).toFixed(2),availability:(p.stock||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock'}}))})}
-let lastErr=0;addEventListener('unhandledrejection',e=>{console.error(e.reason);if(Date.now()-lastErr>8000){lastErr=Date.now();toast('Er ging iets mis. Probeer het nog eens.','error')}});
-addEventListener('error',e=>{if(e.target&&e.target.tagName==='IMG'&&e.target.src!==PH)e.target.src=PH},true);
-window.setTrack=async id=>{const t=await ask('Track en trace code:');if(!t||!t.trim())return;try{await db.collection('orders').doc(id).update({tracking:t.trim(),status:'shipped'});toast('Opgeslagen, status staat nu op verzonden','success');adm()}catch(e){toast(fbErr(e),'error')}};
-window.exportCsv=()=>{const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"',rows=[['Bestelling','Datum','Naam','E-mail','Telefoon','Adres','Producten','Totaal','Status'],...(window._ao||[]).map(o=>[o.id,dt(o),o.userName,o.userEmail,o.phone,o.address,(o.items||[]).map(i=>i.qty+'x '+i.title).join('; '),o.total,o.status])];
- const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(';')).join('\n')],{type:'text/csv'}));a.download='bestellingen.csv';a.click()};
-window.setStatus=async(id,status)=>{try{await db.collection('orders').doc(id).update({status});toast('Status aangepast','success')}catch(e){toast(fbErr(e),'error')}};
-window.mkAdmin=async id=>{if(!ceo())return toast('Alleen de CEO kan dit','error');if(!await sure('Deze gebruiker beheerder maken?'))return;try{await db.collection('users').doc(id).update({role:'admin'});toast('Is nu beheerder','success');adm()}catch(e){toast(fbErr(e),'error')}};
-window.addCoupon=async()=>{const code=$('kC').value.trim().toUpperCase(),discount=parseInt($('kD').value),maxUses=parseInt($('kM').value);
- if(!code||!(discount>=1&&discount<=100)||!(maxUses>=1))return setMsg('kMsg','Vul alle velden goed in','error');
- try{await db.collection('coupons').doc(code).set({code,discount,maxUses,uses:0,createdAt:new Date()});toast('Coupon toegevoegd','success');adm()}catch(e){setMsg('kMsg',fbErr(e),'error')}};
-renderHome();
-const h=location.hash;
-if(h.startsWith('#p-')){const id=h.slice(3),t=setInterval(()=>{if(products.find(p=>p.id===id)){clearInterval(t);openProduct(id)}},300);setTimeout(()=>{clearInterval(t);if(loaded&&!$('pOv').classList.contains('on')&&!products.find(p=>p.id===id))toast('Dit product bestaat niet meer','error')},8000)}
-else if(h.length>1&&['shop','contact','wishlist','login','register'].includes(h.slice(1)))go(h.slice(1));
+// ---------- Producten ----------
+const isNew=p=>p.createdAt?.seconds&&Date.now()/1000-p.createdAt.seconds<14*864e5;
+function card(p){const sale=p.salePrice&&p.salePrice<p.price,s=p.stock||0,w=S.wish.includes(p.id),id=esc(p.id);
+ const bd=s<=0?'<span class="bd out">Uitverkocht</span>':sale?`<span class="bd">-${Math.round((1-p.salePrice/p.price)*100)}%</span>`:s<=3?`<span class="bd low">Nog ${s}</span>`:isNew(p)?'<span class="bd" style="background:var(--ok)">Nieuw</span>':'';
+ return `<article class="card"><div style="position:relative"><button class="imgw" data-a="open" data-id="${id}" aria-label="Bekijk ${esc(p.title)}"><img src="${esc(img(p.image))}" alt="${esc(p.title)}" width="400" height="500" loading="lazy">${bd}</button><button class="wish" data-a="wish" data-id="${id}" aria-label="Verlanglijst" aria-pressed="${w}">${HEART(w)}</button></div>
+ <div class="info"><div class="cat">${esc(p.category)}</div><button class="pn" data-a="open" data-id="${id}">${esc(p.title)}</button><div class="pr">${sale?`<s>${eur(p.price)}</s><span class="n">${eur(pp(p))}</span>`:eur(pp(p))}</div><button class="btn" ${s<=0?'disabled':''} data-a="add" data-id="${id}">${s<=0?'Uitverkocht':'In winkelwagen'}</button></div></article>`}
+const SK=()=>'<div class="card sk"></div>'.repeat(6),none=t=>`<div class="empty">${t}</div>`;
+function home(){const st=S.reviews.length?`Gemiddeld ${(S.reviews.reduce((s,r)=>s+r.rating,0)/S.reviews.length).toFixed(1).replace('.',',')} uit ${S.reviews.length} reviews`:'';
+ return `<section class="hero"><div class="wrap"><h1>Spullen die je jaren blijft gebruiken</h1><p>Wij kiezen elk stuk zelf uit en sturen alleen wat we ook zelf zouden kopen. Vanaf €50 betaal je geen verzendkosten.</p><div class="cta"><button class="btn" data-a="go" data-id="shop">Naar de winkel</button><button class="btn o" data-a="faq">Hoe werkt bestellen?</button></div></div></section>
+ <div class="wrap" style="padding-bottom:0"><div class="trust"><div><b>Gratis verzending</b>vanaf €50</div><div><b>30 dagen retour</b>zonder gedoe</div><div><b>Veilig betalen</b>via PayPal</div><div><b>Vragen?</b>antwoord binnen 24 uur</div></div></div>
+ <div class="wrap"><h2>Dit vinden klanten het mooist</h2><div class="grid">${!S.loaded?SK():S.prods.length?S.prods.slice(0,6).map(card).join(''):none('De collectie wordt binnenkort aangevuld.')}</div><div style="text-align:center;margin-top:2rem"><button class="btn o" data-a="go" data-id="shop">Alle producten bekijken</button></div></div>
+ <div class="wrap" style="padding-top:0"><h2>Wat klanten zeggen</h2><p class="sub">${st}</p><div class="reviews">${S.reviews.length?S.reviews.map(r=>`<article class="rv"><div class="st" aria-label="${+r.rating} van 5 sterren">${'★'.repeat(r.rating)+'☆'.repeat(5-r.rating)}</div><p>${esc(r.text)}</p><small>${esc(r.name)}</small></article>`).join(''):'<p class="sub">Er zijn nog geen reviews.</p>'}</div>
+ <details style="margin-top:1.3rem;max-width:620px"><summary>Zelf een review schrijven</summary><div style="padding:0 1.1rem 1.1rem"><div class="fld"><label for="rvR">Cijfer</label><select id="rvR">${[5,4,3,2,1].map(n=>`<option value="${n}">${n} ster${n>1?'ren':''}</option>`).join('')}</select></div><div class="fld"><label for="rvT">Hoe bevalt je bestelling?</label><textarea id="rvT" rows="3" maxlength="500"></textarea></div><button class="btn" data-a="review">Review plaatsen</button><div class="msg" id="rvM"></div><p class="sub">Alleen klanten met een bestelling kunnen reageren. We lezen elke review eerst even door.</p></div></details></div>
+ <div class="wrap" style="padding-top:0"><div class="three"><div><b>Verzending</b>Gratis vanaf €50, daaronder €5,99.</div><div><b>Retour</b>Binnen 30 dagen terug, meld het via Contact.</div><div><b>Betalen</b>Via PayPal. Je betaalgegevens komen nooit bij ons terecht.</div></div></div>
+ <div class="wrap" style="padding-top:0;max-width:820px" id="faq"><h2>Veelgestelde vragen</h2><details><summary>Wat kost verzending?</summary><p>Niets vanaf €50, anders €5,99.</p></details><details><summary>Hoe stuur ik iets terug?</summary><p>Vraag het binnen 30 dagen aan bij Mijn bestellingen of via Contact.</p></details><details><summary>Waar vul ik een couponcode in?</summary><p>In de winkelwagen, onder het overzicht. Je moet ingelogd zijn.</p></details></div>`}
+function shop(){return `<div class="wrap"><h1 style="font-size:clamp(2rem,5vw,3rem);margin-bottom:1.3rem">Winkel</h1><div class="bar"><input id="sQ" type="search" placeholder="Zoek een product" aria-label="Zoek" value="${esc(S.q)}" data-i="q" maxlength="60"><select data-c="sort" aria-label="Sorteren">${[['','Sorteren'],['low','Prijs laag-hoog'],['high','Prijs hoog-laag'],['new','Nieuwste'],['az','A tot Z'],['disc','Grootste korting']].map(([v,l])=>`<option value="${v}" ${S.sort===v?'selected':''}>${l}</option>`).join('')}</select><input type="number" min="0" placeholder="Max. €" aria-label="Maximale prijs" data-i="max" value="${esc(S.max)}" style="width:110px"><label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" data-c="stock" style="width:auto;min-height:0" ${S.stock?'checked':''}> Op voorraad</label><label style="display:flex;gap:.4rem;align-items:center"><input type="checkbox" data-c="sale" style="width:auto;min-height:0" ${S.sale?'checked':''}> Aanbiedingen</label></div><div class="sub" id="cnt" role="status"></div><div class="chips" id="chips"></div><div class="grid" id="grid"></div></div>`}
+function shopGrid(){const cats=[...new Set(S.prods.map(p=>p.category).filter(Boolean))],q=S.q.toLowerCase(),mx=parseFloat(S.max);
+ $('#chips').innerHTML=['',...cats].map(c=>`<button class="chip" aria-pressed="${c===S.cat}" data-a="cat" data-id="${esc(c)}">${c?esc(c):'Alles'}</button>`).join('');
+ let l=S.prods.filter(p=>(!S.cat||p.category===S.cat)&&(!S.stock||p.stock>0)&&(!S.sale||(p.salePrice&&p.salePrice<p.price))&&(!(mx>0)||pp(p)<=mx)&&[p.title,p.category,p.desc].some(x=>(x||'').toLowerCase().includes(q)));
+ const o=S.sort,d=p=>p.salePrice?1-p.salePrice/p.price:0;if(o==='az')l.sort((a,b)=>String(a.title).localeCompare(b.title,'nl'));if(o==='disc')l.sort((a,b)=>d(b)-d(a));if(o==='low')l.sort((a,b)=>pp(a)-pp(b));if(o==='high')l.sort((a,b)=>pp(b)-pp(a));if(o==='new')l.sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+ $('#grid').innerHTML=!S.loaded?SK():l.length?l.slice(0,S.lim).map(card).join('')+(l.length>S.lim?'<div class="empty"><button class="btn o" data-a="more">Meer laden</button></div>':''):none('Hier hebben we niets voor gevonden.');$('#cnt').textContent=S.loaded?`${l.length} van ${S.prods.length} producten`:''}
+function wishlist(){if(!S.user)return `<div class="wrap"><h1>Verlanglijst</h1>${none('Log in om je verlanglijst te zien<br><br><button class="btn" data-a="go" data-id="login">Inloggen</button>')}</div>`;
+ const l=S.prods.filter(p=>S.wish.includes(p.id));return `<div class="wrap"><h1 style="margin-bottom:1.3rem">Verlanglijst</h1><div class="grid">${l.length?l.map(card).join(''):none('Je verlanglijst is nog leeg.')}</div></div>`}
+function orders(){return `<div class="wrap"><h1 style="margin-bottom:1.3rem">Mijn bestellingen</h1>${S.orders.length?S.orders.map(o=>oc(o,0)).join(''):none('Je hebt nog niets besteld.')}</div>`}
+function oc(o,a){const d=o.createdAt?.toDate?o.createdAt.toDate().toLocaleDateString('nl-NL'):'',id=esc(o.id);
+ return `<div class="oc"><div class="h"><b>#${id.slice(0,8).toUpperCase()}</b>${a?`<select data-c="ost" data-id="${id}" style="width:auto;min-height:36px">${Object.keys(STAT).map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${STAT[s]}</option>`).join('')}</select>`:`<span>${esc(STAT[o.status]||o.status)}</span>`}</div>
+ ${a?`<div>${esc(o.userName)}, ${esc(o.userEmail)}, ${esc(o.phone)}<br>${esc(o.address)}</div>`:''}<div>Totaal <b>${eur(o.total||0)}</b> op ${d}</div>${o.tracking?`<div>Track en trace: <b>${esc(o.tracking)}</b></div>`:''}
+ ${a?`<div class="bt" style="margin:.5rem 0"><input id="tr${id}" placeholder="Track en trace" maxlength="60" style="width:200px"><button class="btn sm o" data-a="track" data-id="${id}">Opslaan</button></div>`:`<div class="bt" style="margin-top:.6rem"><button class="btn sm o" data-a="reorder" data-id="${id}">Opnieuw bestellen</button></div>`}
+ ${(o.items||[]).map(i=>`<div class="oi"><span>${esc(i.title)} × ${+i.qty}</span><span>${eur(i.price*i.qty)}</span></div>`).join('')}</div>`}
+function contact(){return `<div class="wrap"><div class="box" style="max-width:600px"><h1>Contact</h1><p class="sub">We antwoorden binnen 24 uur.</p><div class="fld"><label for="cN">Naam</label><input id="cN" autocomplete="name" maxlength="100"></div><div class="fld"><label for="cE">E-mailadres</label><input id="cE" type="email" autocomplete="email" maxlength="120"></div><div class="fld"><label for="cM">Bericht</label><textarea id="cM" rows="5" maxlength="2000"></textarea></div><button class="btn full" data-a="contact">Bericht versturen</button><div class="msg" id="cI"></div></div></div>`}
+function login(){const r=S.mode==='register';return `<div class="wrap"><div class="box"><h1>${r?'Account maken':'Welkom terug'}</h1><p class="sub">${r?'Dan staat je winkelwagen op al je apparaten klaar.':'Log in om je winkelwagen en bestellingen te zien.'}</p>${r?'<div class="fld"><label for="aN">Naam</label><input id="aN" autocomplete="name" maxlength="100"></div>':''}<div class="fld"><label for="aE">E-mailadres</label><input id="aE" type="email" autocomplete="email"></div><div class="fld"><label for="aP">Wachtwoord${r?' (minimaal 8 tekens)':''}</label><input id="aP" type="password" autocomplete="${r?'new':'current'}-password"></div><button class="btn full" id="aB" data-a="${r?'register':'login'}">${r?'Account aanmaken':'Inloggen'}</button><div class="msg" id="aM"></div>${r?'':'<div class="ctr"><button class="lk" data-a="reset">Wachtwoord vergeten?</button></div>'}<button class="btn o full" data-a="google">Verder met Google</button><div class="ctr">${r?'Al een account?':'Nog geen account?'} <button class="lk" data-a="mode">${r?'Inloggen':'Maak er een aan'}</button></div></div></div>`}
+function profile(){const u=S.user,sum=S.orders.reduce((s,o)=>s+(o.total||0),0);return `<div class="wrap"><div class="box" style="max-width:560px"><h1>Mijn profiel</h1><div style="margin-top:1rem"><div class="row"><span>Naam</span><b>${esc(u.displayName||'-')}</b></div><div class="row"><span>E-mail</span><b>${esc(u.email)} ${u.emailVerified?'(bevestigd)':'(niet bevestigd)'}</b></div><div class="row"><span>Rol</span><b>${ceo()?'CEO':admin()?'Beheerder':'Klant'}</b></div><div class="row"><span>Bestellingen</span><b>${S.orders.length}, samen ${eur(sum)}</b></div>${u.emailVerified?'':'<button class="btn sm o" data-a="verify" style="margin:.6rem 0">Bevestigingsmail opnieuw sturen</button> <button class="btn sm o" data-a="checkv">Ik heb bevestigd</button>'}<div class="fld" style="margin-top:1rem"><label for="pN">Naam wijzigen</label><div style="display:flex;gap:.5rem"><input id="pN" value="${esc(u.displayName||'')}" maxlength="100"><button class="btn sm" data-a="saveName">Opslaan</button></div></div><div class="bt"><button class="btn o sm" data-a="theme">Thema wisselen</button><button class="btn red sm" data-a="logout">Uitloggen</button></div></div></div></div>`}
+
+// ---------- Winkelwagen ----------
+function calc(){const all=S.loaded?S.cart.map(c=>{const p=S.prods.find(x=>x.id===c.id);return{...c,p,gone:!p||!(p.stock>0),price:p?pp(p):0}}):[],L=all.filter(l=>!l.gone),sub=r2(L.reduce((s,l)=>s+l.price*l.qty,0)),disc=S.coupon?r2(sub*S.coupon.discount/100):0,ship=L.length&&sub<50?5.99:0;return{L,G:all.filter(l=>l.gone),sub,disc,ship,total:r2(Math.max(0,sub-disc+ship))}}
+function cartUI(){const{L,G,sub,disc,ship,total}=calc();S.ovk='cart';const rm=l=>`<button class="rm" data-a="rm" data-id="${esc(l.id)}" aria-label="Verwijderen">×</button>`;
+ $('#ov').innerHTML=`<div class="drawer"><div class="dh"><h2>Winkelwagen</h2><button class="x" data-a="close" aria-label="Sluiten">×</button></div><div class="ditems">${(L.length||G.length)?L.map(l=>`<div class="ci"><img src="${esc(img(l.p.image))}" alt="" width="70" height="70"><div style="flex:1"><div>${esc(l.p.title)}</div><b>${eur(l.price)}</b><div class="q"><button data-a="dec" data-id="${esc(l.id)}" aria-label="Minder">−</button><span>${l.qty}</span><button data-a="inc" data-id="${esc(l.id)}" aria-label="Meer">+</button></div></div>${rm(l)}</div>`).join('')+G.map(l=>`<div class="ci" style="border:1px solid var(--red)"><div style="flex:1;color:var(--red)">${esc(l.p?.title||'Product')} is niet meer beschikbaar</div>${rm(l)}</div>`).join(''):none('Je winkelwagen is leeg.')}</div>
+ <div class="dfoot"><div style="font-size:.85rem">${L.length?(sub>=50?'Je bestelling wordt gratis verzonden.':`Nog ${eur(50-sub)} voor gratis verzending`):''}</div><div class="prog"><i style="width:${Math.min(100,sub/50*100)}%"></i></div><div style="display:flex;gap:.5rem"><input id="cpI" placeholder="Couponcode" aria-label="Couponcode" maxlength="30"><button class="btn o sm" data-a="coupon">Toepassen</button></div><div class="msg" id="cpM">${S.coupon?esc(S.coupon.discount)+'% korting toegepast':''}</div><div class="row"><span>Subtotaal</span><span>${eur(sub)}</span></div>${S.coupon?`<div class="row"><span>Korting</span><span style="color:var(--ok)">-${eur(disc)}</span></div>`:''}<div class="row"><span>Verzending</span><span>${ship?eur(ship):'Gratis'}</span></div><div class="row tot"><span>Totaal</span><span>${eur(total)}</span></div><button class="btn full" style="margin-top:.8rem" data-a="checkout" ${L.length?'':'disabled'}>Afrekenen</button></div></div>`;$('#ov').classList.add('on');document.body.style.overflow='hidden'}
+async function addCart(id,q=1){const p=S.prods.find(x=>x.id===id);if(!p||!(p.stock>0))return;const have=S.cart.find(c=>c.id===id)?.qty||0;if(have+q>p.stock)return toast(`Er zijn er maar ${p.stock} beschikbaar`,'error');
+ try{if(S.user)await uref().collection('cart').doc(id).set({qty:FV.increment(q)},{merge:true});else{const g=GC();g[id]=(g[id]||0)+q;setGC(g)}toast(`${p.title} zit in je winkelwagen`,'success')}catch(e){toast(fe(e),'error')}}
+async function setQty(id,n){const p=S.prods.find(x=>x.id===id);if(n<=0)return rmCart(id);if(p&&n>p.stock)return toast(`Er zijn er maar ${p.stock} beschikbaar`,'error');
+ try{if(S.user)await uref().collection('cart').doc(id).update({qty:n});else{const g=GC();g[id]=n;setGC(g)}}catch(e){toast(fe(e),'error')}}
+async function rmCart(id){try{if(S.user)await uref().collection('cart').doc(id).delete();else{const g=GC();delete g[id];setGC(g)}}catch(e){toast(fe(e),'error')}}
+async function toggleWish(id){if(!S.user){toast('Log in om favorieten te bewaren','error');return go('login')}const r=uref().collection('wishlist').doc(id);try{S.wish.includes(id)?await r.delete():await r.set({addedAt:new Date()})}catch(e){toast(fe(e),'error')}}
+function openP(id){const p=S.prods.find(x=>x.id===id);if(!p)return;S.cur=p;S.ovk='p';const sale=p.salePrice&&p.salePrice<p.price,s=p.stock||0;
+ $('#ov').innerHTML=`<div class="modal"><button class="x" data-a="close" aria-label="Sluiten">×</button><div class="mimg"><img src="${esc(img(p.image))}" alt="${esc(p.title)}" width="440" height="440"></div><div><div class="cat">${esc(p.category)}</div><h2 style="margin:.3rem 0">${esc(p.title)}</h2><div class="pr" style="font-size:1.5rem">${sale?`<s>${eur(p.price)}</s><span class="n">${eur(pp(p))}</span>`:eur(pp(p))}</div><p>${esc(p.desc)}</p><div style="margin-top:.8rem;font-weight:600;color:${s<=0?'var(--red)':'var(--ok)'}">${s<=0?'Uitverkocht':s<=5?`Nog maar ${s} op voorraad`:'Op voorraad'}</div><div class="qty"><button data-a="mq" data-id="-1" aria-label="Minder">−</button><input id="mq" type="number" value="1" min="1" max="${s}" aria-label="Aantal"><button data-a="mq" data-id="1" aria-label="Meer">+</button></div><button class="btn full" data-a="addm" data-id="${esc(p.id)}" ${s<=0?'disabled':''}>In winkelwagen</button><button class="btn o full" style="margin-top:.6rem" data-a="wish" data-id="${esc(p.id)}">${S.wish.includes(p.id)?'Van verlanglijst halen':'Op verlanglijst zetten'}</button></div></div>`;$('#ov').classList.add('on');document.body.style.overflow='hidden'}
+function closeOv(){$('#ov').classList.remove('on');$('#ov').innerHTML='';S.ovk='';document.body.style.overflow=''}
+
+// ---------- Afrekenen ----------
+const loadPP=()=>window.paypal?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://www.paypal.com/sdk/js?client-id=AdsXWwkuDjZhYtu-fK0gTcThYzPgzLHZmK9BkBCnH1cmMCvB2zsg1Gsy74hppUTiKcsORmtqWnV2Cdck&currency=EUR';s.onload=ok;s.onerror=no;document.head.appendChild(s)});
+function checkout(){if(!S.user){toast('Log in om af te rekenen','error');closeOv();return go('login')}const c=calc();if(c.G.length)return toast('Haal eerst niet-beschikbare producten weg','error');if(!c.L.length)return;S.ovk='co';let a={};try{a=JSON.parse(localStorage.getItem('mad')||'{}')}catch(e){}
+ const f=(id,l,ac,ph,v='')=>`<div class="fld"><label for="${id}">${l}</label><input id="${id}" autocomplete="${ac}" placeholder="${ph}" maxlength="120" value="${esc(v)}"></div>`;
+ $('#ov').innerHTML=`<div class="modal one"><button class="x" data-a="close" aria-label="Sluiten">×</button><div><h2>Afrekenen</h2><div class="form2"><div>${f('coN','Naam','name','',S.user.displayName)}${f('coE','E-mailadres','email','',S.user.email)}${f('coP','Telefoon','tel','06 12345678',a.coP)}</div><div>${f('coS','Straat en huisnummer','street-address','',a.coS)}${f('coZ','Postcode','postal-code','1234 AB',a.coZ)}${f('coC','Woonplaats','address-level2','',a.coC)}</div></div><div class="row tot"><span>Te betalen</span><span>${eur(c.total)}</span></div><div class="msg" id="coM"></div><button class="btn full" id="coB" data-a="pay">${c.total<=0?'Bestelling plaatsen (gratis)':'Verder naar betalen'}</button><div id="pp" style="margin-top:1rem"></div></div></div>`;$('#ov').classList.add('on')}
+async function pay(){const n=val('coN'),e=val('coE'),ph=val('coP'),st=val('coS'),zp=val('coZ'),ct=val('coC');
+ if(!n||!e||!ph||!st||!zp||!ct)return msg('coM','Vul alle velden in','error');if(!/^\S+@\S+\.\S+$/.test(e))return msg('coM','Dit e-mailadres lijkt niet te kloppen','error');
+ if(!/^(31|0)[1-9]\d{8}$/.test(ph.replace(/\D/g,'')))return msg('coM','Vul een Nederlands telefoonnummer in','error');if(!/^\d{4}\s?[A-Z]{2}$/i.test(zp))return msg('coM','Postcode graag als 1234 AB','error');
+ const{L,sub,disc,ship,total}=calc();if(!L.length)return msg('coM','Je winkelwagen is leeg','error');if(L.some(l=>l.qty>(l.p.stock||0)))return msg('coM','Van een product is niet genoeg meer op voorraad','error');
+ try{localStorage.setItem('mad',JSON.stringify({coP:ph,coS:st,coZ:zp,coC:ct}))}catch(x){}
+ const items=L.map(l=>({id:l.id,title:l.p.title,qty:l.qty,price:l.price})),base={userId:S.user.uid,userEmail:e,userName:n,phone:ph,address:`${st}, ${zp.toUpperCase()} ${ct}`,items,subtotal:sub,shipping:ship,discount:disc,total,couponUsed:S.coupon?.id||null,status:'completed'};
+ const done=async extra=>{await db.collection('orders').add({...base,...extra,createdAt:FV.serverTimestamp()});
+  try{if(S.coupon)await db.collection('coupons').doc(S.coupon.id).update({uses:FV.increment(1)});for(const i of items)await db.collection('products').doc(i.id).update({stock:FV.increment(-i.qty)})}catch(x){console.warn(x.message)}
+  try{if(S.user){const b=db.batch();S.cart.forEach(c=>b.delete(uref().collection('cart').doc(c.id)));await b.commit()}}catch(x){console.warn(x)}
+  S.coupon=null;toast('Bedankt voor je bestelling!','success');go('orders')};
+ if(total<=0){$('#coB').disabled=true;try{await done({paymentMethod:'gratis'})}catch(x){$('#coB').disabled=false;msg('coM','Bestellen lukte niet: '+fe(x),'error')}return}
+ msg('coM','PayPal wordt geladen...');$('#coB').disabled=true;try{await loadPP()}catch(x){$('#coB').disabled=false;return msg('coM','PayPal kon niet laden. Controleer je verbinding of adblocker.','error')}
+ msg('coM','');$('#coB').style.display='none';
+ paypal.Buttons({createOrder:(d,a)=>a.order.create({purchase_units:[{amount:{currency_code:'EUR',value:total.toFixed(2),breakdown:{item_total:{currency_code:'EUR',value:sub.toFixed(2)},shipping:{currency_code:'EUR',value:ship.toFixed(2)},discount:{currency_code:'EUR',value:disc.toFixed(2)}}},items:items.map(i=>({name:i.title.slice(0,127),quantity:String(i.qty),unit_amount:{currency_code:'EUR',value:i.price.toFixed(2)}}))}]}),
+  onApprove:async(d,a)=>{let det;try{det=await a.order.capture()}catch(x){return msg('coM','De betaling is niet gelukt','error')}
+   try{await done({paymentMethod:'paypal',paypalOrderId:det.id})}catch(x){msg('coM',`Je betaling is binnen (PayPal-ID ${det.id}), maar opslaan mislukte. Mail ons met dit ID.`,'error')}},
+  onCancel:()=>{toast('Betaling geannuleerd');$('#coB').style.display='';$('#coB').disabled=false;$('#pp').innerHTML=''},onError:()=>{toast('Betalen lukte niet. Probeer het opnieuw.','error');$('#coB').style.display='';$('#coB').disabled=false}}).render('#pp')}
+
+// ---------- Beheer ----------
+const compress=(f,max=700)=>new Promise((res,rej)=>{if(!/^image\/(png|jpe?g|webp|gif)$/.test(f.type))return rej(new Error('Kies een afbeelding (jpg, png, webp)'));const r=new FileReader();r.onerror=rej;r.onload=e=>{const i=new Image();i.onerror=()=>rej(new Error('Ongeldige afbeelding'));i.onload=()=>{const k=Math.min(1,max/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);res(c.toDataURL('image/jpeg',.8))};i.src=e.target.result};r.readAsDataURL(f)});
+function admin_(){return `<div class="wrap"><h1 style="margin-bottom:1.3rem">Beheer</h1><div class="kpis" id="kpis"></div><div class="tabs">${[['products','Producten'],['orders','Bestellingen'],['reviews','Reviews'],['coupons','Coupons'],['messages','Berichten'],['set','Banner'],['users','Gebruikers']].map(([k,l])=>`<button class="tab ${S.tab===k?'on':''}" data-a="tab" data-id="${k}">${l}</button>`).join('')}</div><div id="aF"></div><div id="aL"></div></div>`}
+const admin_page=admin_;
+const arow=(im,t,s,b)=>`<div class="ar">${im?`<img src="${esc(img(im))}" alt="">`:''}<div><b>${t}</b><br><span style="color:var(--m)">${s}</span></div><div class="bt">${b||''}</div></div>`;
+const bt=(t,a,id,red)=>`<button class="btn sm ${red?'red':'o'}" data-a="${a}" data-id="${esc(id)}">${t}</button>`;
+async function adm(){if(!admin())return;const F=$('#aF'),L=$('#aL');if(!F)return;F.innerHTML='';L.innerHTML=none('Laden...');
+ try{const os=await db.collection('orders').get(),ao=os.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  $('#kpis').innerHTML=`<div><b>${eur(ao.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+(o.total||0),0))}</b>omzet</div><div><b>${ao.length}</b>bestellingen</div><div><b>${ao.filter(o=>o.status==='completed').length}</b>nog te verzenden</div><div><b>${(S.all||[]).filter(p=>(p.stock||0)<=3).length}</b>bijna of helemaal op</div>`;
+  const t=S.tab;
+  if(t==='products'){F.innerHTML=`<div class="box" style="max-width:none;margin-bottom:1.3rem"><div class="form2"><input id="nT" placeholder="Naam" maxlength="120"><input id="nC" placeholder="Categorie" maxlength="60"><input id="nP" type="number" step="0.01" min="0" placeholder="Prijs €"><input id="nS" type="number" step="0.01" min="0" placeholder="Actieprijs € (optioneel)"><input id="nK" type="number" min="0" placeholder="Voorraad"><input id="nI" type="file" accept="image/*"></div><textarea id="nD" rows="2" placeholder="Beschrijving" maxlength="1500" style="margin:.8rem 0"></textarea><button class="btn full" data-a="addp">Product toevoegen</button><div class="msg" id="nM"></div></div>`;
+   L.innerHTML=(S.all||[]).map(p=>arow(p.image,esc(p.title),`${p.hidden?'verborgen · ':''}${esc(p.category)}`,`<input id="ep${esc(p.id)}" type="number" step="0.01" value="${+p.price}" aria-label="Prijs"><input id="es${esc(p.id)}" type="number" step="0.01" value="${p.salePrice||''}" placeholder="actie" aria-label="Actieprijs"><input id="ek${esc(p.id)}" type="number" value="${p.stock||0}" aria-label="Voorraad">`+bt('Opslaan','savep',p.id)+bt(p.hidden?'Tonen':'Verbergen','hidep',p.id)+bt('Verwijderen','delp',p.id,1))).join('')||none('Nog geen producten')}
+  else if(t==='orders')L.innerHTML=ao.map(o=>oc(o,1)).join('')||none('Nog geen bestellingen');
+  else if(t==='reviews'){const s=await db.collection('reviews').get();L.innerHTML=s.docs.map(d=>{const r=d.data();return arow('',`${esc(r.name)}, ${+r.rating} van 5 ${r.approved?'(online)':'(wacht)'}`,esc(r.text),(r.approved?'':bt('Goedkeuren','appr',d.id))+bt('Verwijderen','delr',d.id,1))}).join('')||none('Nog geen reviews')}
+  else if(t==='coupons'){F.innerHTML=`<div class="box" style="max-width:none;margin-bottom:1.3rem"><div class="form2" style="grid-template-columns:repeat(3,1fr)"><input id="kC" placeholder="CODE" maxlength="30"><input id="kD" type="number" min="1" max="100" placeholder="Korting %"><input id="kM" type="number" min="1" placeholder="Max. gebruik"></div><button class="btn full" style="margin-top:.8rem" data-a="addk">Coupon toevoegen</button><div class="msg" id="kMsg"></div></div>`;const s=await db.collection('coupons').get();L.innerHTML=s.docs.map(d=>{const c=d.data();return arow('',esc(d.id),`${+c.discount}% korting, ${c.uses||0} van ${+c.maxUses} gebruikt`,bt('Verwijderen','delk',d.id,1))}).join('')||none('Nog geen coupons')}
+  else if(t==='messages'){const s=await db.collection('messages').get(),a=s.docs.map(d=>({id:d.id,...d.data()})).sort((x,y)=>(y.createdAt?.seconds||0)-(x.createdAt?.seconds||0));L.innerHTML=a.map(m=>arow('',`${esc(m.name)}, ${esc(m.email)}`,esc(m.message),bt('Verwijderen','delm',m.id,1))).join('')||none('Geen berichten')}
+  else if(t==='set')F.innerHTML=`<div class="box" style="max-width:none"><div class="fld"><label for="bnT">Tekst in de balk bovenaan</label><input id="bnT" maxlength="140" value="${esc($('#tb').textContent)}"></div><button class="btn" data-a="banner">Opslaan</button></div>`,L.innerHTML='';
+  else{const s=await db.collection('users').get();S.us=s.docs.map(d=>({id:d.id,...d.data()}));L.innerHTML=S.us.map(u=>{const c=u.role==='ceo'||u.email===ADMIN;return arow('',esc(u.name||u.email),`${esc(u.email)}, ${c?'CEO':u.role==='admin'?'beheerder':'klant'}${u.banned?', GEBLOKKEERD':''}`,ceo()&&!c&&u.id!==S.user.uid?(u.role==='admin'?bt('Beheerder weghalen','rmadm',u.id):bt('Beheerder maken','mkadm',u.id))+(u.banned?bt('Unban','unban',u.id):bt('Ban','ban',u.id,1)):'')}).join('')||none('Geen gebruikers')}
+ }catch(e){L.innerHTML=none('Geen toegang: '+esc(fe(e)))}}
+const upd=async(c,id,d,m)=>{try{await db.collection(c).doc(id).update(d);if(m)toast(m,'success');adm()}catch(e){toast(fe(e),'error')}};
+const rem=async(c,id)=>{if(!confirm('Weet je zeker dat je dit wilt verwijderen?'))return;try{await db.collection(c).doc(id).delete();toast('Verwijderd');adm()}catch(e){toast(fe(e),'error')}};
+
+// ---------- Acties ----------
+const A={
+ go,close:closeOv,open:openP,wish:toggleWish,add:id=>addCart(id,1),addm:async id=>{await addCart(id,Math.max(1,parseInt($('#mq').value)||1));closeOv()},
+ mq:d=>{const i=$('#mq'),mx=S.cur?.stock||1;i.value=Math.min(mx,Math.max(1,(parseInt(i.value)||1)+ +d))},
+ burger:()=>$('#nav').classList.toggle('show'),cart:cartUI,inc:id=>setQty(id,(S.cart.find(c=>c.id===id)?.qty||0)+1),dec:id=>setQty(id,(S.cart.find(c=>c.id===id)?.qty||0)-1),rm:rmCart,
+ faq:()=>$('#faq')?.scrollIntoView({behavior:'smooth'}),cat:c=>{S.cat=c;S.lim=12;shopGrid()},more:()=>{S.lim+=12;shopGrid()},
+ theme:()=>{const t=document.documentElement.dataset.theme==='dark'?'light':'dark';document.documentElement.dataset.theme=t;try{localStorage.setItem('mt',t)}catch(e){}},
+ mode:()=>{S.mode=S.mode==='login'?'register':'login';render()},
+ login:async()=>{const e=val('aE').toLowerCase(),p=$('#aP').value;if(!e||!p)return msg('aM','Vul je e-mailadres en wachtwoord in','error');$('#aB').disabled=true;try{await auth.signInWithEmailAndPassword(e,p);toast('Je bent ingelogd','success');go('home')}catch(x){msg('aM',authErr(x),'error');$('#aB').disabled=false}},
+ register:async()=>{const n=val('aN'),e=val('aE').toLowerCase(),p=$('#aP').value;if(!n||!e||p.length<8)return msg('aM','Vul alles in (wachtwoord minimaal 8 tekens)','error');$('#aB').disabled=true;
+  try{const c=await auth.createUserWithEmailAndPassword(e,p);await c.user.updateProfile({displayName:n});c.user.sendEmailVerification().catch(()=>{});await db.collection('users').doc(c.user.uid).set({email:e,name:n,role:'user',createdAt:new Date()},{merge:true});toast('Welkom! We hebben je een bevestigingsmail gestuurd.','success');go('home')}catch(x){msg('aM',authErr(x),'error');$('#aB').disabled=false}},
+ google:async()=>{try{await auth.signInWithPopup(gP);go('home')}catch(e){if(e.code==='auth/popup-blocked')return auth.signInWithRedirect(gP);if(!['auth/popup-closed-by-user','auth/cancelled-popup-request'].includes(e.code))toast(authErr(e),'error')}},
+ reset:async()=>{const e=val('aE');if(!e)return toast('Vul eerst je e-mailadres in','error');try{await auth.sendPasswordResetEmail(e)}catch(x){}toast('Als dit adres bij ons bekend is, ontvang je een mail om je wachtwoord te herstellen','success')},
+ verify:async()=>{try{await S.user.sendEmailVerification();toast('Mail is onderweg','success')}catch(e){toast(authErr(e),'error')}},
+ checkv:async()=>{try{await S.user.reload();S.user=auth.currentUser;await S.user.getIdToken(true);head();render();toast(S.user.emailVerified?'Je e-mailadres is bevestigd':'Nog niet bevestigd')}catch(e){toast(authErr(e),'error')}},
+ saveName:async()=>{const n=val('pN');if(!n)return;try{await S.user.updateProfile({displayName:n});await uref().update({name:n});head();render();toast('Naam opgeslagen','success')}catch(e){toast(fe(e),'error')}},
+ logout:async()=>{await auth.signOut();go('home');toast('Tot de volgende keer')},
+ sub:async()=>{const e=val('nlE').toLowerCase(),m=$('#nlM');if(!/^\S+@\S+\.\S+$/.test(e)||e.length>120){m.textContent='Dit e-mailadres lijkt niet te kloppen';return}try{await db.collection('subscribers').doc(e).set({email:e,createdAt:FV.serverTimestamp()});m.textContent='Bedankt, je staat op de lijst.';$('#nlE').value=''}catch(x){m.textContent='Aanmelden lukte niet'}},
+ contact:async()=>{const name=val('cN'),email=val('cE'),message=val('cM');if(!name||!/^\S+@\S+\.\S+$/.test(email)||!message)return msg('cI','Vul je naam, een geldig e-mailadres en je bericht in','error');try{await db.collection('messages').add({name,email,message,createdAt:FV.serverTimestamp()});msg('cI','Bedankt, we hebben je bericht ontvangen.','success');['cN','cE','cM'].forEach(i=>$('#'+i).value='')}catch(e){msg('cI','Versturen lukte niet','error')}},
+ review:async()=>{if(!S.user){toast('Log in om een review te plaatsen','error');return go('login')}if(!S.orders.length)return msg('rvM','Alleen klanten met een bestelling kunnen een review plaatsen','error');const text=val('rvT');if(text.length<5)return msg('rvM','Schrijf er minstens een korte zin bij','error');
+  try{await db.collection('reviews').doc(S.user.uid).set({userId:S.user.uid,name:(S.user.displayName||'Klant').split(' ')[0],rating:parseInt($('#rvR').value),text,approved:false,createdAt:FV.serverTimestamp()});$('#rvT').value='';msg('rvM','Bedankt! Je review staat online zodra we hem gelezen hebben.','success')}catch(e){msg('rvM','Plaatsen lukt niet: '+fe(e),'error')}},
+ coupon:async()=>{const code=val('cpI').toUpperCase();if(!code)return msg('cpM','Vul eerst een code in','error');if(!S.user)return msg('cpM','Log eerst in','error');
+  try{const d=await db.collection('coupons').doc(code).get(),c=d.exists?{id:d.id,...d.data()}:null;if(!c||(c.uses||0)>=c.maxUses){S.coupon=null;msg('cpM','Deze code bestaat niet of is op','error')}else{S.coupon=c;cartUI()}}catch(e){S.coupon=null;msg('cpM','Deze code bestaat niet of is op','error')}},
+ checkout,pay,reorder:async id=>{const o=S.orders.find(x=>x.id===id);if(!o)return;for(const i of o.items)await addCart(i.id,i.qty);cartUI()},
+ tab:t=>{S.tab=t;render()},
+ addp:async()=>{const title=val('nT'),price=parseFloat($('#nP').value),sale=parseFloat($('#nS').value)||null;if(!title||!(price>0))return msg('nM','Vul minstens een naam en een prijs in','error');msg('nM','Bezig...');
+  try{const f=$('#nI').files[0],image=f?await compress(f):PH;await db.collection('products').add({title,category:val('nC')||'Overig',price,salePrice:sale&&sale<price?sale:null,stock:Math.max(0,parseInt($('#nK').value)||0),desc:val('nD'),image,createdAt:FV.serverTimestamp()});toast('Product toegevoegd','success');adm()}catch(e){msg('nM',fe(e),'error')}},
+ savep:id=>{const price=parseFloat($('#ep'+id).value),sale=parseFloat($('#es'+id).value),stock=parseInt($('#ek'+id).value);if(!(price>0)||isNaN(stock))return toast('Prijs of voorraad klopt niet','error');upd('products',id,{price,stock:Math.max(0,stock),salePrice:sale>0&&sale<price?sale:null},'Opgeslagen')},
+ hidep:id=>upd('products',id,{hidden:!(S.all.find(p=>p.id===id)?.hidden)},'Zichtbaarheid aangepast'),delp:id=>rem('products',id),
+ appr:id=>upd('reviews',id,{approved:true},'Review staat online'),delr:id=>rem('reviews',id),delk:id=>rem('coupons',id),delm:id=>rem('messages',id),
+ addk:async()=>{const code=val('kC').toUpperCase(),discount=parseInt($('#kD').value),maxUses=parseInt($('#kM').value);if(!code||!(discount>=1&&discount<=100)||!(maxUses>=1))return msg('kMsg','Vul alle velden goed in','error');try{await db.collection('coupons').doc(code).set({code,discount,maxUses,uses:0,createdAt:new Date()});toast('Coupon toegevoegd','success');adm()}catch(e){msg('kMsg',fe(e),'error')}},
+ track:id=>{const t=val('tr'+id);if(t)upd('orders',id,{tracking:t,status:'shipped'},'Opgeslagen, status is verzonden')},
+ banner:async()=>{try{await db.collection('settings').doc('site').set({banner:val('bnT')});toast('Banner opgeslagen','success')}catch(e){toast(fe(e),'error')}},
+ mkadm:id=>upd('users',id,{role:'admin'},'Is nu beheerder'),rmadm:id=>upd('users',id,{role:'user'},'Rechten weggehaald'),
+ ban:id=>upd('users',id,{banned:true,bannedAt:new Date()},'Gebruiker geblokkeerd'),unban:id=>upd('users',id,{banned:false},'Blokkade opgeheven')
+};
+window.admin_=admin_;
+document.addEventListener('click',e=>{if(e.target.id==='ov'&&S.ovk!=='co')return closeOv();if(e.target.id==='ov')return closeOv();const t=e.target.closest('[data-a]');if(!t)return;const f=A[t.dataset.a];if(f){e.preventDefault?.();Promise.resolve(f(t.dataset.id,t,e)).then(()=>{if(['wish'].includes(t.dataset.a)&&S.ovk==='p')openP(S.cur.id)}).catch(x=>console.error(x))}});
+document.addEventListener('change',e=>{const c=e.target.dataset.c;if(!c)return;if(c==='ost')return upd('orders',e.target.dataset.id,{status:e.target.value},'Status aangepast');S[c]=e.target.type==='checkbox'?e.target.checked:e.target.value;shopGrid()});
+document.addEventListener('input',e=>{const k=e.target.dataset.i;if(!k)return;clearTimeout(tmr);tmr=setTimeout(()=>{S[k]=e.target.value;S.lim=12;shopGrid()},250)});
+addEventListener('keydown',e=>{if(e.key==='Escape')closeOv()});
+const sh={admin:admin_};window.__p=sh;
+render();
 }
 addEventListener('load',boot);
 </script>
