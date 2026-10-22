@@ -118,7 +118,6 @@ footer{background:var(--ink);color:#B9B2A6} footer .wrap{padding:44px 24px;displ
 .offline.on{display:block}
 @media(max-width:900px){.hero-inner{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.trust{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}footer .wrap{grid-template-columns:1fr}.nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);flex-direction:column;padding:10px 16px;border-bottom:1px solid var(--line)}.nav.show{display:flex}.burger{display:inline-flex!important}}
 .burger{display:none}
-.protected{font-size:10px;background:#F6E6E0;color:#A33A2A;padding:2px 8px;border-radius:99px}.ceo-notif{position:fixed;top:80px;right:20px;background:#12100E;color:#fff;border-radius:18px;padding:16px 20px;box-shadow:0 24px 60px rgba(0,0,0,.4);z-index:999;max-width:380px;border-left:4px solid #A33A2A}.bell{position:relative}.bell .dot{position:absolute;top:-4px;right:-4px;background:var(--red);color:#fff;min-width:18px;height:18px;border-radius:99px;font-size:11px;display:grid;place-items:center;padding:0 5px;font-weight:700}
 </style>
 </head>
 <body>
@@ -131,7 +130,7 @@ footer{background:var(--ink);color:#B9B2A6} footer .wrap{padding:44px 24px;displ
  <nav class="nav" id="nav"></nav>
  <div class="acts" id="acts"></div>
 </div></header>
-<main id="app"></main>
+<main id="app"><div class="wrap"><p>Firebase kon niet laden.</p></div></main>
 <div id="compareBar" style="display:none"></div>
 <footer><div class="wrap"><div><div class="logo">MAISON</div><p style="margin-top:10px;max-width:34ch;font-size:13px;line-height:1.5">Geen foto's. Wel smaak. Kleur als materiaal, woorden als beeld. Geselecteerd in Lelystad.</p><div class="color-bar" style="margin-top:16px;border-radius:99px;overflow:hidden;width:110px"><i></i><i></i><i></i><i></i><i></i></div></div>
  <div><b style="color:#fff;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Nieuwsbrief</b><div style="display:flex;gap:6px;margin-top:10px"><input id="nlE" type="email" placeholder="you@mail.com" style="background:#23201E;color:#fff;border-color:#3A3531"><button class="btn clay sm" data-a="sub">Aanmelden</button></div><div id="nlM" style="font-size:11px;margin-top:6px"></div></div>
@@ -300,110 +299,26 @@ async function pay(){
 
 function admin_(){return `<div class="wrap sec"><h1 style="margin-bottom:16px">Admin — fixed version</h1><div class="kpis" id="kpis"></div><div class="tabs">${[['products','Producten'],['orders','Bestellingen'],['reviews','Reviews'],['coupons','Coupons'],['messages','Berichten'],['waitlist','Waitlist'],['users','Gebruikers']].map(([k,l])=>`<button class="tab ${S.tab===k?'on':''}" data-a="tab" data-id="${k}">${l}</button>`).join('')}</div><div id="aF"></div><div id="aL"></div></div>`}
 const bt=(t,a,id,red)=>`<button class="btn sm ${red?'':'o'}" style="${red?'background:var(--red);border-color:var(--red);color:#fff':''}" data-a="${a}" data-id="${esc(id)}">${t}</button>`;
-async 
-function canBanTarget(target){
-  if(!target) return false;
-  const r=(target.role||'user').toLowerCase();
-  if(r==='ceo') return false;
-  if(r==='admin') return false;
-  const email=(target.email||'').toLowerCase();
-  if(email==='elmouchania@gmail.com') return false;
-  return true;
-}
-
 async function adm(){
+ if(!admin())return;const F=$('#aF'),L=$('#aL');if(!F)return;F.innerHTML='';L.innerHTML=none('Laden...');
  try{
-  const isCEO = ceo();
-  const isAdminOnly = admin() && !isCEO;
-  let h=`<div class="tabs">`+
-    [['products','Producten'],['orders','Orders'],['users','Gebruikers'],['reviews','Reviews'],['coupons','Coupons'],['messages','Berichten'],['subs','Subs'],['wait','Waitlist'],['banRequests','Ban Verzoeken'+(S.banPending?` (${S.banPending})`:'' )],['export','Export'],['rules','Rules']].map(([k,l])=>`<button data-a="tab" data-id="${k}" class="${S.tab===k?'on':''}">${l}</button>`).join('')+
-  `</div><div class="box"><div id="aL"></div></div>`;
-  $('#admin').innerHTML=h;
-  const aL=$('#aL');
-  if(S.tab==='products'){
-    const cats=[...new Set(S.all.map(p=>p.category).filter(Boolean))];
-    aL.innerHTML=`<div class="box"><h3>Nieuw product</h3><div class="form"><input id="pName" placeholder="Naam"><input id="pPrice" type="number" placeholder="Prijs"><input id="pCat" list="catList" placeholder="Categorie"><datalist id="catList">${cats.map(c=>`<option value="${esc(c)}">`).join('')}</datalist><input id="pStock" type="number" placeholder="Voorraad"><input id="pImgFile" type="file" accept="image/*"><div style="display:flex;gap:6px"><button class="btn clay" data-a="addProd">Toevoegen</button><button class="btn o" data-a="bulk0">Verwijder 0-voorraad</button></div></div></div><div id="pList"></div>`;
-    $('#pList').innerHTML=S.all.map(p=>`<div class="ar"><span>${esc(p.name)} - €${p.price} (${p.stock})</span><div style="display:flex;gap:6px"><button class="btn sm o" data-a="editProd" data-id="${p.id}">Edit</button><button class="btn sm red" data-a="delProd" data-id="${p.id}">Del</button></div></div>`).join('');
-  } else if(S.tab==='users'){
-    aL.innerHTML='<div class="box"><h3>Gebruikers</h3><div id="uSearchWrap" style="margin-bottom:12px"><input id="uSearch" placeholder="Zoek op email of naam..." oninput="filterUsers()"></div><div id="uList">Laden...</div></div>';
-    const snap=await db.collection('users').get();
-    let users=snap.docs.map(d=>({id:d.id,...d.data()}));
-    window._allUsers=users;
-    const renderUsers=(list)=>{
-      $('#uList').innerHTML=list.map(u=>{
-        const role=u.role||'user';
-        const isProtected=!canBanTarget(u);
-        const roleBadge=role==='ceo'?'<span style="background:var(--gold);color:#fff;padding:2px 8px;border-radius:99px;font-size:10px">👑 CEO</span>':role==='admin'?'<span style="background:#12100E;color:#fff;padding:2px 8px;border-radius:99px;font-size:10px">ADMIN</span>':'<span style="background:#eee;padding:2px 8px;border-radius:99px;font-size:10px">USER</span>';
-        const protectedBadge=isProtected?'<span class="protected">BESCHERMD</span>':'';
-        let actions='';
-        if(isCEO){
-          // CEO ziet GEEN ban knop, alleen role beheer
-          if(role!=='ceo'){
-            actions+=`<button class="btn sm ${role==='admin'?'red':'clay'}" data-a="${role==='admin'?'rmadm':'mkadm'}" data-id="${u.id}">${role==='admin'?'Admin verwijderen':'Maak admin'}</button>`;
-          }
-          actions+=`<button class="btn sm o" data-a="viewUser" data-id="${u.id}">Bekijk</button>`;
-        } else if(isAdminOnly){
-          // Admin ziet alleen ban verzoek voor normale users
-          if(canBanTarget(u) && !u.banned){
-            actions+=`<button class="btn sm red" data-a="requestBan" data-id="${u.id}">Ban verzoek</button>`;
-          } else if(u.banned){
-            actions+=`<span class="badge">BANNED</span> ${isCEO?`<button class="btn sm clay" data-a="unban" data-id="${u.id}">Unban (CEO only)</button>`:''}`;
-          } else {
-            actions+=protectedBadge;
-          }
-        }
-        return `<div class="ar"><div><b>${esc(u.email||u.id)}</b> ${roleBadge} ${protectedBadge}<br><span style="font-size:11px;color:#888">${esc(u.displayName||'')} - ${u.banned?'GEBAND':'actief'}</span></div><div style="display:flex;gap:6px;flex-wrap:wrap">${actions}</div></div>`;
-      }).join('');
-    };
-    window.filterUsers=()=>{
-      const q=($('#uSearch')?.value||'').toLowerCase();
-      const filtered=q?window._allUsers.filter(u=>(u.email||'').toLowerCase().includes(q)||(u.displayName||'').toLowerCase().includes(q)):window._allUsers;
-      renderUsers(filtered);
-    };
-    renderUsers(users);
-    window._renderUsers=renderUsers;
-  } else if(S.tab==='banRequests'){
-    aL.innerHTML='<div class="box"><h3>Ban Verzoeken (alleen CEO kan goedkeuren)</h3><div id="banList">Laden...</div></div>';
-    const snap=await db.collection('ban_requests').where('status','==','pending').get();
-    if(snap.empty){ $('#banList').innerHTML='<p>Geen open verzoeken</p>'; return; }
-    $('#banList').innerHTML=snap.docs.map(d=>{
-      const r=d.data();
-      return `<div class="ar"><div><b>${esc(r.userEmail||r.userId)}</b><br><span style="font-size:12px">Aangevraagd door: ${esc(r.requestedByEmail||'')} op ${r.createdAt?.toDate?.()?.toLocaleString?.()||''}</span><br><span style="font-size:12px;background:#FFF0E6;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:4px">Reden: ${esc(r.reason)}</span></div><div style="display:flex;gap:6px">${isCEO?`<button class="btn sm clay" data-a="approveBan" data-id="${d.id}">✓ Goedkeuren & Bannen</button><button class="btn sm o" data-a="rejectBan" data-id="${d.id}">Afwijzen</button>`:`<span class="protected">Alleen CEO kan goedkeuren</span>`}</div></div>`;
-    }).join('');
-  } else if(S.tab==='orders'){
-    const snap=await db.collection('orders').orderBy('createdAt','desc').limit(50).get();
-    aL.innerHTML=snap.docs.map(d=>{
-      const o=d.data();
-      return `<div class="ar"><span>Order ${d.id.slice(0,8)} - ${o.status} - €${o.total?.toFixed(2)||'?'} - ${o.userEmail||''}</span><div style="display:flex;gap:6px"><button class="btn sm o" data-a="viewOrder" data-id="${d.id}">Bekijk</button></div></div>`;
-    }).join('')||'Geen orders';
-  } else if(S.tab==='reviews'){
-    const snap=await db.collection('reviews').where('approved','==',false).get();
-    aL.innerHTML=snap.docs.map(d=>{
-      const r=d.data();
-      return `<div class="ar"><span>${esc(r.productName||'')}: ${esc(r.text||'').slice(0,60)} - ${r.rating}★ door ${esc(r.userEmail||'')}</span><div style="display:flex;gap:6px"><button class="btn sm clay" data-a="approveReview" data-id="${d.id}">Goedkeuren</button><button class="btn sm red" data-a="delReview" data-id="${d.id}">Del</button></div></div>`;
-    }).join('')||'Geen open reviews';
-  } else if(S.tab==='coupons'){
-    aL.innerHTML=`<div class="box"><h3>Coupons</h3><div class="form"><input id="cCode" placeholder="CODE"><input id="cPct" type="number" placeholder="%"><button class="btn clay" data-a="addCoupon">Toevoegen</button></div></div><div id="cList"></div>`;
-    const snap=await db.collection('coupons').get();
-    $('#cList').innerHTML=snap.docs.map(d=>`<div class="ar"><span>${d.id} - ${d.data().percent}%</span><button class="btn sm red" data-a="delCoupon" data-id="${d.id}">Del</button></div>`).join('');
-  } else if(S.tab==='messages'){
-    const snap=await db.collection('messages').orderBy('createdAt','desc').limit(30).get();
-    aL.innerHTML=snap.docs.map(d=>`<div class="ar"><span>${esc(d.data().email||'')} - ${esc(d.data().message||'').slice(0,50)}</span><button class="btn sm red" data-a="delMsg" data-id="${d.id}">Del</button></div>`).join('');
-  } else if(S.tab==='subs'){
-    const snap=await db.collection('subscribers').get();
-    aL.innerHTML=snap.docs.map(d=>`<div class="ar"><span>${esc(d.data().email||d.id)}</span><button class="btn sm red" data-a="delSub" data-id="${d.id}">Del</button></div>`).join('');
-  } else if(S.tab==='wait'){
-    const snap=await db.collection('waitlist').get();
-    aL.innerHTML=snap.docs.map(d=>`<div class="ar"><span>${esc(d.data().email||'')} wil ${d.data().productId}</span><button class="btn sm red" data-a="delWait" data-id="${d.id}">Del</button></div>`).join('');
-  } else if(S.tab==='export'){
-    aL.innerHTML=`<button class="btn clay" data-a="exportOrders">Exporteer orders CSV</button>`;
-  } else if(S.tab==='rules'){
-    if(!isCEO){ aL.innerHTML='<p>Alleen CEO kan rules zien</p>'; return; }
-    aL.innerHTML=`<div class="box"><h3>Firestore Rules - Plak in Firebase Console → Firestore → Rules</h3><textarea id="rulesTxt" style="width:100%;height:400px;font-family:monospace;font-size:11px;background:#12100E;color:#E9D5A8;padding:12px;border-radius:12px">${esc(RULES_CODE)}</textarea><button class="btn clay" data-a="copyRules">Kopieer</button> <a href="https://console.firebase.google.com/project/shop-2eab0/firestore/rules" target="_blank" class="btn o">Open Console</a></div>`;
-  }
- }catch(e){ $('#admin').innerHTML=`<div class="box"><h3>Geen toegang</h3><p>${esc(e.message)}</p></div>`; console.error(e); }
+  const os=await db.collection('orders').get(),ao=os.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  $('#kpis').innerHTML=`<div><b>${eur(ao.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+(o.total||0),0))}</b>omzet</div><div><b>${ao.length}</b>orders</div><div><b>${ao.filter(o=>o.status==='completed').length}</b>te verzenden</div><div><b>${(S.all||[]).filter(p=>(p.stock||0)<=3).length}</b>laag</div>`;
+  S.allUsers=null; try{const uSnap=await db.collection('users').get(); S.allUsers=uSnap.docs.map(d=>({id:d.id,...d.data()}));}catch(e){}
+  const t=S.tab;
+  if(t==='products'){
+   F.innerHTML=`<div class="box" style="margin-bottom:16px"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><input id="nT" placeholder="Naam *"><input id="nC" placeholder="Categorie"><input id="nP" type="number" step="0.01" placeholder="Prijs *"><input id="nK" type="number" placeholder="Voorraad"><input id="nI" type="file" accept="image/*"><input id="nSale" type="number" step="0.01" placeholder="Sale prijs (optioneel)"></div><textarea id="nD" rows="2" placeholder="Omschrijving" style="margin:8px 0"></textarea><div style="display:flex;gap:8px"><button class="btn clay" style="flex:1" data-a="addp">Toevoegen met foto</button><button class="btn o" data-a="bulkLow">Verwijder 0-voorraad</button><button class="btn o" data-a="exportProducts">Export CSV</button></div><div id="nM" style="font-size:12px;margin-top:6px"></div></div>`;
+   L.innerHTML=(S.all||[]).map(p=>`<div class="ar"><div style="width:42px;height:42px;border-radius:10px;background:${colorFor(p)};display:grid;place-items:center;font-family:'Bodoni Moda'">${letterFor(p)}</div><div><b>${esc(p.title)}</b><br><span style="font-size:11px;color:var(--muted)">${esc(p.category)} • ${eur(p.price)} • stock ${p.stock||0}</span></div><div class="bt"><input id="ep${esc(p.id)}" type="number" value="${+p.price}" style="width:76px;height:32px"><input id="ek${esc(p.id)}" type="number" value="${p.stock||0}" style="width:58px;height:32px">${bt('Save','savep',p.id)}${bt(p.hidden?'Toon':'Hide','hidep',p.id)}${bt('Del','delp',p.id,1)}</div></div>`).join('')||none('Geen producten')
+  }else if(t==='orders'){
+   F.innerHTML=`<div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn o sm" data-a="exportOrders">Exporteer orders CSV</button></div>`;
+   L.innerHTML=ao.map(o=>oc(o,1)).join('')||none('Geen orders')
+  }else if(t==='reviews'){const s=await db.collection('reviews').get();L.innerHTML=s.docs.map(d=>{const r=d.data();return `<div class="ar"><div><b>${esc(r.name)}, ${+r.rating}/5 ${r.approved?'(online)':'(pending)'}</b><br><span style="font-size:12px">${esc(r.text)}</span></div><div class="bt">${r.approved?'':bt('OK','appr',d.id)}${bt('Del','delr',d.id,1)}</div></div>`}).join('')||none('Geen reviews')}
+  else if(t==='coupons'){F.innerHTML=`<div class="box" style="margin-bottom:12px"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><input id="kC" placeholder="CODE"><input id="kD" type="number" placeholder="%"><input id="kM" type="number" placeholder="Max"></div><button class="btn" style="width:100%;margin-top:8px" data-a="addk">Toevoegen</button><div id="kMsg"></div></div>`;const s=await db.collection('coupons').get();L.innerHTML=s.docs.map(d=>{const c=d.data();return `<div class="ar"><div><b>${esc(d.id)}</b> ${+c.discount}% (${c.uses||0}/${c.maxUses})</div><div class="bt">${bt('Del','delk',d.id,1)}</div></div>`}).join('')||none('Geen coupons')}
+  else if(t==='messages'){const s=await db.collection('messages').get();L.innerHTML=s.docs.map(d=>{const m=d.data();return `<div class="ar"><div><b>${esc(m.name)}, ${esc(m.email)}</b><br><span style="font-size:12px">${esc(m.message)}</span></div><div class="bt">${bt('Del','delm',m.id,1)}</div></div>`}).join('')||none('Geen berichten')}
+  else if(t==='waitlist'){const s=await db.collection('waitlist').get();L.innerHTML=s.docs.map(d=>{const w=d.data();return `<div class="ar"><div><b>${esc(w.productTitle||w.productId)}</b><br><span style="font-size:12px">${esc(w.email)} • ${w.createdAt?.toDate?.()?.toLocaleString?.('nl-NL')||''}</span></div><div class="bt">${bt('Del','delWait',d.id,1)}</div></div>`}).join('')||none('Geen waitlist')}
+  else{const s=await db.collection('users').get();L.innerHTML=s.docs.map(d=>{const u=d.data();return `<div class="ar"><div><b>${esc(u.name||u.email)}</b><br><span style="font-size:11px">${esc(u.email)} • ${u.role||'user'}</span></div><div class="bt">${u.role==='admin'?bt('Remove','rmadm',d.id):bt('Admin','mkadm',d.id)}${u.banned?bt('Unban','unban',d.id):bt('Ban','ban',d.id,1)}</div></div>`}).join('')}
+ }catch(e){L.innerHTML=none('Geen toegang: '+esc(fe(e)))}
 }
-
 const upd=async(c,id,d,m)=>{try{await db.collection(c).doc(id).update(d);if(m)toast(m);adm()}catch(e){toast(fe(e))}};
 const rem=async(c,id)=>{if(!confirm('Zeker?'))return;try{await db.collection(c).doc(id).delete();toast('Verwijderd');adm()}catch(e){toast(fe(e))}};
 
@@ -553,52 +468,133 @@ addEventListener('keydown',e=>{if(e.key==='Escape')closeOv()});
 try{S.compare=JSON.parse(localStorage.getItem('mc')||'[]')}catch(e){S.compare=[]}
 render();
 }
-
-// CEO Notificatie + bescherming
-S.banPending=0;
-function showCeoPopup(r){
-  const old=document.getElementById('ceoNotif'); if(old) old.remove();
-  const div=document.createElement('div'); div.id='ceoNotif'; div.className='ceo-notif';
-  div.innerHTML=`<b style="color:var(--red)">🚨 Nieuw ban verzoek</b><br><span style="font-size:12px">${r.requestedByEmail} wil ${r.userEmail} bannen<br>Reden: ${r.reason.slice(0,80)}</span><br><div style="margin-top:8px;display:flex;gap:6px"><button class="btn sm clay" onclick="go('admin');S.tab='banRequests';render();this.closest('#ceoNotif').remove()">Open Ban Verzoeken</button><button class="btn sm o" style="color:#fff;border-color:#fff" onclick="this.closest('#ceoNotif').remove()">Later</button></div>`;
-  document.body.appendChild(div); setTimeout(()=>div.remove(),12000);
-}
-const _origListen=listen;
-listen=function(){
-  _origListen();
-  if(!ceo()) return;
-  const unsub=db.collection('ban_requests').where('status','==','pending').onSnapshot(snap=>{
-    const prev=S.banPending;
-    S.banPending=snap.size;
-    head();
-    if(S.route==='admin') adm();
-    snap.docChanges().forEach(ch=>{
-      if(ch.type==='added' && prev>0){
-        toast('🚨 Nieuw ban verzoek');
-        showCeoPopup(ch.doc.data());
-      }
-    });
-    const tb=document.querySelector('.topbar');
-    if(tb && snap.size>0){ tb.innerHTML=`<b style="color:#ff6b6b">🚨 CEO: ${snap.size} BAN VERZOEK(EN) - Admin → Ban Verzoeken</b>`; tb.style.background='#2A1210'; }
-  });
-  unsubs.push(unsub);
-};
-const _origHead=head;
-head=function(){
-  _origHead();
-  if(!ceo()) return;
-  const acts=document.getElementById('acts');
-  if(!acts) return;
-  let bell=acts.querySelector('.bell');
-  if(!bell){
-    bell=document.createElement('button'); bell.className='icon-btn bell'; bell.onclick=()=>{go('admin');S.tab='banRequests';render();};
-    acts.prepend(bell);
-  }
-  bell.innerHTML=`🔔${S.banPending?`<span class="dot">${S.banPending}</span>`:''}`;
-  bell.title=S.banPending+' open verzoeken';
-};
-
 addEventListener('load',boot);
 </script>
+
+<style>
+.protected-badge{font-size:10px;background:#F6E6E0;color:#A33A2A;padding:2px 8px;border-radius:99px;margin-left:6px;display:inline-block}
+.ceo-notif{position:fixed;top:85px;right:20px;background:#12100E;color:#fff;border-radius:16px;padding:14px 18px;box-shadow:0 20px 50px rgba(0,0,0,.4);z-index:9999;max-width:360px;border-left:4px solid #A33A2A;animation:pop .3s ease}
+.bell-dot{position:absolute;top:-5px;right:-5px;background:#A33A2A;color:#fff;min-width:18px;height:18px;border-radius:99px;font-size:11px;display:grid;place-items:center;font-weight:700}
+</style>
+<script>
+(function(){
+  window.canBanTarget = function(u){
+    if(!u) return false;
+    const r=(u.role||'user').toLowerCase();
+    if(r==='ceo') return false;
+    if(r==='admin') return false;
+    if((u.email||'').toLowerCase()==='elmouchania@gmail.com') return false;
+    return true;
+  };
+
+  // CEO notificatie
+  let _banUnsub=null;
+  function startCeoListener(){
+    if(!window.ceo || !window.ceo()) return;
+    if(_banUnsub) _banUnsub();
+    _banUnsub = db.collection('ban_requests').where('status','==','pending').onSnapshot(snap=>{
+      window.S = window.S || {}; S.banPending = snap.size;
+      // update header bell
+      const acts=document.getElementById('acts');
+      if(acts){
+        let bell=acts.querySelector('#ceoBell');
+        if(!bell && window.ceo()){
+          bell=document.createElement('button');
+          bell.id='ceoBell';
+          bell.className='icon-btn';
+          bell.style.position='relative';
+          bell.onclick=()=>{ go('admin'); S.tab='banRequests'; render(); };
+          acts.prepend(bell);
+        }
+        if(bell) bell.innerHTML='🔔'+(snap.size?`<span class="bell-dot">${snap.size}</span>`:'');
+      }
+      // topbar
+      const tb=document.querySelector('.topbar');
+      if(tb && snap.size>0){
+        tb.innerHTML=`<b style="color:#ff6b6b">🚨 CEO: ${snap.size} BAN VERZOEK(EN)</b> — Klik op 🔔 of ga naar Admin → Ban Verzoeken`;
+        tb.style.background='#2A1210';
+      }
+      // popup voor nieuwe
+      snap.docChanges().forEach(ch=>{
+        if(ch.type==='added'){
+          // alleen popup als er al iets was, of als het de eerste is na load
+          if(snap.size>=1){
+            // voorkom spam op eerste load - alleen tonen na 2 sec
+            setTimeout(()=>{
+              const r=ch.doc.data();
+              const old=document.getElementById('ceoNotif'); if(old) old.remove();
+              const div=document.createElement('div'); div.id='ceoNotif'; div.className='ceo-notif';
+              div.innerHTML=`<b style="color:#E9D5A8">🚨 Nieuw ban verzoek</b><br><span style="font-size:12px">${r.requestedByEmail} wil ${r.userEmail} bannen<br>Reden: ${(r.reason||'').slice(0,80)}</span><br><div style="margin-top:8px;display:flex;gap:6px"><button class="btn sm clay" onclick="go('admin');S.tab='banRequests';render();document.getElementById('ceoNotif').remove()">Open Ban Verzoeken</button><button class="btn sm o" style="color:#fff;border-color:#fff" onclick="document.getElementById('ceoNotif').remove()">Later</button></div>`;
+              document.body.appendChild(div);
+              setTimeout(()=>div.remove(),15000);
+            }, 800);
+          }
+        }
+      });
+    });
+  }
+
+  // Hook into existing listen
+  const origListen = window.listen;
+  window.listen = function(){ origListen(); setTimeout(startCeoListener, 1000); };
+
+  // Block admin actions
+  document.addEventListener('click', function(e){
+    const mk = e.target.closest('[data-a="mkadm"], [data-a="makeAdmin"]');
+    if(mk && (!window.ceo || !window.ceo())){
+      e.preventDefault(); e.stopImmediatePropagation();
+      toast('Alleen CEO kan admin maken');
+      return false;
+    }
+    const rm = e.target.closest('[data-a="rmadm"], [data-a="unAdmin"]');
+    if(rm && (!window.ceo || !window.ceo())){
+      e.preventDefault(); e.stopImmediatePropagation();
+      toast('Alleen CEO kan admin verwijderen');
+      return false;
+    }
+    const ban = e.target.closest('[data-a="ban"], [data-a="requestBan"], [data-a="banUser"]');
+    if(ban){
+      const isCEO = window.ceo && window.ceo();
+      if(isCEO){
+        e.preventDefault(); e.stopImmediatePropagation();
+        toast('Als CEO heb je geen ban knop - ga naar Ban Verzoeken tab');
+        go('admin'); S.tab='banRequests'; render();
+        return false;
+      }
+    }
+  }, true);
+
+  // Na adm() render, verberg knoppen
+  const origAdm = window.adm;
+  window.adm = async function(){
+    await origAdm();
+    const isCEO = window.ceo && window.ceo();
+    const isAdminOnly = window.admin && window.admin() && !isCEO;
+    
+    // Verberg make admin voor admin-only
+    if(isAdminOnly){
+      document.querySelectorAll('[data-a="mkadm"], [data-a="makeAdmin"], [data-a="rmadm"], [data-a="unAdmin"]').forEach(b=>{ b.style.display='none'; });
+    }
+    // Als CEO, verberg alle ban knoppen in users tab
+    if(isCEO){
+      document.querySelectorAll('#aL [data-a="ban"], #aL [data-a="requestBan"], #aL [data-a="banUser"]').forEach(b=>{ b.style.display='none'; });
+    }
+    // Voeg BESCHERMD label toe bij admin/ceo
+    document.querySelectorAll('#aL .ar').forEach(ar=>{
+      const txt = ar.textContent.toLowerCase();
+      if((txt.includes('admin') || txt.includes('elmouchania') || txt.includes('ceo')) && !ar.querySelector('.protected-badge')){
+        if(ar.textContent.includes('BESCHERMD')) return;
+        // check if this row is actually admin/ceo user
+        if(txt.includes('admin') || txt.includes('ceo') || txt.includes('elmouchania')){
+          const badge=document.createElement('span'); badge.className='protected-badge'; badge.textContent='BESCHERMD';
+          ar.querySelector('div')?.appendChild(badge);
+        }
+      }
+    });
+  };
+})();
+</script>
+
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script>
 
 </body></html>
