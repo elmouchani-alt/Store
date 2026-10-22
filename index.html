@@ -118,6 +118,14 @@ footer{background:var(--ink);color:#B9B2A6} footer .wrap{padding:44px 24px;displ
 .offline.on{display:block}
 @media(max-width:900px){.hero-inner{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.trust{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}footer .wrap{grid-template-columns:1fr}.nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);flex-direction:column;padding:10px 16px;border-bottom:1px solid var(--line)}.nav.show{display:flex}.burger{display:inline-flex!important}}
 .burger{display:none}
+
+.banned-overlay{position:fixed;inset:0;background:#12100E;color:#fff;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
+.banned-card{background:#1A1816;border-radius:24px;padding:32px;max-width:480px;width:100%;border:1px solid #2A1210;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+.banned-icon{font-size:64px;margin-bottom:16px}
+.protected-badge{font-size:10px;background:#F6E6E0;color:#A33A2A;padding:2px 8px;border-radius:99px;margin-left:6px}
+.ceo-notif{position:fixed;top:85px;right:20px;background:#12100E;color:#fff;border-radius:16px;padding:14px 18px;box-shadow:0 20px 50px rgba(0,0,0,.4);z-index:9999;max-width:360px;border-left:4px solid #A33A2A}
+.bell-dot{position:absolute;top:-5px;right:-5px;background:#A33A2A;color:#fff;min-width:18px;height:18px;border-radius:99px;font-size:11px;display:grid;place-items:center;font-weight:700}
+
 </style>
 </head>
 <body>
@@ -130,7 +138,7 @@ footer{background:var(--ink);color:#B9B2A6} footer .wrap{padding:44px 24px;displ
  <nav class="nav" id="nav"></nav>
  <div class="acts" id="acts"></div>
 </div></header>
-<main id="app"><div class="wrap"><p>Firebase kon niet laden.</p></div></main>
+<main id="app"></main>
 <div id="compareBar" style="display:none"></div>
 <footer><div class="wrap"><div><div class="logo">MAISON</div><p style="margin-top:10px;max-width:34ch;font-size:13px;line-height:1.5">Geen foto's. Wel smaak. Kleur als materiaal, woorden als beeld. Geselecteerd in Lelystad.</p><div class="color-bar" style="margin-top:16px;border-radius:99px;overflow:hidden;width:110px"><i></i><i></i><i></i><i></i><i></i></div></div>
  <div><b style="color:#fff;font-size:11px;letter-spacing:.12em;text-transform:uppercase">Nieuwsbrief</b><div style="display:flex;gap:6px;margin-top:10px"><input id="nlE" type="email" placeholder="you@mail.com" style="background:#23201E;color:#fff;border-color:#3A3531"><button class="btn clay sm" data-a="sub">Aanmelden</button></div><div id="nlM" style="font-size:11px;margin-top:6px"></div></div>
@@ -468,132 +476,248 @@ addEventListener('keydown',e=>{if(e.key==='Escape')closeOv()});
 try{S.compare=JSON.parse(localStorage.getItem('mc')||'[]')}catch(e){S.compare=[]}
 render();
 }
+
+// === ULTIMATE BAN SYSTEM ===
+function canBanTarget(u){
+  if(!u) return false;
+  const r=(u.role||'user').toLowerCase();
+  if(r==='ceo') return false;
+  const email=(u.email||'').toLowerCase();
+  if(email==='elmouchania@gmail.com') return false;
+  // admin kan geen andere admin bannen
+  if(r==='admin' && !ceo()) return false;
+  return true;
+}
+
+// Check of huidige user geband is - blokkeer alles
+async function checkIfBanned(){
+  if(!S.user) return false;
+  try{
+    const doc = await db.collection('users').doc(S.user.uid).get();
+    if(doc.exists){
+      const data = doc.data();
+      if(data.banned){
+        document.getElementById('bannedReasonText').textContent = data.banReason || 'Geen reden opgegeven';
+        document.getElementById('bannedDate').textContent = data.bannedAt?.toDate?.()?.toLocaleString?.() || 'Onbekend';
+        document.getElementById('bannedBy').textContent = data.bannedBy || 'CEO';
+        document.getElementById('bannedOverlay').style.display='flex';
+        // blokkeer cart en acties
+        document.body.style.overflow='hidden';
+        return true;
+      } else {
+        document.getElementById('bannedOverlay').style.display='none';
+        document.body.style.overflow='';
+      }
+    }
+  }catch(e){ console.error(e); }
+  return false;
+}
+
+// Hook into login
+const _origAuthHandler = window._origAuthHandler || null;
+
+// CEO direct ban met reden
+window.openDirectBanModal = function(userId, userEmail){
+  if(!ceo()){ toast('Alleen CEO kan direct bannen'); return; }
+  const reason = prompt(`Direct bannen: ${userEmail}\n\nGeef REDEN waarom je deze user bant (verplicht, min 10 tekens):`);
+  if(!reason || reason.trim().length < 10){
+    toast('Reden te kort - minimaal 10 tekens vereist');
+    return;
+  }
+  if(!confirm(`Weet je zeker dat je ${userEmail} direct wilt bannen?\nReden: ${reason}`)) return;
+  
+  db.collection('users').doc(userId).update({
+    banned: true,
+    banReason: reason.trim(),
+    bannedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    bannedBy: S.user.email
+  }).then(()=>{
+    toast(`✓ ${userEmail} is geband`);
+    adm();
+  }).catch(e=>toast('Fout: '+e.message));
+};
+
+// Unban functie - alleen CEO
+window.unbanUser = function(userId, userEmail){
+  if(!ceo()){ toast('Alleen CEO kan unbanen'); return; }
+  if(!confirm(`Weet je zeker dat je ${userEmail} wilt unbanen? Hij kan dan weer alles doen.`)) return;
+  db.collection('users').doc(userId).update({
+    banned: false,
+    banReason: firebase.firestore.FieldValue.delete(),
+    bannedAt: firebase.firestore.FieldValue.delete(),
+    bannedBy: firebase.firestore.FieldValue.delete(),
+    unbannedAt: firebase.firestore.FieldValue.serverTimestamp(),
+    unbannedBy: S.user.email
+  }).then(()=>{
+    toast(`✓ ${userEmail} is ge-unband`);
+    adm();
+  }).catch(e=>toast('Fout: '+e.message));
+};
+
+// CEO notificatie
+let _banUnsub=null;
+function startCeoListener(){
+  if(!ceo()) return;
+  if(_banUnsub) _banUnsub();
+  _banUnsub = db.collection('ban_requests').where('status','==','pending').onSnapshot(snap=>{
+    S.banPending = snap.size;
+    if(window.head) head();
+    const acts=document.getElementById('acts');
+    if(acts){
+      let bell=acts.querySelector('#ceoBell');
+      if(!bell){ bell=document.createElement('button'); bell.id='ceoBell'; bell.className='icon-btn'; bell.style.position='relative'; bell.onclick=()=>{go('admin');S.tab='banRequests';render();}; acts.prepend(bell); }
+      bell.innerHTML='🔔'+(snap.size?`<span class="bell-dot">${snap.size}</span>`:'');
+    }
+    const tb=document.querySelector('.topbar');
+    if(tb && snap.size>0){ tb.innerHTML=`<b style="color:#ff6b6b">🚨 CEO: ${snap.size} BAN VERZOEK(EN)</b> — Admin → Ban Verzoeken`; tb.style.background='#2A1210'; }
+    snap.docChanges().forEach(ch=>{
+      if(ch.type==='added' && snap.size>0){
+        setTimeout(()=>{
+          const r=ch.doc.data();
+          const old=document.getElementById('ceoNotif'); if(old) old.remove();
+          const div=document.createElement('div'); div.id='ceoNotif'; div.className='ceo-notif';
+          div.innerHTML=`<b>🚨 Nieuw ban verzoek</b><br><span style="font-size:12px">${r.requestedByEmail} wil ${r.userEmail} bannen<br>Reden: ${(r.reason||'').slice(0,80)}</span><br><div style="margin-top:8px;display:flex;gap:6px"><button class="btn sm clay" onclick="go('admin');S.tab='banRequests';render();this.closest('#ceoNotif').remove()">Open</button><button class="btn sm o" style="color:#fff" onclick="this.closest('#ceoNotif').remove()">Later</button></div>`;
+          document.body.appendChild(div); setTimeout(()=>div.remove(),12000);
+        },500);
+      }
+    });
+  });
+}
+
+// Override adm to show correct buttons
+const _origAdm = adm;
+adm = async function(){
+  try{
+    const isCEO = ceo();
+    const isAdminOnly = admin() && !isCEO;
+    let h=`<div class="tabs">`+
+      [['products','Producten'],['orders','Orders'],['users','Gebruikers'],['banned','Geband 🚫'],['reviews','Reviews'],['banRequests','Ban Verzoeken'+(S.banPending?` (${S.banPending})`:'' )],['messages','Berichten'],['rules','Rules']].map(([k,l])=>`<button data-a="tab" data-id="${k}" class="${S.tab===k?'on':''}">${l}</button>`).join('')+
+    `</div><div class="box"><div id="aL"></div></div>`;
+    $('#admin').innerHTML=h;
+    const aL=$('#aL');
+    
+    if(S.tab==='users' || !S.tab){
+      aL.innerHTML='<div class="box"><h3>Gebruikers (CEO kan direct bannen met reden)</h3><input id="uSearch" placeholder="Zoek email..." oninput="window.filterUsers&&filterUsers()" style="width:100%;margin-bottom:12px;padding:10px;border-radius:99px;border:1px solid #E8E0D6"><div id="uList">Laden...</div></div>';
+      const snap=await db.collection('users').get();
+      let users=snap.docs.map(d=>({id:d.id,...d.data()}));
+      window._allUsers=users;
+      window.filterUsers=()=>{
+        const q=($('#uSearch')?.value||'').toLowerCase();
+        const filtered=q?window._allUsers.filter(u=>(u.email||'').toLowerCase().includes(q)):window._allUsers;
+        renderUserList(filtered);
+      };
+      function renderUserList(list){
+        $('#uList').innerHTML=list.map(u=>{
+          const role=u.role||'user';
+          const isProtected = !canBanTarget(u);
+          const roleBadge=role==='ceo'?'<span style="background:var(--gold);color:#fff;padding:2px 8px;border-radius:99px;font-size:10px">👑 CEO</span>':role==='admin'?'<span style="background:#12100E;color:#fff;padding:2px 8px;border-radius:99px;font-size:10px">ADMIN</span>':'<span style="background:#eee;padding:2px 8px;border-radius:99px;font-size:10px">USER</span>';
+          const bannedBadge=u.banned?'<span style="background:#A33A2A;color:#fff;padding:2px 8px;border-radius:99px;font-size:10px">🚫 GEBAND</span>':'';
+          let actions='';
+          if(u.banned){
+            // Unban knop alleen CEO
+            if(isCEO){
+              actions+=`<button class="btn sm clay" onclick="unbanUser('${u.id}','${esc(u.email||u.id)}')">✓ Unban</button>`;
+              actions+=`<div style="font-size:11px;color:#A33A2A;margin-top:4px">Reden: ${esc(u.banReason||'')}</div>`;
+            } else {
+              actions+=`<span class="protected-badge">Geband - alleen CEO kan unbanen</span>`;
+            }
+          } else {
+            if(isCEO){
+              // CEO kan direct bannen met reden
+              if(role!=='ceo'){
+                actions+=`<button class="btn sm red" onclick="openDirectBanModal('${u.id}','${esc(u.email||u.id)}')">🚫 Ban direct met reden</button>`;
+                if(role==='admin'){
+                  actions+=`<button class="btn sm o" data-a="rmadm" data-id="${u.id}">Admin verwijderen</button>`;
+                } else {
+                  actions+=`<button class="btn sm clay" data-a="mkadm" data-id="${u.id}">Maak admin</button>`;
+                }
+              }
+            } else if(isAdminOnly){
+              if(canBanTarget(u)){
+                actions+=`<button class="btn sm red" data-a="requestBan" data-id="${u.id}">Ban verzoek</button>`;
+              } else {
+                actions+=`<span class="protected-badge">BESCHERMD - kan niet bannen</span>`;
+              }
+            }
+          }
+          return `<div class="ar" style="${u.banned?'border-left:4px solid #A33A2A;opacity:.8':''}"><div><b>${esc(u.email||u.id)}</b> ${roleBadge} ${bannedBadge}<br><span style="font-size:11px;color:#888">${esc(u.displayName||'')}${u.banned?` - Geband: ${esc(u.banReason||'')}`:''}</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${actions}</div></div>`;
+        }).join('')||'Geen users';
+      }
+      renderUserList(users);
+    } else if(S.tab==='banned'){
+      aL.innerHTML='<div class="box"><h3>🚫 Gebande Gebruikers</h3><div id="bannedList">Laden...</div></div>';
+      const snap=await db.collection('users').where('banned','==',true).get();
+      if(snap.empty){ $('#bannedList').innerHTML='Geen gebande users'; return; }
+      $('#bannedList').innerHTML=snap.docs.map(d=>{
+        const u={id:d.id,...d.data()};
+        return `<div class="ar" style="border-left:4px solid #A33A2A"><div><b>${esc(u.email||u.id)}</b><br><span style="font-size:12px">Reden: ${esc(u.banReason||'')} - Door: ${esc(u.bannedBy||'')} op ${u.bannedAt?.toDate?.()?.toLocaleString?.()||''}</span></div><div>${ceo()?`<button class="btn sm clay" onclick="unbanUser('${u.id}','${esc(u.email||u.id)}')">✓ Unban</button>`:''}</div></div>`;
+      }).join('');
+    } else if(S.tab==='banRequests'){
+      aL.innerHTML='<div class="box"><h3>Ban Verzoeken (Admin vraagt, CEO keurt goed)</h3><div id="banList">Laden...</div></div>';
+      const snap=await db.collection('ban_requests').where('status','==','pending').get();
+      if(snap.empty){ $('#banList').innerHTML='<p>Geen open verzoeken</p>'; return; }
+      $('#banList').innerHTML=snap.docs.map(d=>{
+        const r=d.data();
+        return `<div class="ar"><div><b>${esc(r.userEmail||r.userId)}</b><br><span style="font-size:12px">Aangevraagd door: ${esc(r.requestedByEmail||'')} op ${r.createdAt?.toDate?.()?.toLocaleString?.()||''}</span><br><span style="font-size:12px;background:#FFF0E6;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:4px">Reden: ${esc(r.reason)}</span></div><div style="display:flex;gap:6px">${ceo()?`<button class="btn sm clay" data-a="approveBan" data-id="${d.id}">✓ Goedkeuren & Bannen</button><button class="btn sm o" data-a="rejectBan" data-id="${d.id}">Afwijzen</button>`:`<span class="protected-badge">Alleen CEO kan goedkeuren</span>`}</div></div>`;
+      }).join('');
+    } else {
+      // voor andere tabs gebruik originele logica snel
+      $('#aL').innerHTML='Laden...';
+      if(S.tab==='products'){
+        const snap=await db.collection('products').get();
+        $('#aL').innerHTML=snap.docs.map(doc=>{const p={id:doc.id,...doc.data()}; return `<div class="ar"><span>${esc(p.name)} - €${p.price}</span><button class="btn sm red" data-a="delProd" data-id="${p.id}">Del</button></div>`}).join('');
+      } else if(S.tab==='orders'){
+        const snap=await db.collection('orders').orderBy('createdAt','desc').limit(20).get();
+        $('#aL').innerHTML=snap.docs.map(d=>`<div class="ar"><span>${d.id.slice(0,8)} - ${d.data().status}</span></div>`).join('');
+      } else if(S.tab==='reviews'){
+        const snap=await db.collection('reviews').where('approved','==',false).get();
+        $('#aL').innerHTML=snap.docs.map(d=>`<div class="ar"><span>${esc(d.data().text||'').slice(0,50)}</span><button class="btn sm clay" data-a="approveReview" data-id="${d.id}">Goedkeuren</button></div>`).join('')||'Geen reviews';
+      } else if(S.tab==='messages'){
+        const snap=await db.collection('messages').limit(20).get();
+        $('#aL').innerHTML=snap.docs.map(d=>`<div class="ar"><span>${esc(d.data().message||'').slice(0,50)}</span></div>`).join('');
+      } else if(S.tab==='rules'){
+        if(!isCEO){ aL.innerHTML='Alleen CEO'; return; }
+        aL.innerHTML=`<textarea style="width:100%;height:500px;font-family:monospace;font-size:10px">${esc(RULES_CODE)}</textarea>`;
+      }
+    }
+  }catch(e){ $('#admin').innerHTML=`<div class="box">Fout: ${esc(e.message)}</div>`; console.error(e); }
+};
+
+// Hook login to check banned
+const origListen2 = listen;
+listen = function(){
+  origListen2();
+  startCeoListener();
+  // check banned for current user elke 3 sec
+  setInterval(()=>{ if(S.user) checkIfBanned(); }, 3000);
+};
+
+// Check direct na auth
+auth.onAuthStateChanged(async (u)=>{
+  if(u){
+    setTimeout(()=>checkIfBanned(), 1000);
+  } else {
+    document.getElementById('bannedOverlay').style.display='none';
+  }
+});
+
 addEventListener('load',boot);
 </script>
 
-<style>
-.protected-badge{font-size:10px;background:#F6E6E0;color:#A33A2A;padding:2px 8px;border-radius:99px;margin-left:6px;display:inline-block}
-.ceo-notif{position:fixed;top:85px;right:20px;background:#12100E;color:#fff;border-radius:16px;padding:14px 18px;box-shadow:0 20px 50px rgba(0,0,0,.4);z-index:9999;max-width:360px;border-left:4px solid #A33A2A;animation:pop .3s ease}
-.bell-dot{position:absolute;top:-5px;right:-5px;background:#A33A2A;color:#fff;min-width:18px;height:18px;border-radius:99px;font-size:11px;display:grid;place-items:center;font-weight:700}
-</style>
-<script>
-(function(){
-  window.canBanTarget = function(u){
-    if(!u) return false;
-    const r=(u.role||'user').toLowerCase();
-    if(r==='ceo') return false;
-    if(r==='admin') return false;
-    if((u.email||'').toLowerCase()==='elmouchania@gmail.com') return false;
-    return true;
-  };
-
-  // CEO notificatie
-  let _banUnsub=null;
-  function startCeoListener(){
-    if(!window.ceo || !window.ceo()) return;
-    if(_banUnsub) _banUnsub();
-    _banUnsub = db.collection('ban_requests').where('status','==','pending').onSnapshot(snap=>{
-      window.S = window.S || {}; S.banPending = snap.size;
-      // update header bell
-      const acts=document.getElementById('acts');
-      if(acts){
-        let bell=acts.querySelector('#ceoBell');
-        if(!bell && window.ceo()){
-          bell=document.createElement('button');
-          bell.id='ceoBell';
-          bell.className='icon-btn';
-          bell.style.position='relative';
-          bell.onclick=()=>{ go('admin'); S.tab='banRequests'; render(); };
-          acts.prepend(bell);
-        }
-        if(bell) bell.innerHTML='🔔'+(snap.size?`<span class="bell-dot">${snap.size}</span>`:'');
-      }
-      // topbar
-      const tb=document.querySelector('.topbar');
-      if(tb && snap.size>0){
-        tb.innerHTML=`<b style="color:#ff6b6b">🚨 CEO: ${snap.size} BAN VERZOEK(EN)</b> — Klik op 🔔 of ga naar Admin → Ban Verzoeken`;
-        tb.style.background='#2A1210';
-      }
-      // popup voor nieuwe
-      snap.docChanges().forEach(ch=>{
-        if(ch.type==='added'){
-          // alleen popup als er al iets was, of als het de eerste is na load
-          if(snap.size>=1){
-            // voorkom spam op eerste load - alleen tonen na 2 sec
-            setTimeout(()=>{
-              const r=ch.doc.data();
-              const old=document.getElementById('ceoNotif'); if(old) old.remove();
-              const div=document.createElement('div'); div.id='ceoNotif'; div.className='ceo-notif';
-              div.innerHTML=`<b style="color:#E9D5A8">🚨 Nieuw ban verzoek</b><br><span style="font-size:12px">${r.requestedByEmail} wil ${r.userEmail} bannen<br>Reden: ${(r.reason||'').slice(0,80)}</span><br><div style="margin-top:8px;display:flex;gap:6px"><button class="btn sm clay" onclick="go('admin');S.tab='banRequests';render();document.getElementById('ceoNotif').remove()">Open Ban Verzoeken</button><button class="btn sm o" style="color:#fff;border-color:#fff" onclick="document.getElementById('ceoNotif').remove()">Later</button></div>`;
-              document.body.appendChild(div);
-              setTimeout(()=>div.remove(),15000);
-            }, 800);
-          }
-        }
-      });
-    });
-  }
-
-  // Hook into existing listen
-  const origListen = window.listen;
-  window.listen = function(){ origListen(); setTimeout(startCeoListener, 1000); };
-
-  // Block admin actions
-  document.addEventListener('click', function(e){
-    const mk = e.target.closest('[data-a="mkadm"], [data-a="makeAdmin"]');
-    if(mk && (!window.ceo || !window.ceo())){
-      e.preventDefault(); e.stopImmediatePropagation();
-      toast('Alleen CEO kan admin maken');
-      return false;
-    }
-    const rm = e.target.closest('[data-a="rmadm"], [data-a="unAdmin"]');
-    if(rm && (!window.ceo || !window.ceo())){
-      e.preventDefault(); e.stopImmediatePropagation();
-      toast('Alleen CEO kan admin verwijderen');
-      return false;
-    }
-    const ban = e.target.closest('[data-a="ban"], [data-a="requestBan"], [data-a="banUser"]');
-    if(ban){
-      const isCEO = window.ceo && window.ceo();
-      if(isCEO){
-        e.preventDefault(); e.stopImmediatePropagation();
-        toast('Als CEO heb je geen ban knop - ga naar Ban Verzoeken tab');
-        go('admin'); S.tab='banRequests'; render();
-        return false;
-      }
-    }
-  }, true);
-
-  // Na adm() render, verberg knoppen
-  const origAdm = window.adm;
-  window.adm = async function(){
-    await origAdm();
-    const isCEO = window.ceo && window.ceo();
-    const isAdminOnly = window.admin && window.admin() && !isCEO;
-    
-    // Verberg make admin voor admin-only
-    if(isAdminOnly){
-      document.querySelectorAll('[data-a="mkadm"], [data-a="makeAdmin"], [data-a="rmadm"], [data-a="unAdmin"]').forEach(b=>{ b.style.display='none'; });
-    }
-    // Als CEO, verberg alle ban knoppen in users tab
-    if(isCEO){
-      document.querySelectorAll('#aL [data-a="ban"], #aL [data-a="requestBan"], #aL [data-a="banUser"]').forEach(b=>{ b.style.display='none'; });
-    }
-    // Voeg BESCHERMD label toe bij admin/ceo
-    document.querySelectorAll('#aL .ar').forEach(ar=>{
-      const txt = ar.textContent.toLowerCase();
-      if((txt.includes('admin') || txt.includes('elmouchania') || txt.includes('ceo')) && !ar.querySelector('.protected-badge')){
-        if(ar.textContent.includes('BESCHERMD')) return;
-        // check if this row is actually admin/ceo user
-        if(txt.includes('admin') || txt.includes('ceo') || txt.includes('elmouchania')){
-          const badge=document.createElement('span'); badge.className='protected-badge'; badge.textContent='BESCHERMD';
-          ar.querySelector('div')?.appendChild(badge);
-        }
-      }
-    });
-  };
-})();
-</script>
+<div id="bannedOverlay" class="banned-overlay" style="display:none">
+  <div class="banned-card">
+    <div class="banned-icon">🚫</div>
+    <h2 style="color:#ff6b6b;margin-bottom:12px">Je account is geband</h2>
+    <p style="color:#B9B2A6;font-size:13px;margin-bottom:16px">Je kunt niks meer doen op MAISON</p>
+    <div style="background:#2A1210;border-radius:12px;padding:12px;margin:16px 0;text-align:left">
+      <b style="font-size:11px;color:#E9D5A8;letter-spacing:.1em">REDEN VAN BAN:</b>
+      <p id="bannedReasonText" style="margin-top:6px;font-size:14px;color:#fff;line-height:1.5"></p>
+      <p style="font-size:11px;color:#888;margin-top:8px">Geband op: <span id="bannedDate"></span><br>Door: <span id="bannedBy"></span></p>
+    </div>
+    <p style="font-size:12px;color:#888;margin-bottom:20px">Neem contact op met de CEO: elmouchania@gmail.com als je denkt dat dit een fout is.</p>
+    <button class="btn red" onclick="auth.signOut(); location.reload()">Uitloggen</button>
+  </div>
+</div>
 
 <script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script>
 
