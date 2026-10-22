@@ -57,7 +57,12 @@ header{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--bg) 8
 .hero-meta b{font-family:'Bodoni Moda';font-size:26px;color:var(--ink);display:block} .hero-meta span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
 .hero-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);padding:24px;box-shadow:var(--sh);align-self:end}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
-.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;min-height:310px;position:relative;overflow:hidden;transition:.35s var(--ease)}
+.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);padding:0;display:flex;flex-direction:column;min-height:380px;position:relative;overflow:hidden;transition:.35s var(--ease)}
+.card-body{padding:18px 18px 16px;display:flex;flex-direction:column;flex:1}
+.imgw{position:relative;height:220px;background:var(--sand);overflow:hidden;display:grid;place-items:center}
+.imgw img{width:100%;height:100%;object-fit:cover;transition:transform .8s var(--ease)}
+.card:hover .imgw img{transform:scale(1.05)}
+.imgw .letter{position:absolute;font-family:'Bodoni Moda';font-size:72px;opacity:.15;top:50%;left:50%;transform:translate(-50%,-50%)}
 .card::after{content:'';position:absolute;top:0;right:0;width:86px;height:86px;background:var(--card-accent,var(--sand));border-radius:0 0 0 100%;opacity:.9}
 .card:hover{transform:translateY(-4px);box-shadow:var(--sh2);border-color:var(--ink)}
 .card-top{display:flex;justify-content:space-between;align-items:start;z-index:1;margin-bottom:18px}
@@ -188,7 +193,9 @@ function saveRecent(id){S.recent=S.recent.filter(x=>x!==id);S.recent.unshift(id)
 
 function card(p){const sale=p.salePrice&&p.salePrice<p.price,s=p.stock||0,w=S.wish.includes(p.id),id=esc(p.id),col=colorFor(p),ltr=letterFor(p),inComp=S.compare.includes(p.id);
  const bd=s<=0?`<span class="badge">Sold out</span>`:sale?`<span class="badge sale">-${Math.round((1-p.salePrice/p.price)*100)}%</span>`:s<=3?`<span class="badge" style="background:var(--gold);color:var(--ink)">${s} left</span>`:p.createdAt?.seconds&&Date.now()/1000-p.createdAt.seconds<14*864e5?`<span class="badge new">New</span>`:'';
- return `<article class="card" style="--card-accent:${col}"><div class="card-top"><span class="cat">${esc(p.category||'MAISON')}</span><div style="display:flex;gap:6px;align-items:center">${bd}<button class="wish" data-a="wish" data-id="${id}" aria-pressed="${w}">${w?'♥':'♡'}</button></div></div><div class="letter">${ltr}</div><button class="pn" data-a="open" data-id="${id}">${esc(p.title)}</button><div class="p-desc">${esc(p.desc||'Carefully curated — gekozen op gevoel, niet op foto.')}</div><div class="pr">${sale?`<s>${eur(p.price)}</s> ${eur(pp(p))}`:eur(pp(p))}</div><div style="display:flex;gap:6px;margin-top:auto;z-index:1"><button class="btn ${sale?'clay':''}" style="flex:1" ${s<=0?'disabled':''} data-a="add" data-id="${id}">${s<=0?'Uitverkocht':'Toevoegen'}</button><button class="btn o sm" data-a="toggleCompare" data-id="${id}" title="Vergelijken">${inComp?'✓':'+'}</button></div>${s<=0?`<button class="btn o sm" style="margin-top:8px;width:100%;z-index:1" data-a="notify" data-id="${id}">Notify me</button>`:''}</article>`}
+ const hasImg = p.image && (p.image.startsWith('http') || p.image.startsWith('data:'));
+ const imgHtml = hasImg ? `<img src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">` : `<div class="letter" style="color:var(--ink)">${ltr}</div>`;
+ return `<article class="card" style="--card-accent:${col}"><div class="imgw" style="background:${col}">${imgHtml}<div style="position:absolute;top:10px;left:10px;z-index:2">${bd}</div><button class="wish" data-a="wish" data-id="${id}" aria-pressed="${w}" style="position:absolute;top:10px;right:10px;z-index:2">${w?'♥':'♡'}</button></div><div class="card-body"><span class="cat">${esc(p.category||'MAISON')}</span><button class="pn" data-a="open" data-id="${id}" style="margin-top:6px">${esc(p.title)}</button><div class="p-desc">${esc(p.desc||'Carefully curated.')}</div><div class="pr">${sale?`<s>${eur(p.price)}</s> ${eur(pp(p))}`:eur(pp(p))}</div><div style="display:flex;gap:6px;margin-top:auto"><button class="btn ${sale?'clay':''}" style="flex:1" ${s<=0?'disabled':''} data-a="add" data-id="${id}">${s<=0?'Uitverkocht':'Toevoegen'}</button><button class="btn o sm" data-a="toggleCompare" data-id="${id}" title="Vergelijken">${inComp?'✓':'+'}</button></div>${s<=0?`<button class="btn o sm" style="margin-top:8px;width:100%" data-a="notify" data-id="${id}">Notify me</button>`:''}</div></article>`}
 const SK=()=>'<div class="card" style="height:300px;background:var(--sand)"></div>'.repeat(6),none=t=>`<div class="empty">${t}</div>`;
 
 function home(){
@@ -248,7 +255,9 @@ function toggleCompare(id){
 }
 function openP(id){
  const p=S.prods.find(x=>x.id===id);if(!p)return;S.cur=p;S.ovk='p';saveRecent(id);const sale=p.salePrice&&p.salePrice<p.price,s=p.stock||0,col=colorFor(p);
- $('#ov').innerHTML=`<div class="modal"><button class="x" data-a="close">×</button><div style="width:100%;height:200px;background:${col};border-radius:20px;display:grid;place-items:center;font-family:'Bodoni Moda';font-size:88px;color:var(--ink)">${letterFor(p)}</div><div style="padding-top:16px"><div class="cat">${esc(p.category)}</div><h2 style="margin:8px 0">${esc(p.title)}</h2><div style="font-size:20px;font-weight:700;color:var(--ink)">${sale?`<s style="color:var(--muted);font-size:14px">${eur(p.price)}</s> ${eur(pp(p))}`:eur(pp(p))}</div><p style="margin-top:10px;font-size:13px;line-height:1.6">${esc(p.desc||'Geselecteerd op materiaal en gewicht, niet op beeld.')}</p><div style="margin-top:10px;font-size:12px;font-weight:600;color:${s<=0?'var(--red)':'var(--ok)'}">${s<=0?'Uitverkocht':s<=5?`Nog ${s} op voorraad — wees er snel bij`:'Op voorraad • direct verzonden'}</div><div class="qty"><button data-a="mq" data-id="-1">−</button><input id="mq" type="number" value="1" min="1" max="${s}"><button data-a="mq" data-id="1">+</button></div><button class="btn clay" style="width:100%;height:50px" data-a="addm" data-id="${esc(p.id)}" ${s<=0?'disabled':''}>Toevoegen</button><div style="display:flex;gap:6px;margin-top:8px"><button class="btn o sm" style="flex:1" data-a="wish" data-id="${esc(p.id)}">${S.wish.includes(p.id)?'♥ Wishlist':'♡ Wishlist'}</button><button class="btn o sm" style="flex:1" data-a="toggleCompare" data-id="${esc(p.id)}">${S.compare.includes(p.id)?'✓ Vergelijk':'＋ Vergelijk'}</button></div>${s<=0?`<div style="margin-top:12px;display:flex;gap:6px"><input id="notifyE" type="email" placeholder="je@email.nl voor notify" style="height:40px;border-radius:99px;flex:1"><button class="btn sm clay" data-a="notify" data-id="${esc(p.id)}">Notify me</button></div>`:''}</div></div>`;$('#ov').classList.add('on');document.body.style.overflow='hidden';trapFocus($('#ov'))}
+ const hasImg=p.image && (p.image.startsWith('http')||p.image.startsWith('data:'));
+ const topMedia=hasImg?`<div style="width:100%;height:300px;border-radius:20px;overflow:hidden;background:${col}"><img src="${esc(p.image)}" alt="${esc(p.title)}" style="width:100%;height:100%;object-fit:cover"></div>`:`<div style="width:100%;height:200px;background:${col};border-radius:20px;display:grid;place-items:center;font-family:'Bodoni Moda';font-size:88px;color:var(--ink)">${letterFor(p)}</div>`;
+ $('#ov').innerHTML=`<div class="modal"><button class="x" data-a="close">×</button>${topMedia}<div style="padding-top:16px"><div class="cat">${esc(p.category)}</div><h2 style="margin:8px 0">${esc(p.title)}</h2><div style="font-size:20px;font-weight:700;color:var(--ink)">${sale?`<s style="color:var(--muted);font-size:14px">${eur(p.price)}</s> ${eur(pp(p))}`:eur(pp(p))}</div><p style="margin-top:10px;font-size:13px;line-height:1.6">${esc(p.desc||'Geselecteerd op materiaal en gewicht, niet op beeld.')}</p><div style="margin-top:10px;font-size:12px;font-weight:600;color:${s<=0?'var(--red)':'var(--ok)'}">${s<=0?'Uitverkocht':s<=5?`Nog ${s} op voorraad — wees er snel bij`:'Op voorraad • direct verzonden'}</div><div class="qty"><button data-a="mq" data-id="-1">−</button><input id="mq" type="number" value="1" min="1" max="${s}"><button data-a="mq" data-id="1">+</button></div><button class="btn clay" style="width:100%;height:50px" data-a="addm" data-id="${esc(p.id)}" ${s<=0?'disabled':''}>Toevoegen</button><div style="display:flex;gap:6px;margin-top:8px"><button class="btn o sm" style="flex:1" data-a="wish" data-id="${esc(p.id)}">${S.wish.includes(p.id)?'♥ Wishlist':'♡ Wishlist'}</button><button class="btn o sm" style="flex:1" data-a="toggleCompare" data-id="${esc(p.id)}">${S.compare.includes(p.id)?'✓ Vergelijk':'＋ Vergelijk'}</button></div>${s<=0?`<div style="margin-top:12px;display:flex;gap:6px"><input id="notifyE" type="email" placeholder="je@email.nl voor notify" style="height:40px;border-radius:99px;flex:1"><button class="btn sm clay" data-a="notify" data-id="${esc(p.id)}">Notify me</button></div>`:''}</div></div>`;$('#ov').classList.add('on');document.body.style.overflow='hidden';trapFocus($('#ov'))}
 function closeOv(){$('#ov').classList.remove('on');$('#ov').innerHTML='';S.ovk='';document.body.style.overflow=''}
 function trapFocus(el){if(!el)return;const focusable=el.querySelectorAll('button,input,select,textarea,[tabindex]:not([tabindex="-1"])');if(!focusable.length)return;const first=focusable[0],last=focusable[focusable.length-1];first.focus();el.addEventListener('keydown',function handler(e){if(e.key==='Tab'){if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus()}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus()}}if(e.key==='Escape'){closeOv();el.removeEventListener('keydown',handler)}})}
 
@@ -284,9 +293,10 @@ async function adm(){
  try{
   const os=await db.collection('orders').get(),ao=os.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
   $('#kpis').innerHTML=`<div><b>${eur(ao.filter(o=>o.status!=='cancelled').reduce((s,o)=>s+(o.total||0),0))}</b>omzet</div><div><b>${ao.length}</b>orders</div><div><b>${ao.filter(o=>o.status==='completed').length}</b>te verzenden</div><div><b>${(S.all||[]).filter(p=>(p.stock||0)<=3).length}</b>laag</div>`;
+  S.allUsers=null; try{const uSnap=await db.collection('users').get(); S.allUsers=uSnap.docs.map(d=>({id:d.id,...d.data()}));}catch(e){}
   const t=S.tab;
   if(t==='products'){
-   F.innerHTML=`<div class="box" style="margin-bottom:16px"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><input id="nT" placeholder="Naam *"><input id="nC" placeholder="Categorie"><input id="nP" type="number" step="0.01" placeholder="Prijs *"><input id="nK" type="number" placeholder="Voorraad"></div><textarea id="nD" rows="2" placeholder="Omschrijving — geen foto nodig" style="margin:8px 0"></textarea><div style="display:flex;gap:8px"><button class="btn clay" style="flex:1" data-a="addp">Toevoegen</button><button class="btn o" data-a="bulkLow">Verwijder 0-voorraad</button><button class="btn o" data-a="exportProducts">Export CSV</button></div><div id="nM" style="font-size:12px;margin-top:6px"></div></div>`;
+   F.innerHTML=`<div class="box" style="margin-bottom:16px"><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px"><input id="nT" placeholder="Naam *"><input id="nC" placeholder="Categorie"><input id="nP" type="number" step="0.01" placeholder="Prijs *"><input id="nK" type="number" placeholder="Voorraad"><input id="nI" type="file" accept="image/*"><input id="nSale" type="number" step="0.01" placeholder="Sale prijs (optioneel)"></div><textarea id="nD" rows="2" placeholder="Omschrijving" style="margin:8px 0"></textarea><div style="display:flex;gap:8px"><button class="btn clay" style="flex:1" data-a="addp">Toevoegen met foto</button><button class="btn o" data-a="bulkLow">Verwijder 0-voorraad</button><button class="btn o" data-a="exportProducts">Export CSV</button></div><div id="nM" style="font-size:12px;margin-top:6px"></div></div>`;
    L.innerHTML=(S.all||[]).map(p=>`<div class="ar"><div style="width:42px;height:42px;border-radius:10px;background:${colorFor(p)};display:grid;place-items:center;font-family:'Bodoni Moda'">${letterFor(p)}</div><div><b>${esc(p.title)}</b><br><span style="font-size:11px;color:var(--muted)">${esc(p.category)} • ${eur(p.price)} • stock ${p.stock||0}</span></div><div class="bt"><input id="ep${esc(p.id)}" type="number" value="${+p.price}" style="width:76px;height:32px"><input id="ek${esc(p.id)}" type="number" value="${p.stock||0}" style="width:58px;height:32px">${bt('Save','savep',p.id)}${bt(p.hidden?'Toon':'Hide','hidep',p.id)}${bt('Del','delp',p.id,1)}</div></div>`).join('')||none('Geen producten')
   }else if(t==='orders'){
    F.innerHTML=`<div style="display:flex;gap:8px;margin-bottom:12px"><button class="btn o sm" data-a="exportOrders">Exporteer orders CSV</button></div>`;
@@ -301,6 +311,36 @@ async function adm(){
 const upd=async(c,id,d,m)=>{try{await db.collection(c).doc(id).update(d);if(m)toast(m);adm()}catch(e){toast(fe(e))}};
 const rem=async(c,id)=>{if(!confirm('Zeker?'))return;try{await db.collection(c).doc(id).delete();toast('Verwijderd');adm()}catch(e){toast(fe(e))}};
 
+function openBanModal(userId){
+  const userDoc = S.allUsers ? S.allUsers.find(u=>u.id===userId) : null;
+  // we need to get user email from admin list, use last fetched
+  const target = document.querySelector(`[data-ban-target="${userId}"]`)?.dataset || {};
+  S.ovk='ban';
+  $('#ov').innerHTML=`<div class="modal"><button class="x" data-a="close">×</button><h2>Ban verzoek indienen</h2><p style="font-size:13px;color:var(--muted);margin:10px 0">Je vraagt een ban aan voor deze user. Schrijf waarom. Dit wordt naar de CEO (${ADMIN}) gestuurd ter goedkeuring.</p><div class="fld"><label>Waarom moet deze user geband worden? *</label><textarea id="banReason" rows="4" placeholder="Bijv. spam, misbruik, fake orders, schelden... wees specifiek"></textarea><div class="err" id="e_banReason">Vul een reden in (min. 10 tekens)</div></div><div class="fld"><label>User ID</label><input id="banUserId" value="${esc(userId)}" disabled style="background:var(--sand)"></div><button class="btn clay" style="width:100%;height:48px" data-a="submitBan">Verstuur naar CEO</button></div>`;
+  $('#ov').classList.add('on'); trapFocus($('#ov'));
+}
+async function submitBanRequest(){
+  const userId=val('banUserId'), reason=val('banReason');
+  const errEl=$('#e_banReason'), input=$('#banReason');
+  if(!reason || reason.length<10){input?.classList.add('invalid'); errEl?.classList.add('on'); return}
+  input?.classList.remove('invalid'); errEl?.classList.remove('on');
+  try{
+    const userSnap=await db.collection('users').doc(userId).get();
+    const userData=userSnap.data()||{};
+    if(userData.email===ADMIN || userData.role==='ceo'){toast('CEO kan niet geband worden'); return}
+    await db.collection('ban_requests').add({
+      userId,
+      userEmail:userData.email||'',
+      userName:userData.name||'',
+      reason,
+      requestedBy:S.user.uid,
+      requestedByEmail:S.user.email,
+      status:'pending',
+      createdAt:FV.serverTimestamp()
+    });
+    toast('Ban verzoek verstuurd naar CEO ✓'); closeOv();
+  }catch(e){toast(fe(e))}
+}
 const A={
  go,close:closeOv,open:openP,wish:toggleWish,add:id=>addCart(id,1),addm:async id=>{await addCart(id,Math.max(1,parseInt($('#mq').value)||1));closeOv()},
  mq:d=>{const i=$('#mq');if(!i)return;i.value=Math.min(S.cur?.stock||99,Math.max(1,(parseInt(i.value)||1)+ +d))},
@@ -338,7 +378,29 @@ const A={
  },
  bulkLow:async()=>{if(!confirm('Alle producten met voorraad 0 verwijderen?'))return;const zero=(S.all||[]).filter(p=>(p.stock||0)<=0);for(const p of zero){try{await db.collection('products').doc(p.id).delete()}catch(e){}}toast(`${zero.length} verwijderd`);adm()},
  tab:t=>{S.tab=t;render()},
- addp:async()=>{const title=val('nT'),price=parseFloat($('#nP').value);if(!title||!(price>0))return msg('nM','Naam + prijs verplicht','error');msg('nM','Bezig...');try{await db.collection('products').add({title,category:val('nC')||'MAISON',price,stock:Math.max(0,parseInt($('#nK').value)||0),desc:val('nD'),createdAt:FV.serverTimestamp()});toast('Toegevoegd');adm()}catch(e){msg('nM',fe(e),'error')}},
+ addp:async()=>{
+  const title=val('nT'),price=parseFloat($('#nP').value),sale=parseFloat($('#nSale')?.value)||null;
+  if(!title||!(price>0))return msg('nM','Naam + prijs verplicht','error');
+  msg('nM','Bezig...');
+  try{
+    const f=$('#nI')?.files?.[0];
+    let image='';
+    if(f){
+      // compress image
+      image=await new Promise((res,rej)=>{
+        const r=new FileReader(); r.onload=e=>{
+          const img=new Image(); img.onload=()=>{
+            const max=900; const k=Math.min(1,max/Math.max(img.width,img.height));
+            const c=document.createElement('canvas'); c.width=Math.round(img.width*k); c.height=Math.round(img.height*k);
+            c.getContext('2d').drawImage(img,0,0,c.width,c.height); res(c.toDataURL('image/jpeg',0.82));
+          }; img.onerror=rej; img.src=e.target.result;
+        }; r.onerror=rej; r.readAsDataURL(f);
+      });
+    }
+    await db.collection('products').add({title,category:val('nC')||'MAISON',price,salePrice:sale&&sale<price?sale:null,stock:Math.max(0,parseInt($('#nK').value)||0),desc:val('nD'),image,createdAt:FV.serverTimestamp()});
+    toast('Toegevoegd met foto');adm()
+  }catch(e){msg('nM',fe(e),'error')}
+  },
  savep:id=>{const price=parseFloat($('#ep'+id).value),stock=parseInt($('#ek'+id).value);if(!(price>0))return toast('Prijs ongeldig');upd('products',id,{price,stock:Math.max(0,stock||0)},'Opgeslagen')},
  hidep:id=>upd('products',id,{hidden:!(S.all.find(p=>p.id===id)?.hidden)},'Zichtbaarheid'),delp:id=>rem('products',id),
  appr:id=>upd('reviews',id,{approved:true},'Online'),delr:id=>rem('reviews',id),delk:id=>rem('coupons',id),delm:id=>rem('messages',id),delWait:id=>rem('waitlist',id),
@@ -348,7 +410,29 @@ const A={
   const p=S.prods.find(x=>x.id===id)||S.all.find(x=>x.id===id);const email=(val('notifyE')||S.user?.email||'').toLowerCase();
   if(!/^\S+@\S+\.\S+$/.test(email)){toast('Vul geldig e-mail in voor notify');return}
   try{await db.collection('waitlist').add({productId:id,productTitle:p?.title||id,email,createdAt:FV.serverTimestamp()});toast('We mailen je zodra het terug is ✓')}catch(e){toast(fe(e))}},
- mkadm:id=>upd('users',id,{role:'admin'},'Admin'),rmadm:id=>upd('users',id,{role:'user'},'Verwijderd'),ban:id=>upd('users',id,{banned:true},'Geblokkeerd'),unban:id=>upd('users',id,{banned:false},'Deblokkeerd')
+ mkadm:id=>upd('users',id,{role:'admin'},'Admin'),rmadm:id=>upd('users',id,{role:'user'},'Verwijderd'),
+ ban:id=>openBanModal(id),
+ unban:async id=>{
+   if(!ceo()){toast('Alleen CEO kan unbannen');return}
+   if(!confirm('Deze user unbannen?'))return;
+   try{await db.collection('users').doc(id).update({banned:false});toast('Gedeblokkeerd');adm()}catch(e){toast(fe(e))}
+ },
+ approveBan:async id=>{
+   if(!ceo()){toast('Alleen CEO kan goedkeuren');return}
+   try{
+     const reqDoc=await db.collection('ban_requests').doc(id).get();
+     const req=reqDoc.data(); if(!req){toast('Verzoek niet gevonden');return}
+     await db.collection('users').doc(req.userId).update({banned:true, banReason:req.reason, bannedAt:FV.serverTimestamp(), bannedBy:S.user.email});
+     await db.collection('ban_requests').doc(id).update({status:'approved', decidedAt:FV.serverTimestamp(), decidedBy:S.user.email});
+     toast('User geband ✓'); adm();
+   }catch(e){toast(fe(e))}
+ },
+ submitBan:()=>submitBanRequest(),
+ rejectBan:async id=>{
+   if(!ceo()){toast('Alleen CEO kan afwijzen');return}
+   const reason=prompt('Reden voor afwijzing (optioneel):')||'';
+   try{await db.collection('ban_requests').doc(id).update({status:'rejected', rejectReason:reason, decidedAt:FV.serverTimestamp(), decidedBy:S.user.email}); toast('Verzoek afgewezen'); adm();}catch(e){toast(fe(e))}
+ }
 };
 document.addEventListener('click',e=>{
  if(e.target.id==='ov')return closeOv();
