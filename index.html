@@ -428,6 +428,8 @@ const A={
    }catch(e){toast(fe(e))}
  },
  submitBan:()=>submitBanRequest(),
+ copyRules:async()=>{const code=$('#rulesCode')?.textContent||''; try{await navigator.clipboard.writeText(code); toast('Rules gekopieerd ✓')}catch(e){const ta=document.createElement('textarea'); ta.value=code; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); toast('Rules gekopieerd ✓')}},
+ openFirebaseRules:()=>{window.open('https://console.firebase.google.com/project/shop-2eab0/firestore/rules','_blank')},
  rejectBan:async id=>{
    if(!ceo()){toast('Alleen CEO kan afwijzen');return}
    const reason=prompt('Reden voor afwijzing (optioneel):')||'';
