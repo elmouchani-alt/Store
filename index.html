@@ -1,4 +1,4 @@
-<html lang="nl" data-theme="dark"><head><style>
+<html lang="nl"><head><style>
 @font-face {
   font-family: "Optimistic";
   font-style: normal;
@@ -119,12 +119,9 @@ footer{background:var(--ink);color:#B9B2A6} footer .wrap{padding:44px 24px;displ
 @media(max-width:900px){.hero-inner{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.trust{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}footer .wrap{grid-template-columns:1fr}.nav{display:none;position:absolute;top:100%;left:0;right:0;background:var(--paper);flex-direction:column;padding:10px 16px;border-bottom:1px solid var(--line)}.nav.show{display:flex}.burger{display:inline-flex!important}}
 .burger{display:none}
 
-.banned-overlay{position:fixed;inset:0;background:#12100E;color:#fff;z-index:10000;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center}
-.banned-card{background:#1A1816;border-radius:24px;padding:32px;max-width:480px;width:100%;border:1px solid #2A1210;box-shadow:0 30px 80px rgba(0,0,0,.6)}
-.banned-icon{font-size:64px;margin-bottom:16px}
+.banned-overlay{position:fixed;inset:0;background:#12100E;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px}
+.banned-card{background:#1A1816;border-radius:20px;padding:28px;max-width:440px;width:100%;border:1px solid #3a2a20;text-align:center;color:#fff}
 .protected-badge{font-size:10px;background:#F6E6E0;color:#A33A2A;padding:2px 8px;border-radius:99px;margin-left:6px}
-.ceo-notif{position:fixed;top:85px;right:20px;background:#12100E;color:#fff;border-radius:16px;padding:14px 18px;box-shadow:0 20px 50px rgba(0,0,0,.4);z-index:9999;max-width:360px;border-left:4px solid #A33A2A}
-.bell-dot{position:absolute;top:-5px;right:-5px;background:#A33A2A;color:#fff;min-width:18px;height:18px;border-radius:99px;font-size:11px;display:grid;place-items:center;font-weight:700}
 
 </style>
 </head>
@@ -477,244 +474,109 @@ try{S.compare=JSON.parse(localStorage.getItem('mc')||'[]')}catch(e){S.compare=[]
 render();
 }
 
-// === ULTIMATE BAN SYSTEM ===
-function canBanTarget(u){
+<script>
+window.canBanTargetSimple = function(u){
   if(!u) return false;
-  const r=(u.role||'user').toLowerCase();
+  var r=(u.role||'user').toLowerCase();
   if(r==='ceo') return false;
-  const email=(u.email||'').toLowerCase();
-  if(email==='elmouchania@gmail.com') return false;
-  // admin kan geen andere admin bannen
-  if(r==='admin' && !ceo()) return false;
+  if((u.email||'').toLowerCase()==='elmouchania@gmail.com') return false;
+  if(r==='admin' && (!window.ceo || !window.ceo())) return false;
   return true;
-}
+};
 
-// Check of huidige user geband is - blokkeer alles
-async function checkIfBanned(){
-  if(!S.user) return false;
+window.checkBanned = async function(){
+  if(!S.user) return;
   try{
-    const doc = await db.collection('users').doc(S.user.uid).get();
-    if(doc.exists){
-      const data = doc.data();
-      if(data.banned){
-        document.getElementById('bannedReasonText').textContent = data.banReason || 'Geen reden opgegeven';
-        document.getElementById('bannedDate').textContent = data.bannedAt?.toDate?.()?.toLocaleString?.() || 'Onbekend';
-        document.getElementById('bannedBy').textContent = data.bannedBy || 'CEO';
-        document.getElementById('bannedOverlay').style.display='flex';
-        // blokkeer cart en acties
-        document.body.style.overflow='hidden';
-        return true;
-      } else {
-        document.getElementById('bannedOverlay').style.display='none';
-        document.body.style.overflow='';
-      }
+    var doc = await db.collection('users').doc(S.user.uid).get();
+    if(doc.exists && doc.data().banned){
+      var d=doc.data();
+      document.getElementById('bannedReasonText').textContent=d.banReason||'Geen reden';
+      document.getElementById('bannedDate').textContent=d.bannedAt?d.bannedAt.toDate().toLocaleString():'';
+      document.getElementById('bannedBy').textContent=d.bannedBy||'';
+      document.getElementById('bannedOverlay').style.display='flex';
+    } else {
+      document.getElementById('bannedOverlay').style.display='none';
     }
-  }catch(e){ console.error(e); }
-  return false;
-}
+  }catch(e){}
+};
 
-// Hook into login
-const _origAuthHandler = window._origAuthHandler || null;
+window.directBan = function(uid,email){
+  if(!ceo()){ toast('Alleen CEO'); return; }
+  var reason=prompt('Reden waarom je '+email+' bant (min 10 tekens):');
+  if(!reason || reason.trim().length<10){ toast('Reden te kort'); return; }
+  if(!confirm('Zeker weten dat je '+email+' bant? Reden: '+reason)) return;
+  db.collection('users').doc(uid).update({banned:true,banReason:reason.trim(),bannedAt:firebase.firestore.FieldValue.serverTimestamp(),bannedBy:S.user.email}).then(function(){toast('Geband'); adm();});
+};
 
-// CEO direct ban met reden
-window.openDirectBanModal = function(userId, userEmail){
-  if(!ceo()){ toast('Alleen CEO kan direct bannen'); return; }
-  const reason = prompt(`Direct bannen: ${userEmail}\n\nGeef REDEN waarom je deze user bant (verplicht, min 10 tekens):`);
-  if(!reason || reason.trim().length < 10){
-    toast('Reden te kort - minimaal 10 tekens vereist');
+window.doUnban = function(uid,email){
+  if(!ceo()){ toast('Alleen CEO'); return; }
+  if(!confirm('Unban '+email+'?')) return;
+  db.collection('users').doc(uid).update({banned:false,banReason:firebase.firestore.FieldValue.delete(),bannedAt:firebase.firestore.FieldValue.delete(),bannedBy:firebase.firestore.FieldValue.delete()}).then(function(){toast('Ge-unband'); adm();});
+};
+
+// Hook into auth
+auth.onAuthStateChanged(function(u){ if(u){ setTimeout(function(){ checkBanned(); },1000); } else { var ov=document.getElementById('bannedOverlay'); if(ov) ov.style.display='none'; } });
+
+// Patch adm after it loads
+var origAdm2 = adm;
+adm = async function(){
+  await origAdm2();
+  // Als in users tab, voeg extra knoppen toe
+  if(S.tab!=='users' && S.tab!=='banned' && S.tab!=='banRequests') return;
+  var isCEO = ceo();
+  // Voor gebande lijst
+  if(S.tab==='banned'){
+    // extra unban al in orig
     return;
   }
-  if(!confirm(`Weet je zeker dat je ${userEmail} direct wilt bannen?\nReden: ${reason}`)) return;
-  
-  db.collection('users').doc(userId).update({
-    banned: true,
-    banReason: reason.trim(),
-    bannedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    bannedBy: S.user.email
-  }).then(()=>{
-    toast(`✓ ${userEmail} is geband`);
-    adm();
-  }).catch(e=>toast('Fout: '+e.message));
-};
-
-// Unban functie - alleen CEO
-window.unbanUser = function(userId, userEmail){
-  if(!ceo()){ toast('Alleen CEO kan unbanen'); return; }
-  if(!confirm(`Weet je zeker dat je ${userEmail} wilt unbanen? Hij kan dan weer alles doen.`)) return;
-  db.collection('users').doc(userId).update({
-    banned: false,
-    banReason: firebase.firestore.FieldValue.delete(),
-    bannedAt: firebase.firestore.FieldValue.delete(),
-    bannedBy: firebase.firestore.FieldValue.delete(),
-    unbannedAt: firebase.firestore.FieldValue.serverTimestamp(),
-    unbannedBy: S.user.email
-  }).then(()=>{
-    toast(`✓ ${userEmail} is ge-unband`);
-    adm();
-  }).catch(e=>toast('Fout: '+e.message));
-};
-
-// CEO notificatie
-let _banUnsub=null;
-function startCeoListener(){
-  if(!ceo()) return;
-  if(_banUnsub) _banUnsub();
-  _banUnsub = db.collection('ban_requests').where('status','==','pending').onSnapshot(snap=>{
-    S.banPending = snap.size;
-    if(window.head) head();
-    const acts=document.getElementById('acts');
-    if(acts){
-      let bell=acts.querySelector('#ceoBell');
-      if(!bell){ bell=document.createElement('button'); bell.id='ceoBell'; bell.className='icon-btn'; bell.style.position='relative'; bell.onclick=()=>{go('admin');S.tab='banRequests';render();}; acts.prepend(bell); }
-      bell.innerHTML='🔔'+(snap.size?`<span class="bell-dot">${snap.size}</span>`:'');
+  // Voor users tab, voeg ban direct en unban toe naast bestaande knoppen
+  document.querySelectorAll('#aL .ar').forEach(function(ar){
+    var btns = ar.querySelectorAll('[data-id]');
+    var uid = null;
+    btns.forEach(function(b){ if(b.getAttribute('data-id') && b.getAttribute('data-id').length>10) uid=b.getAttribute('data-id'); });
+    // Zoek email uit tekst
+    var email = (ar.textContent.match(/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}/i)||[''])[0];
+    if(!uid) return;
+    var container = ar.querySelector('div:last-child') || ar;
+    // Als CEO en user geband, voeg unban
+    if(isCEO && ar.textContent.includes('BANNED') && !ar.querySelector('.unban-btn')){
+      var ub=document.createElement('button'); ub.className='btn sm clay unban-btn'; ub.textContent='Unban'; ub.onclick=function(){ doUnban(uid,email); }; container.appendChild(ub);
     }
-    const tb=document.querySelector('.topbar');
-    if(tb && snap.size>0){ tb.innerHTML=`<b style="color:#ff6b6b">🚨 CEO: ${snap.size} BAN VERZOEK(EN)</b> — Admin → Ban Verzoeken`; tb.style.background='#2A1210'; }
-    snap.docChanges().forEach(ch=>{
-      if(ch.type==='added' && snap.size>0){
-        setTimeout(()=>{
-          const r=ch.doc.data();
-          const old=document.getElementById('ceoNotif'); if(old) old.remove();
-          const div=document.createElement('div'); div.id='ceoNotif'; div.className='ceo-notif';
-          div.innerHTML=`<b>🚨 Nieuw ban verzoek</b><br><span style="font-size:12px">${r.requestedByEmail} wil ${r.userEmail} bannen<br>Reden: ${(r.reason||'').slice(0,80)}</span><br><div style="margin-top:8px;display:flex;gap:6px"><button class="btn sm clay" onclick="go('admin');S.tab='banRequests';render();this.closest('#ceoNotif').remove()">Open</button><button class="btn sm o" style="color:#fff" onclick="this.closest('#ceoNotif').remove()">Later</button></div>`;
-          document.body.appendChild(div); setTimeout(()=>div.remove(),12000);
-        },500);
+    // Als CEO en niet geband en niet CEO zelf, voeg direct ban
+    if(isCEO && !ar.textContent.includes('BANNED') && !ar.textContent.toLowerCase().includes('elmouchania') && !ar.querySelector('.direct-ban-btn')){
+      // check of het geen CEO is
+      if(!ar.textContent.includes('👑 CEO')){
+        var dbtn=document.createElement('button'); dbtn.className='btn sm red direct-ban-btn'; dbtn.textContent='Ban met reden'; dbtn.onclick=function(){ directBan(uid,email); }; container.appendChild(dbtn);
       }
-    });
+    }
   });
-}
-
-// Override adm to show correct buttons
-const _origAdm = adm;
-adm = async function(){
-  try{
-    const isCEO = ceo();
-    const isAdminOnly = admin() && !isCEO;
-    let h=`<div class="tabs">`+
-      [['products','Producten'],['orders','Orders'],['users','Gebruikers'],['banned','Geband 🚫'],['reviews','Reviews'],['banRequests','Ban Verzoeken'+(S.banPending?` (${S.banPending})`:'' )],['messages','Berichten'],['rules','Rules']].map(([k,l])=>`<button data-a="tab" data-id="${k}" class="${S.tab===k?'on':''}">${l}</button>`).join('')+
-    `</div><div class="box"><div id="aL"></div></div>`;
-    $('#admin').innerHTML=h;
-    const aL=$('#aL');
-    
-    if(S.tab==='users' || !S.tab){
-      aL.innerHTML='<div class="box"><h3>Gebruikers (CEO kan direct bannen met reden)</h3><input id="uSearch" placeholder="Zoek email..." oninput="window.filterUsers&&filterUsers()" style="width:100%;margin-bottom:12px;padding:10px;border-radius:99px;border:1px solid #E8E0D6"><div id="uList">Laden...</div></div>';
-      const snap=await db.collection('users').get();
-      let users=snap.docs.map(d=>({id:d.id,...d.data()}));
-      window._allUsers=users;
-      window.filterUsers=()=>{
-        const q=($('#uSearch')?.value||'').toLowerCase();
-        const filtered=q?window._allUsers.filter(u=>(u.email||'').toLowerCase().includes(q)):window._allUsers;
-        renderUserList(filtered);
-      };
-      function renderUserList(list){
-        $('#uList').innerHTML=list.map(u=>{
-          const role=u.role||'user';
-          const isProtected = !canBanTarget(u);
-          const roleBadge=role==='ceo'?'<span style="background:var(--gold);color:#fff;padding:2px 8px;border-radius:99px;font-size:10px">👑 CEO</span>':role==='admin'?'<span style="background:#12100E;color:#fff;padding:2px 8px;border-radius:99px;font-size:10px">ADMIN</span>':'<span style="background:#eee;padding:2px 8px;border-radius:99px;font-size:10px">USER</span>';
-          const bannedBadge=u.banned?'<span style="background:#A33A2A;color:#fff;padding:2px 8px;border-radius:99px;font-size:10px">🚫 GEBAND</span>':'';
-          let actions='';
-          if(u.banned){
-            // Unban knop alleen CEO
-            if(isCEO){
-              actions+=`<button class="btn sm clay" onclick="unbanUser('${u.id}','${esc(u.email||u.id)}')">✓ Unban</button>`;
-              actions+=`<div style="font-size:11px;color:#A33A2A;margin-top:4px">Reden: ${esc(u.banReason||'')}</div>`;
-            } else {
-              actions+=`<span class="protected-badge">Geband - alleen CEO kan unbanen</span>`;
-            }
-          } else {
-            if(isCEO){
-              // CEO kan direct bannen met reden
-              if(role!=='ceo'){
-                actions+=`<button class="btn sm red" onclick="openDirectBanModal('${u.id}','${esc(u.email||u.id)}')">🚫 Ban direct met reden</button>`;
-                if(role==='admin'){
-                  actions+=`<button class="btn sm o" data-a="rmadm" data-id="${u.id}">Admin verwijderen</button>`;
-                } else {
-                  actions+=`<button class="btn sm clay" data-a="mkadm" data-id="${u.id}">Maak admin</button>`;
-                }
-              }
-            } else if(isAdminOnly){
-              if(canBanTarget(u)){
-                actions+=`<button class="btn sm red" data-a="requestBan" data-id="${u.id}">Ban verzoek</button>`;
-              } else {
-                actions+=`<span class="protected-badge">BESCHERMD - kan niet bannen</span>`;
-              }
-            }
-          }
-          return `<div class="ar" style="${u.banned?'border-left:4px solid #A33A2A;opacity:.8':''}"><div><b>${esc(u.email||u.id)}</b> ${roleBadge} ${bannedBadge}<br><span style="font-size:11px;color:#888">${esc(u.displayName||'')}${u.banned?` - Geband: ${esc(u.banReason||'')}`:''}</span></div><div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">${actions}</div></div>`;
-        }).join('')||'Geen users';
-      }
-      renderUserList(users);
-    } else if(S.tab==='banned'){
-      aL.innerHTML='<div class="box"><h3>🚫 Gebande Gebruikers</h3><div id="bannedList">Laden...</div></div>';
-      const snap=await db.collection('users').where('banned','==',true).get();
-      if(snap.empty){ $('#bannedList').innerHTML='Geen gebande users'; return; }
-      $('#bannedList').innerHTML=snap.docs.map(d=>{
-        const u={id:d.id,...d.data()};
-        return `<div class="ar" style="border-left:4px solid #A33A2A"><div><b>${esc(u.email||u.id)}</b><br><span style="font-size:12px">Reden: ${esc(u.banReason||'')} - Door: ${esc(u.bannedBy||'')} op ${u.bannedAt?.toDate?.()?.toLocaleString?.()||''}</span></div><div>${ceo()?`<button class="btn sm clay" onclick="unbanUser('${u.id}','${esc(u.email||u.id)}')">✓ Unban</button>`:''}</div></div>`;
-      }).join('');
-    } else if(S.tab==='banRequests'){
-      aL.innerHTML='<div class="box"><h3>Ban Verzoeken (Admin vraagt, CEO keurt goed)</h3><div id="banList">Laden...</div></div>';
-      const snap=await db.collection('ban_requests').where('status','==','pending').get();
-      if(snap.empty){ $('#banList').innerHTML='<p>Geen open verzoeken</p>'; return; }
-      $('#banList').innerHTML=snap.docs.map(d=>{
-        const r=d.data();
-        return `<div class="ar"><div><b>${esc(r.userEmail||r.userId)}</b><br><span style="font-size:12px">Aangevraagd door: ${esc(r.requestedByEmail||'')} op ${r.createdAt?.toDate?.()?.toLocaleString?.()||''}</span><br><span style="font-size:12px;background:#FFF0E6;padding:4px 8px;border-radius:6px;display:inline-block;margin-top:4px">Reden: ${esc(r.reason)}</span></div><div style="display:flex;gap:6px">${ceo()?`<button class="btn sm clay" data-a="approveBan" data-id="${d.id}">✓ Goedkeuren & Bannen</button><button class="btn sm o" data-a="rejectBan" data-id="${d.id}">Afwijzen</button>`:`<span class="protected-badge">Alleen CEO kan goedkeuren</span>`}</div></div>`;
-      }).join('');
-    } else {
-      // voor andere tabs gebruik originele logica snel
-      $('#aL').innerHTML='Laden...';
-      if(S.tab==='products'){
-        const snap=await db.collection('products').get();
-        $('#aL').innerHTML=snap.docs.map(doc=>{const p={id:doc.id,...doc.data()}; return `<div class="ar"><span>${esc(p.name)} - €${p.price}</span><button class="btn sm red" data-a="delProd" data-id="${p.id}">Del</button></div>`}).join('');
-      } else if(S.tab==='orders'){
-        const snap=await db.collection('orders').orderBy('createdAt','desc').limit(20).get();
-        $('#aL').innerHTML=snap.docs.map(d=>`<div class="ar"><span>${d.id.slice(0,8)} - ${d.data().status}</span></div>`).join('');
-      } else if(S.tab==='reviews'){
-        const snap=await db.collection('reviews').where('approved','==',false).get();
-        $('#aL').innerHTML=snap.docs.map(d=>`<div class="ar"><span>${esc(d.data().text||'').slice(0,50)}</span><button class="btn sm clay" data-a="approveReview" data-id="${d.id}">Goedkeuren</button></div>`).join('')||'Geen reviews';
-      } else if(S.tab==='messages'){
-        const snap=await db.collection('messages').limit(20).get();
-        $('#aL').innerHTML=snap.docs.map(d=>`<div class="ar"><span>${esc(d.data().message||'').slice(0,50)}</span></div>`).join('');
-      } else if(S.tab==='rules'){
-        if(!isCEO){ aL.innerHTML='Alleen CEO'; return; }
-        aL.innerHTML=`<textarea style="width:100%;height:500px;font-family:monospace;font-size:10px">${esc(RULES_CODE)}</textarea>`;
-      }
-    }
-  }catch(e){ $('#admin').innerHTML=`<div class="box">Fout: ${esc(e.message)}</div>`; console.error(e); }
-};
-
-// Hook login to check banned
-const origListen2 = listen;
-listen = function(){
-  origListen2();
-  startCeoListener();
-  // check banned for current user elke 3 sec
-  setInterval(()=>{ if(S.user) checkIfBanned(); }, 3000);
-};
-
-// Check direct na auth
-auth.onAuthStateChanged(async (u)=>{
-  if(u){
-    setTimeout(()=>checkIfBanned(), 1000);
-  } else {
-    document.getElementById('bannedOverlay').style.display='none';
+  // Verberg make admin voor non-CEO
+  if(!isCEO){
+    document.querySelectorAll('[data-a="mkadm"], [data-a="makeAdmin"], [data-a="rmadm"], [data-a="unAdmin"]').forEach(function(b){ b.style.display='none'; });
   }
-});
+  // CEO heeft geen ban verzoek knop nodig in users, alleen direct ban
+  if(isCEO){
+    document.querySelectorAll('[data-a="requestBan"], [data-a="banUser"]').forEach(function(b){ b.style.display='none'; });
+  }
+};
 
-addEventListener('load',boot);
+// Check banned elke 5 sec
+setInterval(function(){ if(S.user) checkBanned(); },5000);
 </script>
 
-<div id="bannedOverlay" class="banned-overlay" style="display:none">
+addEventListener('load',boot);
+
+
+<div id="bannedOverlay" class="banned-overlay">
   <div class="banned-card">
-    <div class="banned-icon">🚫</div>
-    <h2 style="color:#ff6b6b;margin-bottom:12px">Je account is geband</h2>
-    <p style="color:#B9B2A6;font-size:13px;margin-bottom:16px">Je kunt niks meer doen op MAISON</p>
+    <div style="font-size:60px">🚫</div>
+    <h2 style="color:#ff6b6b;margin:12px 0">Je bent geband</h2>
+    <p style="color:#B9B2A6;font-size:13px">Je kunt niks meer doen</p>
     <div style="background:#2A1210;border-radius:12px;padding:12px;margin:16px 0;text-align:left">
-      <b style="font-size:11px;color:#E9D5A8;letter-spacing:.1em">REDEN VAN BAN:</b>
-      <p id="bannedReasonText" style="margin-top:6px;font-size:14px;color:#fff;line-height:1.5"></p>
-      <p style="font-size:11px;color:#888;margin-top:8px">Geband op: <span id="bannedDate"></span><br>Door: <span id="bannedBy"></span></p>
+      <div style="font-size:10px;color:#E9D5A8;letter-spacing:.1em">REDEN:</div>
+      <div id="bannedReasonText" style="margin-top:6px;color:#fff"></div>
+      <div style="font-size:11px;color:#888;margin-top:8px">Op: <span id="bannedDate"></span><br>Door: <span id="bannedBy"></span></div>
     </div>
-    <p style="font-size:12px;color:#888;margin-bottom:20px">Neem contact op met de CEO: elmouchania@gmail.com als je denkt dat dit een fout is.</p>
     <button class="btn red" onclick="auth.signOut(); location.reload()">Uitloggen</button>
   </div>
 </div>
