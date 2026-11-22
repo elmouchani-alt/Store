@@ -16,12 +16,6 @@ jobs:
         with:
           node-version: 20
 
-      - name: Check GoogleService-Info.plist
-        run: |
-          if [ ! -f ios-config/GoogleService-Info.plist ]; then
-            echo "ios-config/GoogleService-Info.plist ontbreekt in de repo"; exit 1
-          fi
-
       - name: Copy website files
         run: |
           if [ -f site/index.html ]; then SRC=site; else SRC=.; fi
@@ -43,7 +37,44 @@ jobs:
       - name: Add Google sign-in (native)
         working-directory: build
         run: |
-          cp ../ios-config/GoogleService-Info.plist ios/App/App/GoogleService-Info.plist
+          cat > ios/App/App/GoogleService-Info.plist <<'PLISTEOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+          	<key>CLIENT_ID</key>
+          	<string>846711763840-5ssuddnb69g628rh3gid66ir2todr05i.apps.googleusercontent.com</string>
+          	<key>REVERSED_CLIENT_ID</key>
+          	<string>com.googleusercontent.apps.846711763840-5ssuddnb69g628rh3gid66ir2todr05i</string>
+          	<key>API_KEY</key>
+          	<string>AIzaSyD-cxMGMlIRccwK0gdr5GzVs0CH2LyJ2Fs</string>
+          	<key>GCM_SENDER_ID</key>
+          	<string>846711763840</string>
+          	<key>PLIST_VERSION</key>
+          	<string>1</string>
+          	<key>BUNDLE_ID</key>
+          	<string>nl.maison.shop</string>
+          	<key>PROJECT_ID</key>
+          	<string>shop-2eab0</string>
+          	<key>STORAGE_BUCKET</key>
+          	<string>shop-2eab0.firebasestorage.app</string>
+          	<key>IS_ADS_ENABLED</key>
+          	<false></false>
+          	<key>IS_ANALYTICS_ENABLED</key>
+          	<false></false>
+          	<key>IS_APPINVITE_ENABLED</key>
+          	<true></true>
+          	<key>IS_GCM_ENABLED</key>
+          	<true></true>
+          	<key>IS_SIGNIN_ENABLED</key>
+          	<true></true>
+          	<key>GOOGLE_APP_ID</key>
+          	<string>1:846711763840:ios:c0f8787eb5d079637d4765</string>
+          	<key>DATABASE_URL</key>
+          	<string>https://shop-2eab0-default-rtdb.firebaseio.com</string>
+          </dict>
+          </plist>
+          PLISTEOF
 
           # 1. Podfile: iOS 15 + Google pod
           python3 - <<'PY'
@@ -58,10 +89,8 @@ jobs:
           # 2. URL scheme voor het terugkeren uit het Google-venster
           PB=/usr/libexec/PlistBuddy
           GS=ios/App/App/GoogleService-Info.plist
-          # Als je plist (nog) geen Google-gegevens bevat, vul ze hier aan
-          $PB -c "Print :CLIENT_ID" $GS >/dev/null 2>&1 || $PB -c "Add :CLIENT_ID string 846711763840-5ssuddnb69g628rh3gid66ir2todr05i.apps.googleusercontent.com" $GS
-          $PB -c "Print :REVERSED_CLIENT_ID" $GS >/dev/null 2>&1 || $PB -c "Add :REVERSED_CLIENT_ID string com.googleusercontent.apps.846711763840-5ssuddnb69g628rh3gid66ir2todr05i" $GS
           REV=$($PB -c "Print :REVERSED_CLIENT_ID" $GS)
+          $PB -c "Print :GOOGLE_APP_ID" $GS
           P=ios/App/App/Info.plist
           $PB -c "Add :CFBundleURLTypes array" $P
           $PB -c "Add :CFBundleURLTypes:0 dict" $P
@@ -102,6 +131,9 @@ jobs:
             build
           mkdir -p Payload
           cp -R ios/DerivedData/Build/Products/Release-iphoneos/App.app Payload/
+          # controle: zit de plist in de app?
+          test -f Payload/App.app/GoogleService-Info.plist || { echo "plist ZIT NIET in de app"; exit 1; }
+          /usr/libexec/PlistBuddy -c "Print :GOOGLE_APP_ID" Payload/App.app/GoogleService-Info.plist
           zip -q -r MAISON.ipa Payload
 
       - uses: actions/upload-artifact@v4
