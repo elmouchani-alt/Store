@@ -73,20 +73,36 @@ jobs:
       - name: Patch website for the app (Google sign-in via native plugin)
         run: |
           python3 - <<'PY'
-          import re
+          import re, os
           f = 'app/www/index.html'
           s = open(f, encoding='utf8').read()
+          done_on = done_act = False
 
           if 'FirebaseAuthentication.signInWithGoogle' in s:
-              print('Al gepatcht, overslaan.')
+              print('Al gepatcht in de bron, overslaan.')
+              done_on = done_act = True
           else:
-              # Google-knop zichtbaar in de app als het plugin bestaat
+              # 1. Google-knop zichtbaar in de app als het plugin bestaat.
+              #    Jouw bron heeft: const GOOGLE_ON = ... && !NATIVE;  (constante, wordt vervangen
+              #    door een functie googleOn() die pas bij gebruik kijkt of het plugin er is)
               new_on = ("const googleOn = () => window.MAISON_GOOGLE_SIGNIN !== false && (!NATIVE || "
                         "!!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.FirebaseAuthentication));")
-              s, n1 = re.subn(r"const googleOn = \(\) => [^;\n]*;", new_on, s, count=1)
-              assert n1 == 1, 'googleOn niet gevonden in index.html'
+              m = re.search(r"const GOOGLE_ON = [^;\n]*;", s)
+              if m:
+                  s = s.replace(m.group(0), new_on, 1)
+                  s = re.sub(r"\bGOOGLE_ON\b", "googleOn()", s)
+                  done_on = True
+              else:
+                  for pat in (r"const googleOn = \(\) => [^;\n]*;",
+                              r"(?:const|let|var) googleOn\s*=\s*[^;\n]*;",
+                              r"function googleOn\s*\(\)\s*\{[^}]*\}"):
+                      s, n = re.subn(pat, new_on, s, count=1)
+                      if n:
+                          done_on = True
+                          break
+              print('googleOn aangepast:', done_on)
 
-              # In de app: native Google-login (klein Safari-venster), op de website: popup
+              # 2. In de app: native Google-login (klein Safari-venster), op de website: popup
               native = """if (NATIVE) {
               try {
                 const r = await window.Capacitor.Plugins.FirebaseAuthentication.signInWithGoogle({ skipNativeAuth: true, scopes: ['profile', 'email'] });
@@ -103,10 +119,71 @@ jobs:
             }
             """
               marker = "try { await auth.signInWithPopup(googleProvider); }"
-              assert s.count(marker) == 1, 'signInWithPopup-regel niet gevonden in index.html'
-              s = s.replace(marker, native + marker)
+              if s.count(marker) == 1:
+                  s = s.replace(marker, native + marker)
+                  done_act = True
+              print('Google-actie aangepast:', done_act)
               open(f, 'w', encoding='utf8').write(s)
-              print('Google-aanpassing toegepast.')
+
+          ok = done_on and done_act
+          with open(os.environ['GITHUB_ENV'], 'a') as g:
+              g.write('SOURCE_PATCHED=' + ('1' if ok else '0') + '\n')
+          if not ok:
+              print('::warning::De Google-regels staan anders in index.html. Het vangnet (native-google) wordt gebruikt.')
+          PY
+
+      - name: Show what the website source looks like (for debugging)
+        run: |
+          echo "--- externe scripts in index.html ---"
+          grep -o '<script[^>]*src=[^>]*>' app/www/index.html || echo "(geen)"
+          echo "--- Google-regels ---"
+          grep -n -o -i '.\{0,70\}googleOn.\{0,90\}' app/www/index.html | head -12 || true
+          grep -n -o -i '.\{0,50\}signInWith\(Popup\|Redirect\|Google\).\{0,60\}' app/www/index.html | head -12 || true
+          grep -n -o -i '.\{0,60\}data-a=.google.\{0,60\}' app/www/index.html | head -6 || true
+
+      # Vangnet: werkt ook als de Google-code in de bron anders is opgebouwd.
+      # Alleen in de app, en alleen als het patchen hierboven niet gelukt is.
+      - name: Fallback - native Google button handler
+        if: env.SOURCE_PATCHED != '1'
+        run: |
+          cat > app/native-google.js <<'EOF'
+          (function () {
+            var C = window.Capacitor;
+            if (!(C && C.isNativePlatform && C.isNativePlatform())) return;
+            function show() {
+              document.querySelectorAll('[data-a=google]').forEach(function (e) {
+                e.hidden = false; e.removeAttribute('hidden'); e.style.display = '';
+                var p = e.closest('[hidden]'); if (p) { p.hidden = false; p.removeAttribute('hidden'); }
+              });
+            }
+            new MutationObserver(show).observe(document.documentElement, { childList: true, subtree: true });
+            show();
+            document.addEventListener('click', function (ev) {
+              var el = ev.target.closest && ev.target.closest('[data-a=google]');
+              if (!el) return;
+              ev.preventDefault(); ev.stopImmediatePropagation();
+              var P = C.Plugins && C.Plugins.FirebaseAuthentication;
+              if (!P || typeof firebase === 'undefined') { alert('Google sign-in is not available yet. Please try again in a moment.'); return; }
+              P.signInWithGoogle({ skipNativeAuth: true, scopes: ['profile', 'email'] }).then(function (r) {
+                var c = (r && r.credential) || {};
+                if (!c.idToken && !c.accessToken) throw new Error('Google did not return a token.');
+                return firebase.auth().signInWithCredential(firebase.auth.GoogleAuthProvider.credential(c.idToken || null, c.accessToken || null));
+              }).then(function () { location.hash = '#/account'; }).catch(function (e) {
+                var m = String((e && e.code) || '') + ' ' + String((e && e.message) || '');
+                if (/cancel|12501|dismiss/i.test(m)) return;
+                alert((e && e.message) || 'Google sign-in failed');
+              });
+            }, true);
+          })();
+          EOF
+          python3 - <<'PY'
+          f = 'app/www/index.html'
+          s = open(f, encoding='utf8').read()
+          code = open('app/native-google.js', encoding='utf8').read()
+          assert '</body>' in s, 'geen </body> gevonden'
+          s = s.replace('</body>', '<script>' + code + '</script>\n</body>', 1)
+          open(f, 'w', encoding='utf8').write(s)
+          print('Vangnet toegevoegd.')
           PY
 
       - name: Add diagnostic window (diag.js)
