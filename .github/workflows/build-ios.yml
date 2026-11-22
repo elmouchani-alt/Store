@@ -1,38 +1,124 @@
-name: Build iOS app
+name: Build MAISON iOS (unsigned IPA)
 
-# Handmatig starten: tab Actions -> "Build iOS app" -> Run workflow.
-# Resultaat: een niet-ondertekende MAISON.ipa onder "Artifacts" onderaan de run.
+# Zet dit bestand op: .github/workflows/build-ios.yml
+# Start het via: Actions -> "Build MAISON iOS" -> Run workflow.
+# De .ipa staat daarna onderaan de run bij "Artifacts" (MAISON-ipa).
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'index.html'
+      - '.github/workflows/build-ios.yml'
+
+env:
+  APP_ID: nl.maison.shop
+  APP_NAME: MAISON
+  SITE_FILE: index.html          # de website in de repo (single-file versie)
+  WITH_DIAG: 'true'              # zet op 'false' om het zwarte controlevenster te verwijderen
+  IOS_TARGET: '15.0'
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-15
+    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Node 20
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Copy website files
+      # ------------------------------------------------------------------
+      # 1. Capacitor-project aanmaken
+      # ------------------------------------------------------------------
+      - name: Install Capacitor 7 + Firebase Authentication plugin
         run: |
-          if [ -f site/index.html ]; then SRC=site; else SRC=.; fi
-          mkdir -p build/www
-          rsync -a \
-            --exclude '.git' --exclude '.github' --exclude 'build' \
-            --exclude 'ios-config' --exclude 'node_modules' \
-            "$SRC"/ build/www/
-          ls build/www | head -30
+          mkdir -p app && cd app
+          npm init -y
+          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/ios@7 @capacitor-firebase/authentication@7 firebase
 
-          # TIJDELIJK: controle-venster dat laat zien wat er in de app misgaat
-          cat > build/www/diag.js <<'DIAGEOF'
+      - name: capacitor.config.json
+        working-directory: app
+        run: |
+          cat > capacitor.config.json <<'EOF'
+          {
+            "appId": "nl.maison.shop",
+            "appName": "MAISON",
+            "webDir": "www",
+            "ios": {
+              "contentInset": "never",
+              "backgroundColor": "#1c1917"
+            },
+            "plugins": {
+              "FirebaseAuthentication": {
+                "skipNativeAuth": true,
+                "providers": ["google.com"]
+              }
+            }
+          }
+          EOF
+
+      # ------------------------------------------------------------------
+      # 2. De website voorbereiden (www/)
+      # ------------------------------------------------------------------
+      - name: Copy website into www/
+        run: |
+          mkdir -p app/www
+          cp "$SITE_FILE" app/www/index.html
+
+      - name: Patch website for the app (Google sign-in via native plugin)
+        run: |
+          python3 - <<'PY'
+          import re
+          f = 'app/www/index.html'
+          s = open(f, encoding='utf8').read()
+
+          if 'FirebaseAuthentication.signInWithGoogle' in s:
+              print('Al gepatcht, overslaan.')
+          else:
+              # Google-knop zichtbaar in de app als het plugin bestaat
+              new_on = ("const googleOn = () => window.MAISON_GOOGLE_SIGNIN !== false && (!NATIVE || "
+                        "!!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.FirebaseAuthentication));")
+              s, n1 = re.subn(r"const googleOn = \(\) => [^;\n]*;", new_on, s, count=1)
+              assert n1 == 1, 'googleOn niet gevonden in index.html'
+
+              # In de app: native Google-login (klein Safari-venster), op de website: popup
+              native = """if (NATIVE) {
+              try {
+                const r = await window.Capacitor.Plugins.FirebaseAuthentication.signInWithGoogle({ skipNativeAuth: true, scopes: ['profile', 'email'] });
+                const idToken = (r && r.credential && (r.credential.idToken || r.credential.id_token)) || '';
+                const accessToken = (r && r.credential && r.credential.accessToken) || '';
+                if (!idToken && !accessToken) return toast('Google did not return a token.', 'error');
+                await auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(idToken || null, accessToken || null));
+                afterAuth();
+              } catch (e) {
+                if (/cancel|12501|dismiss/i.test(String((e && e.code) || '') + ' ' + String((e && e.message) || ''))) return;
+                toast((e && e.message) || authMessage(e), 'error');
+              }
+              return;
+            }
+            """
+              marker = "try { await auth.signInWithPopup(googleProvider); }"
+              assert s.count(marker) == 1, 'signInWithPopup-regel niet gevonden in index.html'
+              s = s.replace(marker, native + marker)
+              open(f, 'w', encoding='utf8').write(s)
+              print('Google-aanpassing toegepast.')
+          PY
+
+      - name: Add diagnostic window (diag.js)
+        if: env.WITH_DIAG == 'true'
+        run: |
+          cat > app/www/diag.js <<'EOF'
           (function () {
             var errs = [];
             function add(m) { errs.push(String(m).slice(0, 160)); }
             window.addEventListener('error', function (e) { add('error: ' + e.message); });
             window.addEventListener('unhandledrejection', function (e) { add('promise: ' + (e.reason && (e.reason.code || e.reason.message) || e.reason)); });
+            document.addEventListener('securitypolicyviolation', function (e) { add('CSP blocked: ' + e.violatedDirective); });
             var ce = console.error; console.error = function () { add('console: ' + Array.prototype.join.call(arguments, ' ')); ce.apply(console, arguments); };
             setTimeout(function () {
               try {
@@ -52,159 +138,181 @@ jobs:
               } catch (e) { alert(e); }
             }, 7000);
           })();
-          DIAGEOF
+          EOF
           python3 - <<'PY'
-          p = 'build/www/index.html'
-          h = open(p, encoding='utf-8').read()
-          h = h.replace('<head>', '<head>\n<script src="diag.js"></script>', 1)
-          open(p, 'w', encoding='utf-8').write(h)
+          f = 'app/www/index.html'
+          s = open(f, encoding='utf8').read()
+          if 'src="diag.js"' not in s:
+              s = s.replace('<head>', '<head>\n<script src="diag.js"></script>', 1)
+              open(f, 'w', encoding='utf8').write(s)
           PY
 
-      - name: Add native Google sign-in to the site code
+      # DIT IS DE FIX voor "geen enkele knop werkt":
+      # de CSP laat inline scripts alleen toe met een vaste hash. Na de aanpassingen
+      # hierboven klopt die hash niet meer, dus wordt het hoofdscript geblokkeerd.
+      # Deze stap berekent de hashes opnieuw. Laat hem ALTIJD als laatste
+      # aanpassing aan index.html staan.
+      - name: Fix CSP hashes
         run: |
           python3 - <<'PY'
-          p = 'build/www/index.html'
-          h = open(p, encoding='utf-8').read()
-
-          old1 = "const GOOGLE_ON = window.MAISON_GOOGLE_SIGNIN !== false && !NATIVE;"
-          new1 = ("const googleOn = () => window.MAISON_GOOGLE_SIGNIN !== false && (!NATIVE || !!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.FirebaseAuthentication));")
-          old2 = "${!isReset && GOOGLE_ON && auth ? `"
-          new2 = "${!isReset && googleOn() && auth ? `"
-          old3 = "      try { await auth.signInWithPopup(googleProvider); }"
-          new3 = """      if (NATIVE) {
-              try {
-                const r = await window.Capacitor.Plugins.FirebaseAuthentication.signInWithGoogle({ skipNativeAuth: true, scopes: ['profile', 'email'] });
-                const idToken = (r && r.credential && (r.credential.idToken || r.credential.id_token)) || '';
-                const accessToken = (r && r.credential && r.credential.accessToken) || '';
-                if (!idToken && !accessToken) return toast('Google did not return a token.', 'error');
-                await auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(idToken || null, accessToken || null));
-                afterAuth();
-              } catch (e) {
-                if (/cancel|12501|dismiss/i.test(String((e && e.code) || '') + ' ' + String((e && e.message) || ''))) return;
-                toast((e && e.message) || authMessage(e), 'error');
-              }
-              return;
-            }
-            try { await auth.signInWithPopup(googleProvider); }"""
-          for o in (old1, old2, old3):
-              if o not in h:
-                  print('PATCH SKIPPED, not found:', o[:60]); raise SystemExit(0)
-          h = h.replace(old1, new1, 1).replace(old2, new2, 1).replace(old3, new3, 1)
-          open(p, 'w', encoding='utf-8').write(h)
-          print('native Google patch applied')
+          import re, hashlib, base64
+          f = 'app/www/index.html'
+          s = open(f, encoding='utf8').read()
+          h = lambda b: "'sha256-" + base64.b64encode(hashlib.sha256(b.encode('utf8')).digest()).decode() + "'"
+          blocks = [b for a, b in re.findall(r'<script(?![^>]*\bsrc=)([^>]*)>(.*?)</script>', s, re.S)]
+          m = re.search(r"(script-src 'self')((?: 'sha256-[^']+')*)", s)
+          assert m, 'CSP script-src niet gevonden'
+          s = s.replace(m.group(0), m.group(1) + ''.join(' ' + h(b) for b in blocks), 1)
+          open(f, 'w', encoding='utf8').write(s)
+          print('CSP bijgewerkt voor', len(blocks), 'inline scripts')
           PY
 
-      - name: Create Capacitor project
-        working-directory: build
-        run: |
-          npm init -y
-          npm install @capacitor/core@7 @capacitor/cli@7 @capacitor/ios@7 @capacitor-firebase/authentication@7 firebase
-          printf '%s' '{"appId":"nl.maison.shop","appName":"MAISON","webDir":"www","ios":{"contentInset":"never","backgroundColor":"#1c1917"}}' > capacitor.config.json
-          npx cap add ios
+      # ------------------------------------------------------------------
+      # 3. iOS-project aanmaken en instellen
+      # ------------------------------------------------------------------
+      - name: Add iOS platform
+        working-directory: app
+        run: npx cap add ios
 
-      - name: Add Google sign-in (native)
-        working-directory: build
+      - name: GoogleService-Info.plist
+        working-directory: app
         run: |
-          cat > ios/App/App/GoogleService-Info.plist <<'PLISTEOF'
+          cat > ios/App/App/GoogleService-Info.plist <<'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
           <dict>
-          	<key>CLIENT_ID</key>
-          	<string>846711763840-5ssuddnb69g628rh3gid66ir2todr05i.apps.googleusercontent.com</string>
-          	<key>REVERSED_CLIENT_ID</key>
-          	<string>com.googleusercontent.apps.846711763840-5ssuddnb69g628rh3gid66ir2todr05i</string>
-          	<key>API_KEY</key>
-          	<string>AIzaSyD-cxMGMlIRccwK0gdr5GzVs0CH2LyJ2Fs</string>
-          	<key>GCM_SENDER_ID</key>
-          	<string>846711763840</string>
-          	<key>PLIST_VERSION</key>
-          	<string>1</string>
-          	<key>BUNDLE_ID</key>
-          	<string>nl.maison.shop</string>
-          	<key>PROJECT_ID</key>
-          	<string>shop-2eab0</string>
-          	<key>STORAGE_BUCKET</key>
-          	<string>shop-2eab0.firebasestorage.app</string>
-          	<key>IS_ADS_ENABLED</key>
-          	<false></false>
-          	<key>IS_ANALYTICS_ENABLED</key>
-          	<false></false>
-          	<key>IS_APPINVITE_ENABLED</key>
-          	<true></true>
-          	<key>IS_GCM_ENABLED</key>
-          	<true></true>
-          	<key>IS_SIGNIN_ENABLED</key>
-          	<true></true>
-          	<key>GOOGLE_APP_ID</key>
-          	<string>1:846711763840:ios:c0f8787eb5d079637d4765</string>
-          	<key>DATABASE_URL</key>
-          	<string>https://shop-2eab0-default-rtdb.firebaseio.com</string>
+            <key>API_KEY</key>
+            <string>AIzaSyD-cxMGMlIRccwK0gdr5GzVs0CH2LyJ2Fs</string>
+            <key>BUNDLE_ID</key>
+            <string>nl.maison.shop</string>
+            <key>CLIENT_ID</key>
+            <string>846711763840-5ssuddnb69g628rh3gid66ir2todr05i.apps.googleusercontent.com</string>
+            <key>DATABASE_URL</key>
+            <string>https://shop-2eab0-default-rtdb.firebaseio.com</string>
+            <key>GCM_SENDER_ID</key>
+            <string>846711763840</string>
+            <key>GOOGLE_APP_ID</key>
+            <string>1:846711763840:ios:c0f8787eb5d079637d4765</string>
+            <key>IS_ADS_ENABLED</key>
+            <false/>
+            <key>IS_ANALYTICS_ENABLED</key>
+            <false/>
+            <key>IS_APPINVITE_ENABLED</key>
+            <true/>
+            <key>IS_GCM_ENABLED</key>
+            <true/>
+            <key>IS_SIGNIN_ENABLED</key>
+            <true/>
+            <key>PLIST_VERSION</key>
+            <string>1</string>
+            <key>PROJECT_ID</key>
+            <string>shop-2eab0</string>
+            <key>REVERSED_CLIENT_ID</key>
+            <string>com.googleusercontent.apps.846711763840-5ssuddnb69g628rh3gid66ir2todr05i</string>
+            <key>STORAGE_BUCKET</key>
+            <string>shop-2eab0.firebasestorage.app</string>
           </dict>
           </plist>
-          PLISTEOF
+          EOF
+          plutil -lint ios/App/App/GoogleService-Info.plist
 
-          # 1. Podfile: iOS 15 + Google pod
-          python3 - <<'PY'
-          import re
-          p = 'ios/App/Podfile'
-          s = open(p).read()
-          s = re.sub(r"platform :ios, '[0-9.]+'", "platform :ios, '15.0'", s)
-          s = s.replace("capacitor_pods\n", "capacitor_pods\n  pod 'CapacitorFirebaseAuthentication/Google', :path => '../../node_modules/@capacitor-firebase/authentication'\n", 1)
-          open(p, 'w').write(s)
-          PY
+      - name: Add plist to the Xcode target
+        working-directory: app/ios/App
+        run: |
+          ruby -e '
+          require "xcodeproj"
+          proj = Xcodeproj::Project.open("App.xcodeproj")
+          target = proj.targets.find { |t| t.name == "App" }
+          group = proj.main_group.find_subpath("App", true)
+          unless group.files.any? { |f| f.path == "GoogleService-Info.plist" }
+            ref = group.new_file("GoogleService-Info.plist")
+            target.resources_build_phase.add_file_reference(ref)
+          end
+          proj.build_configurations.each { |c| c.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = ENV["IOS_TARGET"] }
+          target.build_configurations.each { |c| c.build_settings["IPHONEOS_DEPLOYMENT_TARGET"] = ENV["IOS_TARGET"] }
+          proj.save
+          '
 
-          # 2. URL scheme voor het terugkeren uit het Google-venster
-          PB=/usr/libexec/PlistBuddy
-          GS=ios/App/App/GoogleService-Info.plist
-          REV=$($PB -c "Print :REVERSED_CLIENT_ID" $GS)
-          $PB -c "Print :GOOGLE_APP_ID" $GS
-          P=ios/App/App/Info.plist
-          $PB -c "Add :CFBundleURLTypes array" $P
-          $PB -c "Add :CFBundleURLTypes:0 dict" $P
-          $PB -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes array" $P
-          $PB -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string $REV" $P
+      - name: Info.plist (Google URL scheme)
+        working-directory: app/ios/App/App
+        run: |
+          /usr/libexec/PlistBuddy -c "Delete :CFBundleURLTypes" Info.plist 2>/dev/null || true
+          /usr/libexec/PlistBuddy -c "Add :CFBundleURLTypes array" Info.plist
+          /usr/libexec/PlistBuddy -c "Add :CFBundleURLTypes:0 dict" Info.plist
+          /usr/libexec/PlistBuddy -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes array" Info.plist
+          /usr/libexec/PlistBuddy -c "Add :CFBundleURLTypes:0:CFBundleURLSchemes:0 string com.googleusercontent.apps.846711763840-5ssuddnb69g628rh3gid66ir2todr05i" Info.plist
+          /usr/libexec/PlistBuddy -c "Print :CFBundleURLTypes" Info.plist
 
-          # 3. plist aan het Xcode-project toevoegen
-          cd ios/App
-          ruby -e "
-            require 'xcodeproj'
-            proj = Xcodeproj::Project.open('App.xcodeproj')
-            target = proj.targets.first
-            ref = proj.main_group['App'].new_file('GoogleService-Info.plist')
-            target.add_resources([ref])
-            proj.save
-          "
-          cd ../..
-
-          # 4. app-icoon uit de website
-          if [ -f www/icon-512.png ]; then
-            sips -z 1024 1024 www/icon-512.png --out ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png || true
+      # Het Google-onderdeel van het plugin (GoogleSignIn). Zonder deze regel
+      # zit er geen Google-login in de app. Als "pod install" hierop faalt,
+      # verwijder dan alleen de regel met 'CapacitorFirebaseAuthentication/Google'.
+      - name: Podfile (Google sign-in pod, iOS target)
+        working-directory: app/ios/App
+        run: |
+          sed -i '' "s/^platform :ios, .*/platform :ios, '${IOS_TARGET}'/" Podfile
+          if ! grep -q "CapacitorFirebaseAuthentication/Google" Podfile; then
+            sed -i '' "/capacitor_pods/a\\
+            pod 'CapacitorFirebaseAuthentication/Google', :path => '../../node_modules/@capacitor-firebase/authentication'
+          " Podfile
           fi
+          cat Podfile
 
-          npx cap sync ios
+      - name: Sync web assets + pods
+        working-directory: app
+        run: npx cap sync ios
 
-      - name: Build unsigned IPA
-        working-directory: build
+      # ------------------------------------------------------------------
+      # 4. Bouwen zonder handtekening, daarna .ipa maken
+      # ------------------------------------------------------------------
+      - name: Build (unsigned)
+        working-directory: app/ios/App
         run: |
           xcodebuild \
-            -workspace ios/App/App.xcworkspace \
+            -workspace App.xcworkspace \
             -scheme App \
             -configuration Release \
             -sdk iphoneos \
             -destination 'generic/platform=iOS' \
-            -derivedDataPath ios/DerivedData \
-            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" \
-            IPHONEOS_DEPLOYMENT_TARGET=15.0 \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            PRODUCT_BUNDLE_IDENTIFIER="${APP_ID}" \
+            IPHONEOS_DEPLOYMENT_TARGET="${IOS_TARGET}" \
             build
-          mkdir -p Payload
-          cp -R ios/DerivedData/Build/Products/Release-iphoneos/App.app Payload/
-          # controle: zit de plist in de app?
-          test -f Payload/App.app/GoogleService-Info.plist || { echo "plist ZIT NIET in de app"; exit 1; }
-          /usr/libexec/PlistBuddy -c "Print :GOOGLE_APP_ID" Payload/App.app/GoogleService-Info.plist
-          zip -q -r MAISON.ipa Payload
 
-      - uses: actions/upload-artifact@v4
+      - name: Package .ipa
+        run: |
+          APP=$(find app/ios/App/build/Build/Products -name "App.app" -type d | head -1)
+          echo "App gevonden: $APP"
+          rm -rf ipa && mkdir -p ipa/Payload
+          cp -R "$APP" ipa/Payload/App.app
+          (cd ipa && zip -qry ../MAISON.ipa Payload)
+          ls -lh MAISON.ipa
+
+      - name: Check the result (CSP + plist)
+        run: |
+          unzip -q -o MAISON.ipa -d check
+          test -f check/Payload/App.app/GoogleService-Info.plist && echo "plist: OK"
+          python3 - <<'PY'
+          import re, hashlib, base64
+          s = open('check/Payload/App.app/public/index.html', encoding='utf8').read()
+          csp = re.search(r"script-src[^;]*", s).group(0)
+          hs = set(re.findall(r"'sha256-([^']+)'", csp))
+          bad = 0
+          for a, b in re.findall(r'<script(?![^>]*\bsrc=)([^>]*)>(.*?)</script>', s, re.S):
+              if 'ld+json' in a: continue
+              h = base64.b64encode(hashlib.sha256(b.encode('utf8')).digest()).decode()
+              if h not in hs: bad += 1
+          print('Inline scripts zonder passende CSP-hash:', bad)
+          assert bad == 0, 'CSP klopt niet, knoppen zouden niet werken'
+          PY
+          ls check/Payload/App.app/Frameworks | grep -i -E "GoogleSignIn|AppAuth" || echo "LET OP: GoogleSignIn niet gevonden in de app"
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
         with:
           name: MAISON-ipa
-          path: build/MAISON.ipa
+          path: MAISON.ipa
+          if-no-files-found: error
