@@ -49,9 +49,7 @@ jobs:
             "appId": "nl.maison.shop",
             "appName": "MAISON",
             "webDir": "www",
-            "zoomEnabled": true,
             "ios": {
-              "zoomEnabled": true,
               "contentInset": "never",
               "backgroundColor": "#1c1917"
             },
