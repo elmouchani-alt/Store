@@ -26,6 +26,40 @@ jobs:
             "$SRC"/ build/www/
           ls build/www | head -30
 
+          # TIJDELIJK: controle-venster dat laat zien wat er in de app misgaat
+          cat > build/www/diag.js <<'DIAGEOF'
+          (function () {
+            var errs = [];
+            function add(m) { errs.push(String(m).slice(0, 160)); }
+            window.addEventListener('error', function (e) { add('error: ' + e.message); });
+            window.addEventListener('unhandledrejection', function (e) { add('promise: ' + (e.reason && (e.reason.code || e.reason.message) || e.reason)); });
+            var ce = console.error; console.error = function () { add('console: ' + Array.prototype.join.call(arguments, ' ')); ce.apply(console, arguments); };
+            setTimeout(function () {
+              try {
+                var c = window.Capacitor || {}, p = c.Plugins || {};
+                var t = 'native=' + (c.isNativePlatform && c.isNativePlatform()) +
+                  '\nfirebase=' + (typeof firebase) +
+                  '\napps=' + (typeof firebase !== 'undefined' && firebase.apps ? firebase.apps.length : '-') +
+                  '\nfirebaseAuthPlugin=' + !!p.FirebaseAuthentication +
+                  '\nplugins=' + Object.keys(p).join(',') +
+                  '\ngoogleButton=' + !!document.querySelector('[data-a=google]') +
+                  '\nerrors=' + (errs.length ? '\n- ' + errs.slice(0, 4).join('\n- ') : 'none') +
+                  '\n(tik om te sluiten)';
+                var d = document.createElement('pre');
+                d.style.cssText = 'position:fixed;z-index:99999;left:8px;bottom:8px;background:#000;color:#0f0;padding:10px;font:12px monospace;max-width:92vw;white-space:pre-wrap;border-radius:8px';
+                d.textContent = t; d.onclick = function () { d.remove(); };
+                document.body.appendChild(d);
+              } catch (e) { alert(e); }
+            }, 7000);
+          })();
+          DIAGEOF
+          python3 - <<'PY'
+          p = 'build/www/index.html'
+          h = open(p, encoding='utf-8').read()
+          h = h.replace('<head>', '<head>\n<script src="diag.js"></script>', 1)
+          open(p, 'w', encoding='utf-8').write(h)
+          PY
+
       - name: Create Capacitor project
         working-directory: build
         run: |
