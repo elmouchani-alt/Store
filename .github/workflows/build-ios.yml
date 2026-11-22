@@ -334,6 +334,9 @@ jobs:
           " Podfile
           fi
           cat Podfile
+          # "cap add ios" heeft al een Podfile.lock gemaakt (zonder Google). Die
+          # botst met GoogleSignIn (GTMSessionFetcher < 4.0), dus opnieuw beginnen.
+          rm -rf Podfile.lock Pods
 
       - name: Sync web assets + pods
         working-directory: app
