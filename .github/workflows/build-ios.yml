@@ -16,7 +16,7 @@ env:
   APP_ID: nl.maison.shop
   APP_NAME: MAISON
   SITE_FILE: index.html          # de website in de repo (single-file versie)
-  WITH_DIAG: 'true'              # zet op 'false' om het zwarte controlevenster te verwijderen
+  WITH_DIAG: 'false'             # 'true' toont het zwarte controlevenster weer
   IOS_TARGET: '15.0'
 
 jobs:
