@@ -22,7 +22,7 @@
 <meta property="og:description" content="A small collection of home and kitchen pieces, chosen one by one. Free shipping from €50.">
 <meta property="og:image" content="https://elmouchani-alt.github.io/Store/icon-512.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-yF4OIB9qybMNNbheiYbNfCt5vuyKaTSAbuHuJYyAgLg=' 'sha256-d97GB4M6sYxCCT0BLZtTqFX0B62Z1+id3e/DUiAIBYs=' 'sha256-x4luLXajgsnReMKZ3zIb8G5z//+t4nUr7ORQN2/iIx0=' 'sha256-yJZ3puXRwPrZ3/5El14QWze/TdCdtrBUAJRUd4yUvX0=' https://www.gstatic.com https://www.paypal.com https://apis.google.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://*.paypal.com; frame-src https://*.paypal.com https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-yF4OIB9qybMNNbheiYbNfCt5vuyKaTSAbuHuJYyAgLg=' 'sha256-d97GB4M6sYxCCT0BLZtTqFX0B62Z1+id3e/DUiAIBYs=' 'sha256-zvjXihwGBmMLIkzfdDGNuszPf7XPE/VxRfe9aCwIYOc=' 'sha256-yJZ3puXRwPrZ3/5El14QWze/TdCdtrBUAJRUd4yUvX0=' https://www.gstatic.com https://www.paypal.com https://apis.google.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://*.paypal.com; frame-src https://*.paypal.com https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <style>
 /* ==========================================================================
@@ -1180,22 +1180,46 @@ window.MAISON_GOOGLE_SIGNIN = true;
   let db = null, auth = null, FV = null;
   let unsubs = [];
   let googleProvider = null;
+  let connected = false;
 
-  function init() {
+  /* The shell (router, cart from localStorage, all static pages) must work even
+     if the shop service is slow or blocked. This runs immediately. */
+  function bootUI() {
     setYear();
     applyTheme(ls.get('theme', matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light'));
     wireGlobalEvents();
     listenHash(); // route first, so a deep link renders immediately
     render();
+  }
 
-    if (typeof firebase === 'undefined') {
-      S.loadError = 'We could not reach the shop service. Check your connection and reload.';
-      render();
-      return;
-    }
+  /* Firebase itself comes from a deferred <script>, and in the single-file build
+     the app is inline — so it can run before the SDK exists. Never assume it is
+     there: wait for it, then connect. */
+  function boot() {
+    bootUI();
+    if (typeof firebase !== 'undefined') return connect();
+
+    let waited = 0;
+    (function waitForSdk() {
+      if (typeof firebase !== 'undefined') return connect();
+      waited += 200;
+      if (waited > 8000) {
+        S.loadError = 'The shop service did not load. Check your connection or ad blocker, then reload.';
+        S.ready = true;
+        render();
+        return;
+      }
+      setTimeout(waitForSdk, 200);
+    })();
+  }
+
+  function connect() {
+    if (connected) return;
+    connected = true;
     const cfg = window.FIREBASE_CONFIG;
     if (!cfg || !cfg.apiKey || !cfg.projectId) {
       S.loadError = 'The shop is not connected to a Firebase project yet — fill in firebase-config.js.';
+      S.ready = true;
       render();
       return;
     }
@@ -1207,7 +1231,9 @@ window.MAISON_GOOGLE_SIGNIN = true;
       db.settings({ experimentalAutoDetectLongPolling: true, merge: true });
       googleProvider = new firebase.auth.GoogleAuthProvider();
     } catch (e) {
+      console.error(e);
       S.loadError = 'The shop could not start. Please reload the page.';
+      S.ready = true;
       render();
       return;
     }
@@ -1216,6 +1242,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
     watchSettings();
     auth.getRedirectResult().catch((e) => toast(authMessage(e), 'error'));
     auth.onAuthStateChanged(handleUser);
+    render(); // the login screen gains its Google button once auth exists
   }
 
   const userRef = () => db.collection('users').doc(S.user.uid);
@@ -2145,6 +2172,10 @@ window.MAISON_GOOGLE_SIGNIN = true;
       </div>
       <div class="wrap" style="max-width:560px">
         <div class="auth-card">
+          ${S.loadError ? `<div class="panel" style="border-color:var(--wine)"><div class="panel-body row between wrap" style="gap:.5rem">
+            <span class="small">${icon('alert', 'sm')} ${esc(S.loadError)}</span>
+            <button class="btn sm ghost" data-a="reload">Reload</button>
+          </div></div>` : ''}
           <div>
             <p class="eyebrow">${isReset ? 'Password' : isReg ? 'New here' : 'Welcome back'}</p>
             <h1>${isReset ? 'Reset your password' : isReg ? 'Create an account' : 'Sign in'}</h1>
@@ -2165,7 +2196,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
             <button class="btn block lg" type="submit" id="auth-submit">${isReset ? 'Send reset link' : isReg ? 'Create account' : 'Sign in'}</button>
             <p class="msg" id="auth-msg" role="alert"></p>
           </form>
-          ${!isReset && GOOGLE_ON ? `
+          ${!isReset && GOOGLE_ON && auth ? `
             <div class="divider">or</div>
             <button class="btn ghost block" type="button" data-a="google">
               <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.9h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.4z"/><path fill="#34A853" d="M12 22c2.7 0 4.9-.9 6.6-2.4l-3.2-2.5c-.9.6-2 .9-3.4.9-2.6 0-4.8-1.7-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z"/><path fill="#FBBC05" d="M6.4 13.9a6 6 0 0 1 0-3.8V7.5H3.1a10 10 0 0 0 0 9z"/><path fill="#EA4335" d="M12 6c1.5 0 2.8.5 3.9 1.5l2.9-2.9A10 10 0 0 0 3.1 7.5l3.3 2.6C7.2 7.7 9.4 6 12 6z"/></svg>
@@ -2829,7 +2860,12 @@ window.MAISON_GOOGLE_SIGNIN = true;
       el.setAttribute('aria-label', show ? 'Hide password' : 'Show password');
       el.innerHTML = icon(show ? 'eye-off' : 'eye', 'sm');
     },
-    logout: async () => { await auth.signOut(); toast('Signed out.'); navigate('home'); },
+    logout: async () => {
+      if (!needsService()) return;
+      await auth.signOut();
+      toast('Signed out.');
+      navigate('home');
+    },
     reorder: async (id) => {
       const o = S.orders.find((x) => x.id === id);
       if (!o) return;
@@ -2842,10 +2878,12 @@ window.MAISON_GOOGLE_SIGNIN = true;
       toast(`${plural(added, 'piece', 'pieces')} added back to your cart.`, 'success', { label: 'View cart', href: '#/cart' });
     },
     verifyResend: async () => {
+      if (!needsService()) return;
       try { await S.user.sendEmailVerification(); toast('Verification email sent.', 'success'); }
       catch (e) { toast(authMessage(e), 'error'); }
     },
     verifyRefresh: async () => {
+      if (!needsService()) return;
       // The verification link opens in a browser, so the app has to re-read the user.
       try {
         await S.user.reload();
@@ -2910,6 +2948,9 @@ window.MAISON_GOOGLE_SIGNIN = true;
       catch (e) { toast(authMessage(e), 'error'); }
     },
     google: async () => {
+      if (!auth) {
+        return toast('Sign-in is not available yet — the shop service has not loaded. Check your connection and reload.', 'error');
+      }
       try { await auth.signInWithPopup(googleProvider); }
       catch (e) {
         if (e.code === 'auth/popup-blocked') { try { await auth.signInWithRedirect(googleProvider); } catch (x) { toast(authMessage(x), 'error'); } }
@@ -2917,6 +2958,13 @@ window.MAISON_GOOGLE_SIGNIN = true;
       }
     },
   };
+
+  /** True when the shop service is connected; otherwise says so and returns false. */
+  function needsService() {
+    if (auth && db) return true;
+    toast('The shop service is not connected. Check your connection or ad blocker, then reload.', 'error');
+    return false;
+  }
 
   async function confirmThen(question, fn) {
     if (!window.confirm(question)) return;
@@ -2926,6 +2974,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
   /* --- forms --- */
   const FORM = {
     async login(form, btn) {
+      if (!needsService()) return;
       const email = form.email.value.trim().toLowerCase();
       const pass = form.password.value;
       if (!email || !pass) return msg('auth-msg', 'Enter your email address and password.', 'error');
@@ -2936,6 +2985,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
       } catch (e) { msg('auth-msg', authMessage(e), 'error'); btn.disabled = false; }
     },
     async register(form, btn) {
+      if (!needsService()) return;
       const name = form.name.value.trim();
       const email = form.email.value.trim().toLowerCase();
       const pass = form.password.value;
@@ -2952,6 +3002,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
       } catch (e) { msg('auth-msg', authMessage(e), 'error'); btn.disabled = false; }
     },
     async reset(form, btn) {
+      if (!needsService()) return;
       const email = form.email.value.trim();
       if (!/^\S+@\S+\.\S+$/.test(email)) return msg('auth-msg', 'Enter a valid email address.', 'error');
       btn.disabled = true;
@@ -2970,6 +3021,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
       } catch (e) { msg('acc-msg', authMessage(e), 'error'); }
     },
     async contact(form, btn) {
+      if (!needsService()) return;
       const name = form.name.value.trim();
       const email = form.email.value.trim();
       const subject = form.subject?.value || 'other';
@@ -2984,6 +3036,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
       } catch (e) { msg('c-msg', authMessage(e), 'error'); btn.disabled = false; }
     },
     async newsletter(form) {
+      if (!needsService()) return;
       const email = form.email.value.trim().toLowerCase();
       if (!/^\S+@\S+\.\S+$/.test(email)) return msg('nl-msg', 'That email address does not look right.', 'error');
       try {
@@ -2993,6 +3046,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
       } catch (e) { msg('nl-msg', 'Signing up failed. Please try again.', 'error'); }
     },
     async review(form) {
+      if (!needsService()) return;
       if (!S.user) { toast('Sign in to write a review.', 'error'); return navigate('login'); }
       if (!S.orders.length) return msg('rv-msg', 'Only customers with an order can review.', 'error');
       const text = form.text.value.trim();
@@ -3007,6 +3061,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
       } catch (e) { msg('rv-msg', authMessage(e), 'error'); }
     },
     async coupon(form) {
+      if (!needsService()) return;
       const code = form.code.value.trim().toUpperCase();
       if (!code) return msg('coupon-msg', 'Enter a code first.', 'error');
       try {
@@ -3065,6 +3120,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
       } catch (e) { msg('banner-msg', authMessage(e), 'error'); }
     },
     async checkout(form, btn) {
+      if (!needsService()) return;
       const data = {
         name: form.name.value.trim(), email: form.email.value.trim(), phone: form.phone.value.trim(),
         street: form.street.value.trim(), zip: form.zip.value.trim().toUpperCase(), city: form.city.value.trim(),
@@ -3305,7 +3361,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
   let searchTimer = null;
 
   /* go */
-  init();
+  boot();
 })();
 </script>
 </body>
