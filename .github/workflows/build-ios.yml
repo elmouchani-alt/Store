@@ -60,6 +60,40 @@ jobs:
           open(p, 'w', encoding='utf-8').write(h)
           PY
 
+      - name: Add native Google sign-in to the site code
+        run: |
+          python3 - <<'PY'
+          p = 'build/www/index.html'
+          h = open(p, encoding='utf-8').read()
+
+          old1 = "const GOOGLE_ON = window.MAISON_GOOGLE_SIGNIN !== false && !NATIVE;"
+          new1 = ("const googleOn = () => window.MAISON_GOOGLE_SIGNIN !== false && (!NATIVE || !!(window.Capacitor && window.Capacitor.Plugins && window.Capacitor.Plugins.FirebaseAuthentication));")
+          old2 = "${!isReset && GOOGLE_ON && auth ? `"
+          new2 = "${!isReset && googleOn() && auth ? `"
+          old3 = "      try { await auth.signInWithPopup(googleProvider); }"
+          new3 = """      if (NATIVE) {
+              try {
+                const r = await window.Capacitor.Plugins.FirebaseAuthentication.signInWithGoogle({ skipNativeAuth: true, scopes: ['profile', 'email'] });
+                const idToken = (r && r.credential && (r.credential.idToken || r.credential.id_token)) || '';
+                const accessToken = (r && r.credential && r.credential.accessToken) || '';
+                if (!idToken && !accessToken) return toast('Google did not return a token.', 'error');
+                await auth.signInWithCredential(firebase.auth.GoogleAuthProvider.credential(idToken || null, accessToken || null));
+                afterAuth();
+              } catch (e) {
+                if (/cancel|12501|dismiss/i.test(String((e && e.code) || '') + ' ' + String((e && e.message) || ''))) return;
+                toast((e && e.message) || authMessage(e), 'error');
+              }
+              return;
+            }
+            try { await auth.signInWithPopup(googleProvider); }"""
+          for o in (old1, old2, old3):
+              if o not in h:
+                  print('PATCH SKIPPED, not found:', o[:60]); raise SystemExit(0)
+          h = h.replace(old1, new1, 1).replace(old2, new2, 1).replace(old3, new3, 1)
+          open(p, 'w', encoding='utf-8').write(h)
+          print('native Google patch applied')
+          PY
+
       - name: Create Capacitor project
         working-directory: build
         run: |
