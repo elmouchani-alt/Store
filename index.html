@@ -22,7 +22,7 @@
 <meta property="og:description" content="A small collection of home and kitchen pieces, chosen one by one. Free shipping from €50.">
 <meta property="og:image" content="https://elmouchani-alt.github.io/Store/icon-512.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-yJZ3puXRwPrZ3/5El14QWze/TdCdtrBUAJRUd4yUvX0=' 'sha256-yF4OIB9qybMNNbheiYbNfCt5vuyKaTSAbuHuJYyAgLg=' 'sha256-d97GB4M6sYxCCT0BLZtTqFX0B62Z1+id3e/DUiAIBYs=' 'sha256-Be8DeDguLUZo+TNLFR0+bhjs1l/IWKcobjnd1o41Sfs=' https://www.gstatic.com https://www.paypal.com https://apis.google.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://*.paypal.com; frame-src https://*.paypal.com https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'sha256-yJZ3puXRwPrZ3/5El14QWze/TdCdtrBUAJRUd4yUvX0=' 'sha256-yF4OIB9qybMNNbheiYbNfCt5vuyKaTSAbuHuJYyAgLg=' 'sha256-d97GB4M6sYxCCT0BLZtTqFX0B62Z1+id3e/DUiAIBYs=' 'sha256-OmzGqZnQEwI9QVZPnJRYU8nXGMLkQN+dH1DMLkvFBAw=' https://www.gstatic.com https://www.paypal.com https://apis.google.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline'; font-src 'self' data:; img-src 'self' data: blob: https:; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com https://*.paypal.com; frame-src https://*.paypal.com https://*.firebaseapp.com https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <style>
 /* ==========================================================================
@@ -911,6 +911,9 @@ select {
   body { background: #fff; padding: 0; }
 }
 
+.nbadge { display: inline-block; min-width: 18px; height: 18px; margin-left: .4rem; padding: 0 5px; border-radius: 999px; background: var(--wine); color: #fff; font: 600 .66rem/18px var(--sans); text-align: center; vertical-align: middle; }
+.nbadge[hidden] { display: none; }
+.tabbar a .nbadge { position: absolute; top: .15rem; right: calc(50% - 22px); margin: 0; min-width: 16px; height: 16px; font-size: .6rem; line-height: 16px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js" defer></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js" defer></script>
@@ -1165,12 +1168,92 @@ window.MAISON_GOOGLE_SIGNIN = true;
     coupon: null, banner: '',
     route: { name: 'home', param: '', query: {} },
     filters: { cat: '', q: '', sort: '', max: '', stock: false, sale: false },
-    lim: 12, adminTab: 'products', afterLogin: null,
+    lim: 12, adminTab: 'products', afterLogin: null, unseen: { orders: 0, messages: 0 },
     viewed: ls.get('viewed', []),
   };
 
   const isCeo = () => !!S.user && (S.user.email || '').toLowerCase() === ADMIN_EMAIL && S.user.emailVerified;
   const isAdmin = () => isCeo() || (!!S.user && S.role === 'admin');
+  /* Admin: unread counters for new orders and messages ---------------------- */
+  const seenKey = (k) => 'seen.' + k + '.' + (S.user ? S.user.uid : '');
+  const adminLive = { off: [], orders: null, messages: null, ready: { orders: false, messages: false }, prev: { orders: new Set(), messages: new Set() } };
+  const counted = (kind, d) => kind !== 'orders' || (d.status !== 'pending' && d.status !== 'cancelled');
+  const badgeText = (n) => (n > 99 ? '99+' : String(n));
+  const badgeHtml = (k) => {
+    if (!['orders', 'messages', 'total'].includes(k)) return '';
+    const n = k === 'total' ? S.unseen.orders + S.unseen.messages : S.unseen[k];
+    return `<span class="nbadge" data-badge="${k}"${n ? '' : ' hidden'}>${badgeText(n)}</span>`;
+  };
+  function paintBadges() {
+    const t = S.unseen.orders + S.unseen.messages;
+    $$('[data-badge]').forEach((el) => {
+      const k = el.dataset.badge;
+      const n = k === 'total' ? t : S.unseen[k] || 0;
+      el.textContent = badgeText(n);
+      el.hidden = !n;
+    });
+    const acc = $('#tabbar a[data-tab="account"]');
+    if (acc) {
+      let b = acc.querySelector('.nbadge');
+      if (!b && t) { b = document.createElement('span'); b.className = 'nbadge'; acc.appendChild(b); }
+      if (b) { b.textContent = badgeText(t); b.hidden = !t; }
+    }
+  }
+  function markSeen(kind) {
+    if (!adminLive[kind]) return;
+    ls.set(seenKey(kind), adminLive[kind].filter((d) => counted(kind, d)).map((d) => d.id));
+    S.unseen[kind] = 0;
+    adminLive.prev[kind] = new Set();
+    paintBadges();
+  }
+  function notifyNew(kind, fresh) {
+    const n = fresh.length;
+    if (kind === 'orders') toast(n === 1 ? 'New order received.' : `${n} new orders.`, 'success', { label: 'View', href: '#/admin?tab=orders' });
+    else toast(n === 1 ? `New message from ${fresh[0].name || 'a customer'}.` : `${n} new messages.`, 'success', { label: 'Read', href: '#/admin?tab=messages' });
+  }
+  function recount(kind) {
+    const docs = (adminLive[kind] || []).filter((d) => counted(kind, d));
+    let stored = ls.get(seenKey(kind), null);
+    if (stored === null) { stored = docs.map((d) => d.id); ls.set(seenKey(kind), stored); } // first run: start at zero
+    const seen = new Set(stored);
+    const unseen = docs.filter((d) => !seen.has(d.id));
+    S.unseen[kind] = unseen.length;
+    const fresh = adminLive.ready[kind] ? unseen.filter((d) => !adminLive.prev[kind].has(d.id)) : [];
+    adminLive.prev[kind] = new Set(unseen.map((d) => d.id));
+    adminLive.ready[kind] = true;
+    if (fresh.length) notifyNew(kind, fresh);
+    if (S.route.name === 'admin' && S.adminTab === kind && unseen.length) { markSeen(kind); loadAdmin(); return; }
+    paintBadges();
+  }
+  function stopAdminWatch() {
+    adminLive.off.forEach((u) => u());
+    adminLive.off = [];
+    adminLive.orders = adminLive.messages = null;
+    adminLive.ready = { orders: false, messages: false };
+    adminLive.prev = { orders: new Set(), messages: new Set() };
+    S.unseen.orders = S.unseen.messages = 0;
+    paintBadges();
+  }
+  function syncAdminWatch() {
+    if (!isAdmin()) { if (adminLive.off.length) stopAdminWatch(); return; }
+    if (adminLive.off.length || !db) return;
+    ['orders', 'messages'].forEach((kind) => {
+      adminLive.off.push(db.collection(kind).onSnapshot((q) => {
+        adminLive[kind] = q.docs.map((d) => ({ id: d.id, ...d.data() }));
+        recount(kind);
+      }, (e) => console.warn(e)));
+    });
+  }
+
+  function showBlocked(reason) {
+    const why = String(reason || '').trim();
+    openSheet({
+      title: 'Account blocked',
+      body: `<p>Your account has been blocked.</p>${why ? `<p><b>Reason:</b> ${esc(why)}</p>` : ''}<p class="sub">If you think this is a mistake, please contact us.</p>`,
+      foot: '<button class="btn" data-a="close">OK</button>',
+    });
+  }
+
   const priceOf = (p) => (p && p.salePrice && p.salePrice < p.price ? p.salePrice : p ? p.price : 0);
   const onSale = (p) => !!(p && p.salePrice && p.salePrice < p.price);
   const stockOf = (p) => (p && Number(p.stock) > 0 ? Number(p.stock) : 0);
@@ -1302,22 +1385,31 @@ window.MAISON_GOOGLE_SIGNIN = true;
   function subscribeUser() {
     unsubs.forEach((u) => u());
     unsubs = [];
+    stopAdminWatch();
     if (!S.user) return;
     const fail = (e) => console.error(e);
     unsubs.push(userRef().onSnapshot((doc) => {
       const data = doc.data() || {};
       if (data.banned) {
-        toast('This account has been blocked. Please contact us.', 'error');
+        showBlocked(data.banReason);
         auth.signOut();
         return;
       }
       S.role = data.role || 'user';
+      syncAdminWatch();
       syncChrome();
     }, fail));
     unsubs.push(db.collection('orders').where('userId', '==', S.user.uid).onSnapshot((q) => {
+      const before = new Map(S.orders.map((o) => [o.id, o.status]));
       S.orders = q.docs
         .map((d) => ({ id: d.id, ...d.data() }))
         .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+      S.orders.forEach((o) => {
+        if (!before.has(o.id) || before.get(o.id) === o.status) return;
+        if (o.status === 'shipped') toast('Your order has been shipped.', 'success', { label: 'View', href: '#/orders' });
+        else if (o.status === 'completed') toast('Payment received. Thank you!', 'success', { label: 'View', href: '#/orders' });
+        else if (o.status === 'cancelled') toast('Your order was cancelled.', 'error', { label: 'View', href: '#/orders' });
+      });
       const next = orderSig(S.orders);
       if (next === sigOrders) return;
       sigOrders = next;
@@ -1353,6 +1445,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
     } else {
       unsubs.forEach((u) => u());
       unsubs = [];
+      stopAdminWatch();
       S.role = 'user';
       S.orders = [];
       S.coupon = null;
@@ -2271,7 +2364,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
           <a href="#/orders">My orders</a>
           <a href="#/wishlist">Saved pieces</a>
           <a href="#/contact">Help &amp; returns</a>
-          ${isAdmin() ? `<a href="#/admin">Admin</a>` : ''}
+          ${isAdmin() ? `<a href="#/admin">Admin${badgeHtml('total')}</a>` : ''}
         </nav>
         <div class="acct">
           <div class="panel">
@@ -2292,7 +2385,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
             </div>
             <a class="rowlink" href="#/wishlist">${icon('heart')}<span class="grow">Saved pieces</span><span class="sub">${S.wish.length}</span>${icon('chev-right', 'chev')}</a>
             <a class="rowlink" href="#/help">${icon('help')}<span class="grow">Help &amp; returns</span>${icon('chev-right', 'chev')}</a>
-            ${isAdmin() ? `<a class="rowlink" href="#/admin">${icon('shield')}<span class="grow">Admin panel</span>${icon('chev-right', 'chev')}</a>` : ''}
+            ${isAdmin() ? `<a class="rowlink" href="#/admin">${icon('shield')}<span class="grow">Admin panel${badgeHtml('total')}</span>${icon('chev-right', 'chev')}</a>` : ''}
             <button class="rowlink danger" data-a="logout">${icon('logout')}<span class="grow">Sign out</span></button>
           </div>
 
@@ -2512,7 +2605,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
       </div>
       <div class="kpis" id="admin-kpis"></div>
       <nav class="tabs-nav" style="margin:1.25rem 0" aria-label="Admin sections">
-        ${tabs.map(([k, l]) => `<a href="#/admin?tab=${k}" aria-current="${S.adminTab === k}">${l}</a>`).join('')}
+        ${tabs.map(([k, l]) => `<a href="#/admin?tab=${k}" data-tab="${k}" aria-current="${S.adminTab === k}">${l}${badgeHtml(k)}</a>`).join('')}
       </nav>
       <div id="admin-form"></div>
       <div id="admin-list"><p class="sub">Loading…</p></div>
@@ -2526,6 +2619,7 @@ window.MAISON_GOOGLE_SIGNIN = true;
     list.innerHTML = `<p class="sub">Loading…</p>`;
     try {
       const tab = S.adminTab;
+      if (tab === 'orders' || tab === 'messages') markSeen(tab);
       const ordersSnap = await db.collection('orders').get();
       const allOrders = ordersSnap.docs.map((d) => ({ id: d.id, ...d.data() }))
         .sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
@@ -2669,9 +2763,11 @@ window.MAISON_GOOGLE_SIGNIN = true;
     return `<div class="admin-row"><div></div><div>
       <b class="b">${esc(u.name || u.email || '—')}</b>
       <div class="meta">${esc(u.email || '')} · ${owner ? 'Owner' : u.role === 'admin' ? 'Admin' : 'Customer'}${u.banned ? ' · BLOCKED' : ''}</div>
+      ${u.banned && u.banReason ? `<div class="meta">Reason: ${esc(u.banReason)}</div>` : ''}
       <div class="controls">
         ${isCeo() && !owner && u.id !== S.user.uid ? `
           <button class="btn sm ghost" data-a="user-role" data-id="${esc(u.id)}" data-role="${u.role === 'admin' ? 'user' : 'admin'}">${u.role === 'admin' ? 'Remove admin' : 'Make admin'}</button>
+          ${u.banned ? '' : `<input data-ban-reason="${esc(u.id)}" maxlength="200" placeholder="Reason (the customer will see this)" aria-label="Block reason" style="flex:1 1 220px;min-height:36px;font-size:.85rem">`}
           <button class="btn sm ${u.banned ? 'ghost' : 'danger'}" data-a="user-ban" data-id="${esc(u.id)}" data-ban="${u.banned ? '0' : '1'}">${u.banned ? 'Unblock' : 'Block'}</button>` : ''}
       </div>
     </div></div>`;
@@ -2960,7 +3056,13 @@ window.MAISON_GOOGLE_SIGNIN = true;
     },
     userBan: async (id, el) => {
       const ban = el.dataset.ban === '1';
-      try { await db.collection('users').doc(id).update({ banned: ban, bannedAt: ban ? new Date() : null }); toast(ban ? 'Customer blocked.' : 'Block lifted.'); loadAdmin(); }
+      let reason = '';
+      if (ban) {
+        const inp = document.querySelector(`[data-ban-reason="${CSS.escape(id)}"]`);
+        reason = ((inp && inp.value) || '').trim();
+        if (!reason) { if (inp) inp.focus(); return toast('Write a reason first. The customer will see it.', 'error'); }
+      }
+      try { await db.collection('users').doc(id).update({ banned: ban, banReason: ban ? reason : null, bannedAt: ban ? new Date() : null }); toast(ban ? 'Customer blocked.' : 'Block lifted.'); loadAdmin(); }
       catch (e) { toast(authMessage(e), 'error'); }
     },
     google: async () => {
