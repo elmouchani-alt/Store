@@ -56,8 +56,12 @@ jobs:
           PY
 
           # 2. URL scheme voor het terugkeren uit het Google-venster
-          REV=$(/usr/libexec/PlistBuddy -c "Print :REVERSED_CLIENT_ID" ios/App/App/GoogleService-Info.plist)
           PB=/usr/libexec/PlistBuddy
+          GS=ios/App/App/GoogleService-Info.plist
+          # Als je plist (nog) geen Google-gegevens bevat, vul ze hier aan
+          $PB -c "Print :CLIENT_ID" $GS >/dev/null 2>&1 || $PB -c "Add :CLIENT_ID string 846711763840-5ssuddnb69g628rh3gid66ir2todr05i.apps.googleusercontent.com" $GS
+          $PB -c "Print :REVERSED_CLIENT_ID" $GS >/dev/null 2>&1 || $PB -c "Add :REVERSED_CLIENT_ID string com.googleusercontent.apps.846711763840-5ssuddnb69g628rh3gid66ir2todr05i" $GS
+          REV=$($PB -c "Print :REVERSED_CLIENT_ID" $GS)
           P=ios/App/App/Info.plist
           $PB -c "Add :CFBundleURLTypes array" $P
           $PB -c "Add :CFBundleURLTypes:0 dict" $P
