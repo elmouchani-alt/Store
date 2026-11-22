@@ -358,7 +358,6 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            PRODUCT_BUNDLE_IDENTIFIER="${APP_ID}" \
             IPHONEOS_DEPLOYMENT_TARGET="${IOS_TARGET}" \
             build
 
